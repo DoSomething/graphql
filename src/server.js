@@ -5,6 +5,7 @@ import handlebars from 'hbs';
 import { schema } from './schema';
 import session from 'express-session';
 import auth from './auth';
+import markdown from './markdown';
 
 const { APP_URL, APP_SECRET, PORT } = process.env;
 
@@ -28,6 +29,10 @@ const { APP_URL, APP_SECRET, PORT } = process.env;
 
   // * /graphiql
   app.get('/graphiql', (req, res) => res.render('graphiql', { user: req.user }));
+
+  // * /docs
+  app.get('/docs/*', await markdown({ source: __dirname + '/../docs' }));
+  app.get('/docs', (req, res) => res.redirect('/docs/README.md'));
 
   // GET /
   app.get('/', (req, res) => res.render('home', { user: req.user }));

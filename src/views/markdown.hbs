@@ -1,0 +1,25 @@
+{{#> html navigationClass="-white -floating" }}
+  <div class="chrome">
+    <div class="wrapper">
+      {{> navigation }}
+      <header role="banner" class="header">
+        <div class="wrapper">
+          <h1 class="header__title">Documentation</h1>
+          <p class="header__subtitle">Usage, schema, etc.</p>
+        </div>
+      </header>
+
+      <div class="container with-lists -compacted">
+        <div class="wrapper">
+          <div class="container__block -narrow">
+            {{{contents}}}
+          </div>
+
+          <div class="container__block -narrow">
+            <p class="footnote"><a href="https://github.com/DoSomething/graphql-prototype/edit/master{{ path }}">edit this page</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/html}}

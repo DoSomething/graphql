@@ -1,7 +1,14 @@
+/* GraphQL Hero */
+.graphql-header {
+  background-image: url('/assets/cartographer_2x.jpg');
+  background-size: 500px 499px;
+  background-repeat: repeat;
+}
+
 /* Bordered button style. */
 .button.-bordered {
   background: transparent;
-  border: 1px solid #fff;
+  border: 2px solid #fff;
   margin-top: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
@@ -12,7 +19,7 @@
 
 /* Fill Page */
 .fill-vh {
-  height: 100vh;
+  height: 100vh !important;
 }
 
 /* Flexbox utility classes */
