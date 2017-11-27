@@ -21,7 +21,7 @@ export default (async () => {
 
   const params = {
     scope: 'user role:staff role:admin',
-    redirect_uri: `${APP_URL}:${PORT}/auth/callback`,
+    redirect_uri: `${APP_URL}/auth/callback`,
   };
 
   // Register Passport strategy.

@@ -6,7 +6,7 @@ import { schema } from './schema';
 import session from 'express-session';
 import auth from './auth';
 
-const { APP_SECRET } = process.env;
+const { APP_URL, APP_SECRET, PORT } = process.env;
 
 (async () => {
   const app = express();
@@ -51,11 +51,9 @@ const { APP_SECRET } = process.env;
   });
 
   // Start it up!
-  const { APP_URL, PORT } = process.env;
   app.listen(PORT, () => {
-    console.log(`GraphQL Server is now running on http://${APP_URL}:${PORT}/graphql`);
-    console.log(`View GraphiQL at http://${APP_URL}:${PORT}/explore`);
+    console.log(`GraphQL Server is now running on http://${APP_URL}/graphql`);
+    console.log(`View GraphiQL at http://${APP_URL}/explore`);
   });
-
 })();
 
