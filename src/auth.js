@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Issuer, Strategy } from 'openid-client';
 
-const { APP_PORT, NORTHSTAR_URL, NORTHSTAR_AUTH_ID, NORTHSTAR_AUTH_SECRET } = process.env;
+const { APP_URL, PORT, NORTHSTAR_URL, NORTHSTAR_AUTH_ID, NORTHSTAR_AUTH_SECRET } = process.env;
 
 export default (async () => {
   // Configure Northstar client.
@@ -21,7 +21,7 @@ export default (async () => {
 
   const params = {
     scope: 'user role:staff role:admin',
-    redirect_uri: `http://localhost:${APP_PORT}/auth/callback`,
+    redirect_uri: `${APP_URL}:${PORT}/auth/callback`,
   };
 
   // Register Passport strategy.

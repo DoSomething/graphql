@@ -51,10 +51,10 @@ const { APP_SECRET } = process.env;
   });
 
   // Start it up!
-  const PORT = process.env.PORT || 3000;
+  const { APP_URL, PORT } = process.env;
   app.listen(PORT, () => {
-    console.log(`GraphQL Server is now running on http://localhost:${PORT}/graphql`);
-    console.log(`View GraphiQL at http://localhost:${PORT}/graphiql`);
+    console.log(`GraphQL Server is now running on http://${APP_URL}:${PORT}/graphql`);
+    console.log(`View GraphiQL at http://${APP_URL}:${PORT}/explore`);
   });
 
 })();
