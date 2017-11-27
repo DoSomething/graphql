@@ -1,20 +1,61 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
+import handlebars from 'hbs';
 import { schema } from './schema';
+import session from 'express-session';
+import auth from './auth';
 
-var app = express();
+const { APP_SECRET } = process.env;
 
-// POST /graphql
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+(async () => {
+  const app = express();
+  const passport = await auth;
 
-// GET /graphiql
-app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+  // Configure view engine.
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'hbs');
+  handlebars.registerPartials(__dirname + '/views/partials');
 
-// Start it up!
-const PORT = process.env.APP_PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`GraphQL Server is now running on http://localhost:${PORT}/graphql`);
-  console.log(`View GraphiQL at http://localhost:${PORT}/graphiql`);
-});
+  // Attach global middleware.
+  app.use(express.static('public'))
+  app.use(session({ secret: APP_SECRET, cookie: { maxAge: 3600 }, resave: true, saveUninitialized: true }));
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // * /graphql
+  app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+
+  // * /graphiql
+  app.get('/graphiql', (req, res) => res.render('graphiql', { user: req.user }));
+
+  // GET /
+  app.get('/', (req, res) => res.render('home', { user: req.user }));
+
+  // GET /explore
+  app.get('/explore', (req, res) => res.render('explore', { user: req.user }));
+
+  // GET /auth/login
+  app.get('/auth/login', passport.authenticate('oidc'));
+
+  // GET /auth/callback
+  app.get('/auth/callback',
+    passport.authenticate('oidc', { failureRedirect: '/login' }),
+    (req, res) => res.redirect('/'),
+  );
+
+  // GET /auth/logout
+  app.get('/auth/logout', function(req, res){
+    req.logout();
+    res.redirect('/');
+  });
+
+  // Start it up!
+  const PORT = process.env.APP_PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`GraphQL Server is now running on http://localhost:${PORT}/graphql`);
+    console.log(`View GraphiQL at http://localhost:${PORT}/graphiql`);
+  });
+
+})();
 

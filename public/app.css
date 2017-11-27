@@ -1,0 +1,42 @@
+/* Bordered button style. */
+.button.-bordered {
+  background: transparent;
+  border: 1px solid #fff;
+  margin-top: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.button.-bordered:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Fill Page */
+.fill-vh {
+  height: 100vh;
+}
+
+/* Flexbox utility classes */
+.flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex__cell {
+  width: 100%;
+  flex: 0;
+}
+
+.flex__fill {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: stretch;
+  flex-direction: column;
+}
+
+/* GraphiQL frame */
+.graphiql {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}

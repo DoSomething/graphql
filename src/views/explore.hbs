@@ -1,0 +1,17 @@
+{{#> html}}
+  <div class="chrome">
+    <div class="wrapper flex fill-vh">
+      <div class="flex__cell">
+        {{> navigation }}
+      </div>
+
+      <div class="container flex__fill">
+        <div class="container__block flex__fill">
+          <iframe src="/graphiql" class="graphiql flex__fill">
+            <div class="spinner"></div>
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/html}}
