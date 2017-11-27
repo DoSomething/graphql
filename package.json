@@ -6,6 +6,10 @@
     "start:production": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "engines": {
+    "node": "8.x",
+    "npm": "5.3.x"
+  },
   "author": "David Furnes <dfurnes@dosomething.org>",
   "license": "MIT",
   "@std/esm": "cjs",
