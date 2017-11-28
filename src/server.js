@@ -5,14 +5,17 @@ import redis from 'connect-redis';
 import handlebars from 'hbs';
 import { schema } from './schema';
 import session from 'express-session';
-import auth from './auth';
+import authMiddleware from './middleware/auth';
+import viewMiddleware from './middleware/views';
 import markdown from './markdown';
 
 const { APP_URL, APP_SECRET, PORT, REDIS_URL } = process.env;
 
 (async () => {
   const app = express();
-  const passport = await auth;
+
+  // Wait until we discover OpenID Configuration.
+  const passport = await authMiddleware;
 
   // Configure view engine.
   app.set('views', __dirname + '/views');
@@ -40,6 +43,9 @@ const { APP_URL, APP_SECRET, PORT, REDIS_URL } = process.env;
 
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // Attach some global variables to the views.
+  app.use(viewMiddleware);
 
   // * /graphiql
   app.use('/graphiql', graphiqlExpress(request => ({
