@@ -13,10 +13,12 @@ import rogueSchema from './rogue';
  */
 const linkSchema = gql`
   extend type User {
+    # The posts created by this user.
     posts: [Post]
   }
 
   extend type Post {
+    # The user who created this post.
     user: User
   }
 `;

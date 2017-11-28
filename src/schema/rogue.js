@@ -1,4 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools';
+import { URL, URLSearchParams } from 'url';
+import { omit, isUndefined } from 'lodash';
 import {
   getPosts,
   getPostsByUserId,
@@ -17,35 +19,79 @@ import gql from 'tagged-template-noop';
 const typeDefs = gql`
   # A media resource on a post.
   type Media {
-    url: String,
-    caption: String,
+    # The image URL.
+    url(
+      # The desired image width, in pixels.
+      w: Int
+      # The desired image height, in pixels.
+      h: Int
+    ): String
+    # The caption, provided by the user.
+    caption: String
   }
 
   # A user's post on a campaign.
   type Post {
+    # The unique ID for this post.
     id: Int!
-		northstarId: String,
-    signupId: String!,
-    media: Media,
-    caption: String,
-    signup: Signup,
+    # The Northstar ID of the user who created this post.
+		northstarId: String
+    # The attached media for this post.
+    media: Media
+    # The ID of the associated signup for this post.
+    signupId: String!
+    # The associated signup for this post.
+    signup: Signup
   }
 
   # A user's signup for a campaign.
   type Signup {
+    # The unique ID for this signup.
     id: Int!
-    posts: [Post],
-		campaignId: String,
-		northstarId: String,
-    whyParticipated: String,
+    # The associated posts made under this signup.
+    posts: [Post]
+    # The campaign ID this signup was made for. Either a
+    # numeric Drupal ID, or a alphanumeric Contentful ID.
+		campaignId: String
+    # The Northstar ID of the user who created this post.
+		northstarId: String
+    # The user's self-reported reason for doing this campaign.
+    whyParticipated: String
   }
 
   type Query {
-    post(id: Int!): Post
-    posts(page: Int, count: Int): [Post]
-    postsByUserId(id: String!): [Post]
-    signup(id: Int!): Signup
-    signups(page: Int, count: Int): [Signup]
+    # Get a post by ID.
+    post(
+      # The desired post ID.
+      id: Int!
+    ): Post
+    # Get a paginated collection of posts.
+    posts(
+      # The page of results to return.
+      page: Int = 1
+      # The number of results per page.
+      count: Int = 20
+    ): [Post]
+    # Get a paginted collection of posts by user ID.
+    postsByUserId(
+      # The Northstar user ID to filter posts by.
+      id: String!
+      # The page of results to return.
+      page: Int = 1
+      # The number of results per page.
+      count: Int = 20
+    ): [Post]
+    # Get a signup by ID.
+    signup(
+      id: Int!
+    ): Signup
+    # Get a paginated collection of signups.
+    signups(
+      # The page of results to return.
+      page: Int = 1
+      # The number of results per page.
+      count: Int = 20
+    ): [Signup]
   }
 `;
 
@@ -55,22 +101,28 @@ const typeDefs = gql`
  * @var {Object}
  */
 const resolvers = {
-  Post: {
-    signup(post) {
-      return getSignupById(post.signupId);
+  Media: {
+    url(media, args) {
+      const url = new URL(media.url);
+
+      // Replace existing query params with given arguments.
+      url.search = new URLSearchParams(omit(args, isUndefined));
+
+      return url.toString();
     },
   },
+  Post: {
+    signup: (post) => getSignupById(post.signupId),
+  },
   Signup: {
-    posts(signup) {
-      return getPostsBySignupId(signup.id);
-    },
+    posts: (signup) => getPostsBySignupId(signup.id),
   },
   Query: {
     post: (_, { id }) => getPostById(id),
-    posts: (_, { page = 1, count = 20 }) => getPosts(page, count),
-    postsByUserId: (_, { id }) => getPostsByUserId(id),
+    posts: (_, { page, count }) => getPosts(page, count),
+    postsByUserId: (_, { id, page, count }) => getPostsByUserId(id, page, count),
     signup: (_, { id }) => getSignupById(id),
-    signups: (_, { page = 1, count = 20 }) => getSignups(page, count),
+    signups: (_, { page, count }) => getSignups(page, count),
   },
 };
 

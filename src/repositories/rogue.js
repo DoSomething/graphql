@@ -33,8 +33,8 @@ export const getPostById = (id) => {
  * @param {String} id
  * @return {Array}
  */
-export const getPostsByUserId = (id) => {
-  return fetch(`${ROGUE_URL}/api/v3/posts/?filter[northstar_id]=${id}`)
+export const getPostsByUserId = (id, page, count) => {
+  return fetch(`${ROGUE_URL}/api/v3/posts/?filter[northstar_id]=${id}&page=${page}&limit=${count}`)
     .then(response => response.json())
     .then(json => transformCollection(json));
 }
