@@ -39,7 +39,7 @@ export default async () => {
   // GET /auth/callback
   router.get('/auth/callback',
     passport.authenticate('oidc', { failureRedirect: '/login' }),
-    (req, res) => res.redirect('/'),
+    (req, res) => res.redirect('/explore'),
   );
 
   // GET /auth/logout
