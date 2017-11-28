@@ -23,10 +23,18 @@ const { APP_URL, APP_SECRET, PORT, REDIS_URL } = process.env;
   app.use(session({
     secret: APP_SECRET,
     store: new RedisStore({ url: REDIS_URL }),
-    cookie: { maxAge: 1000 * 60 * 60 }, // 1 hour.
+    cookie: {
+      maxAge: 1000 * 60 * 60, // 1 hour.
+      secure: app.get('env') === 'production',
+    },
     saveUninitialized: false,
     resave: false,
   }));
+
+  // Trust proxies when running on Heroku.
+	if (app.get('env') === 'production') {
+		app.set('trust proxy', 1)
+	}
 
   app.use(apiRoutes);
   app.use(await webRoutes());
