@@ -1,13 +1,14 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
+import redis from 'connect-redis';
 import handlebars from 'hbs';
 import { schema } from './schema';
 import session from 'express-session';
 import auth from './auth';
 import markdown from './markdown';
 
-const { APP_URL, APP_SECRET, PORT } = process.env;
+const { APP_URL, APP_SECRET, PORT, REDIS_URL } = process.env;
 
 (async () => {
   const app = express();
@@ -18,14 +19,26 @@ const { APP_URL, APP_SECRET, PORT } = process.env;
   app.set('view engine', 'hbs');
   handlebars.registerPartials(__dirname + '/views/partials');
 
-  // Attach global middleware.
+  // Serve static files.
   app.use(express.static('public'))
-  app.use(session({ secret: APP_SECRET, cookie: { maxAge: 3600 }, resave: true, saveUninitialized: true }));
-  app.use(passport.initialize());
-  app.use(passport.session());
+
+  // Configure sessions & authentication.
+  const RedisStore = redis(session);
+  app.use(session({
+    secret: APP_SECRET,
+    store: new RedisStore({ url: REDIS_URL }),
+    cookie: { maxAge: 1000 * 60 * 60 }, // 1 hour.
+    saveUninitialized: false,
+    resave: false,
+  }));
 
   // * /graphql
-  app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+  app.use('/graphql', bodyParser.json(), graphqlExpress(request => ({
+    schema
+  })));
+
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   // * /graphiql
   app.get('/graphiql', (req, res) => res.render('graphiql', { user: req.user }));
@@ -57,8 +70,8 @@ const { APP_URL, APP_SECRET, PORT } = process.env;
 
   // Start it up!
   app.listen(PORT, () => {
-    console.log(`GraphQL Server is now running on http://${APP_URL}/graphql`);
-    console.log(`View GraphiQL at http://${APP_URL}/explore`);
+    console.log(`GraphQL Server is now running on ${APP_URL}/graphql`);
+    console.log(`View GraphiQL at ${APP_URL}/explore`);
   });
 })();
 
