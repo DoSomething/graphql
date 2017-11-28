@@ -1,7 +1,7 @@
 import { map, mapKeys, camelCase } from 'lodash';
 
 /**
- * ...
+ * Attach the user's authorization token to a request.
  *
  * @return {Object}
  */

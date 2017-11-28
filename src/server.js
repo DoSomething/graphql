@@ -1,21 +1,14 @@
 import express from 'express';
-import bodyParser from 'body-parser';
-import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import redis from 'connect-redis';
 import handlebars from 'hbs';
-import { schema } from './schema';
 import session from 'express-session';
-import authMiddleware from './middleware/auth';
-import viewMiddleware from './middleware/views';
-import markdown from './markdown';
+import apiRoutes from './routes/api';
+import webRoutes from './routes/web';
 
 const { APP_URL, APP_SECRET, PORT, REDIS_URL } = process.env;
 
 (async () => {
   const app = express();
-
-  // Wait until we discover OpenID Configuration.
-  const passport = await authMiddleware;
 
   // Configure view engine.
   app.set('views', __dirname + '/views');
@@ -35,48 +28,8 @@ const { APP_URL, APP_SECRET, PORT, REDIS_URL } = process.env;
     resave: false,
   }));
 
-  // * /graphql
-  app.use('/graphql', bodyParser.json(), graphqlExpress(request => ({
-    context: { authorization: request.header('authorization') },
-    schema
-  })));
-
-  app.use(passport.initialize());
-  app.use(passport.session());
-
-  // Attach some global variables to the views.
-  app.use(viewMiddleware);
-
-  // * /graphiql
-  app.use('/graphiql', graphiqlExpress(request => ({
-    endpointURL: '/graphql',
-    passHeader: request.user ? `'Authorization': 'Bearer ${request.user.access_token}'` : null,
-  })));
-
-  // * /docs
-  app.get('/docs/*', await markdown({ source: __dirname + '/../docs' }));
-  app.get('/docs', (req, res) => res.redirect('/docs/README.md'));
-
-  // GET /
-  app.get('/', (req, res) => res.render('home', { user: req.user }));
-
-  // GET /explore
-  app.get('/explore', (req, res) => res.render('explore', { user: req.user }));
-
-  // GET /auth/login
-  app.get('/auth/login', passport.authenticate('oidc'));
-
-  // GET /auth/callback
-  app.get('/auth/callback',
-    passport.authenticate('oidc', { failureRedirect: '/login' }),
-    (req, res) => res.redirect('/'),
-  );
-
-  // GET /auth/logout
-  app.get('/auth/logout', function(req, res){
-    req.logout();
-    res.redirect('/');
-  });
+  app.use(apiRoutes);
+  app.use(await webRoutes());
 
   // Start it up!
   app.listen(PORT, () => {

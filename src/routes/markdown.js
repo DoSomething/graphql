@@ -1,10 +1,10 @@
 import markdown from 'markdown-it';
 import {exists, readFile } from 'async-file';
 import {resolve, extname } from 'path';
+import asyncMiddleware from '../middleware/async';
 import url from 'url';
 
-export default async ({ source }) => {
-  return async (req, res, next) => {
+export default ({ source }) => asyncMiddleware(async (req, res, next) => {
     const baseDirectory = resolve(source);
     let urlPath = req.url.toString().replace('docs/', '');
 
@@ -30,5 +30,4 @@ export default async ({ source }) => {
     } catch (error) {
       return next(error);
     }
-  }
-};
+});
