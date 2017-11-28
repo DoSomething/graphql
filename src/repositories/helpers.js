@@ -1,6 +1,23 @@
 import { map, mapKeys, camelCase } from 'lodash';
 
 /**
+ * ...
+ *
+ * @return {Object}
+ */
+export const authorizedRequest = (context) => {
+  if (! context.authorization) {
+    return {};
+  }
+
+  return {
+    headers: {
+      'Authorization': context.authorization
+    },
+  }
+}
+
+/**
  * Transform JSON data for GraphQL.
  *
  * @param {Object} data

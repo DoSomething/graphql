@@ -34,6 +34,7 @@ const { APP_URL, APP_SECRET, PORT, REDIS_URL } = process.env;
 
   // * /graphql
   app.use('/graphql', bodyParser.json(), graphqlExpress(request => ({
+    context: { authorization: request.header('authorization') },
     schema
   })));
 
@@ -41,7 +42,10 @@ const { APP_URL, APP_SECRET, PORT, REDIS_URL } = process.env;
   app.use(passport.session());
 
   // * /graphiql
-  app.get('/graphiql', (req, res) => res.render('graphiql', { user: req.user }));
+  app.use('/graphiql', graphiqlExpress(request => ({
+    endpointURL: '/graphql',
+    passHeader: request.user ? `'Authorization': 'Bearer ${request.user.access_token}'` : null,
+  })));
 
   // * /docs
   app.get('/docs/*', await markdown({ source: __dirname + '/../docs' }));

@@ -44,7 +44,7 @@ const resolvers = {
     role: (user) => user.role.toUpperCase(),
   },
   Query: {
-		user: (_, { id }) => getUserById(id),
+		user: (_, args, context) => getUserById(args.id, context),
 	},
 };
 

@@ -1,4 +1,4 @@
-import { transformItem } from './helpers';
+import { authorizedRequest, transformItem } from './helpers';
 
 const { NORTHSTAR_URL } = process.env;
 
@@ -7,8 +7,9 @@ const { NORTHSTAR_URL } = process.env;
  *
  * @return {Object}
  */
-export const getUserById = (id) => {
-  return fetch(`${NORTHSTAR_URL}/v1/users/id/${id}`)
-    .then(response => response.json())
-    .then(json => transformItem(json));
+export const getUserById = async (id, context) => {
+  const response = await fetch(`${NORTHSTAR_URL}/v1/users/id/${id}`, authorizedRequest(context))
+  const json = await response.json();
+
+  return transformItem(json);
 }
