@@ -11,5 +11,7 @@ export const getUserById = async (id, context) => {
   const response = await fetch(`${NORTHSTAR_URL}/v1/users/id/${id}`, authorizedRequest(context))
   const json = await response.json();
 
+  // @TODO: Throw if we got an exception.
+
   return transformItem(json);
 }

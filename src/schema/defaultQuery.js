@@ -7,6 +7,18 @@ export default gql
 # For the latest schema, hit the "Docs" sidebar on the right side
 # of the page, or just start typing for live autocomplete!
 
-query {
 
-}`;
+# Here's an example query for a reportback gallery:
+{
+  posts(count: 5) {
+    media {
+      url(w: 300, h: 300)
+      caption
+    }
+    user {
+      id
+      firstName
+    }
+  }
+}
+`
