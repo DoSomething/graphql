@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { graphiqlExpress } from 'apollo-server-express';
+import defaultQuery from '../schema/defaultQuery';
 import authMiddleware from '../middleware/auth';
 import viewMiddleware from '../middleware/views';
 import markdown from './markdown';
@@ -19,6 +20,7 @@ export default async () => {
   router.use('/graphiql', graphiqlExpress(request => ({
     endpointURL: '/graphql',
     passHeader: request.user ? `'Authorization': 'Bearer ${request.user.access_token}'` : null,
+    query: defaultQuery,
   })));
 
   // GET /

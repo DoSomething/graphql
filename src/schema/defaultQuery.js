@@ -1,0 +1,12 @@
+import gql from 'tagged-template-noop';
+
+export default gql
+`# Type a GraphQL query into this side of the screen, and then hit
+# the "play" button above to run the query and see the results!
+
+# For the latest schema, hit the "Docs" sidebar on the right side
+# of the page, or just start typing for live autocomplete!
+
+query {
+
+}`;
