@@ -1,4 +1,4 @@
-import { transformItem, transformCollection } from './helpers';
+import { transformItem, transformCollection, authorizedRequest } from './helpers';
 
 const { ROGUE_URL } = process.env;
 
@@ -9,8 +9,8 @@ const { ROGUE_URL } = process.env;
  * @param {Number} count
  * @return {Array}
  */
-export const getPosts = (page, count) => {
-  return fetch(`${ROGUE_URL}/api/v3/posts/?page=${page}&limit=${count}`)
+export const getPosts = (page, count, context) => {
+  return fetch(`${ROGUE_URL}/api/v3/posts/?page=${page}&limit=${count}`, authorizedRequest(context))
     .then(response => response.json())
     .then(json => transformCollection(json));
 }
@@ -21,8 +21,8 @@ export const getPosts = (page, count) => {
  * @param {Number} id
  * @return {Object}
  */
-export const getPostById = (id) => {
-  return fetch(`${ROGUE_URL}/api/v3/posts/${id}`)
+export const getPostById = (id, context) => {
+  return fetch(`${ROGUE_URL}/api/v3/posts/${id}`, authorizedRequest(context))
     .then(response => response.json())
     .then(json => transformItem(json));
 }
@@ -33,8 +33,8 @@ export const getPostById = (id) => {
  * @param {String} id
  * @return {Array}
  */
-export const getPostsByUserId = (id, page, count) => {
-  return fetch(`${ROGUE_URL}/api/v3/posts/?filter[northstar_id]=${id}&page=${page}&limit=${count}`)
+export const getPostsByUserId = (id, page, count, context) => {
+  return fetch(`${ROGUE_URL}/api/v3/posts/?filter[northstar_id]=${id}&page=${page}&limit=${count}`, authorizedRequest(context))
     .then(response => response.json())
     .then(json => transformCollection(json));
 }
@@ -45,8 +45,8 @@ export const getPostsByUserId = (id, page, count) => {
  * @param {String} id
  * @return {Array}
  */
-export const getPostsBySignupId = (id) => {
-  return fetch(`${ROGUE_URL}/api/v3/posts/?filter[signup_id]=${id}`)
+export const getPostsBySignupId = (id, context) => {
+  return fetch(`${ROGUE_URL}/api/v3/posts/?filter[signup_id]=${id}`, authorizedRequest(context))
     .then(response => response.json())
     .then(json => transformCollection(json));
 }
@@ -58,8 +58,8 @@ export const getPostsBySignupId = (id) => {
  * @param {Number} count
  * @return {Array}
  */
-export const getSignups = (page, count) => {
-  return fetch(`${ROGUE_URL}/api/v3/signups/?page=${page}&limit=${count}`)
+export const getSignups = (page, count, context) => {
+  return fetch(`${ROGUE_URL}/api/v3/signups/?page=${page}&limit=${count}`, authorizedRequest(context))
     .then(response => response.json())
     .then(json => transformCollection(json));
 }
@@ -70,8 +70,8 @@ export const getSignups = (page, count) => {
  * @param {Number} id
  * @return {Object}
  */
-export const getSignupById = (id) => {
-  return fetch(`${ROGUE_URL}/api/v3/signups/${id}`)
+export const getSignupById = (id, context) => {
+  return fetch(`${ROGUE_URL}/api/v3/signups/${id}`, authorizedRequest(context))
     .then(response => response.json())
     .then(json => transformItem(json));
 }

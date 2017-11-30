@@ -17,6 +17,13 @@ import gql from 'tagged-template-noop';
  * @var {String}
  */
 const typeDefs = gql`
+  # Posts are reviewed by DoSomething.org staff for content.
+  enum ReviewStatus {
+    ACCEPTED,
+    REJECTED,
+    PENDING
+  }
+
   # A media resource on a post.
   type Media {
     # The image URL.
@@ -42,6 +49,8 @@ const typeDefs = gql`
     signupId: String!
     # The associated signup for this post.
     signup: Signup
+    # The review status of the post.
+    status: ReviewStatus,
   }
 
   # A user's signup for a campaign.
@@ -112,17 +121,18 @@ const resolvers = {
     },
   },
   Post: {
-    signup: (post) => getSignupById(post.signupId),
+    signup: (post, args, context) => getSignupById(post.signupId),
+    status: (post) => post.status.toUpperCase(),
   },
   Signup: {
-    posts: (signup) => getPostsBySignupId(signup.id),
+    posts: (signup, args, context) => getPostsBySignupId(signup.id, context),
   },
   Query: {
-    post: (_, { id }) => getPostById(id),
-    posts: (_, { page, count }) => getPosts(page, count),
-    postsByUserId: (_, { id, page, count }) => getPostsByUserId(id, page, count),
-    signup: (_, { id }) => getSignupById(id),
-    signups: (_, { page, count }) => getSignups(page, count),
+    post: (_, args, context) => getPostById(args.id, context),
+    posts: (_, args, context) => getPosts(args.page, args.count, context),
+    postsByUserId: (_, args, context) => getPostsByUserId(args.id, args.page, args.count, context),
+    signup: (_, args, context) => getSignupById(args.id, context),
+    signups: (_, args, context) => getSignups(args.page, args.count, context),
   },
 };
 
