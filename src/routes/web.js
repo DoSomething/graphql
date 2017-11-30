@@ -5,6 +5,8 @@ import authMiddleware from '../middleware/auth';
 import viewMiddleware from '../middleware/views';
 import markdown from './markdown';
 
+const { APP_URL, NORTHSTAR_URL } = process.env;
+
 export default async () => {
   const router = Router();
 
@@ -45,7 +47,9 @@ export default async () => {
   // GET /auth/logout
   router.get('/auth/logout', function(req, res){
     req.logout();
-    res.redirect('/');
+
+    // Kill the Northstar SSO session & redirect back.
+    res.redirect(`${NORTHSTAR_URL}/logout?redirect=${APP_URL}`);
   });
 
   return router;
