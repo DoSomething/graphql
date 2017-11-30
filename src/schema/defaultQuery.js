@@ -11,6 +11,7 @@ export default gql
 # Here's an example query for a reportback gallery:
 {
   posts(count: 5) {
+    status
     media {
       url(w: 300, h: 300)
       caption
@@ -18,6 +19,7 @@ export default gql
     user {
       id
       firstName
+      lastName
     }
   }
 }
