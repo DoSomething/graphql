@@ -41,7 +41,7 @@ export default async () => {
 
   // GET /docs
   router.get('/docs', (req, res) => res.redirect('/docs/README.md'));
-  router.get('/docs/*', markdown({ source: path.resolve('../../docs') }));
+  router.get('/docs/*', markdown({ source: path.resolve('docs') }));
 
   // GET /auth/login
   router.get('/auth/login', passport.authenticate('oidc'));

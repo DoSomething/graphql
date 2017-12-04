@@ -36,5 +36,5 @@ export default ({ source }) =>
       return next(error);
     }
 
-    return next();
+    return true; // @TODO: Should we change this linting rule?
   });

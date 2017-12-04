@@ -12,9 +12,9 @@ const { APP_URL, APP_SECRET, PORT, REDIS_URL } = process.env;
   const app = express();
 
   // Configure view engine.
-  app.set('views', path.resolve('views'));
+  app.set('views', path.resolve('src/views'));
   app.set('view engine', 'hbs');
-  handlebars.registerPartials(path.resolve('views/partials'));
+  handlebars.registerPartials(path.resolve('src/views/partials'));
 
   // Serve static files.
   app.use(express.static('public'));
