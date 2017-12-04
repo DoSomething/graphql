@@ -1,9 +1,14 @@
 import { Router } from 'express';
 import { graphqlExpress } from 'apollo-server-express';
 import bodyParser from 'body-parser';
+import apolloEngine from '../middleware/engine';
 import schema from '../schema';
 
 const router = Router();
+
+// Attach Apollo Engine proxy:
+const engine = apolloEngine();
+if (engine) router.use(engine.expressMiddleware());
 
 // * /graphql
 router.use(
@@ -11,6 +16,8 @@ router.use(
   bodyParser.json(),
   graphqlExpress(request => ({
     context: { authorization: request.header('authorization') },
+    cacheControl: true,
+    tracing: true,
     schema,
   })),
 );

@@ -13,6 +13,10 @@
     "node": "8.x",
     "npm": "5.3.x"
   },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
   "author": "David Furnes <dfurnes@dosomething.org>",
   "license": "MIT",
   "@std/esm": "cjs",
@@ -40,12 +44,9 @@
       "arrow-parens": "off"
     }
   },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "all"
-  },
   "dependencies": {
     "@std/esm": "^0.16.0",
+    "apollo-engine": "^0.6.0",
     "apollo-link": "^1.0.3",
     "apollo-link-http": "^1.2.0",
     "apollo-server-express": "^1.2.0",
@@ -67,6 +68,7 @@
     "node-fetch": "^1.7.3",
     "openid-client": "^1.18.0",
     "passport": "^0.4.0",
+    "prettier": "1.8.2",
     "tagged-template-noop": "^2.1.0"
   },
   "devDependencies": {
