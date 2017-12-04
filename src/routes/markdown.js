@@ -1,24 +1,25 @@
 import markdown from 'markdown-it';
-import {exists, readFile } from 'async-file';
-import {resolve, extname } from 'path';
+import { exists, readFile } from 'async-file';
+import { resolve, extname } from 'path';
+import { parse as parseUrl } from 'url';
 import asyncMiddleware from '../middleware/async';
-import url from 'url';
 
-export default ({ source }) => asyncMiddleware(async (req, res, next) => {
+export default ({ source }) =>
+  asyncMiddleware(async (req, res, next) => {
     const baseDirectory = resolve(source);
-    let urlPath = req.url.toString().replace('docs/', '');
+    const urlPath = req.url.toString().replace('docs/', '');
 
     // Only try to render Markdown files!
     const extension = extname(urlPath);
-    if (! ['.md', '.markdown'].includes(extension)) {
+    if (!['.md', '.markdown'].includes(extension)) {
       return next();
     }
 
     try {
       // Get the local file path.
-      let filePath = resolve(baseDirectory + url.parse(urlPath).pathname);
+      const filePath = resolve(baseDirectory + parseUrl(urlPath).pathname);
 
-      if (! await exists(filePath)) {
+      if (!await exists(filePath)) {
         return next();
       }
 
@@ -26,8 +27,14 @@ export default ({ source }) => asyncMiddleware(async (req, res, next) => {
       const contents = markdown().render(data);
 
       // Render the documentation page!
-      res.render('markdown', { contents, path: req.url.toString(), user: req.user });
+      res.render('markdown', {
+        contents,
+        path: req.url.toString(),
+        user: req.user,
+      });
     } catch (error) {
       return next(error);
     }
-});
+
+    return next();
+  });

@@ -1,4 +1,4 @@
-import { makeExecutableSchema, mergeSchemas } from 'graphql-tools';
+import { mergeSchemas } from 'graphql-tools';
 import { printSchema } from 'graphql';
 import gql from 'tagged-template-noop';
 
@@ -31,24 +31,36 @@ const linkSchema = gql`
 const linkResolvers = mergeInfo => ({
   User: {
     posts: {
-      fragment: `fragment PostsFragment on User { id }`,
+      fragment: 'fragment PostsFragment on User { id }',
       resolve(user, args, context, info) {
-        return mergeInfo.delegate('query', 'postsByUserId', {
-          id: user.id,
-        }, context, info);
-      }
-    }
+        return mergeInfo.delegate(
+          'query',
+          'postsByUserId',
+          {
+            id: user.id,
+          },
+          context,
+          info,
+        );
+      },
+    },
   },
   Post: {
     user: {
-      fragment: `fragment UserFragment on Post { northstarId }`,
+      fragment: 'fragment UserFragment on Post { northstarId }',
       resolve(post, args, context, info) {
-        return mergeInfo.delegate('query', 'user', {
-          id: post.northstarId,
-        }, context, info);
+        return mergeInfo.delegate(
+          'query',
+          'user',
+          {
+            id: post.northstarId,
+          },
+          context,
+          info,
+        );
       },
-    }
-  }
+    },
+  },
 });
 
 /**
@@ -56,13 +68,16 @@ const linkResolvers = mergeInfo => ({
  *
  * @var GraphQLSchema
  */
-export const schema = mergeSchemas({
+const schema = mergeSchemas({
   schemas: [northstarSchema, rogueSchema, linkSchema],
   resolvers: linkResolvers,
 });
 
 // HACK: Describe the root query. <https://git.io/vFNw6>
-schema._queryType.description = 'The query root of DoSomething.org\'s GraphQL interface. Start here if you want to read data from any service.';
+schema._queryType.description =
+  "The query root of DoSomething.org's GraphQL interface. Start here if you want to read data from any service.";
 
 // DEBUG: Print the generated schema!
 console.log(printSchema(schema));
+
+export default schema;

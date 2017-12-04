@@ -1,15 +1,15 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { URL, URLSearchParams } from 'url';
 import { omit, isUndefined } from 'lodash';
+import gql from 'tagged-template-noop';
 import {
   getPosts,
   getPostsByUserId,
   getPostsBySignupId,
   getPostById,
   getSignups,
-  getSignupById
+  getSignupById,
 } from '../repositories/rogue';
-import gql from 'tagged-template-noop';
 
 /**
  * GraphQL types.
@@ -19,8 +19,8 @@ import gql from 'tagged-template-noop';
 const typeDefs = gql`
   # Posts are reviewed by DoSomething.org staff for content.
   enum ReviewStatus {
-    ACCEPTED,
-    REJECTED,
+    ACCEPTED
+    REJECTED
     PENDING
   }
 
@@ -42,7 +42,7 @@ const typeDefs = gql`
     # The unique ID for this post.
     id: Int!
     # The Northstar ID of the user who created this post.
-		northstarId: String
+    northstarId: String
     # The attached media for this post.
     media: Media
     # The ID of the associated signup for this post.
@@ -50,7 +50,7 @@ const typeDefs = gql`
     # The associated signup for this post.
     signup: Signup
     # The review status of the post.
-    status: ReviewStatus,
+    status: ReviewStatus
   }
 
   # A user's signup for a campaign.
@@ -61,9 +61,9 @@ const typeDefs = gql`
     posts: [Post]
     # The campaign ID this signup was made for. Either a
     # numeric Drupal ID, or a alphanumeric Contentful ID.
-		campaignId: String
+    campaignId: String
     # The Northstar ID of the user who created this post.
-		northstarId: String
+    northstarId: String
     # The user's self-reported reason for doing this campaign.
     whyParticipated: String
   }
@@ -91,9 +91,7 @@ const typeDefs = gql`
       count: Int = 20
     ): [Post]
     # Get a signup by ID.
-    signup(
-      id: Int!
-    ): Signup
+    signup(id: Int!): Signup
     # Get a paginated collection of signups.
     signups(
       # The page of results to return.
@@ -121,8 +119,8 @@ const resolvers = {
     },
   },
   Post: {
-    signup: (post, args, context) => getSignupById(post.signupId),
-    status: (post) => post.status.toUpperCase(),
+    signup: (post, args, context) => getSignupById(post.signupId, context),
+    status: post => post.status.toUpperCase(),
   },
   Signup: {
     posts: (signup, args, context) => getPostsBySignupId(signup.id, context),
@@ -130,7 +128,8 @@ const resolvers = {
   Query: {
     post: (_, args, context) => getPostById(args.id, context),
     posts: (_, args, context) => getPosts(args.page, args.count, context),
-    postsByUserId: (_, args, context) => getPostsByUserId(args.id, args.page, args.count, context),
+    postsByUserId: (_, args, context) =>
+      getPostsByUserId(args.id, args.page, args.count, context),
     signup: (_, args, context) => getSignupById(args.id, context),
     signups: (_, args, context) => getSignups(args.page, args.count, context),
   },

@@ -48,6 +48,7 @@
     "@std/esm": "^0.16.0",
     "apollo-link": "^1.0.3",
     "apollo-link-http": "^1.2.0",
+    "apollo-server-express": "^1.2.0",
     "async-file": "^2.0.2",
     "body-parser": "^1.18.2",
     "connect-redis": "^3.3.2",

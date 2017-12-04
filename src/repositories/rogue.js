@@ -1,4 +1,8 @@
-import { transformItem, transformCollection, authorizedRequest } from './helpers';
+import {
+  transformItem,
+  transformCollection,
+  authorizedRequest,
+} from './helpers';
 
 const { ROGUE_URL } = process.env;
 
@@ -9,11 +13,16 @@ const { ROGUE_URL } = process.env;
  * @param {Number} count
  * @return {Array}
  */
-export const getPosts = (page, count, context) => {
-  return fetch(`${ROGUE_URL}/api/v3/posts/?page=${page}&limit=${count}`, authorizedRequest(context))
-    .then(response => response.json())
-    .then(json => transformCollection(json));
-}
+export const getPosts = async (page, count, context) => {
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/posts/?page=${page}&limit=${count}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
+};
 
 /**
  * Fetch a post from Rogue by ID.
@@ -21,11 +30,16 @@ export const getPosts = (page, count, context) => {
  * @param {Number} id
  * @return {Object}
  */
-export const getPostById = (id, context) => {
-  return fetch(`${ROGUE_URL}/api/v3/posts/${id}`, authorizedRequest(context))
-    .then(response => response.json())
-    .then(json => transformItem(json));
-}
+export const getPostById = async (id, context) => {
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/posts/${id}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
+};
 
 /**
  * Fetch posts from Rogue for a given user.
@@ -33,11 +47,18 @@ export const getPostById = (id, context) => {
  * @param {String} id
  * @return {Array}
  */
-export const getPostsByUserId = (id, page, count, context) => {
-  return fetch(`${ROGUE_URL}/api/v3/posts/?filter[northstar_id]=${id}&page=${page}&limit=${count}`, authorizedRequest(context))
-    .then(response => response.json())
-    .then(json => transformCollection(json));
-}
+export const getPostsByUserId = async (id, page, count, context) => {
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/posts/?filter[northstar_id]=${id}&page=${page}&limit=${
+      count
+    }`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
+};
 
 /**
  * Fetch posts from Rogue for a given signup.
@@ -45,11 +66,15 @@ export const getPostsByUserId = (id, page, count, context) => {
  * @param {String} id
  * @return {Array}
  */
-export const getPostsBySignupId = (id, context) => {
-  return fetch(`${ROGUE_URL}/api/v3/posts/?filter[signup_id]=${id}`, authorizedRequest(context))
-    .then(response => response.json())
-    .then(json => transformCollection(json));
-}
+export const getPostsBySignupId = async (id, context) => {
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/posts/?filter[signup_id]=${id}`,
+    authorizedRequest(context),
+  );
+  const json = await response.json();
+
+  return transformCollection(json);
+};
 
 /**
  * Fetch signups from Rogue.
@@ -58,11 +83,15 @@ export const getPostsBySignupId = (id, context) => {
  * @param {Number} count
  * @return {Array}
  */
-export const getSignups = (page, count, context) => {
-  return fetch(`${ROGUE_URL}/api/v3/signups/?page=${page}&limit=${count}`, authorizedRequest(context))
-    .then(response => response.json())
-    .then(json => transformCollection(json));
-}
+export const getSignups = async (page, count, context) => {
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/signups/?page=${page}&limit=${count}`,
+    authorizedRequest(context),
+  );
+  const json = await response.json();
+
+  return transformCollection(json);
+};
 
 /**
  * Fetch a signup from Rogue by ID.
@@ -70,8 +99,12 @@ export const getSignups = (page, count, context) => {
  * @param {Number} id
  * @return {Object}
  */
-export const getSignupById = (id, context) => {
-  return fetch(`${ROGUE_URL}/api/v3/signups/${id}`, authorizedRequest(context))
-    .then(response => response.json())
-    .then(json => transformItem(json));
-}
+export const getSignupById = async (id, context) => {
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/signups/${id}`,
+    authorizedRequest(context),
+  );
+  const json = await response.json();
+
+  return transformItem(json);
+};

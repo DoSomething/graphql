@@ -5,17 +5,17 @@ import { map, mapKeys, camelCase } from 'lodash';
  *
  * @return {Object}
  */
-export const authorizedRequest = (context) => {
-  if (! context.authorization) {
+export const authorizedRequest = context => {
+  if (!context.authorization) {
     return {};
   }
 
   return {
     headers: {
-      'Authorization': context.authorization
+      Authorization: context.authorization,
     },
-  }
-}
+  };
+};
 
 /**
  * Transform JSON data for GraphQL.
@@ -23,9 +23,7 @@ export const authorizedRequest = (context) => {
  * @param {Object} data
  * @return {Object}
  */
-const transformResponse = (data) => {
-  return mapKeys(data, (_, key) => camelCase(key));
-};
+const transformResponse = data => mapKeys(data, (_, key) => camelCase(key));
 
 /**
  * Transform an individual item response.
@@ -33,9 +31,7 @@ const transformResponse = (data) => {
  * @param {Object} json
  * @return {Object}
  */
-export const transformItem = (json) => {
-  return transformResponse(json.data);
-};
+export const transformItem = json => transformResponse(json.data);
 
 /**
  * Transform a collection response.
@@ -43,6 +39,4 @@ export const transformItem = (json) => {
  * @param {Object} json
  * @return {Object}
  */
-export const transformCollection = (json) => {
-  return map(json.data, transformResponse);
-};
+export const transformCollection = json => map(json.data, transformResponse);

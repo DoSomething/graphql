@@ -1,6 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools';
-import { getUserById } from '../repositories/northstar';
 import gql from 'tagged-template-noop';
+import { getUserById } from '../repositories/northstar';
 
 /**
  * GraphQL types.
@@ -10,8 +10,8 @@ import gql from 'tagged-template-noop';
 const typeDefs = gql`
   # The user's role defines their abilities on any DoSomething.org site.
   enum Role {
-    USER,
-    STAFF,
+    USER
+    STAFF
     ADMIN
   }
 
@@ -24,9 +24,9 @@ const typeDefs = gql`
     # The user's last name. Null if unauthorized.
     lastName: String
     # The user's ISO-3166  country code.
-    country: String,
+    country: String
     # The user's role.
-    role: Role,
+    role: Role
   }
 
   type Query {
@@ -41,11 +41,11 @@ const typeDefs = gql`
  */
 const resolvers = {
   User: {
-    role: (user) => user.role.toUpperCase(),
+    role: user => user.role.toUpperCase(),
   },
   Query: {
-		user: (_, args, context) => getUserById(args.id, context),
-	},
+    user: (_, args, context) => getUserById(args.id, context),
+  },
 };
 
 /**
