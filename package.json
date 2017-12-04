@@ -4,7 +4,10 @@
   "scripts": {
     "start": "nodemon index.js",
     "start:production": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run lint",
+    "lint": "eslint --ext .js src",
+    "format:ci": "prettier-check src/**/*.js",
+    "format": "prettier --write src/**/*.js"
   },
   "engines": {
     "node": "8.x",
@@ -13,6 +16,34 @@
   "author": "David Furnes <dfurnes@dosomething.org>",
   "license": "MIT",
   "@std/esm": "cjs",
+  "eslintConfig": {
+    "extends": "@dosomething/eslint-config",
+    "plugins": ["prettier"],
+    "globals": {
+      "fetch": false
+    },
+    "rules": {
+      "prettier/prettier": "error",
+      "id-length": [
+        "error",
+        {
+          "exceptions": ["_"]
+        }
+      ],
+      "no-underscore-dangle": [
+        "error",
+        {
+          "allow": ["_queryType"]
+        }
+      ],
+      "space-unary-ops": "off",
+      "arrow-parens": "off"
+    }
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
   "dependencies": {
     "@std/esm": "^0.16.0",
     "apollo-link": "^1.0.3",
@@ -38,6 +69,11 @@
     "tagged-template-noop": "^2.1.0"
   },
   "devDependencies": {
-    "nodemon": "^1.12.1"
+    "@dosomething/eslint-config": "^3.1.2",
+    "eslint": "^4.12.1",
+    "eslint-plugin-prettier": "^2.3.1",
+    "nodemon": "^1.12.1",
+    "prettier": "1.8.2",
+    "prettier-check": "^2.0.0"
   }
 }
