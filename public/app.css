@@ -47,3 +47,9 @@
   border: 1px solid #ccc;
   border-radius: 2px;
 }
+
+/* Images in documentation */
+.markdown-docs img {
+  width: 80%;
+  margin: 48px auto;
+}

@@ -24,7 +24,7 @@ export default ({ source }) =>
       }
 
       const data = await readFile(filePath, 'utf8');
-      const contents = markdown().render(data);
+      const contents = markdown({ html: true }).render(data);
 
       // Render the documentation page!
       res.render('markdown', {
