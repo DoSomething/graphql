@@ -16,8 +16,8 @@ router.use(
   bodyParser.json(),
   graphqlExpress(request => ({
     context: { authorization: request.header('authorization') },
-    cacheControl: true,
-    tracing: true,
+    cacheControl: Boolean(engine),
+    tracing: Boolean(engine),
     schema,
   })),
 );
