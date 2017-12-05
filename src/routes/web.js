@@ -1,12 +1,15 @@
 import { Router } from 'express';
 import { graphiqlExpress } from 'apollo-server-express';
+import redis from 'connect-redis';
+import cacheControl from 'express-cache-controller';
+import session from 'express-session';
 import path from 'path';
 import defaultQuery from '../schema/defaultQuery';
 import authMiddleware from '../middleware/auth';
 import viewMiddleware from '../middleware/views';
 import markdown from './markdown';
 
-const { APP_URL, NORTHSTAR_URL } = process.env;
+const { APP_URL, APP_SECRET, NORTHSTAR_URL, REDIS_URL, NODE_ENV } = process.env;
 
 export default async () => {
   const router = Router();
@@ -14,10 +17,30 @@ export default async () => {
   // Wait until we discover OpenID Configuration.
   const passport = await authMiddleware;
 
+  // Configure sessions & authentication.
+  const isProduction = NODE_ENV === 'production';
+  const RedisStore = redis(session);
+  router.use(
+    session({
+      secret: APP_SECRET,
+      store: new RedisStore({ url: REDIS_URL }),
+      cookie: {
+        maxAge: 1000 * 60 * 60, // 1 hour.
+        secure: isProduction,
+      },
+      saveUninitialized: false,
+      proxy: isProduction,
+      resave: false,
+    }),
+  );
+
   // Attach web middleware.
   router.use(passport.initialize());
   router.use(passport.session());
   router.use(viewMiddleware);
+
+  // Don't cache web views.
+  router.use(cacheControl({ noCache: true }));
 
   // * /graphiql
   router.use(
