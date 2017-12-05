@@ -64,7 +64,8 @@
   height: 100px;
   background: #000;
   color: #fff;
-  transform: rotate(-45deg)
+  transform: rotate(-45deg);
+  z-index:9999; /* @TODO: Hacky! */
 }
 
 .environment span {
