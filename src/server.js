@@ -10,6 +10,8 @@ const { APP_URL, APP_SECRET, PORT, REDIS_URL } = process.env;
 
 const app = express();
 
+const isProduction = app.get('env') === 'production';
+
 // Configure view engine.
 app.set('views', path.resolve('src/views'));
 app.set('view engine', 'hbs');
@@ -26,15 +28,16 @@ app.use(
     store: new RedisStore({ url: REDIS_URL }),
     cookie: {
       maxAge: 1000 * 60 * 60, // 1 hour.
-      secure: app.get('env') === 'production',
+      secure: isProduction,
     },
     saveUninitialized: false,
+    proxy: isProduction,
     resave: false,
   }),
 );
 
 // Trust proxies when running on Heroku.
-if (app.get('env') === 'production') {
+if (isProduction) {
   app.set('trust proxy', 1);
 }
 
