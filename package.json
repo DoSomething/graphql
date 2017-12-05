@@ -22,9 +22,7 @@
   "@std/esm": "cjs",
   "eslintConfig": {
     "extends": "@dosomething/eslint-config",
-    "plugins": [
-      "prettier"
-    ],
+    "plugins": ["prettier"],
     "globals": {
       "fetch": false
     },
@@ -33,17 +31,13 @@
       "id-length": [
         "error",
         {
-          "exceptions": [
-            "_"
-          ]
+          "exceptions": ["_"]
         }
       ],
       "no-underscore-dangle": [
         "error",
         {
-          "allow": [
-            "_queryType"
-          ]
+          "allow": ["_queryType"]
         }
       ],
       "space-unary-ops": "off",
@@ -62,9 +56,8 @@
     "dotenv": "^4.0.0",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
-    "express-cache-controller": "^1.1.0",
-    "express-enforces-ssl": "^1.1.0",
     "express-session": "^1.15.6",
+    "forcedomain": "^0.8.1",
     "graphql": "^0.11.7",
     "graphql-server-express": "^1.2.0",
     "graphql-tag": "^2.5.0",

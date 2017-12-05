@@ -3,7 +3,8 @@ import handlebars from 'hbs';
 import favicon from 'serve-favicon';
 import path from 'path';
 import helmet from 'helmet';
-import forceSSL from 'express-enforces-ssl';
+import { URL } from 'url';
+import forceDomain from 'forcedomain';
 import apiRoutes from './routes/api';
 import webRoutes from './routes/web';
 
@@ -23,7 +24,9 @@ app.use(express.static('public'));
 // Trust proxies & force SSL when in production.
 if (app.get('env') === 'production') {
   app.set('trust proxy', 1);
-  app.use(forceSSL());
+
+  const hostname = new URL(APP_URL).hostname;
+  app.use(forceDomain({ hostname, protocol: 'https' }));
 }
 
 // Use Helmet for security headers.
