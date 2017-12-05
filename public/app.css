@@ -53,3 +53,40 @@
   width: 80%;
   margin: 48px auto;
 }
+
+/* environment ribbon */
+.environment {
+  display: block;
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  width: 100px;
+  height: 100px;
+  background: #000;
+  color: #fff;
+  transform: rotate(-45deg)
+}
+
+.environment span {
+  display: block;
+  position: relative;
+  top: 85%;
+  font-size: 12px;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+  transform: translateY(-50%);
+}
+
+.chrome > .wrapper {
+  overflow: hidden !important;
+}
+
+.environment-local {
+  background: #fcd116;
+  color: #000;
+}
+
+.environment-preview {
+  background: #23b7fb;
+}
