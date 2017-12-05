@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { graphiqlExpress } from 'apollo-server-express';
 import redis from 'connect-redis';
-import cacheControl from 'express-cache-controller';
 import session from 'express-session';
 import path from 'path';
 import defaultQuery from '../schema/defaultQuery';
@@ -38,9 +37,6 @@ export default async () => {
   router.use(passport.initialize());
   router.use(passport.session());
   router.use(viewMiddleware);
-
-  // Don't cache web views.
-  router.use(cacheControl({ noCache: true }));
 
   // * /graphiql
   router.use(

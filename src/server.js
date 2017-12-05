@@ -2,6 +2,8 @@ import express from 'express';
 import handlebars from 'hbs';
 import favicon from 'serve-favicon';
 import path from 'path';
+import helmet from 'helmet';
+import forceSSL from 'express-enforces-ssl';
 import apiRoutes from './routes/api';
 import webRoutes from './routes/web';
 
@@ -18,10 +20,14 @@ handlebars.registerPartials(path.resolve('src/views/partials'));
 app.use(favicon(path.resolve('public/assets/favicon.ico')));
 app.use(express.static('public'));
 
-// Trust proxies when running on Heroku.
+// Trust proxies & force SSL when in production.
 if (app.get('env') === 'production') {
   app.set('trust proxy', 1);
+  app.use(forceSSL());
 }
+
+// Use Helmet for security headers.
+app.use(helmet({ noCache: true }));
 
 // Register routes & start it up!
 (async () => {
