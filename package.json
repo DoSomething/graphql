@@ -76,6 +76,7 @@
     "openid-client": "^1.18.0",
     "passport": "^0.4.0",
     "prettier": "1.8.2",
+    "serve-favicon": "^2.4.5",
     "tagged-template-noop": "^2.1.0"
   },
   "devDependencies": {

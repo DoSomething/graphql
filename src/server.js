@@ -1,5 +1,6 @@
 import express from 'express';
 import handlebars from 'hbs';
+import favicon from 'serve-favicon';
 import path from 'path';
 import apiRoutes from './routes/api';
 import webRoutes from './routes/web';
@@ -13,7 +14,8 @@ app.set('views', path.resolve('src/views'));
 app.set('view engine', 'hbs');
 handlebars.registerPartials(path.resolve('src/views/partials'));
 
-// Serve static files.
+// Serve favicon & static files.
+app.use(favicon(path.resolve('public/assets/favicon.ico')));
 app.use(express.static('public'));
 
 // Trust proxies when running on Heroku.
