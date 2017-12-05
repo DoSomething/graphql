@@ -26,6 +26,9 @@ export default (async () => {
     client_secret: NORTHSTAR_AUTH_SECRET,
   });
 
+  // Allow 15 second clock skew.
+  client.CLOCK_TOLERANCE = 15;
+
   const params = {
     scope: 'user role:staff role:admin',
     redirect_uri: `${APP_URL}/auth/callback`,
