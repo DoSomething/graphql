@@ -1,6 +1,7 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import gql from 'tagged-template-noop';
-import { GraphQLDate, GraphQLTime, GraphQLDateTime } from 'graphql-iso-date';
+import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
+import { GraphQLAbsoluteUrl } from 'graphql-url';
 import northstar from '../repositories/northstar';
 
 /**
@@ -12,6 +13,8 @@ const typeDefs = gql`
   scalar Date
 
   scalar DateTime
+
+  scalar AbsoluteUrl
 
   # The user's role defines their abilities on any DoSomething.org site.
   enum Role {
@@ -45,7 +48,7 @@ const typeDefs = gql`
     # The user's last initial.
     lastInitial: String
     # The user's avatar, uploaded via the mobile app.
-    photo: String
+    photo: AbsoluteUrl
       @deprecated(
         reason: "The mobile app is discontinued, so users can no longer set this field."
       )
@@ -120,6 +123,7 @@ const resolvers = {
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
+  AbsoluteUrl: GraphQLAbsoluteUrl,
 };
 
 /**

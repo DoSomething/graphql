@@ -70,6 +70,7 @@
     "graphql-server-express": "^1.2.0",
     "graphql-tag": "^2.5.0",
     "graphql-tools": "^2.8.0",
+    "graphql-url": "^2.0.4",
     "handlebars": "4.0.8",
     "hbs": "^4.0.1",
     "helmet": "^3.9.0",

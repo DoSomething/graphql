@@ -1,6 +1,8 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { URL, URLSearchParams } from 'url';
 import { omit, isUndefined } from 'lodash';
+import { GraphQLDateTime } from 'graphql-iso-date';
+import { GraphQLAbsoluteUrl } from 'graphql-url';
 import gql from 'tagged-template-noop';
 import Rogue, {
   getPosts,
@@ -8,7 +10,6 @@ import Rogue, {
   getPostsBySignupId,
   getPostById,
   getSignups,
-  getSignupById,
 } from '../repositories/rogue';
 
 /**
@@ -17,6 +18,10 @@ import Rogue, {
  * @var {String}
  */
 const typeDefs = gql`
+  scalar DateTime
+
+  scalar AbsoluteUrl
+
   # Posts are reviewed by DoSomething.org staff for content.
   enum ReviewStatus {
     ACCEPTED
@@ -32,7 +37,7 @@ const typeDefs = gql`
       w: Int
       # The desired image height, in pixels.
       h: Int
-    ): String
+    ): AbsoluteUrl
     # The caption, provided by the user.
     caption: String
   }
@@ -43,6 +48,9 @@ const typeDefs = gql`
     id: Int!
     # The Northstar ID of the user who created this post.
     northstarId: String
+    # The campaign ID this post was made for. Either a
+    # numeric Drupal ID, or a alphanumeric Contentful ID.
+    campaignId: String
     # The attached media for this post.
     media: Media
     # The ID of the associated signup for this post.
@@ -51,6 +59,18 @@ const typeDefs = gql`
     signup: Signup
     # The review status of the post.
     status: ReviewStatus
+    # The source of this post. This is often a Northstar OAuth client.
+    source: String
+    # The number of items added or removed in this post.
+    quantity: Int
+    # The tags that have been applied to this post by DoSomething.org staffers.
+    tags: [String]
+    # The IP address this post was created from.
+    remoteAddr: String
+    # The time this post was last modified.
+    updatedAt: DateTime
+    # The time when this post was originally created.
+    createdAt: DateTime
   }
 
   # A user's signup for a campaign.
@@ -62,10 +82,20 @@ const typeDefs = gql`
     # The campaign ID this signup was made for. Either a
     # numeric Drupal ID, or a alphanumeric Contentful ID.
     campaignId: String
+    # The Drupal campaign run ID this signup was made for.
+    campaignRunId: String @deprecated
     # The Northstar ID of the user who created this post.
     northstarId: String
+    # The total number of items on all posts attached to this signup.
+    quantity: Int
     # The user's self-reported reason for doing this campaign.
     whyParticipated: String
+    # More information about the signup (for example, third-party messaging opt-ins).
+    details: String
+    # The time this signup was last modified.
+    updatedAt: DateTime
+    # The time when this signup was originally created.
+    createdAt: DateTime
   }
 
   type Query {
@@ -138,6 +168,8 @@ const resolvers = {
     signup: (_, args, context) => Rogue(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args.page, args.count, context),
   },
+  DateTime: GraphQLDateTime,
+  AbsoluteUrl: GraphQLAbsoluteUrl,
 };
 
 /**
