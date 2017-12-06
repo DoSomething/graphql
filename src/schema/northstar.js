@@ -105,6 +105,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    # Get a user by ID.
     user(id: String!): User
   }
 `;
