@@ -41,6 +41,9 @@ export default (async () => {
       done(null, {
         id: userinfo.sub,
         name: userinfo.given_name,
+        fullName:
+          userinfo.given_name +
+          (userinfo.family_name ? ` ${userinfo.family_name}` : ''),
         access_token: tokenset.access_token,
       }),
     ),

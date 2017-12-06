@@ -8,6 +8,14 @@
 
       <div class="container flex__fill">
         <div class="container__block flex__fill">
+          <p class="footnote identity">
+            You are querying the <strong>{{ config.environment }}</strong> environment, as
+            {{#if user }}
+              <strong>{{ user.fullName }}</strong>.
+            {{else}}
+              an <strong>anonymous user</strong>.
+            {{/if}}
+          </p>
           <iframe src="/graphiql" class="graphiql flex__fill">
             <div class="spinner"></div>
           </iframe>
