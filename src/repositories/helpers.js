@@ -23,7 +23,15 @@ export const authorizedRequest = context => {
  * @param {Object} data
  * @return {Object}
  */
-const transformResponse = data => mapKeys(data, (_, key) => camelCase(key));
+const transformResponse = data => {
+  const result = mapKeys(data, (_, key) => camelCase(key));
+
+  if (!result.id) {
+    return null;
+  }
+
+  return result;
+};
 
 /**
  * Transform an individual item response.

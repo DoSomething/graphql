@@ -1,3 +1,4 @@
+import DataLoader from 'dataloader';
 import { authorizedRequest, transformItem } from './helpers';
 
 const { NORTHSTAR_URL } = process.env;
@@ -7,16 +8,32 @@ const { NORTHSTAR_URL } = process.env;
  *
  * @return {Object}
  */
-export const getUserById = async (id, context) => {
-  const response = await fetch(
-    `${NORTHSTAR_URL}/v1/users/id/${id}`,
-    authorizedRequest(context),
-  );
+const getUserById = async (id, options) => {
+  const response = await fetch(`${NORTHSTAR_URL}/v1/users/id/${id}`, options);
   const json = await response.json();
-
-  // @TODO: Throw if we got an exception.
 
   return transformItem(json);
 };
 
-export default null;
+/**
+ * Northstar data loader.
+ *
+ * @var {Northstar}
+ */
+let instance = null;
+const Northstar = context => {
+  if (instance) return instance;
+
+  // Configure a new loader for the request.
+  const options = authorizedRequest(context);
+
+  instance = {
+    users: new DataLoader(ids =>
+      Promise.all(ids.map(id => getUserById(id, options))),
+    ),
+  };
+
+  return instance;
+};
+
+export default Northstar;

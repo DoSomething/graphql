@@ -1,6 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import gql from 'tagged-template-noop';
-import { getUserById } from '../repositories/northstar';
+import northstar from '../repositories/northstar';
 
 /**
  * GraphQL types.
@@ -44,7 +44,7 @@ const resolvers = {
     role: user => user.role.toUpperCase(),
   },
   Query: {
-    user: (_, args, context) => getUserById(args.id, context),
+    user: (_, args, context) => northstar(context).users.load(args.id),
   },
 };
 

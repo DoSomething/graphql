@@ -110,12 +110,17 @@ const typeDefs = gql`
 const resolvers = {
   Media: {
     url(media, args) {
-      const url = new URL(media.url);
+      try {
+        const url = new URL(media.url);
 
-      // Replace existing query params with given arguments.
-      url.search = new URLSearchParams(omit(args, isUndefined));
+        // Replace existing query params with given arguments.
+        url.search = new URLSearchParams(omit(args, isUndefined));
 
-      return url.toString();
+        return url.toString();
+      } catch (exception) {
+        // If we get mangled 'default' as URL, return null.
+        return null;
+      }
     },
   },
   Post: {
