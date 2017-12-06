@@ -46,8 +46,8 @@ const typeDefs = gql`
   type Post {
     # The unique ID for this post.
     id: Int!
-    # The Northstar ID of the user who created this post.
-    northstarId: String
+    # The Northstar user ID of the user who created this post.
+    userId: String
     # The campaign ID this post was made for. Either a
     # numeric Drupal ID, or a alphanumeric Contentful ID.
     campaignId: String
@@ -85,7 +85,7 @@ const typeDefs = gql`
     # The Drupal campaign run ID this signup was made for.
     campaignRunId: String @deprecated
     # The Northstar ID of the user who created this post.
-    northstarId: String
+    userId: String
     # The total number of items on all posts attached to this signup.
     quantity: Int
     # The user's self-reported reason for doing this campaign.

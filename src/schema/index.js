@@ -47,13 +47,13 @@ const linkResolvers = mergeInfo => ({
   },
   Post: {
     user: {
-      fragment: 'fragment UserFragment on Post { northstarId }',
+      fragment: 'fragment UserFragment on Post { userId }',
       resolve(post, args, context, info) {
         return mergeInfo.delegate(
           'query',
           'user',
           {
-            id: post.northstarId,
+            id: post.userId,
           },
           context,
           info,

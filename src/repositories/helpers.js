@@ -30,6 +30,12 @@ const transformResponse = data => {
     return null;
   }
 
+  // Rename any instances of 'northstar_id'.
+  if (result.northstarId) {
+    result.userId = result.northstarId;
+    delete result.northstarId;
+  }
+
   return result;
 };
 
