@@ -1,3 +1,4 @@
+import DataLoader from 'dataloader';
 import {
   transformItem,
   transformCollection,
@@ -100,6 +101,7 @@ export const getSignups = async (page, count, context) => {
  * @return {Object}
  */
 export const getSignupById = async (id, context) => {
+  console.log(`loading a signup: ${id}`);
   const response = await fetch(
     `${ROGUE_URL}/api/v3/signups/${id}`,
     authorizedRequest(context),
@@ -108,3 +110,41 @@ export const getSignupById = async (id, context) => {
 
   return transformItem(json);
 };
+
+/**
+ * Fetch signups from Rogue.
+ *
+ * @param {Number} page
+ * @param {Number} count
+ * @return {Array}
+ */
+const getSignupsById = async (ids, options) => {
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/signups/?filter[id]=${ids.join(',')}&limit=100`,
+    options,
+  );
+  const json = await response.json();
+
+  return transformCollection(json);
+};
+
+/**
+ * Rogue data loader.
+ *
+ * @var {Northstar}
+ */
+let instance = null;
+const Rogue = context => {
+  if (instance) return instance;
+
+  // Configure a new loader for the request.
+  const options = authorizedRequest(context);
+
+  instance = {
+    signups: new DataLoader(ids => getSignupsById(ids, options)),
+  };
+
+  return instance;
+};
+
+export default Rogue;

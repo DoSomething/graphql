@@ -2,7 +2,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { URL, URLSearchParams } from 'url';
 import { omit, isUndefined } from 'lodash';
 import gql from 'tagged-template-noop';
-import {
+import Rogue, {
   getPosts,
   getPostsByUserId,
   getPostsBySignupId,
@@ -124,7 +124,7 @@ const resolvers = {
     },
   },
   Post: {
-    signup: (post, args, context) => getSignupById(post.signupId, context),
+    signup: (post, args, context) => Rogue(context).signups.load(post.signupId),
     status: post => post.status.toUpperCase(),
   },
   Signup: {
@@ -135,7 +135,7 @@ const resolvers = {
     posts: (_, args, context) => getPosts(args.page, args.count, context),
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
-    signup: (_, args, context) => getSignupById(args.id, context),
+    signup: (_, args, context) => Rogue(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args.page, args.count, context),
   },
 };
