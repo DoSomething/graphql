@@ -1,0 +1,18 @@
+version: '2'
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis_cache
+    volumes:
+      - .:/usr/src/app/
+      - /usr/src/app/node_modules
+    env_file: .env
+    environment:
+      REDIS_URL: redis://redis_cache:6379
+  redis_cache:
+    image: redis:3.2
+    ports:
+      - "6379:6379"
