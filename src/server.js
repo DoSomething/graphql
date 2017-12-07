@@ -5,10 +5,9 @@ import path from 'path';
 import helmet from 'helmet';
 import { URL } from 'url';
 import forceDomain from 'forcedomain';
+import config from '../config';
 import apiRoutes from './routes/api';
 import webRoutes from './routes/web';
-
-const { APP_URL, PORT } = process.env;
 
 const app = express();
 
@@ -25,7 +24,7 @@ app.use(express.static('public'));
 if (app.get('env') === 'production') {
   app.set('trust proxy', 1);
 
-  const hostname = new URL(APP_URL).hostname;
+  const hostname = new URL(config('app.url')).hostname;
   app.use(forceDomain({ hostname, protocol: 'https' }));
 }
 
@@ -37,8 +36,9 @@ app.use(helmet({ noCache: true }));
   app.use(apiRoutes);
   app.use(await webRoutes());
 
-  app.listen(PORT, () => {
-    console.log(`GraphQL Server is now running on ${APP_URL}/graphql`);
-    console.log(`View GraphiQL at ${APP_URL}/explore`);
+  const url = config('app.url');
+  app.listen(config('app.port'), () => {
+    console.log(`GraphQL Server is now running on ${url}/graphql`);
+    console.log(`View GraphiQL at ${url}/explore`);
   });
 })();

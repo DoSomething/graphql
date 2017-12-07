@@ -1,11 +1,12 @@
 import DataLoader from 'dataloader';
+import config from '../../config';
 import {
   transformItem,
   transformCollection,
   authorizedRequest,
 } from './helpers';
 
-const { ROGUE_URL } = process.env;
+const ROGUE_URL = config('services.rogue.url');
 
 /**
  * Fetch posts from Rogue.

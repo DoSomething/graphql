@@ -1,6 +1,5 @@
 import { Engine } from 'apollo-engine';
-
-const { APOLLO_ENGINE_API_KEY } = process.env;
+import config from '../../config';
 
 /**
  * The Engine singleton.
@@ -15,15 +14,16 @@ let engine;
  * @return {Engine}
  */
 export default () => {
-  if (!APOLLO_ENGINE_API_KEY) {
+  const apiKey = config('engine.key');
+  if (!apiKey) {
     return null;
   }
 
   // Create & configure Engine on first run.
   if (!engine) {
     engine = new Engine({
-      engineConfig: { apiKey: APOLLO_ENGINE_API_KEY },
-      graphqlPort: process.env.PORT || 3000,
+      engineConfig: { apiKey },
+      graphqlPort: config('app.port'),
     });
 
     engine.start();

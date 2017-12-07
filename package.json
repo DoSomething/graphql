@@ -6,8 +6,8 @@
     "start:production": "node index.js",
     "test": "npm run lint && npm run format:ci",
     "lint": "eslint --ext .js src",
-    "format:ci": "prettier-check src/**/*.js",
-    "format": "prettier --write src/**/*.js"
+    "format:ci": "prettier-check {src,config}/**/*.js",
+    "format": "prettier --write {src,config}/**/*.js"
   },
   "engines": {
     "node": "8.x",
@@ -22,9 +22,7 @@
   "@std/esm": "cjs",
   "eslintConfig": {
     "extends": "@dosomething/eslint-config",
-    "plugins": [
-      "prettier"
-    ],
+    "plugins": ["prettier"],
     "globals": {
       "fetch": false
     },
@@ -33,17 +31,13 @@
       "id-length": [
         "error",
         {
-          "exceptions": [
-            "_"
-          ]
+          "exceptions": ["_"]
         }
       ],
       "no-underscore-dangle": [
         "error",
         {
-          "allow": [
-            "_queryType"
-          ]
+          "allow": ["_queryType"]
         }
       ],
       "space-unary-ops": "off",

@@ -1,11 +1,13 @@
-const { APP_ENV, NORTHSTAR_URL } = process.env;
+import config from '../../config';
 
 export default (req, res, next) => {
   res.locals.config = res.locals.config || {};
 
-  res.locals.config.production = APP_ENV === 'production';
-  res.locals.config.environment = APP_ENV;
-  res.locals.config.northstarUrl = NORTHSTAR_URL;
+  const environment = config('app.env');
+  res.locals.config.environment = environment;
+  res.locals.config.production = environment === 'production';
+  res.locals.config.environmentName = config('services.displayName');
+  res.locals.config.northstarUrl = config('services.northstar.url');
 
   next();
 };

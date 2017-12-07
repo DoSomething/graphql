@@ -1,7 +1,8 @@
 import DataLoader from 'dataloader';
 import { authorizedRequest, transformItem } from './helpers';
+import config from '../../config';
 
-const { NORTHSTAR_URL } = process.env;
+const NORTHSTAR_URL = config('services.northstar.url');
 
 /**
  * Fetch a user from Northstar by ID.

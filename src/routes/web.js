@@ -3,12 +3,11 @@ import { graphiqlExpress } from 'apollo-server-express';
 import redis from 'connect-redis';
 import session from 'express-session';
 import path from 'path';
+import config from '../../config';
 import defaultQuery from '../schema/defaultQuery';
 import authMiddleware from '../middleware/auth';
 import viewMiddleware from '../middleware/views';
 import markdown from './markdown';
-
-const { APP_URL, APP_SECRET, NORTHSTAR_URL, REDIS_URL, NODE_ENV } = process.env;
 
 export default async () => {
   const router = Router();
@@ -17,18 +16,17 @@ export default async () => {
   const passport = await authMiddleware;
 
   // Configure sessions & authentication.
-  const isProduction = NODE_ENV === 'production';
   const RedisStore = redis(session);
   router.use(
     session({
-      secret: APP_SECRET,
-      store: new RedisStore({ url: REDIS_URL }),
+      secret: config('app.secret'),
+      store: new RedisStore({ url: config('cache.url') }),
       cookie: {
         maxAge: 1000 * 60 * 60, // 1 hour.
-        secure: isProduction,
+        secure: !config('app.debug'),
       },
       saveUninitialized: false,
-      proxy: isProduction,
+      proxy: !config('app.debug'),
       resave: false,
     }),
   );
@@ -77,7 +75,8 @@ export default async () => {
     req.logout();
 
     // Kill the Northstar SSO session & redirect back.
-    res.redirect(`${NORTHSTAR_URL}/logout?redirect=${APP_URL}`);
+    const northstarUrl = config('services.northstar.url');
+    res.redirect(`${northstarUrl}/logout?redirect=${config('app.url')}`);
   });
 
   return router;

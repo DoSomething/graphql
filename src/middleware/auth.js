@@ -1,37 +1,30 @@
 import passport from 'passport';
 import { Issuer, Strategy } from 'openid-client';
-
-const {
-  APP_URL,
-  NORTHSTAR_URL,
-  NORTHSTAR_AUTH_ID,
-  NORTHSTAR_AUTH_SECRET,
-} = process.env;
+import config from '../../config';
 
 export default (async () => {
   // Configure Northstar client.
   let northstar;
 
   try {
-    northstar = await Issuer.discover(NORTHSTAR_URL);
-    console.log(
-      `Discovered OpenID Connect configuration from ${NORTHSTAR_URL}.`,
-    );
+    const url = config('services.northstar.url');
+    northstar = await Issuer.discover(url);
+    console.log(`Discovered OpenID Connect configuration from ${url}.`);
   } catch (exception) {
     console.error(exception);
   }
 
   const client = new northstar.Client({
-    client_id: NORTHSTAR_AUTH_ID,
-    client_secret: NORTHSTAR_AUTH_SECRET,
+    client_id: config('services.northstar.clientId'),
+    client_secret: config('services.northstar.clientSecret'),
   });
 
   // Allow 15 second clock skew.
   client.CLOCK_TOLERANCE = 15;
 
   const params = {
-    scope: 'user role:staff role:admin',
-    redirect_uri: `${APP_URL}/auth/callback`,
+    scope: config('services.northstar.scopes').join(' '),
+    redirect_uri: `${config('app.url')}/auth/callback`,
   };
 
   // Register Passport strategy.
