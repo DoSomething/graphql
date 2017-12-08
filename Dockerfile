@@ -4,6 +4,7 @@ FROM node:8
 WORKDIR /usr/src/app
 
 # Install app dependencies
+COPY package*.json ./
 RUN npm install
 
 EXPOSE 3000
