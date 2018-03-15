@@ -38,8 +38,8 @@ const typeDefs = gql`
       # The desired image height, in pixels.
       h: Int
     ): AbsoluteUrl
-    # The caption, provided by the user.
-    caption: String
+    # The text content of the post, provided by the user.
+    text: String
   }
 
   # A user's post on a campaign.
