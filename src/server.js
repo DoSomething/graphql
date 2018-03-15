@@ -2,6 +2,7 @@ import express from 'express';
 import handlebars from 'hbs';
 import favicon from 'serve-favicon';
 import path from 'path';
+import cors from 'cors';
 import helmet from 'helmet';
 import { URL } from 'url';
 import forceDomain from 'forcedomain';
@@ -30,6 +31,9 @@ if (app.get('env') === 'production') {
 
 // Use Helmet for security headers.
 app.use(helmet({ noCache: true }));
+
+// Allow cross-origin requests from client-side apps.
+app.use(cors());
 
 // Register routes & start it up!
 (async () => {
