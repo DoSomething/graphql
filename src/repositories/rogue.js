@@ -63,6 +63,25 @@ export const getPostsByUserId = async (id, page, count, context) => {
 };
 
 /**
+ * Fetch posts from Rogue for a given campaign.
+ *
+ * @param {String} id
+ * @return {Array}
+ */
+export const getPostsByCampaignId = async (id, page, count, context) => {
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/posts/?filter[campaign_id]=${id}&page=${page}&limit=${
+      count
+    }&pagination=cursor`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
+};
+
+/**
  * Fetch posts from Rogue for a given signup.
  *
  * @param {String} id

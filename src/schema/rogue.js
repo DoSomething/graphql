@@ -7,6 +7,7 @@ import gql from 'tagged-template-noop';
 import Rogue, {
   getPosts,
   getPostsByUserId,
+  getPostsByCampaignId,
   getPostsBySignupId,
   getPostById,
   getSignups,
@@ -111,6 +112,15 @@ const typeDefs = gql`
       # The number of results per page.
       count: Int = 20
     ): [Post]
+    # Get a paginted collection of posts by campaign ID.
+    postsByCampaignId(
+      # The campaign ID to load.
+      id: String!
+      # The page of results to return.
+      page: Int = 1
+      # The number of results per page.
+      count: Int = 20
+    ): [Post]
     # Get a paginted collection of posts by user ID.
     postsByUserId(
       # The Northstar user ID to filter posts by.
@@ -163,6 +173,8 @@ const resolvers = {
   Query: {
     post: (_, args, context) => getPostById(args.id, context),
     posts: (_, args, context) => getPosts(args.page, args.count, context),
+    postsByCampaignId: (_, args, context) =>
+      getPostsByCampaignId(args.id, args.page, args.count, context),
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
     signup: (_, args, context) => Rogue(context).signups.load(args.id),
