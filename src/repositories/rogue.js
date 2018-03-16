@@ -40,7 +40,7 @@ export const getPostById = async (id, context) => {
 
   const json = await response.json();
 
-  return transformCollection(json);
+  return transformItem(json);
 };
 
 /**
