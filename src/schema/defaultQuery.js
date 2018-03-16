@@ -13,10 +13,9 @@ export default gql`
       status
       media {
         url(w: 300, h: 300)
-        caption
+        text
       }
       user {
-        id
         firstName
         lastName
       }
