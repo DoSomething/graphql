@@ -66,6 +66,10 @@ const typeDefs = gql`
     quantity: Int
     # The tags that have been applied to this post by DoSomething.org staffers.
     tags: [String]
+    # The total number of reactions to this post.
+    reactions: Int
+    # Has the current user reacted to this post?
+    reacted: Boolean
     # The IP address this post was created from.
     remoteAddr: String
     # The time this post was last modified.
@@ -166,6 +170,8 @@ const resolvers = {
   Post: {
     signup: (post, args, context) => Rogue(context).signups.load(post.signupId),
     status: post => post.status.toUpperCase(),
+    reacted: post => post.reactions.reacted,
+    reactions: post => post.reactions.total,
   },
   Signup: {
     posts: (signup, args, context) => getPostsBySignupId(signup.id, context),
