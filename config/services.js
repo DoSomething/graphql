@@ -23,18 +23,42 @@ const environments = {
 
   /**
    * Querying against our preview environments (Thor).
-   * This will be applied if `QUERY_ENV` is `preview`.
+   * This will be applied if `QUERY_ENV` is `qa`.
    *
    * @type {Object}
    */
-  preview: {
-    displayName: 'Preview (Thor)',
+  dev: {
+    displayName: 'Development',
+
+    // Northstar
+    northstar: {
+      // @TODO: 'https://northstar-dev.dosomething.org'
+      url: 'https://northstar-qa.dosomething.org',
+      clientId: process.env.DEV_NORTHSTAR_AUTH_ID,
+      clientSecret: process.env.DEV_NORTHSTAR_AUTH_SECRET,
+    },
+
+    // Rogue
+    rogue: {
+      // @TODO: 'https://rogue-dev.dosomething.org'
+      url: 'https://rogue-qa.dosomething.org',
+    },
+  },
+
+  /**
+   * Querying against our preview environments (Thor).
+   * This will be applied if `QUERY_ENV` is `qa`.
+   *
+   * @type {Object}
+   */
+  qa: {
+    displayName: 'QA (Thor)',
 
     // Northstar
     northstar: {
       url: 'https://northstar-thor.dosomething.org',
-      clientId: process.env.PREVIEW_NORTHSTAR_AUTH_ID,
-      clientSecret: process.env.PREVIEW_NORTHSTAR_AUTH_SECRET,
+      clientId: process.env.QA_NORTHSTAR_AUTH_ID,
+      clientSecret: process.env.QA_NORTHSTAR_AUTH_SECRET,
     },
 
     // Rogue
@@ -68,7 +92,7 @@ const environments = {
 
 // Validate environment choice:
 const QUERY_ENV = process.env.QUERY_ENV;
-if (!QUERY_ENV || !['local', 'production', 'preview'].includes(QUERY_ENV)) {
+if (!QUERY_ENV || !['local', 'dev', 'qa', 'production'].includes(QUERY_ENV)) {
   throw new Error(
     'The QUERY_ENV environment variable must be "local", "preview", or "production".',
   );
