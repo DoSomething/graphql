@@ -1,9 +1,8 @@
 import { makeExecutableSchema } from 'graphql-tools';
-import { URL, URLSearchParams } from 'url';
-import { omit, isUndefined } from 'lodash';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import gql from 'tagged-template-noop';
+import { urlWithQuery } from '../repositories/helpers';
 import Rogue, {
   getPosts,
   getPostsByUserId,
@@ -153,19 +152,7 @@ const typeDefs = gql`
  */
 const resolvers = {
   Media: {
-    url(media, args) {
-      try {
-        const url = new URL(media.url);
-
-        // Replace existing query params with given arguments.
-        url.search = new URLSearchParams(omit(args, isUndefined));
-
-        return url.toString();
-      } catch (exception) {
-        // If we get mangled 'default' as URL, return null.
-        return null;
-      }
-    },
+    url: (media, args) => urlWithQuery(media.url, args),
   },
   Post: {
     signup: (post, args, context) => Rogue(context).signups.load(post.signupId),
