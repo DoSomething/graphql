@@ -53,6 +53,16 @@ const typeDefs = gql`
     campaignId: String
     # The attached media for this post.
     media: Media
+      @deprecated(reason: "Use direct 'url' and 'text' properties instead.")
+    # The image URL.
+    url(
+      # The desired image width, in pixels.
+      w: Int
+      # The desired image height, in pixels.
+      h: Int
+    ): AbsoluteUrl
+    # The text content of the post, provided by the user.
+    text: String
     # The ID of the associated signup for this post.
     signupId: String!
     # The associated signup for this post.
@@ -156,6 +166,8 @@ const resolvers = {
   },
   Post: {
     signup: (post, args, context) => Rogue(context).signups.load(post.signupId),
+    url: (post, args) => urlWithQuery(post.media.url, args),
+    text: post => post.media.text,
     status: post => post.status.toUpperCase(),
     reacted: post => post.reactions.reacted,
     reactions: post => post.reactions.total,

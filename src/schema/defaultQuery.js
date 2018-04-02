@@ -11,10 +11,8 @@ export default gql`
   {
     posts(count: 5) {
       status
-      media {
-        url(w: 300, h: 300)
-        text
-      }
+      url(w: 300, h: 300)
+      text
       user {
         firstName
         lastName
