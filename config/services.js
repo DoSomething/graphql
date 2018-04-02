@@ -105,6 +105,6 @@ export default {
   ...environments[QUERY_ENV],
   northstar: {
     ...environments[QUERY_ENV].northstar,
-    scopes: ['user', 'role:staff', 'role:admin'],
+    scopes: ['user', 'activity', 'write', 'role:staff', 'role:admin'],
   },
 };
