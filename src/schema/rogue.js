@@ -156,7 +156,11 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    toggleReaction(postId: Int!): Post
+    # Add or remove a reaction to a post. Requires an access token.
+    toggleReaction(
+      # The post ID to react to.
+      postId: Int!
+    ): Post
   }
 `;
 
