@@ -20,6 +20,19 @@ export const authorizedRequest = context => {
 };
 
 /**
+ * Require an authorization token for this request.
+ *
+ * @return {Object}
+ */
+export const requireAuthorizedRequest = context => {
+  if (!context.authorization) {
+    throw new Error('An access token is required for this query/mutation.');
+  }
+
+  return authorizedRequest(context);
+};
+
+/**
  * Transform JSON data for GraphQL.
  *
  * @param {Object} data
