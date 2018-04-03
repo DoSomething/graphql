@@ -161,6 +161,8 @@ const typeDefs = gql`
  * @var {Object}
  */
 const resolvers = {
+  DateTime: GraphQLDateTime,
+  AbsoluteUrl: GraphQLAbsoluteUrl,
   Media: {
     url: (media, args) => urlWithQuery(media.url, args),
   },
@@ -185,8 +187,6 @@ const resolvers = {
     signup: (_, args, context) => Rogue(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args.page, args.count, context),
   },
-  DateTime: GraphQLDateTime,
-  AbsoluteUrl: GraphQLAbsoluteUrl,
 };
 
 /**
