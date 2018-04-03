@@ -4,6 +4,7 @@ import {
   transformItem,
   transformCollection,
   authorizedRequest,
+  requireAuthorizedRequest,
 } from './helpers';
 
 const ROGUE_URL = config('services.rogue.url');
@@ -95,6 +96,21 @@ export const getPostsBySignupId = async (id, context) => {
   const json = await response.json();
 
   return transformCollection(json);
+};
+
+/**
+ * Toggle a reaction on Rogue.
+ *
+ * @param {Number} postId
+ * @return {Object}
+ */
+export const toggleReaction = async (postId, context) => {
+  await fetch(`${ROGUE_URL}/api/v3/post/${postId}/reactions`, {
+    ...requireAuthorizedRequest(context),
+    method: 'POST',
+  });
+
+  return getPostById(postId, context);
 };
 
 /**

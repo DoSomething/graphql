@@ -10,6 +10,7 @@ import Rogue, {
   getPostsBySignupId,
   getPostById,
   getSignups,
+  toggleReaction,
 } from '../repositories/rogue';
 
 /**
@@ -153,6 +154,10 @@ const typeDefs = gql`
       count: Int = 20
     ): [Signup]
   }
+
+  type Mutation {
+    toggleReaction(postId: Int!): Post
+  }
 `;
 
 /**
@@ -186,6 +191,9 @@ const resolvers = {
       getPostsByUserId(args.id, args.page, args.count, context),
     signup: (_, args, context) => Rogue(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args.page, args.count, context),
+  },
+  Mutation: {
+    toggleReaction: (_, args, context) => toggleReaction(args.postId, context),
   },
 };
 
