@@ -47,6 +47,10 @@ const typeDefs = gql`
   type Post {
     # The unique ID for this post.
     id: Int!
+    # The type of action (e.g. 'photo', 'voterReg', or 'text').
+    type: String!
+    # The specific action being performed (or 'default' on a single-action campaign).
+    action: String!
     # The Northstar user ID of the user who created this post.
     userId: String!
     # The campaign ID this post was made for. Either a
