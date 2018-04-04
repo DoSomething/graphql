@@ -48,7 +48,7 @@ const typeDefs = gql`
     # The unique ID for this post.
     id: Int!
     # The Northstar user ID of the user who created this post.
-    userId: String
+    userId: String!
     # The campaign ID this post was made for. Either a
     # numeric Drupal ID, or a alphanumeric Contentful ID.
     campaignId: String
