@@ -130,7 +130,7 @@ const typeDefs = gql`
       # The number of results per page.
       count: Int = 20
     ): [Post]
-    # Get a paginted collection of posts by campaign ID.
+    # Get a paginated collection of posts by campaign ID.
     postsByCampaignId(
       # The campaign ID to load.
       id: String!
@@ -139,7 +139,7 @@ const typeDefs = gql`
       # The number of results per page.
       count: Int = 20
     ): [Post]
-    # Get a paginted collection of posts by user ID.
+    # Get a paginated collection of posts by user ID.
     postsByUserId(
       # The Northstar user ID to filter posts by.
       id: String!
