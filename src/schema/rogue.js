@@ -125,6 +125,10 @@ const typeDefs = gql`
     ): Post
     # Get a paginated collection of posts.
     posts(
+      # The campaign ID to load posts for.
+      campaignId: String
+      # The user ID to load posts for.
+      userId: String
       # The page of results to return.
       page: Int = 1
       # The number of results per page.
@@ -192,7 +196,7 @@ const resolvers = {
   },
   Query: {
     post: (_, args, context) => getPostById(args.id, context),
-    posts: (_, args, context) => getPosts(args.page, args.count, context),
+    posts: (_, args, context) => getPosts(args, context),
     postsByCampaignId: (_, args, context) =>
       getPostsByCampaignId(args.id, args.page, args.count, context),
     postsByUserId: (_, args, context) =>

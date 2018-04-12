@@ -1,4 +1,6 @@
 import DataLoader from 'dataloader';
+import { stringify } from 'qs';
+
 import config from '../../config';
 import {
   transformItem,
@@ -16,9 +18,16 @@ const ROGUE_URL = config('services.rogue.url');
  * @param {Number} count
  * @return {Array}
  */
-export const getPosts = async (page, count, context) => {
+export const getPosts = async (args, context) => {
+  const queryString = stringify({
+    filter: { campaign_id: args.campaignId, northstar_id: args.userId },
+    page: args.page,
+    limit: args.count,
+    pagination: 'cursor',
+  });
+
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/?page=${page}&limit=${count}&pagination=cursor`,
+    `${ROGUE_URL}/api/v3/posts/?${queryString}`,
     authorizedRequest(context),
   );
 
