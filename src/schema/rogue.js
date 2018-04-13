@@ -125,8 +125,12 @@ const typeDefs = gql`
     ): Post
     # Get a paginated collection of posts.
     posts(
+      # The action name to load posts for.
+      action: String
       # The campaign ID to load posts for.
       campaignId: String
+      # The type name to load posts for.
+      type: String
       # The user ID to load posts for.
       userId: String
       # The page of results to return.
