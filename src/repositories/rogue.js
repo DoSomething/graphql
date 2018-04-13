@@ -20,7 +20,12 @@ const ROGUE_URL = config('services.rogue.url');
  */
 export const getPosts = async (args, context) => {
   const queryString = stringify({
-    filter: { campaign_id: args.campaignId, northstar_id: args.userId },
+    filter: {
+      action: args.action,
+      campaign_id: args.campaignId,
+      northstar_id: args.userId,
+      type: args.type,
+    },
     page: args.page,
     limit: args.count,
     pagination: 'cursor',
