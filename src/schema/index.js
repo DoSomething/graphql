@@ -33,7 +33,7 @@ const linkResolvers = mergeInfo => ({
     posts: {
       fragment: 'fragment PostsFragment on User { id }',
       resolve(user, args, context, info) {
-        return mergeInfo.delegate(
+        return mergeInfo.delegateToSchema(
           'query',
           'postsByUserId',
           {
@@ -49,15 +49,16 @@ const linkResolvers = mergeInfo => ({
     user: {
       fragment: 'fragment UserFragment on Post { userId }',
       resolve(post, args, context, info) {
-        return mergeInfo.delegate(
-          'query',
-          'user',
-          {
+        return mergeInfo.delegateToSchema({
+          schema: northstarSchema,
+          operation: 'query',
+          fieldName: 'user',
+          args: {
             id: post.userId,
           },
           context,
           info,
-        );
+        });
       },
     },
   },
