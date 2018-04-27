@@ -6,6 +6,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import { URL } from 'url';
 import forceDomain from 'forcedomain';
+import { ApolloEngine } from 'apollo-engine';
+
 import config from '../config';
 import apiRoutes from './routes/api';
 import webRoutes from './routes/web';
@@ -41,8 +43,26 @@ app.use(cors());
   app.use(await webRoutes());
 
   const url = config('app.url');
-  app.listen(config('app.port'), () => {
+  const port = config('app.port');
+  const apolloEngineApiKey = config('engine.key');
+
+  const onStart = () => {
     console.log(`GraphQL Server is now running on ${url}/graphql`);
     console.log(`View GraphiQL at ${url}/explore`);
-  });
+  };
+
+  // Start Apollo Engine server if we have an API key.
+  if (apolloEngineApiKey) {
+    const engine = new ApolloEngine({ apiKey: apolloEngineApiKey });
+    const engineConfig = {
+      graphqlPaths: ['/graphql'],
+      expressApp: app,
+      port,
+    };
+
+    engine.listen(engineConfig, onStart);
+  } else {
+    // Otherwise, start a plain Express server.
+    app.listen(port, onStart);
+  }
 })();
