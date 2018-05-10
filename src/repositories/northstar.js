@@ -1,7 +1,8 @@
 import logger from 'heroku-logger';
 import DataLoader from 'dataloader';
-import { authorizedRequest, transformItem } from './helpers';
+
 import config from '../../config';
+import { authorizedRequest, transformItem } from './helpers';
 
 const NORTHSTAR_URL = config('services.northstar.url');
 

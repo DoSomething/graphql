@@ -1,11 +1,11 @@
-import express from 'express';
-import handlebars from 'hbs';
-import favicon from 'serve-favicon';
 import path from 'path';
 import cors from 'cors';
-import helmet from 'helmet';
 import { URL } from 'url';
+import helmet from 'helmet';
+import handlebars from 'hbs';
+import express from 'express';
 import logger from 'heroku-logger';
+import favicon from 'serve-favicon';
 import forceDomain from 'forcedomain';
 import { ApolloEngine } from 'apollo-engine';
 
