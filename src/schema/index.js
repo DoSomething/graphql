@@ -78,7 +78,4 @@ const schema = mergeSchemas({
 schema._queryType.description =
   "The query root of DoSomething.org's GraphQL interface. Start here if you want to read data from any service.";
 
-// DEBUG: Print the generated schema!
-console.log(printSchema(schema));
-
 export default schema;

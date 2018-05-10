@@ -5,6 +5,7 @@ import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
 import { URL } from 'url';
+import logger from 'heroku-logger';
 import forceDomain from 'forcedomain';
 import { ApolloEngine } from 'apollo-engine';
 
@@ -47,8 +48,8 @@ app.use(cors());
   const apolloEngineApiKey = config('engine.key');
 
   const onStart = () => {
-    console.log(`GraphQL Server is now running on ${url}/graphql`);
-    console.log(`View GraphiQL at ${url}/explore`);
+    logger.info(`GraphQL Server is now running on ${url}/graphql`);
+    logger.info(`View GraphiQL at ${url}/explore`);
   };
 
   // Start Apollo Engine server if we have an API key.
