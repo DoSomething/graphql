@@ -19,7 +19,8 @@ const getUserById = async (id, options) => {
 
     return transformItem(json);
   } catch (exception) {
-    logger.warn('Unable to load user.', { id, options });
+    const error = exception.message;
+    logger.warn('Unable to load user.', { id, error, options });
   }
 
   return null;
