@@ -21,6 +21,8 @@ const getUserById = async (id, options) => {
   } catch (exception) {
     logger.warn('Unable to load user.', { id, options });
   }
+
+  return null;
 };
 
 /**

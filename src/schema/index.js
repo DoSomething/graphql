@@ -1,4 +1,3 @@
-import { printSchema } from 'graphql';
 import gql from 'tagged-template-noop';
 import { mergeSchemas } from 'graphql-tools';
 
