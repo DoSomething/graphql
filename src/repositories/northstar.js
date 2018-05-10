@@ -1,6 +1,8 @@
+import logger from 'heroku-logger';
 import DataLoader from 'dataloader';
-import { authorizedRequest, transformItem } from './helpers';
+
 import config from '../../config';
+import { authorizedRequest, transformItem } from './helpers';
 
 const NORTHSTAR_URL = config('services.northstar.url');
 
@@ -10,10 +12,18 @@ const NORTHSTAR_URL = config('services.northstar.url');
  * @return {Object}
  */
 const getUserById = async (id, options) => {
-  const response = await fetch(`${NORTHSTAR_URL}/v1/users/id/${id}`, options);
-  const json = await response.json();
+  logger.debug('Loading user from Northstar', { id });
+  try {
+    const response = await fetch(`${NORTHSTAR_URL}/v1/users/id/${id}`, options);
+    const json = await response.json();
 
-  return transformItem(json);
+    return transformItem(json);
+  } catch (exception) {
+    const error = exception.message;
+    logger.warn('Unable to load user.', { id, error, options });
+  }
+
+  return null;
 };
 
 /**

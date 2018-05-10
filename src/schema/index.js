@@ -1,10 +1,9 @@
-import { mergeSchemas } from 'graphql-tools';
-import { printSchema } from 'graphql';
 import gql from 'tagged-template-noop';
+import { mergeSchemas } from 'graphql-tools';
 
 // Schemas
-import northstarSchema from './northstar';
 import rogueSchema from './rogue';
+import northstarSchema from './northstar';
 
 /**
  * The schema used to link services together.
@@ -77,8 +76,5 @@ const schema = mergeSchemas({
 // HACK: Describe the root query. <https://git.io/vFNw6>
 schema._queryType.description =
   "The query root of DoSomething.org's GraphQL interface. Start here if you want to read data from any service.";
-
-// DEBUG: Print the generated schema!
-console.log(printSchema(schema));
 
 export default schema;
