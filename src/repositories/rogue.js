@@ -1,4 +1,4 @@
-import DataLoader from 'dataloader';
+import logger from 'heroku-logger';
 import { stringify } from 'qs';
 
 import config from '../../config';
@@ -170,7 +170,9 @@ export const getSignupById = async (id, context) => {
  * @param {Number} count
  * @return {Array}
  */
-const getSignupsById = async (ids, options) => {
+export const getSignupsById = async (ids, options) => {
+  logger.debug('Loading signups from Rogue', { ids });
+
   const idQuery = ids.join(',');
   const response = await fetch(
     `${ROGUE_URL}/api/v3/signups/?filter[id]=${
@@ -182,24 +184,3 @@ const getSignupsById = async (ids, options) => {
 
   return transformCollection(json);
 };
-
-/**
- * Rogue data loader.
- *
- * @var {Northstar}
- */
-let instance = null;
-const Rogue = context => {
-  if (instance) return instance;
-
-  // Configure a new loader for the request.
-  const options = authorizedRequest(context);
-
-  instance = {
-    signups: new DataLoader(ids => getSignupsById(ids, options)),
-  };
-
-  return instance;
-};
-
-export default Rogue;

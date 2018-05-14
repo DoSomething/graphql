@@ -2,7 +2,8 @@ import { makeExecutableSchema } from 'graphql-tools';
 import gql from 'tagged-template-noop';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
-import northstar from '../repositories/northstar';
+
+import Loader from '../loader';
 
 /**
  * GraphQL types.
@@ -120,7 +121,7 @@ const resolvers = {
     role: user => user.role.toUpperCase(),
   },
   Query: {
-    user: (_, args, context) => northstar(context).users.load(args.id),
+    user: (_, args, context) => Loader(context).users.load(args.id),
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
