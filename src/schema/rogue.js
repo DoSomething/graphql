@@ -3,7 +3,8 @@ import { GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import gql from 'tagged-template-noop';
 import { urlWithQuery } from '../repositories/helpers';
-import Rogue, {
+import Loader from '../loader';
+import {
   getPosts,
   getPostsByUserId,
   getPostsByCampaignId,
@@ -188,7 +189,8 @@ const resolvers = {
     url: (media, args) => urlWithQuery(media.url, args),
   },
   Post: {
-    signup: (post, args, context) => Rogue(context).signups.load(post.signupId),
+    signup: (post, args, context) =>
+      Loader(context).signups.load(post.signupId),
     url: (post, args) => urlWithQuery(post.media.url, args),
     text: post => post.media.text,
     status: post => post.status.toUpperCase(),
@@ -205,7 +207,7 @@ const resolvers = {
       getPostsByCampaignId(args.id, args.page, args.count, context),
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
-    signup: (_, args, context) => Rogue(context).signups.load(args.id),
+    signup: (_, args, context) => Loader(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args.page, args.count, context),
   },
   Mutation: {
