@@ -1,3 +1,4 @@
+import { set } from 'lodash';
 import logger from 'heroku-logger';
 import DataLoader from 'dataloader';
 
@@ -31,20 +32,19 @@ const getUserById = async (id, options) => {
  *
  * @var {Northstar}
  */
-let instance = null;
 const Northstar = context => {
-  if (instance) return instance;
+  // If this is a new GraphQL request, configure a loader.
+  if (!context.northstar) {
+    logger.debug('Creating a new loader for Northstar.');
+    const options = authorizedRequest(context);
+    set(context, 'northstar', {
+      users: new DataLoader(ids =>
+        Promise.all(ids.map(id => getUserById(id, options))),
+      ),
+    });
+  }
 
-  // Configure a new loader for the request.
-  const options = authorizedRequest(context);
-
-  instance = {
-    users: new DataLoader(ids =>
-      Promise.all(ids.map(id => getUserById(id, options))),
-    ),
-  };
-
-  return instance;
+  return context.northstar;
 };
 
 export default Northstar;
