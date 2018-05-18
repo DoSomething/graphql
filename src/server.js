@@ -54,7 +54,19 @@ app.use(cors());
 
   // Start Apollo Engine server if we have an API key.
   if (apolloEngineApiKey) {
-    const engine = new ApolloEngine({ apiKey: apolloEngineApiKey });
+    const engine = new ApolloEngine({
+      apiKey: apolloEngineApiKey,
+      // Set CORS headers for Automatic Persisted Query support in Apollo Engine.
+      // <https://www.apollographql.com/docs/engine/auto-persisted-queries.html#setup>
+      frontends: [
+        {
+          overrideGraphqlResponseHeaders: {
+            'Access-Control-Allow-Origin': '*',
+          },
+        },
+      ],
+    });
+
     const engineConfig = {
       graphqlPaths: ['/graphql'],
       expressApp: app,
