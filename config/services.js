@@ -10,14 +10,14 @@ const environments = {
 
     // Northstar
     northstar: {
-      url: process.env.LOCAL_NORTHSTAR_URL || 'http://northstar.dev',
+      url: process.env.LOCAL_NORTHSTAR_URL || 'http://northstar.test',
       clientId: process.env.LOCAL_NORTHSTAR_AUTH_ID,
       clientSecret: process.env.LOCAL_NORTHSTAR_AUTH_SECRET,
     },
 
     // Rogue
     rogue: {
-      url: process.env.LOCAL_ROGUE_URL || 'http://rogue.dev',
+      url: process.env.LOCAL_ROGUE_URL || 'http://rogue.test',
     },
   },
 
