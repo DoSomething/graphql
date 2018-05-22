@@ -39,6 +39,15 @@ const typeDefs = gql`
     UNKNOWN
   }
 
+  enum VoterRegistrationStatus {
+    PENDING
+    REGISTER_FORM
+    REGISTER_OVR
+    CONFIRMED
+    INELIGIBLE
+    UNCERTAIN
+  }
+
   # A DoSomething.org user profile.
   type User {
     # The user's Northstar ID.
@@ -79,6 +88,8 @@ const typeDefs = gql`
     country: String
     # The user's role.
     role: Role
+    # The user's voter registration status, either self-reported or by registering with TurboVote.
+    voterRegistrationStatus: VoterRegistrationStatus
     # The time this user was created. See the 'source' and 'source_detail' field for details.
     createdAt: DateTime
     # The last modified time for this user account.
@@ -105,6 +116,7 @@ const typeDefs = gql`
 const resolvers = {
   User: {
     role: user => stringToEnum(user.role),
+    voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
   },
   Query: {
     user: (_, args, context) => Loader(context).users.load(args.id),
