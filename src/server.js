@@ -1,5 +1,7 @@
 import path from 'path';
 import cors from 'cors';
+import boxen from 'boxen';
+import chalk from 'chalk';
 import { URL } from 'url';
 import helmet from 'helmet';
 import handlebars from 'hbs';
@@ -49,7 +51,22 @@ app.use(cors());
 
   const onStart = () => {
     logger.info(`GraphQL Server is now running on ${url}/graphql`);
-    logger.info(`View GraphiQL at ${url}/explore`);
+
+    if (app.get('env') !== 'production') {
+      const ENV = chalk.yellow.bold(config('services.displayName'));
+      const EXPLORE_URL = chalk.underline.bold(`${url}/explore`);
+      const message = `${chalk.bold(
+        `Started your local GraphQL server, querying the ${ENV} environment.`,
+      )} \nTry it out by visiting ${EXPLORE_URL}.`;
+
+      console.log(
+        boxen(message, {
+          borderColor: 'yellow',
+          margin: 1,
+          padding: 1,
+        }),
+      );
+    }
   };
 
   // Start Apollo Engine server if we have an API key.
@@ -70,6 +87,7 @@ app.use(cors());
     const engineConfig = {
       graphqlPaths: ['/graphql'],
       expressApp: app,
+      logger,
       port,
     };
 
