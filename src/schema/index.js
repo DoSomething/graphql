@@ -27,12 +27,12 @@ const linkSchema = gql`
  *
  * @var {Object}
  */
-const linkResolvers = mergeInfo => ({
+const linkResolvers = {
   User: {
     posts: {
       fragment: 'fragment PostsFragment on User { id }',
       resolve(user, args, context, info) {
-        return mergeInfo.delegateToSchema(
+        return info.mergeInfo.delegateToSchema(
           'query',
           'postsByUserId',
           {
@@ -48,7 +48,7 @@ const linkResolvers = mergeInfo => ({
     user: {
       fragment: 'fragment UserFragment on Post { userId }',
       resolve(post, args, context, info) {
-        return mergeInfo.delegateToSchema({
+        return info.mergeInfo.delegateToSchema({
           schema: northstarSchema,
           operation: 'query',
           fieldName: 'user',
@@ -61,7 +61,7 @@ const linkResolvers = mergeInfo => ({
       },
     },
   },
-});
+};
 
 /**
  * The merged GraphQL schema.
