@@ -4,6 +4,7 @@ import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 
 import Loader from '../loader';
+import { stringToEnum } from './helpers';
 
 /**
  * GraphQL types.
@@ -103,7 +104,7 @@ const typeDefs = gql`
  */
 const resolvers = {
   User: {
-    role: user => user.role.toUpperCase(),
+    role: user => stringToEnum(user.role),
   },
   Query: {
     user: (_, args, context) => Loader(context).users.load(args.id),
