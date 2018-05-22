@@ -13,7 +13,7 @@ const NORTHSTAR_URL = config('services.northstar.url');
 export const getUserById = async (id, options) => {
   logger.debug('Loading user from Northstar', { id });
   try {
-    const response = await fetch(`${NORTHSTAR_URL}/v1/users/id/${id}`, options);
+    const response = await fetch(`${NORTHSTAR_URL}/v2/users/${id}`, options);
     const json = await response.json();
 
     return transformItem(json);

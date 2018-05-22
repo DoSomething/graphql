@@ -48,11 +48,6 @@ const typeDefs = gql`
     lastName: String
     # The user's last initial.
     lastInitial: String
-    # The user's avatar, uploaded via the mobile app.
-    photo: AbsoluteUrl
-      @deprecated(
-        reason: "The mobile app is discontinued, so users can no longer set this field."
-      )
     # The user's email address.
     email: String
     # The user's mobile number.
@@ -73,22 +68,12 @@ const typeDefs = gql`
     source: String
     # More information about the user's registration source (for example, a campaign or broadcast ID).
     sourceDetail: String
-    # The user's Mobile Commons profile ID.
-    mobilecommonsId: String
-      @deprecated(
-        reason: "We no longer use Mobile Commons as our SMS provider. Use 'id' or 'mobile' instead."
-      )
     # The user's SMS status.
     smsStatus: SubscriptionStatus
     # The user's conversation status will be paused if they are in a support conversation.
     smsPaused: Boolean
     # The user's language, as reported by their browser when they registered.
     language: String
-    # The user's Drupal ID.
-    drupalId: String
-      @deprecated(
-        reason: "This will be removed in the future. Use 'id' instead."
-      )
     # The user's ISO-3166  country code.
     country: String
     # The user's role.
