@@ -1,5 +1,7 @@
 import passport from 'passport';
+import logger from 'heroku-logger';
 import { Issuer, Strategy } from 'openid-client';
+
 import config from '../../config';
 
 export default (async () => {
@@ -9,9 +11,9 @@ export default (async () => {
   try {
     const url = config('services.northstar.url');
     northstar = await Issuer.discover(url);
-    console.log(`Discovered OpenID Connect configuration from ${url}.`);
+    logger.info(`Discovered OpenID Connect configuration from ${url}.`);
   } catch (exception) {
-    console.error(exception);
+    logger.error(exception);
   }
 
   const client = new northstar.Client({

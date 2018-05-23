@@ -119,7 +119,7 @@ export const getPostsBySignupId = async (id, context) => {
  * @return {Object}
  */
 export const toggleReaction = async (postId, context) => {
-  await fetch(`${ROGUE_URL}/api/v3/post/${postId}/reactions`, {
+  await fetch(`${ROGUE_URL}/api/v3/posts/${postId}/reactions`, {
     ...requireAuthorizedRequest(context),
     method: 'POST',
   });
