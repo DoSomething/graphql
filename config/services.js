@@ -32,8 +32,7 @@ const environments = {
 
     // Northstar
     northstar: {
-      // @TODO: 'https://northstar-dev.dosomething.org'
-      url: 'https://northstar-qa.dosomething.org',
+      url: 'https://identity-dev.dosomething.org',
       clientId: process.env.DEV_NORTHSTAR_AUTH_ID,
       clientSecret: process.env.DEV_NORTHSTAR_AUTH_SECRET,
     },
@@ -56,13 +55,14 @@ const environments = {
 
     // Northstar
     northstar: {
-      url: 'https://northstar-thor.dosomething.org',
+      url: 'https://identity-qa.dosomething.org',
       clientId: process.env.QA_NORTHSTAR_AUTH_ID,
       clientSecret: process.env.QA_NORTHSTAR_AUTH_SECRET,
     },
 
     // Rogue
     rogue: {
+      // @TODO: 'https://rogue-qa.dosomething.org'
       url: 'https://rogue-thor.dosomething.org',
     },
   },
