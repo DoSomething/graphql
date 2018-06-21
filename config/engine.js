@@ -8,5 +8,5 @@ export default {
    *
    * @type {String}
    */
-  key: process.env.APOLLO_ENGINE_API_KEY,
+  key: process.env.ENGINE_API_KEY,
 };
