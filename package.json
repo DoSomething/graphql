@@ -7,7 +7,8 @@
     "test": "npm run lint && npm run format:ci",
     "lint": "eslint --ext .js src",
     "format:ci": "prettier-check {src,config}/**/*.js",
-    "format": "prettier --write {src,config}/**/*.js"
+    "format": "prettier --write {src,config}/**/*.js",
+    "schema:publish": "apollo schema:publish --endpoint=$GRAPHQL_ENDPOINT_URL"
   },
   "engines": {
     "node": "8.x",
@@ -57,6 +58,7 @@
     }
   },
   "dependencies": {
+    "apollo": "^1.0.5",
     "apollo-engine": "^1.1.0",
     "apollo-link": "^1.2.2",
     "apollo-link-http": "^1.5.4",
