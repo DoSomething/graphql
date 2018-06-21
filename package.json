@@ -8,7 +8,8 @@
     "lint": "eslint --ext .js src",
     "format:ci": "prettier-check {src,config}/**/*.js",
     "format": "prettier --write {src,config}/**/*.js",
-    "schema:publish": "apollo schema:publish --endpoint=$GRAPHQL_ENDPOINT_URL"
+    "schema:publish": "apollo schema:publish --endpoint=$GRAPHQL_ENDPOINT_URL",
+    "heroku-postbuild": "npm run schema:publish"
   },
   "engines": {
     "node": "8.x",
