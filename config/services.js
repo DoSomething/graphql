@@ -78,7 +78,7 @@ const environments = {
 
     // Northstar
     northstar: {
-      url: 'https://profile.dosomething.org',
+      url: 'https://identity.dosomething.org',
       clientId: process.env.PRODUCTION_NORTHSTAR_AUTH_ID,
       clientSecret: process.env.PRODUCTION_NORTHSTAR_AUTH_SECRET,
     },
@@ -94,7 +94,7 @@ const environments = {
 const QUERY_ENV = process.env.QUERY_ENV;
 if (!QUERY_ENV || !['local', 'dev', 'qa', 'production'].includes(QUERY_ENV)) {
   throw new Error(
-    'The QUERY_ENV environment variable must be "local", "preview", or "production".',
+    'The QUERY_ENV environment variable must be "local", "dev", "qa", or "production".',
   );
 }
 
