@@ -39,8 +39,7 @@ const environments = {
 
     // Rogue
     rogue: {
-      // @TODO: 'https://rogue-dev.dosomething.org'
-      url: 'https://rogue-qa.dosomething.org',
+      url: 'https://activity-dev.dosomething.org',
     },
   },
 
@@ -62,8 +61,7 @@ const environments = {
 
     // Rogue
     rogue: {
-      // @TODO: 'https://rogue-qa.dosomething.org'
-      url: 'https://rogue-thor.dosomething.org',
+      url: 'https://activity-qa.dosomething.org',
     },
   },
 
@@ -85,7 +83,7 @@ const environments = {
 
     // Rogue
     rogue: {
-      url: 'https://rogue.dosomething.org',
+      url: 'https://activity.dosomething.org',
     },
   },
 };
