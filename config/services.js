@@ -50,7 +50,7 @@ const environments = {
    * @type {Object}
    */
   qa: {
-    displayName: 'QA (Thor)',
+    displayName: 'QA',
 
     // Northstar
     northstar: {
