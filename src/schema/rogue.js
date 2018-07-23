@@ -29,6 +29,11 @@ const typeDefs = gql`
     ACCEPTED
     REJECTED
     PENDING
+    REGISTER_FORM
+    REGISTER_OVR
+    CONFIRMED
+    INELIGIBLE
+    UNCERTAIN
   }
 
   # A media resource on a post.
