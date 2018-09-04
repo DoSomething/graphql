@@ -85,9 +85,9 @@ export const getPostsByUserId = async (id, page, count, context) => {
  */
 export const getPostsByCampaignId = async (id, page, count, context) => {
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/?filter[campaign_id]=${id}&page=${page}&limit=${
-      count
-    }&pagination=cursor`,
+    `${ROGUE_URL}/api/v3/posts/?filter[campaign_id]=${
+      id
+    }&filter[type]=photo,text&page=${page}&limit=${count}&pagination=cursor`,
     authorizedRequest(context),
   );
 
