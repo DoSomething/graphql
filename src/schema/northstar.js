@@ -40,9 +40,7 @@ const typeDefs = gql`
   }
 
   enum VoterRegistrationStatus {
-    PENDING
-    REGISTER_FORM
-    REGISTER_OVR
+    REGISTRATION_COMPLETE
     CONFIRMED
     INELIGIBLE
     UNCERTAIN
