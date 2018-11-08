@@ -54,47 +54,8 @@
   margin: 48px auto;
 }
 
-/* environment ribbon */
-.environment {
-  display: block;
-  position: absolute;
-  top: -50px;
-  left: -50px;
-  width: 100px;
-  height: 100px;
-  background: #000;
-  color: #fff;
-  transform: rotate(-45deg);
-  z-index: 9999; /* @TODO: Hacky! */
-}
-
-.environment span {
-  display: block;
-  position: relative;
-  top: 85%;
-  font-size: 12px;
-  text-align: center;
-  font-weight: bold;
-  text-transform: uppercase;
-  transform: translateY(-50%);
-}
-
 .chrome > .wrapper {
   overflow: hidden !important;
-}
-
-.environment-local {
-  background: #ddd;
-  color: #000;
-}
-
-.environment-dev {
-  background: #fcd116;
-  color: #000;
-}
-
-.environment-qa {
-  background: #23b7fb;
 }
 
 /* identity banner */
