@@ -12,6 +12,47 @@ import {
 const ROGUE_URL = config('services.rogue.url');
 
 /**
+ * Fetch a campaign from Rogue by ID.
+ *
+ * @param {Number} id
+ * @return {Object}
+ */
+export const getCampaignById = async (id, context) => {
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/campaigns/${id}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformItem(json);
+};
+
+/**
+ * Fetch campaigns from Rogue.
+ *
+ * @param {Number} page
+ * @param {Number} count
+ * @return {Array}
+ */
+export const getCampaigns = async (args, context) => {
+  const queryString = stringify({
+    page: args.page,
+    limit: args.count,
+    pagination: 'cursor',
+  });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/campaigns/?${queryString}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
+};
+
+/**
  * Fetch posts from Rogue.
  *
  * @param {Number} page
