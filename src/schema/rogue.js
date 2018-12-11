@@ -211,9 +211,6 @@ const typeDefs = gql`
 const resolvers = {
   DateTime: GraphQLDateTime,
   AbsoluteUrl: GraphQLAbsoluteUrl,
-  Campaign: {
-    internalTitle: campaign => campaign.internalTitle,
-  },
   Media: {
     url: (media, args) => urlWithQuery(media.url, args),
   },
