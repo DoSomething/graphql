@@ -40,10 +40,18 @@ const typeDefs = gql`
 
   # A campaign.
   type Campaign {
+    # The time when this campaign was originally created.
+    createdAt: DateTime
+    # The time when this campaign ends.
+    endDate: DateTime
     # The unique ID for this campaign.
     id: Int!
     # The internal name used to identify the campaign.
     internalTitle: String!
+    # The time when this campaign starts.
+    startDate: DateTime
+    # The time when this campaign last modified.
+    updatedAt: DateTime
   }
 
   # A media resource on a post.
