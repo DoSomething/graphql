@@ -5,6 +5,8 @@ import gql from 'tagged-template-noop';
 import { urlWithQuery } from '../repositories/helpers';
 import Loader from '../loader';
 import {
+  getCampaignById,
+  getCampaigns,
   getPosts,
   getPostsByUserId,
   getPostsByCampaignId,
@@ -34,6 +36,22 @@ const typeDefs = gql`
     CONFIRMED
     INELIGIBLE
     UNCERTAIN
+  }
+
+  # A campaign.
+  type Campaign {
+    # The time when this campaign was originally created.
+    createdAt: DateTime
+    # The time when this campaign ends.
+    endDate: DateTime
+    # The unique ID for this campaign.
+    id: Int!
+    # The internal name used to identify the campaign.
+    internalTitle: String!
+    # The time when this campaign starts.
+    startDate: DateTime
+    # The time when this campaign last modified.
+    updatedAt: DateTime
   }
 
   # A media resource on a post.
@@ -124,6 +142,17 @@ const typeDefs = gql`
   }
 
   type Query {
+    # Get a campaign by ID.
+    campaign(id: Int!): Campaign
+    # Get a paginated collection of campaigns.
+    campaigns(
+      # The internal title to load campaigns for.
+      internalTitle: String
+      # The page of results to return.
+      page: Int = 1
+      # The number of results per page.
+      count: Int = 20
+    ): [Campaign]
     # Get a post by ID.
     post(
       # The desired post ID.
@@ -206,6 +235,8 @@ const resolvers = {
     posts: (signup, args, context) => getPostsBySignupId(signup.id, context),
   },
   Query: {
+    campaign: (_, args, context) => getCampaignById(args.id, context),
+    campaigns: (_, args, context) => getCampaigns(args, context),
     post: (_, args, context) => getPostById(args.id, context),
     posts: (_, args, context) => getPosts(args, context),
     postsByCampaignId: (_, args, context) =>
