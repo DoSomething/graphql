@@ -13,6 +13,7 @@ import {
   getPostsBySignupId,
   getPostById,
   getSignups,
+  getSignupsByUserId,
   toggleReaction,
 } from '../repositories/rogue';
 
@@ -135,6 +136,8 @@ const typeDefs = gql`
     quantity: Int
     # The user's self-reported reason for doing this campaign.
     whyParticipated: String
+    # Source platform of the signup (e.g sms, phoenix-next).
+    source: String
     # More information about the signup (for example, third-party messaging opt-ins).
     details: String
     # The time this signup was last modified.
@@ -166,6 +169,8 @@ const typeDefs = gql`
       action: String
       # The campaign ID to load posts for.
       campaignId: String
+      # The post source to load posts for.
+      source: String
       # The type name to load posts for.
       type: String
       # The user ID to load posts for.
@@ -197,6 +202,17 @@ const typeDefs = gql`
     signup(id: Int!): Signup
     # Get a paginated collection of signups.
     signups(
+      # The user ID to load signups for.
+      userId: String
+      # The page of results to return.
+      page: Int = 1
+      # The number of results per page.
+      count: Int = 20
+    ): [Signup]
+    # Get a paginated collection of signups by user ID.
+    signupsByUserId(
+      # The Northstar user ID to filter signups by.
+      id: String!
       # The page of results to return.
       page: Int = 1
       # The number of results per page.
@@ -249,6 +265,8 @@ const resolvers = {
       getPostsByUserId(args.id, args.page, args.count, context),
     signup: (_, args, context) => Loader(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args.page, args.count, context),
+    signupsByUserId: (_, args, context) =>
+      getSignupsByUserId(args.id, args.page, args.count, context),
   },
   Mutation: {
     toggleReaction: (_, args, context) => toggleReaction(args.postId, context),

@@ -55,6 +55,7 @@ export const getCampaigns = async (args, context) => {
 /**
  * Fetch posts from Rogue.
  *
+ * @param {String} action
  * @param {Number} page
  * @param {Number} count
  * @return {Array}
@@ -65,6 +66,7 @@ export const getPosts = async (args, context) => {
       action: args.action,
       campaign_id: args.campaignId,
       northstar_id: args.userId,
+      source: args.source,
       type: args.type,
     },
     page: args.page,
@@ -221,6 +223,25 @@ export const getSignupsById = async (ids, options) => {
     }&limit=100&pagination=cursor`,
     options,
   );
+  const json = await response.json();
+
+  return transformCollection(json);
+};
+
+/**
+ * Fetch signups from Rogue by User ID.
+ *
+ * @param {String} id
+ * @return {Array}
+ */
+export const getSignupsByUserId = async (id, page, count, context) => {
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/signups?filter[northstar_id]=${id}&page=${
+      page
+    }&limit=${count}&pagination=cursor`,
+    authorizedRequest(context),
+  );
+
   const json = await response.json();
 
   return transformCollection(json);
