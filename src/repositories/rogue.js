@@ -56,8 +56,12 @@ export const getCampaigns = async (args, context) => {
  * Fetch posts from Rogue.
  *
  * @param {String} action
- * @param {Number} page
+ * @param {String} campaignId
  * @param {Number} count
+ * @param {Number} page
+ * @param {String} source
+ * @param {String} type
+ * @param {String} userId
  * @return {Array}
  */
 export const getPosts = async (args, context) => {
@@ -173,15 +177,27 @@ export const toggleReaction = async (postId, context) => {
 /**
  * Fetch signups from Rogue.
  *
- * @param {Number} page
+ * @param {String} campaignId
  * @param {Number} count
+ * @param {Number} page
+ * @param {String} source
+ * @param {String} userId
  * @return {Array}
  */
-export const getSignups = async (page, count, context) => {
+export const getSignups = async (args, context) => {
+  const queryString = stringify({
+    filter: {
+      campaign_id: args.campaignId,
+      northstar_id: args.userId,
+      source: args.source,
+    },
+    page: args.page,
+    limit: args.count,
+    pagination: 'cursor',
+  });
+
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups/?page=${page}&limit=${
-      count
-    }&pagination=cursor`,
+    `${ROGUE_URL}/api/v3/signups/?${queryString}`,
     authorizedRequest(context),
   );
   const json = await response.json();
@@ -236,7 +252,7 @@ export const getSignupsById = async (ids, options) => {
  */
 export const getSignupsByUserId = async (id, page, count, context) => {
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups?filter[northstar_id]=${id}&page=${
+    `${ROGUE_URL}/api/v3/signups/?filter[northstar_id]=${id}&page=${
       page
     }&limit=${count}&pagination=cursor`,
     authorizedRequest(context),

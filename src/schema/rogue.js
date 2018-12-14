@@ -202,6 +202,10 @@ const typeDefs = gql`
     signup(id: Int!): Signup
     # Get a paginated collection of signups.
     signups(
+      # The Campaign ID load signups for.
+      campaignId: String
+      # The signup source to load signups for.
+      source: String
       # The user ID to load signups for.
       userId: String
       # The page of results to return.
@@ -264,7 +268,7 @@ const resolvers = {
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
     signup: (_, args, context) => Loader(context).signups.load(args.id),
-    signups: (_, args, context) => getSignups(args.page, args.count, context),
+    signups: (_, args, context) => getSignups(args, context),
     signupsByUserId: (_, args, context) =>
       getSignupsByUserId(args.id, args.page, args.count, context),
   },
