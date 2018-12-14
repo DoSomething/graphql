@@ -212,6 +212,8 @@ const typeDefs = gql`
       page: Int = 1
       # The number of results per page.
       count: Int = 20
+      # How to order the results (e.g. "id,desc").
+      orderBy: String = "id,desc"
     ): [Signup]
     # Get a paginated collection of signups by user ID.
     signupsByUserId(

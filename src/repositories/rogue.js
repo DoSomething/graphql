@@ -180,6 +180,7 @@ export const toggleReaction = async (postId, context) => {
  * @param {String} campaignId
  * @param {Number} count
  * @param {Number} page
+ * @param {String} orderBy
  * @param {String} source
  * @param {String} userId
  * @return {Array}
@@ -191,6 +192,7 @@ export const getSignups = async (args, context) => {
       northstar_id: args.userId,
       source: args.source,
     },
+    orderBy: args.orderBy,
     page: args.page,
     limit: args.count,
     pagination: 'cursor',
