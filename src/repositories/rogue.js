@@ -205,10 +205,10 @@ export const getSignupById = async (id, context) => {
 };
 
 /**
- * Fetch signups from Rogue.
+ * Fetch signups from Rogue by ID.
  *
- * @param {Number} page
- * @param {Number} count
+ * @param {Array} ids
+ * @param {Object} options
  * @return {Array}
  */
 export const getSignupsById = async (ids, options) => {

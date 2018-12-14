@@ -122,12 +122,14 @@ const typeDefs = gql`
     id: Int!
     # The associated posts made under this signup.
     posts: [Post]
+    # The associated campaign for this signup.
+    campaign: Campaign
     # The campaign ID this signup was made for. Either a
     # numeric Drupal ID, or a alphanumeric Contentful ID.
     campaignId: String
     # The Drupal campaign run ID this signup was made for.
     campaignRunId: String @deprecated
-    # The Northstar ID of the user who created this post.
+    # The Northstar ID of the user who created this signup.
     userId: String
     # The total number of items on all posts attached to this signup.
     quantity: Int
@@ -232,6 +234,8 @@ const resolvers = {
     reactions: post => post.reactions.total,
   },
   Signup: {
+    campaign: (signup, args, context) =>
+      Loader(context).campaigns.load(signup.campaignId),
     posts: (signup, args, context) => getPostsBySignupId(signup.id, context),
   },
   Query: {
