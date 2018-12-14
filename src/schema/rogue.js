@@ -136,7 +136,7 @@ const typeDefs = gql`
     quantity: Int
     # The user's self-reported reason for doing this campaign.
     whyParticipated: String
-    # Source platform of the signup (e.g sms, phoenix-next).
+    # The source of this signup (e.g. sms, phoenix-next)
     source: String
     # More information about the signup (for example, third-party messaging opt-ins).
     details: String
