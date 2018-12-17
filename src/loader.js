@@ -2,7 +2,7 @@ import { set } from 'lodash';
 import logger from 'heroku-logger';
 import DataLoader from 'dataloader';
 
-import { getSignupsById } from './repositories/rogue';
+import { getCampaignById, getSignupsById } from './repositories/rogue';
 import { getUserById } from './repositories/northstar';
 import { authorizedRequest } from './repositories/helpers';
 
@@ -18,6 +18,9 @@ export default context => {
     logger.debug('Creating a new loader for this GraphQL request.');
     const options = authorizedRequest(context);
     set(context, 'loader', {
+      campaigns: new DataLoader(ids =>
+        Promise.all(ids.map(id => getCampaignById(id, options))),
+      ),
       users: new DataLoader(ids =>
         Promise.all(ids.map(id => getUserById(id, options))),
       ),

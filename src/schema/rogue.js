@@ -13,6 +13,7 @@ import {
   getPostsBySignupId,
   getPostById,
   getSignups,
+  getSignupsByUserId,
   toggleReaction,
 } from '../repositories/rogue';
 
@@ -122,17 +123,21 @@ const typeDefs = gql`
     id: Int!
     # The associated posts made under this signup.
     posts: [Post]
+    # The associated campaign for this signup.
+    campaign: Campaign
     # The campaign ID this signup was made for. Either a
     # numeric Drupal ID, or a alphanumeric Contentful ID.
     campaignId: String
     # The Drupal campaign run ID this signup was made for.
     campaignRunId: String @deprecated
-    # The Northstar ID of the user who created this post.
+    # The Northstar ID of the user who created this signup.
     userId: String
     # The total number of items on all posts attached to this signup.
     quantity: Int
     # The user's self-reported reason for doing this campaign.
     whyParticipated: String
+    # The source of this signup (e.g. sms, phoenix-next)
+    source: String
     # More information about the signup (for example, third-party messaging opt-ins).
     details: String
     # The time this signup was last modified.
@@ -164,6 +169,8 @@ const typeDefs = gql`
       action: String
       # The campaign ID to load posts for.
       campaignId: String
+      # The post source to load posts for.
+      source: String
       # The type name to load posts for.
       type: String
       # The user ID to load posts for.
@@ -195,6 +202,23 @@ const typeDefs = gql`
     signup(id: Int!): Signup
     # Get a paginated collection of signups.
     signups(
+      # The Campaign ID load signups for.
+      campaignId: String
+      # The signup source to load signups for.
+      source: String
+      # The user ID to load signups for.
+      userId: String
+      # The page of results to return.
+      page: Int = 1
+      # The number of results per page.
+      count: Int = 20
+      # How to order the results (e.g. "id,desc").
+      orderBy: String = "id,desc"
+    ): [Signup]
+    # Get a paginated collection of signups by user ID.
+    signupsByUserId(
+      # The Northstar user ID to filter signups by.
+      id: String!
       # The page of results to return.
       page: Int = 1
       # The number of results per page.
@@ -232,6 +256,8 @@ const resolvers = {
     reactions: post => post.reactions.total,
   },
   Signup: {
+    campaign: (signup, args, context) =>
+      Loader(context).campaigns.load(signup.campaignId),
     posts: (signup, args, context) => getPostsBySignupId(signup.id, context),
   },
   Query: {
@@ -244,7 +270,9 @@ const resolvers = {
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
     signup: (_, args, context) => Loader(context).signups.load(args.id),
-    signups: (_, args, context) => getSignups(args.page, args.count, context),
+    signups: (_, args, context) => getSignups(args, context),
+    signupsByUserId: (_, args, context) =>
+      getSignupsByUserId(args.id, args.page, args.count, context),
   },
   Mutation: {
     toggleReaction: (_, args, context) => toggleReaction(args.postId, context),

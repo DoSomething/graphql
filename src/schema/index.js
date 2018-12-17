@@ -14,10 +14,17 @@ const linkSchema = gql`
   extend type User {
     # The posts created by this user.
     posts: [Post]
+    # The signups created by this user.
+    signups: [Signup]
   }
 
   extend type Post {
     # The user who created this post.
+    user: User
+  }
+
+  extend type Signup {
+    # The user who created this signup.
     user: User
   }
 `;
@@ -43,10 +50,41 @@ const linkResolvers = {
         );
       },
     },
+    signups: {
+      fragment: 'fragment SignupsFragment on User { id }',
+      resolve(user, args, context, info) {
+        return info.mergeInfo.delegateToSchema(
+          'query',
+          'signupsByUserId',
+          {
+            id: user.id,
+          },
+          context,
+          info,
+        );
+      },
+    },
   },
   Post: {
     user: {
       fragment: 'fragment UserFragment on Post { userId }',
+      resolve(post, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: northstarSchema,
+          operation: 'query',
+          fieldName: 'user',
+          args: {
+            id: post.userId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
+  Signup: {
+    user: {
+      fragment: 'fragment UserFragment on Signup { userId }',
       resolve(post, args, context, info) {
         return info.mergeInfo.delegateToSchema({
           schema: northstarSchema,
