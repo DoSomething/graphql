@@ -114,6 +114,7 @@ const typeDefs = gql`
 const resolvers = {
   User: {
     role: user => stringToEnum(user.role),
+    smsStatus: user => stringToEnum(user.smsStatus),
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
   },
   Query: {
