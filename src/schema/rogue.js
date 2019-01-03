@@ -223,6 +223,8 @@ const typeDefs = gql`
       page: Int = 1
       # The number of results per page.
       count: Int = 20
+      # How to order the results (e.g. "id,desc").
+      orderBy: String = "id,desc"
     ): [Signup]
   }
 
@@ -271,8 +273,7 @@ const resolvers = {
       getPostsByUserId(args.id, args.page, args.count, context),
     signup: (_, args, context) => Loader(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args, context),
-    signupsByUserId: (_, args, context) =>
-      getSignupsByUserId(args.id, args.page, args.count, context),
+    signupsByUserId: (_, args, context) => getSignupsByUserId(args, context),
   },
   Mutation: {
     toggleReaction: (_, args, context) => toggleReaction(args.postId, context),
