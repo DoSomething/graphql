@@ -250,13 +250,25 @@ export const getSignupsById = async (ids, options) => {
  * Fetch signups from Rogue by User ID.
  *
  * @param {String} id
+ * @param {Number} count
+ * @param {Number} page
+ * @param {String} orderBy
+ * @return {Array}
  * @return {Array}
  */
-export const getSignupsByUserId = async (id, page, count, context) => {
+export const getSignupsByUserId = async (args, context) => {
+  const queryString = stringify({
+    filter: {
+      northstar_id: args.id,
+    },
+    orderBy: args.orderBy,
+    page: args.page,
+    limit: args.count,
+    pagination: 'cursor',
+  });
+
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups/?filter[northstar_id]=${id}&page=${
-      page
-    }&limit=${count}&pagination=cursor`,
+    `${ROGUE_URL}/api/v3/signups/?${queryString}`,
     authorizedRequest(context),
   );
 

@@ -98,6 +98,14 @@ const typeDefs = gql`
     lastAuthenticatedAt: DateTime
     # The last time this user messaged DoSomething.org via Gambit.
     lastMessagedAt: DateTime
+    # Whether user plans to vote in upcoming election (e.g. 'voting', 'voted', 'not_sure')
+    votingPlanStatus: String
+    # Who user plans to attend polls with to vote in upcoming election.
+    votingPlanAttendingWith: String
+    # How user plans to get to the polls to vote in upcoming election.
+    votingPlanMethodOfTransport: String
+    # What time of day user plans to get the polls to vote in upcoming election.
+    votingPlanTimeOfDay: String
   }
 
   type Query {
@@ -114,6 +122,7 @@ const typeDefs = gql`
 const resolvers = {
   User: {
     role: user => stringToEnum(user.role),
+    smsStatus: user => stringToEnum(user.smsStatus),
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
   },
   Query: {
