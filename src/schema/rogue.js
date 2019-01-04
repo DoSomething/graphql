@@ -7,6 +7,7 @@ import Loader from '../loader';
 import {
   getCampaignById,
   getCampaigns,
+  getPermalinkBySignupId,
   getPosts,
   getPostsByUserId,
   getPostsByCampaignId,
@@ -144,6 +145,8 @@ const typeDefs = gql`
     updatedAt: DateTime
     # The time when this signup was originally created.
     createdAt: DateTime
+    # Permalink to Admin view.
+    permalink: String
   }
 
   type Query {
@@ -260,6 +263,7 @@ const resolvers = {
   Signup: {
     campaign: (signup, args, context) =>
       Loader(context).campaigns.load(signup.campaignId),
+    permalink: signup => getPermalinkBySignupId(signup.id),
     posts: (signup, args, context) => getPostsBySignupId(signup.id, context),
   },
   Query: {

@@ -175,6 +175,14 @@ export const toggleReaction = async (postId, context) => {
 };
 
 /**
+ * Get Rogue signup permalink by ID.
+ *
+ * @param {Number} id
+ * @return {String}
+ */
+export const getPermalinkBySignupId = id => `${ROGUE_URL}/signups/${id}`;
+
+/**
  * Fetch signups from Rogue.
  *
  * @param {String} campaignId
