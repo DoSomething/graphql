@@ -256,7 +256,7 @@ const resolvers = {
       Loader(context).signups.load(post.signupId),
     url: (post, args) => urlWithQuery(post.media.url, args),
     text: post => post.media.text,
-    status: post => post.status.toUpperCase(),
+    status: post => post.status.toUpperCase().replace('-', '_'),
     reacted: post => post.reactions.reacted,
     reactions: post => post.reactions.total,
   },
