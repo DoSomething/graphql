@@ -52,6 +52,11 @@ const environments = {
   qa: {
     displayName: 'QA',
 
+    // Gambit
+    gambitConversations: {
+      url: process.env.QA_GAMBIT_CONVERSATIONS_URL,
+    },
+
     // Northstar
     northstar: {
       url: 'https://identity-qa.dosomething.org',
@@ -73,6 +78,11 @@ const environments = {
    */
   production: {
     displayName: 'production',
+
+    // Gambit
+    gambitConversations: {
+      url: process.env.PRODUCTION_GAMBIT_CONVERSATIONS_URL,
+    },
 
     // Northstar
     northstar: {

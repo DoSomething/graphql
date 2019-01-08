@@ -4,6 +4,7 @@ import DataLoader from 'dataloader';
 
 import { getCampaignById, getSignupsById } from './repositories/rogue';
 import { getUserById } from './repositories/northstar';
+import { getConversationById } from './repositories/gambitConversations';
 import { authorizedRequest } from './repositories/helpers';
 
 /**
@@ -20,6 +21,9 @@ export default context => {
     set(context, 'loader', {
       campaigns: new DataLoader(ids =>
         Promise.all(ids.map(id => getCampaignById(id, options))),
+      ),
+      conversations: new DataLoader(ids =>
+        Promise.all(ids.map(id => getConversationById(id, options))),
       ),
       users: new DataLoader(ids =>
         Promise.all(ids.map(id => getUserById(id, options))),

@@ -222,7 +222,8 @@ export const getSignups = async (args, context) => {
  * @return {Object}
  */
 export const getSignupById = async (id, context) => {
-  console.log(`loading a signup: ${id}`);
+  logger.debug('Loading signup from Rogue', { id });
+
   const response = await fetch(
     `${ROGUE_URL}/api/v3/signups/${id}`,
     authorizedRequest(context),
