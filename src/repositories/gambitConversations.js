@@ -80,7 +80,6 @@ export const getConversationById = async (id, context) => {
  * @param {Number} page
  * @param {String} orderBy
  * @return {Array}
- * @return {Array}
  */
 export const getConversations = async (args, context) => {
   const response = await fetch(
@@ -115,4 +114,24 @@ export const getConversationsByUserId = async (args, context) => {
   return transformCollection(json);
 };
 
+/**
+ * Fetch messages from Gambit by conversation ID.
+ *
+ * @param {String} id
+ * @return {Array}
+ */
+export const getMessagesByConversationId = async (id, context) => {
+  logger.debug('Loading conversation messages from Gambit', { id });
+
+  const response = await fetch(
+    `${GAMBIT_CONVERSATIONS_URL}/api/v1/messages?query={"conversationId":"${
+      id
+    }"}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
+};
 export default null;

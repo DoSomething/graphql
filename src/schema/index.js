@@ -32,7 +32,7 @@ const linkSchema = gql`
   }
 
   extend type Conversation {
-    # The user who created this conversation.
+    # The user this conversation is with.
     user: User
   }
 `;
