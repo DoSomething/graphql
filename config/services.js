@@ -54,7 +54,10 @@ const environments = {
 
     // Gambit
     gambitConversations: {
-      url: process.env.QA_GAMBIT_CONVERSATIONS_URL,
+      url: 'https://gambit-conversations-staging.herokuapp.com',
+      // TODO: Validate requests with Northstar token instead of Gambit basic auth.
+      user: process.env.QA_GAMBIT_CONVERSATIONS_USER,
+      pass: process.env.QA_GAMBIT_CONVERSATIONS_PASS,
     },
 
     // Northstar
@@ -81,7 +84,10 @@ const environments = {
 
     // Gambit
     gambitConversations: {
-      url: process.env.PRODUCTION_GAMBIT_CONVERSATIONS_URL,
+      url: 'https://gambit-conversations-prod.herokuapp.com',
+      // TODO: Validate requests with Northstar token instead of Gambit basic auth.
+      user: process.env.PRODUCTION_GAMBIT_CONVERSATIONS_USER,
+      pass: process.env.PRODUCTION_GAMBIT_CONVERSATIONS_PASS,
     },
 
     // Northstar

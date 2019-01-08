@@ -38,8 +38,16 @@ export const requireAuthorizedRequest = context => {
  * @param {Object} data
  * @return {Object}
  */
-const transformResponse = data => {
+export const transformResponse = data => {
   const result = mapKeys(data, (_, key) => camelCase(key));
+
+  /* eslint-disable no-underscore-dangle */
+  // Rename Mongo identifier '_id' as id.
+  if (result._id) {
+    result.id = result._id;
+    delete result._id;
+  }
+  /* eslint-enable no-underscore-dangle */
 
   if (!result.id) {
     return null;

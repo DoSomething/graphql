@@ -2,38 +2,25 @@ import logger from 'heroku-logger';
 import { map } from 'lodash';
 
 import config from '../../config';
-
-// TODO: Add Northstar token support to Gambit Conversations, and filter data by role.
-const authorizedRequest = () => {
-  'application/json';
-};
+import { transformResponse } from './helpers';
 
 const GAMBIT_CONVERSATIONS_URL = config('services.gambitConversations.url');
-
-/**
- * Transform JSON data for GraphQL.
- *
- * @param {Object} data
- * @return {Object}
- */
-const transformResponse = data => {
-  const result = data;
-
-  // Rename Mongo identifier '_id' as id.
-  /* eslint-disable no-underscore-dangle */
-  const id = result._id;
-  if (!id) {
-    return null;
-  }
-  result.id = id;
-  delete result._id;
-  /* eslint-enable no-underscore-dangle */
-
-  return result;
-};
+const GAMBIT_CONVERSATIONS_AUTH = `${config(
+  'services.gambitConversations.user',
+)}:${config('services.gambitConversations.pass')}`;
+// TODO: Add Northstar token support to Gambit Conversations, use helpers.authorizedRequest
+const authorizedRequest = () => ({
+  headers: {
+    Accept: 'application/json',
+    Authorization: `Basic ${Buffer.from(GAMBIT_CONVERSATIONS_AUTH).toString(
+      'base64',
+    )}`,
+  },
+});
 
 /**
  * Transform an individual item response.
+ * TODO: Modify Conversations API to return data object to deprecate this function.
  *
  * @param {Object} json
  * @return {Object}
@@ -42,6 +29,7 @@ export const transformItem = json => transformResponse(json);
 
 /**
  * Transform a collection response.
+ * TODO: Modify Conversations API to return data object to deprecate this function.
  *
  * @param {Object} json
  * @return {Object}
