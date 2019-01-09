@@ -4,6 +4,7 @@ import { mergeSchemas } from 'graphql-tools';
 // Schemas
 import rogueSchema from './rogue';
 import northstarSchema from './northstar';
+import gambitContentSchema from './gambitContent';
 import gambitConversationsSchema from './gambitConversations';
 
 /**
@@ -34,6 +35,13 @@ const linkSchema = gql`
   extend type Conversation {
     # The user this conversation is with.
     user: User
+    # The current topic of the conversation.
+    topic: Topic
+  }
+
+  extend type Message {
+    # The topic that conversation was set to when the message was created.
+    topic: Topic
   }
 `;
 
@@ -139,6 +147,23 @@ const linkResolvers = {
       },
     },
   },
+  Message: {
+    topic: {
+      fragment: 'fragment TopicFragment on Message { topicId }',
+      resolve(message, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: gambitContentSchema,
+          operation: 'query',
+          fieldName: 'topic',
+          args: {
+            id: message.topicId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
 };
 
 /**
@@ -151,6 +176,7 @@ const schema = mergeSchemas({
     northstarSchema,
     rogueSchema,
     gambitConversationsSchema,
+    gambitContentSchema,
     linkSchema,
   ],
   resolvers: linkResolvers,

@@ -4,7 +4,11 @@ import DataLoader from 'dataloader';
 
 import { getCampaignById, getSignupsById } from './repositories/rogue';
 import { getUserById } from './repositories/northstar';
-import { getConversationById } from './repositories/gambitConversations';
+import {
+  getConversationById,
+  getMessageById,
+} from './repositories/gambitConversations';
+import { getTopicById } from './repositories/gambitContent';
 import { authorizedRequest } from './repositories/helpers';
 
 /**
@@ -29,6 +33,9 @@ export default context => {
         Promise.all(ids.map(id => getUserById(id, options))),
       ),
       signups: new DataLoader(ids => getSignupsById(ids, options)),
+      topics: new DataLoader(ids =>
+        Promise.all(ids.map(id => getTopicById(id, options))),
+      ),
     });
   }
 

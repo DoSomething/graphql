@@ -41,16 +41,14 @@ export const requireAuthorizedRequest = context => {
 export const transformResponse = data => {
   const result = mapKeys(data, (_, key) => camelCase(key));
 
-  /* eslint-disable no-underscore-dangle */
-  // Rename Mongo identifier '_id' as id.
-  if (result._id) {
-    result.id = result._id;
-    delete result._id;
-  }
-  /* eslint-enable no-underscore-dangle */
-
   if (!result.id) {
     return null;
+  }
+
+  // Rename any instances of 'topic'.
+  if (result.topic) {
+    result.topicId = result.topic;
+    delete result.topic;
   }
 
   // Rename any instances of 'northstar_id'.
