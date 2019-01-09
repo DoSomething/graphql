@@ -4,6 +4,7 @@ import { mergeSchemas } from 'graphql-tools';
 // Schemas
 import rogueSchema from './rogue';
 import northstarSchema from './northstar';
+import gambitConversationsSchema from './gambitConversations';
 
 /**
  * The schema used to link services together.
@@ -16,6 +17,8 @@ const linkSchema = gql`
     posts: [Post]
     # The signups created by this user.
     signups: [Signup]
+    # The conversations created by this user.
+    conversations: [Conversation]
   }
 
   extend type Post {
@@ -27,6 +30,11 @@ const linkSchema = gql`
     # The user who created this signup.
     user: User
   }
+
+  extend type Conversation {
+    # The user this conversation is with.
+    user: User
+  }
 `;
 
 /**
@@ -36,6 +44,21 @@ const linkSchema = gql`
  */
 const linkResolvers = {
   User: {
+    conversations: {
+      fragment: 'fragment ConversationsFragment on User { id }',
+      resolve(user, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: gambitConversationsSchema,
+          operation: 'query',
+          fieldName: 'conversationsByUserId',
+          args: {
+            id: user.id,
+          },
+          context,
+          info,
+        });
+      },
+    },
     posts: {
       fragment: 'fragment PostsFragment on User { id }',
       resolve(user, args, context, info) {
@@ -85,13 +108,30 @@ const linkResolvers = {
   Signup: {
     user: {
       fragment: 'fragment UserFragment on Signup { userId }',
-      resolve(post, args, context, info) {
+      resolve(signup, args, context, info) {
         return info.mergeInfo.delegateToSchema({
           schema: northstarSchema,
           operation: 'query',
           fieldName: 'user',
           args: {
-            id: post.userId,
+            id: signup.userId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
+  Conversation: {
+    user: {
+      fragment: 'fragment UserFragment on Conversation { userId }',
+      resolve(conversation, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: northstarSchema,
+          operation: 'query',
+          fieldName: 'user',
+          args: {
+            id: conversation.userId,
           },
           context,
           info,
@@ -107,7 +147,12 @@ const linkResolvers = {
  * @var GraphQLSchema
  */
 const schema = mergeSchemas({
-  schemas: [northstarSchema, rogueSchema, linkSchema],
+  schemas: [
+    northstarSchema,
+    rogueSchema,
+    gambitConversationsSchema,
+    linkSchema,
+  ],
   resolvers: linkResolvers,
 });
 
