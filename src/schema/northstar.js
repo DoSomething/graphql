@@ -37,6 +37,8 @@ const typeDefs = gql`
     UNDELIVERABLE
     # An unknown issue exists with this user's SMS subscription.
     UNKNOWN
+    # User has received an askSubscriptionStatus broadcast but never answered with valid preference.
+    PENDING
   }
 
   enum VoterRegistrationStatus {
