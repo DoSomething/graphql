@@ -45,6 +45,11 @@ const linkSchema = gql`
     # The topic that conversation was set to when the message was created.
     topic: Topic
   }
+
+  extend type Topic {
+    # The campaign that this topic should create activity for.
+    campaign: Campaign
+  }
 `;
 
 /**
@@ -189,6 +194,23 @@ const linkResolvers = {
           fieldName: 'user',
           args: {
             id: message.userId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
+  Topic: {
+    campaign: {
+      fragment: 'fragment CampaignFragment on Topic { campaignId }',
+      resolve(topic, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'campaign',
+          args: {
+            id: topic.campaignId,
           },
           context,
           info,

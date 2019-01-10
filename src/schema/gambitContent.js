@@ -17,9 +17,25 @@ const typeDefs = gql`
     name: String
     # The topic type (e.g. 'photoPostConfig', 'askYesNo').
     type: String
+    # The topic campaign ID (optional)
+    campaignId: Int
+  }
+
+  # A DoSomething.org chatbot broadcast.
+  type Broadcast {
+    # The broadcast ID.
+    id: String
+    # The broadcast name.
+    name: String
+    # The broadcast type (e.g. 'photoPostBroadcast', 'askYesNo').
+    type: String
+    # The broadcast text
+    text: String
   }
 
   type Query {
+    # Get a broadcast by ID.
+    broadcast(id: String!): Broadcast
     # Get a topic by ID.
     topic(id: String!): Topic
   }
@@ -32,6 +48,7 @@ const typeDefs = gql`
  */
 const resolvers = {
   Query: {
+    broadcast: (_, args, context) => Loader(context).broadcasts.load(args.id),
     topic: (_, args, context) => Loader(context).topics.load(args.id),
   },
 };
