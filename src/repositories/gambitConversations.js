@@ -132,18 +132,12 @@ export const getMessageById = async (id, context) => {
  * @param {String} id
  * @return {Array}
  */
-export const getMessagesByConversationId = async (
-  id,
-  page,
-  count = 25,
-  context,
-) => {
+export const getMessagesByConversationId = async (id, page, count, context) => {
   logger.debug('Loading conversation messages from Gambit', { id });
-
   const response = await fetch(
     `${GAMBIT_CONVERSATIONS_URL}/api/v1/messages?query={"conversationId":"${
       id
-    }"}&limit=${count}&sort=-createdAt`,
+    }"}&limit=${count}&skip=${(page - 1) * count}&sort=-createdAt`,
     authorizedRequest(context),
   );
 
