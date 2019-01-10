@@ -40,6 +40,8 @@ const linkSchema = gql`
   }
 
   extend type Message {
+    # The user this message was sent to or from (depending on message direction).
+    user: User
     # The topic that conversation was set to when the message was created.
     topic: Topic
   }
@@ -157,6 +159,21 @@ const linkResolvers = {
           fieldName: 'topic',
           args: {
             id: message.topicId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+    user: {
+      fragment: 'fragment UserFragment on Message { userId }',
+      resolve(message, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: northstarSchema,
+          operation: 'query',
+          fieldName: 'user',
+          args: {
+            id: message.userId,
           },
           context,
           info,

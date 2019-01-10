@@ -4,10 +4,7 @@ import DataLoader from 'dataloader';
 
 import { getCampaignById, getSignupsById } from './repositories/rogue';
 import { getUserById } from './repositories/northstar';
-import {
-  getConversationById,
-  getMessageById,
-} from './repositories/gambitConversations';
+import { getConversationById } from './repositories/gambitConversations';
 import { getTopicById } from './repositories/gambitContent';
 import { authorizedRequest } from './repositories/helpers';
 
