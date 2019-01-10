@@ -7,6 +7,7 @@ import {
   getConversations,
   getConversationsByUserId,
   getMessageById,
+  getMessages,
   getMessagesByConversationId,
 } from '../repositories/gambitConversations';
 
@@ -79,9 +80,16 @@ const typeDefs = gql`
     ): [Conversation]
     # Get a message by ID.
     message(id: String!): Message
+    # Get a paginated collection of messages.
+    messages(
+      # The page of results to return.
+      page: Int = 1
+      # The number of results per page.
+      count: Int = 20
+    ): [Message]
     # Get a paginated collection of messages by conversation ID.
     messagesByConversationId(
-      # The Gambit conversation ID to filter messages by.
+      # The conversation ID to filter messages by.
       id: String!
       # The page of results to return.
       page: Int = 1
@@ -108,6 +116,7 @@ const resolvers = {
     conversationsByUserId: (_, args, context) =>
       getConversationsByUserId(args, context),
     message: (_, args, context) => getMessageById(args.id, context),
+    messages: (_, args, context) => getMessages(args, context),
     messagesByConversationId: (_, args, context) =>
       getMessagesByConversationId(args.id, args.page, args.count, context),
   },

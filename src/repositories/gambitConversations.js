@@ -38,6 +38,15 @@ export const transformItem = json => transformResponse(json);
 export const transformCollection = json => map(json, transformResponse);
 
 /**
+ * @param {Number} page
+ * @param {Number} count
+ * @return {String}
+ */
+function getPaginationQueryString(page, count) {
+  return `limit=${count}&skip=${(page - 1) * count}&sort=-createdAt`;
+}
+
+/**
  * Fetch a conversation from Gambit by ID.
  *
  * @param {String} id
@@ -94,7 +103,7 @@ export const getConversationsByUserId = async (args, context) => {
   const response = await fetch(
     `${GAMBIT_CONVERSATIONS_URL}/api/v1/conversations?query={"userId":"${
       userId
-    }"}`,
+    }"}&${getPaginationQueryString(args.page, args.count)}`,
     authorizedRequest(context),
   );
 
@@ -126,6 +135,27 @@ export const getMessageById = async (id, context) => {
 
   return null;
 };
+
+/**
+ * Fetch messages from Gambit.
+ *
+ * @return {Array}
+ */
+export const getMessages = async (args, context) => {
+  logger.debug('Loading messages from Gambit');
+  const response = await fetch(
+    `${GAMBIT_CONVERSATIONS_URL}/api/v1/messages?${getPaginationQueryString(
+      args.page,
+      args.count,
+    )}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
+};
+
 /**
  * Fetch messages from Gambit by conversation ID.
  *
@@ -133,11 +163,11 @@ export const getMessageById = async (id, context) => {
  * @return {Array}
  */
 export const getMessagesByConversationId = async (id, page, count, context) => {
-  logger.debug('Loading conversation messages from Gambit', { id });
+  logger.debug('Loading messages from Gambit for Conversation', { id });
   const response = await fetch(
     `${GAMBIT_CONVERSATIONS_URL}/api/v1/messages?query={"conversationId":"${
       id
-    }"}&limit=${count}&skip=${(page - 1) * count}&sort=-createdAt`,
+    }"}&${getPaginationQueryString(page, count)}`,
     authorizedRequest(context),
   );
 
