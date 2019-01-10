@@ -133,6 +133,21 @@ const linkResolvers = {
     },
   },
   Conversation: {
+    topic: {
+      fragment: 'fragment TopicFragment on Conversation { topicId }',
+      resolve(conversation, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: gambitContentSchema,
+          operation: 'query',
+          fieldName: 'topic',
+          args: {
+            id: conversation.topicId,
+          },
+          context,
+          info,
+        });
+      },
+    },
     user: {
       fragment: 'fragment UserFragment on Conversation { userId }',
       resolve(conversation, args, context, info) {

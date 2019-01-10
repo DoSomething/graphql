@@ -54,11 +54,13 @@ function getPaginationQueryString(page, count) {
  */
 export const getConversationById = async (id, context) => {
   logger.debug('Loading conversation from Gambit', { id });
+
   try {
     const response = await fetch(
       `${GAMBIT_CONVERSATIONS_URL}/api/v1/conversations/${id}`,
       authorizedRequest(context),
     );
+
     const json = await response.json();
 
     return transformItem(json);
@@ -120,11 +122,13 @@ export const getConversationsByUserId = async (args, context) => {
  */
 export const getMessageById = async (id, context) => {
   logger.debug('Loading message from Gambit', { id });
+
   try {
     const response = await fetch(
       `${GAMBIT_CONVERSATIONS_URL}/api/v1/messages/${id}`,
       authorizedRequest(context),
     );
+
     const json = await response.json();
 
     return transformItem(json);
@@ -143,6 +147,7 @@ export const getMessageById = async (id, context) => {
  */
 export const getMessages = async (args, context) => {
   logger.debug('Loading messages from Gambit');
+
   const response = await fetch(
     `${GAMBIT_CONVERSATIONS_URL}/api/v1/messages?${getPaginationQueryString(
       args.page,
@@ -164,6 +169,7 @@ export const getMessages = async (args, context) => {
  */
 export const getMessagesByConversationId = async (id, page, count, context) => {
   logger.debug('Loading messages from Gambit for Conversation', { id });
+
   const response = await fetch(
     `${GAMBIT_CONVERSATIONS_URL}/api/v1/messages?query={"conversationId":"${
       id
