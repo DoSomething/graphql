@@ -59,8 +59,8 @@ const getFields = json => {
 
   if (type === 'autoReply') {
     return {
-      campaignId: getCampaignId(json),
       autoReply: fields.autoReply,
+      campaignId: getCampaignId(json),
     };
   }
 
@@ -80,11 +80,18 @@ const getFields = json => {
 
   if (type === 'photoPostConfig') {
     return {
-      campaignId: getCampaignId(json),
+      askCaption: fields.askCaptionMessage,
       askPhoto: fields.askPhotoMessage,
       askQuantity: fields.askQuantityMessage,
+      askWhyParticipated: fields.askWhyParticipatedMessage,
+      campaignId: getCampaignId(json),
+      completedPhotoPost: fields.completedMenuMessage,
+      completedPhotoPostAutoReply: fields.invalidCompletedMenuCommandMessage,
+      invalidCaption: fields.invalidCaptionMessage,
       invalidQuantity: fields.invalidQuantityMessage,
       invalidPhoto: fields.invalidPhotoMessage,
+      invalidWhyParticipated: fields.invalidWhyParticipatedMessage,
+      startPhotoPostAutoReply: fields.invalidSignupMenuCommandMessage,
     };
   }
 
@@ -98,8 +105,8 @@ const getFields = json => {
   if (type === 'textPostConfig') {
     return {
       campaignId: getCampaignId(json),
-      invalidText: fields.invalidTextMessage,
       completedTextPost: fields.completedTextPostMessage,
+      invalidText: fields.invalidTextMessage,
     };
   }
 
@@ -127,7 +134,11 @@ export const getGambitContentfulEntryById = async (id, context) => {
     return transformItem(json);
   } catch (exception) {
     const error = exception.message;
-    logger.warn('Unable to load entry.', { id, error, context });
+    logger.warn('Unable to load Gambit Contentful entry.', {
+      id,
+      error,
+      context,
+    });
   }
 
   return null;
@@ -139,7 +150,7 @@ export const getGambitContentfulEntryById = async (id, context) => {
  * @return {Array}
  */
 export const getBroadcasts = async (args, context) => {
-  logger.debug('Loading broadcasts from Gambit Content');
+  logger.debug('Loading broadcasts from Gambit Contentful');
 
   const broadcastTypes = [
     'autoReplyBroadcast',

@@ -40,7 +40,7 @@ const typeDefs = gql`
     type: String
   }
 
-  # An auto reply chatbot topic (creates signup if has a campaign).
+  # Topic for sending an auto-reply message (creates signup if it has a campaign set)
   type AutoReplyTopic implements Topic {
     ${entryFields}
     # The campaign to create signup for if conversation changes to this topic (optional).
@@ -49,29 +49,43 @@ const typeDefs = gql`
     autoReply: String!
   }
 
-  # A chatbot topic to create photo posts.
+  # Topic for creating signup and photo posts. Asks user to text START to begin a photo post.
   type PhotoPostTopic implements Topic {
     ${entryFields}
     # The campaign to create signup and photo post for if conversation changes to this topic.
     campaignId: Int!
+    # Template sent until user replies with START to begin a photo post.
+    startPhotoPostAutoReply: String!
     # Template that asks user to reply with quantity.
     askQuantity: String!
     # Template that asks user to resend a message with valid quantity.
     invalidQuantity: String!
     # Template that asks user to reply with a photo.
     askPhoto: String!
-    # Template that asks user to resend a message with a valid photo.
+    # Template that asks user to resend a message with a photo.
     invalidPhoto: String!
+    # Template that asks user to reply with a photo caption.
+    askCaption: String!
+    # Template that asks user to resend a message with a valid photo caption.
+    invalidCaption: String!
+    # Template that asks user to reply with why participated.
+    askWhyParticipated: String!
+    # Template that asks user to resend a message with a valid why participated.
+    invalidWhyParticipated: String!
+    # Template that confirms a photo post was created.
+    completedPhotoPost: String!
+    # Template sent after photo post confirmation. User can text START to submit another photo post.
+    completedPhotoPostAutoReply: String!
   }
 
-  # A chatbot topic to create text posts.
+  # Topic for creating signup and text posts. Ask user to text back a test post.
   type TextPostTopic implements Topic {
     ${entryFields}
     # The campaign to create signup and text post for if conversation changes to this topic.
     campaignId: Int!
     # Template that asks user to resend a message with valid text post.
     invalidText: String!
-    # Template that confirms a text post was created.
+    # Template that confirms a text post was created. Replying to this creates another text post.
     completedTextPost: String!
   }
 
@@ -80,6 +94,7 @@ const typeDefs = gql`
     ${broadcastFields}
   }
 
+  # Broadcast that changes topic to an auto reply.
   type AutoReplyBroadcast implements Broadcast {
     ${broadcastFields}
     # The auto reply topic ID to change conversation to.
@@ -88,6 +103,7 @@ const typeDefs = gql`
     topic: AutoReplyTopic
   }
 
+  # Broadcast that changes topic to a photo post, asks user to reply START to create/continue draft.
   type PhotoPostBroadcast implements Broadcast {
     ${broadcastFields}
     # The photo post topic ID to change conversation to.
@@ -96,6 +112,7 @@ const typeDefs = gql`
     topic: PhotoPostTopic
   }
 
+  # Broadcast that changes topic to a text post, asks user to reply with a text post.
   type TextPostBroadcast implements Broadcast {
     ${broadcastFields}
     # The text post Topic ID to change conversation to.
