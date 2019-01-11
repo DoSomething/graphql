@@ -80,12 +80,6 @@ const typeDefs = gql`
     ${broadcastFields}
   }
 
-  type AskYesNo implements Broadcast, Topic {
-    ${broadcastFields}
-    # Template sent if user replies with a yes to the broadcast.
-    saidYes: String!
-  }
-
   type AutoReplyBroadcast implements Broadcast {
     ${broadcastFields}
     # The Auto Reply Topic ID to save as current topic.
@@ -107,6 +101,10 @@ const typeDefs = gql`
   }
 
   type Query {
+    # Get a Auto Reply Broadcast by ID.
+    autoReplyBroadcast(id: String!): AutoReplyBroadcast
+    # Get a Auto Reply Broadcast by ID.
+    autoReplyTopic(id: String!): AutoReplyBroadcast
     # Get a broadcast by ID.
     broadcast(id: String!): Broadcast
     # Get a paginated collection of broadcasts.
@@ -116,6 +114,14 @@ const typeDefs = gql`
       # The number of results per page.
       count: Int = 20
     ): [Broadcast]
+    # Get a Photo Post Broadcast by ID.
+    photoPostBroadcast(id: String!): PhotoPostBroadcast
+    # Get a Photo Post Topic by ID.
+    photoPostTopic(id: String!): PhotoPostTopic
+    # Get a Text Post Broadcast by ID.
+    textPostBroadcast(id: String!): TextPostBroadcast
+    # Get a Text Post Topic by ID.
+    textPostTopic(id: String!): TextPostTopic
     # Get a topic by ID.
     topic(id: String!): Topic
   }
@@ -142,8 +148,17 @@ const resolvers = {
     },
   },
   Query: {
+    autoReplyBroadcast: (_, args, context) =>
+      Loader(context).broadcasts.load(args.id),
+    autoReplyTopic: (_, args, context) => Loader(context).topics.load(args.id),
     broadcast: (_, args, context) => Loader(context).broadcasts.load(args.id),
     broadcasts: (_, args, context) => getBroadcasts(args, context),
+    photoPostBroadcast: (_, args, context) =>
+      Loader(context).broadcasts.load(args.id),
+    photoPostTopic: (_, args, context) => Loader(context).topics.load(args.id),
+    textPostBroadcast: (_, args, context) =>
+      Loader(context).broadcasts.load(args.id),
+    textPostTopic: (_, args, context) => Loader(context).topics.load(args.id),
     topic: (_, args, context) => Loader(context).topics.load(args.id),
   },
   Topic: {
