@@ -10,51 +10,135 @@ const client = createClient({
 });
 
 /**
- * @param {Object} entry
+ * @param {Object} json
+ * @return {Number}
+ */
+const getCampaignId = json => {
+  if (json.fields.campaign) {
+    return json.fields.campaign.fields.campaignId;
+  }
+  return null;
+};
+
+/**
+ * @param {Object} json
+ * @return {String}
+ */
+const getChangeTopicId = json => {
+  if (json.fields.topic) {
+    return json.fields.topic.sys.id;
+  }
+  return null;
+};
+
+/**
+ * @param {Object} json
+ * @return {String}
+ */
+const getContentType = json => json.sys.contentType.sys.id;
+
+/**
+ * @param {Object} json
  * @return {Object}
  */
-const transformItem = entry => ({
-  id: entry.sys.id,
-  type: entry.sys.contentType.sys.id,
-  createdAt: entry.sys.createdAt,
-  updatedAt: entry.sys.updatedAt,
-  name: entry.fields.name,
+const getSummary = json => ({
+  id: json.sys.id,
+  type: getContentType(json),
+  createdAt: json.sys.createdAt,
+  updatedAt: json.sys.updatedAt,
+  name: json.fields.name,
 });
 
 /**
  * @param {Object} json
  * @return {Object}
  */
-const transformTopic = json =>
-  assign(transformItem(json), {
-    campaignId: json.fields.campaign
-      ? json.fields.campaign.fields.campaignId
-      : null,
-  });
+const getFields = json => {
+  const type = getContentType(json);
+  const fields = json.fields;
+
+  if (type === 'autoReply') {
+    return {
+      autoReply: fields.autoReply,
+      campaignId: getCampaignId(json),
+    };
+  }
+
+  if (type === 'autoReplyBroadcast') {
+    return {
+      text: fields.text,
+      topicId: getChangeTopicId(json),
+    };
+  }
+
+  if (type === 'photoPostBroadcast') {
+    return {
+      text: fields.text,
+      topicId: getChangeTopicId(json),
+    };
+  }
+
+  if (type === 'photoPostConfig') {
+    return {
+      askCaption: fields.askCaptionMessage,
+      askPhoto: fields.askPhotoMessage,
+      askQuantity: fields.askQuantityMessage,
+      askWhyParticipated: fields.askWhyParticipatedMessage,
+      campaignId: getCampaignId(json),
+      completedPhotoPost: fields.completedMenuMessage,
+      completedPhotoPostAutoReply: fields.invalidCompletedMenuCommandMessage,
+      invalidCaption: fields.invalidCaptionMessage,
+      invalidQuantity: fields.invalidQuantityMessage,
+      invalidPhoto: fields.invalidPhotoMessage,
+      invalidWhyParticipated: fields.invalidWhyParticipatedMessage,
+      startPhotoPostAutoReply: fields.invalidSignupMenuCommandMessage,
+    };
+  }
+
+  if (type === 'textPostBroadcast') {
+    return {
+      text: fields.text,
+      topicId: getChangeTopicId(json),
+    };
+  }
+
+  if (type === 'textPostConfig') {
+    return {
+      campaignId: getCampaignId(json),
+      completedTextPost: fields.completedTextPostMessage,
+      invalidText: fields.invalidTextMessage,
+    };
+  }
+
+  return null;
+};
 
 /**
  * @param {Object} json
  * @return {Object}
  */
-const transformBroadcast = json =>
-  assign(transformItem(json), { text: json.fields.text });
+const transformItem = json => assign(getSummary(json), getFields(json));
 
 /**
- * Fetch a broadcast from Gambit Content by ID.
+ * Fetch a Gambit Contentful entry by ID.
  *
  * @param {String} id
  * @return {Object}
  */
-export const getBroadcastById = async (id, context) => {
-  logger.debug('Loading broadcast from Gambit Content', { id });
+export const getGambitContentfulEntryById = async (id, context) => {
+  logger.debug('Loading Gambit Contentful entry', { id });
 
   try {
     const json = await client.getEntry(id);
 
-    return transformBroadcast(json);
+    return transformItem(json);
   } catch (exception) {
     const error = exception.message;
-    logger.warn('Unable to load broadcast.', { id, error, context });
+    logger.warn('Unable to load Gambit Contentful entry.', {
+      id,
+      error,
+      context,
+    });
   }
 
   return null;
@@ -66,7 +150,7 @@ export const getBroadcastById = async (id, context) => {
  * @return {Array}
  */
 export const getBroadcasts = async (args, context) => {
-  logger.debug('Loading broadcasts from Gambit Content');
+  logger.debug('Loading broadcasts from Gambit Contentful');
 
   const broadcastTypes = [
     'autoReplyBroadcast',
@@ -83,31 +167,10 @@ export const getBroadcasts = async (args, context) => {
 
     const json = await client.getEntries(query);
 
-    return map(json.items, transformBroadcast);
+    return map(json.items, transformItem);
   } catch (exception) {
     const error = exception.message;
     logger.warn('Unable to load broadcasts.', { error, context });
-  }
-
-  return null;
-};
-
-/**
- * Fetch a topic from Gambit Content by ID.
- *
- * @param {String} id
- * @return {Object}
- */
-export const getTopicById = async (id, context) => {
-  logger.debug('Loading topic from Gambit Content', { id });
-
-  try {
-    const json = await client.getEntry(id);
-
-    return transformTopic(json);
-  } catch (exception) {
-    const error = exception.message;
-    logger.warn('Unable to load topic.', { id, error, context });
   }
 
   return null;
