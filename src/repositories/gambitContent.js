@@ -63,12 +63,10 @@ const getFields = json => {
   const type = getContentType(json);
   const fields = json.fields;
 
-  if (type === 'askYesNo') {  
+  if (type === 'askYesNo') {
     return {
-      saidNo: getMessageText(fields.saidNoTransition),
-      saidNoTopicId: getChangeTopicId(fields.saidNoTransition),
-      saidYes: getMessageText(fields.saidYesTransition),
-      saidYesTopicId: getChangeTopicId(fields.saidYesTransition),
+      saidNo: getMessageText(fields.noTransition),
+      saidYes: getMessageText(fields.yesTransition),
     };
   }
 

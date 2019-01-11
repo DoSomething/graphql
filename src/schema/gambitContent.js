@@ -16,7 +16,7 @@ const entryFields = `
 
 const broadcastFields = `
   ${entryFields}
-  # The broadcast text to send
+  # Message to broadcast
   text: String
 `;
 
@@ -94,7 +94,22 @@ const typeDefs = gql`
     ${broadcastFields}
   }
 
-  # Broadcast that changes topic to an auto reply.
+  # Broadcast that asks user a yes or no question, and changes topic to its own ID.
+  type AskYesNoBroadcastTopic implements Broadcast, Topic {
+    ${broadcastFields}
+    # Message sent if user says yes
+    saidYes: String!
+    # The topic ID to change conversation to if user says yes 
+    saidYesTopicId: String!
+    # Message sent if user says yes 
+    saidNo: String!
+    # The topic ID to change conversation to if user says no 
+    saidNoTopicId: String!
+    # Message sent until user responds with yes or no
+    invalidAskYesNoResponse: String!
+  }
+
+  # Broadcast that changes topic to an auto reply topic.
   type AutoReplyBroadcast implements Broadcast {
     ${broadcastFields}
     # The auto reply topic ID to change conversation to.
@@ -103,7 +118,7 @@ const typeDefs = gql`
     topic: AutoReplyTopic
   }
 
-  # Broadcast that changes topic to a photo post, asks user to reply START to create/continue draft.
+  # Broadcast that asks user to reply with START and changes topic a photo post topic.
   type PhotoPostBroadcast implements Broadcast {
     ${broadcastFields}
     # The photo post topic ID to change conversation to.
@@ -112,7 +127,7 @@ const typeDefs = gql`
     topic: PhotoPostTopic
   }
 
-  # Broadcast that changes topic to a text post, asks user to reply with a text post.
+  # Broadcast that asks user to reply with a text post and changes topic to a text post topic.
   type TextPostBroadcast implements Broadcast {
     ${broadcastFields}
     # The text post Topic ID to change conversation to.
@@ -126,6 +141,8 @@ const typeDefs = gql`
   }
 
   type Query {
+    # Get a Ask Yes No Broadcast Topic by ID.
+    askYesNoBroadcastTopic(id: String!): AskYesNoBroadcastTopic
     # Get a Auto Reply Broadcast by ID.
     autoReplyBroadcast(id: String!): AutoReplyBroadcast
     # Get a Auto Reply Broadcast by ID.
@@ -164,6 +181,9 @@ const resolvers = {
   },
   Broadcast: {
     __resolveType(broadcast) {
+      if (broadcast.type === 'askYesNo') {
+        return 'AskYesNoBroadcastTopic';
+      }
       if (broadcast.type === 'autoReplyBroadcast') {
         return 'AutoReplyBroadcast';
       }
@@ -177,6 +197,8 @@ const resolvers = {
     },
   },
   Query: {
+    askYesNoBroadcastTopic: (_, args, context) =>
+      Loader(context).broadcasts.load(args.id),
     autoReplyBroadcast: (_, args, context) =>
       Loader(context).broadcasts.load(args.id),
     autoReplyTopic: (_, args, context) => Loader(context).topics.load(args.id),
@@ -200,6 +222,9 @@ const resolvers = {
   },
   Topic: {
     __resolveType(topic) {
+      if (topic.type === 'askYesNo') {
+        return 'AskYesNoBroadcastTopic';
+      }
       if (topic.type === 'autoReply') {
         return 'AutoReplyTopic';
       }
