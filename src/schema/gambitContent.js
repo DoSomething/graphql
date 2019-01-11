@@ -14,6 +14,12 @@ const entryFields = `
   type: String
 `;
 
+const broadcastFields = `
+  ${entryFields}
+  # The broadcast text to send
+  text: String
+`;
+
 /**
  * GraphQL types.
  *
@@ -25,6 +31,7 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  # A hardcoded chatbot topic.
   type RivescriptTopic implements Topic {
     # The Rivescript topic (e.g. 'unsubscribed', 'support')
     id: String
@@ -33,43 +40,70 @@ const typeDefs = gql`
     type: String
   }
 
+  # An auto reply chatbot topic (creates signup if has a campaign).
   type AutoReplyTopic implements Topic {
     ${entryFields}
     # The campaign to create signup for if conversation changes to this topic (optional).
     campaignId: Int
     # The auto reply text.
-    text: String
+    autoReply: String!
   }
 
+  # A chatbot topic to create photo posts.
   type PhotoPostTopic implements Topic {
     ${entryFields}
     # The campaign to create signup and photo post for if conversation changes to this topic.
-    campaignId: Int
+    campaignId: Int!
     # Template that asks user to reply with quantity.
-    askQuantity: String
+    askQuantity: String!
     # Template that asks user to resend a message with valid quantity.
-    invalidQuantity: String
+    invalidQuantity: String!
     # Template that asks user to reply with a photo.
-    askPhoto: String
+    askPhoto: String!
     # Template that asks user to resend a message with a valid photo.
-    invalidPhoto: String
+    invalidPhoto: String!
   }
 
+  # A chatbot topic to create text posts.
   type TextPostTopic implements Topic {
     ${entryFields}
     # The campaign to create signup and text post for if conversation changes to this topic.
-    campaignId: Int
+    campaignId: Int!
     # Template that asks user to resend a message with valid text post.
-    invalidText: String
+    invalidText: String!
     # Template that confirms a text post was created.
-    completedTextPost: String
+    completedTextPost: String!
   }
 
   # A DoSomething.org chatbot broadcast.
-  type Broadcast {
-    ${entryFields}
-    # The broadcast text
-    text: String
+  interface Broadcast {
+    ${broadcastFields}
+  }
+
+  type AskYesNo implements Broadcast, Topic {
+    ${broadcastFields}
+    # Template sent if user replies with a yes to the broadcast.
+    saidYes: String!
+  }
+
+  type AutoReplyBroadcast implements Broadcast {
+    ${broadcastFields}
+    # The Auto Reply Topic ID to save as current topic.
+    topicId: Int!
+  }
+
+  type PhotoPostBroadcast implements Broadcast {
+    ${broadcastFields}
+    # The Photo Post Topic ID to save as current topic.
+    topicId: Int!
+  }
+
+  type TextPostBroadcast implements Broadcast {
+    ${broadcastFields}
+  }
+
+  type GeneralBroadcast implements Broadcast {
+    ${broadcastFields}
   }
 
   type Query {
@@ -93,6 +127,20 @@ const typeDefs = gql`
  * @var {Object}
  */
 const resolvers = {
+  Broadcast: {
+    __resolveType(broadcast) {
+      if (broadcast.type === 'autoReplyBroadcast') {
+        return 'AutoReplyBroadcast';
+      }
+      if (broadcast.type === 'photoPostBroadcast') {
+        return 'PhotoPostBroadcast';
+      }
+      if (broadcast.type === 'textPostBroadcast') {
+        return 'TextPostBroadcast';
+      }
+      return 'GeneralBroadcast';
+    },
+  },
   Query: {
     broadcast: (_, args, context) => Loader(context).broadcasts.load(args.id),
     broadcasts: (_, args, context) => getBroadcasts(args, context),
