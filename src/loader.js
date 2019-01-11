@@ -5,7 +5,7 @@ import DataLoader from 'dataloader';
 import { getCampaignById, getSignupsById } from './repositories/rogue';
 import { getUserById } from './repositories/northstar';
 import { getConversationById } from './repositories/gambitConversations';
-import { getBroadcastById, getTopicById } from './repositories/gambitContent';
+import { getGambitContentfulEntryById } from './repositories/gambitContent';
 import { authorizedRequest } from './repositories/helpers';
 
 /**
@@ -21,7 +21,7 @@ export default context => {
     const options = authorizedRequest(context);
     set(context, 'loader', {
       broadcasts: new DataLoader(ids =>
-        Promise.all(ids.map(id => getBroadcastById(id, options))),
+        Promise.all(ids.map(id => getGambitContentfulEntryById(id, options))),
       ),
       campaigns: new DataLoader(ids =>
         Promise.all(ids.map(id => getCampaignById(id, options))),
@@ -34,7 +34,7 @@ export default context => {
       ),
       signups: new DataLoader(ids => getSignupsById(ids, options)),
       topics: new DataLoader(ids =>
-        Promise.all(ids.map(id => getTopicById(id, options))),
+        Promise.all(ids.map(id => getGambitContentfulEntryById(id, options))),
       ),
     });
   }

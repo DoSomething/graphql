@@ -83,20 +83,22 @@ const typeDefs = gql`
   type AutoReplyBroadcast implements Broadcast {
     ${broadcastFields}
     # The Auto Reply Topic ID to save as current topic.
-    topicId: Int!
+    topicId: String!
   }
 
   type PhotoPostBroadcast implements Broadcast {
     ${broadcastFields}
     # The Photo Post Topic ID to save as current topic.
-    topicId: Int!
+    topicId: String!
   }
 
   type TextPostBroadcast implements Broadcast {
     ${broadcastFields}
+    # The Photo Post Topic ID to save as current topic.
+    topicId: String!
   }
 
-  type GeneralBroadcast implements Broadcast {
+  type LegacyBroadcast implements Broadcast {
     ${broadcastFields}
   }
 
@@ -144,7 +146,7 @@ const resolvers = {
       if (broadcast.type === 'textPostBroadcast') {
         return 'TextPostBroadcast';
       }
-      return 'GeneralBroadcast';
+      return 'LegacyBroadcast';
     },
   },
   Query: {

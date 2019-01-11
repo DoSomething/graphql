@@ -10,52 +10,77 @@ const client = createClient({
 });
 
 /**
- * @param {Object} entry
+ * @param {Object} json
  * @return {Number}
  */
-const getCampaignId = entry => {
-  if (entry.fields.campaign) {
-    return entry.fields.campaign.fields.campaignId;
+const getCampaignId = json => {
+  if (json.fields.campaign) {
+    return json.fields.campaign.fields.campaignId;
   }
   return null;
 };
 
 /**
- * @param {Object} entry
+ * @param {Object} json
  * @return {String}
  */
-const getContentType = entry => entry.sys.contentType.sys.id;
+const getChangeTopicId = json => {
+  if (json.fields.topic) {
+    return json.sys.id;
+  }
+  return null;
+};
 
 /**
- * @param {Object} entry
+ * @param {Object} json
+ * @return {String}
+ */
+const getContentType = json => json.sys.contentType.sys.id;
+
+/**
+ * @param {Object} json
  * @return {Object}
  */
-const transformItem = entry => ({
-  id: entry.sys.id,
-  type: getContentType(entry),
-  createdAt: entry.sys.createdAt,
-  updatedAt: entry.sys.updatedAt,
-  name: entry.fields.name,
+const getSummary = json => ({
+  id: json.sys.id,
+  type: getContentType(json),
+  createdAt: json.sys.createdAt,
+  updatedAt: json.sys.updatedAt,
+  name: json.fields.name,
 });
 
 /**
- * @param {Object} entry
+ * @param {Object} json
  * @return {Object}
  */
-const getTopicFields = entry => {
-  const type = getContentType(entry);
-  const fields = entry.fields;
+const getFields = json => {
+  const type = getContentType(json);
+  const fields = json.fields;
 
   if (type === 'autoReply') {
     return {
-      campaignId: getCampaignId(entry),
-      autoReply: entry.fields.autoReply,
+      campaignId: getCampaignId(json),
+      autoReply: fields.autoReply,
+    };
+  }
+
+  if (type === 'autoReplyBroadcast') {
+    return {
+      text: fields.text,
+      topicId: getChangeTopicId(json),
+    };
+  }
+
+  if (type === 'photoPostBroadcast') {
+    return {
+      text: fields.text,
+      topicId: getChangeTopicId(json),
     };
   }
 
   if (type === 'photoPostConfig') {
     return {
-      campaignId: getCampaignId(entry),
+      campaignId: getCampaignId(json),
       askPhoto: fields.askPhotoMessage,
       askQuantity: fields.askQuantityMessage,
       invalidQuantity: fields.invalidQuantityMessage,
@@ -63,9 +88,16 @@ const getTopicFields = entry => {
     };
   }
 
+  if (type === 'textPostBroadcast') {
+    return {
+      text: fields.text,
+      topicId: getChangeTopicId(json),
+    };
+  }
+
   if (type === 'textPostConfig') {
     return {
-      campaignId: getCampaignId(entry),
+      campaignId: getCampaignId(json),
       invalidText: fields.invalidTextMessage,
       completedTextPost: fields.completedTextPostMessage,
     };
@@ -78,32 +110,24 @@ const getTopicFields = entry => {
  * @param {Object} json
  * @return {Object}
  */
-const transformTopic = json =>
-  assign(transformItem(json), getTopicFields(json));
+const transformItem = json => assign(getSummary(json), getFields(json));
 
 /**
- * @param {Object} json
- * @return {Object}
- */
-const transformBroadcast = json =>
-  assign(transformItem(json), { text: json.fields.text });
-
-/**
- * Fetch a broadcast from Gambit Content by ID.
+ * Fetch a Gambit Contentful entry by ID.
  *
  * @param {String} id
  * @return {Object}
  */
-export const getBroadcastById = async (id, context) => {
-  logger.debug('Loading broadcast from Gambit Content', { id });
+export const getGambitContentfulEntryById = async (id, context) => {
+  logger.debug('Loading Gambit Contentful entry', { id });
 
   try {
     const json = await client.getEntry(id);
 
-    return transformBroadcast(json);
+    return transformItem(json);
   } catch (exception) {
     const error = exception.message;
-    logger.warn('Unable to load broadcast.', { id, error, context });
+    logger.warn('Unable to load entry.', { id, error, context });
   }
 
   return null;
@@ -132,31 +156,10 @@ export const getBroadcasts = async (args, context) => {
 
     const json = await client.getEntries(query);
 
-    return map(json.items, transformBroadcast);
+    return map(json.items, transformItem);
   } catch (exception) {
     const error = exception.message;
     logger.warn('Unable to load broadcasts.', { error, context });
-  }
-
-  return null;
-};
-
-/**
- * Fetch a topic from Gambit Content by ID.
- *
- * @param {String} id
- * @return {Object}
- */
-export const getTopicById = async (id, context) => {
-  logger.debug('Loading topic from Gambit Content', { id });
-
-  try {
-    const json = await client.getEntry(id);
-
-    return transformTopic(json);
-  } catch (exception) {
-    const error = exception.message;
-    logger.warn('Unable to load topic.', { id, error, context });
   }
 
   return null;
