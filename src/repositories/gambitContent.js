@@ -11,26 +11,75 @@ const client = createClient({
 
 /**
  * @param {Object} entry
+ * @return {Number}
+ */
+const getCampaignId = entry => {
+  if (entry.fields.campaign) {
+    return entry.fields.campaign.fields.campaignId;
+  }
+  return null;
+};
+
+/**
+ * @param {Object} entry
+ * @return {String}
+ */
+const getContentType = entry => entry.sys.contentType.sys.id;
+
+/**
+ * @param {Object} entry
  * @return {Object}
  */
 const transformItem = entry => ({
   id: entry.sys.id,
-  type: entry.sys.contentType.sys.id,
+  type: getContentType(entry),
   createdAt: entry.sys.createdAt,
   updatedAt: entry.sys.updatedAt,
   name: entry.fields.name,
 });
 
 /**
+ * @param {Object} entry
+ * @return {Object}
+ */
+const getTopicFields = entry => {
+  const type = getContentType(entry);
+  const fields = entry.fields;
+
+  if (type === 'autoReply') {
+    return {
+      campaignId: getCampaignId(entry),
+      autoReply: entry.fields.autoReply,
+    };
+  }
+
+  if (type === 'photoPostConfig') {
+    return {
+      campaignId: getCampaignId(entry),
+      askPhoto: fields.askPhotoMessage,
+      askQuantity: fields.askQuantityMessage,
+      invalidQuantity: fields.invalidQuantityMessage,
+      invalidPhoto: fields.invalidPhotoMessage,
+    };
+  }
+
+  if (type === 'textPostConfig') {
+    return {
+      campaignId: getCampaignId(entry),
+      invalidText: fields.invalidTextMessage,
+      completedTextPost: fields.completedTextPostMessage,
+    };
+  }
+
+  return null;
+};
+
+/**
  * @param {Object} json
  * @return {Object}
  */
 const transformTopic = json =>
-  assign(transformItem(json), {
-    campaignId: json.fields.campaign
-      ? json.fields.campaign.fields.campaignId
-      : null,
-  });
+  assign(transformItem(json), getTopicFields(json));
 
 /**
  * @param {Object} json
