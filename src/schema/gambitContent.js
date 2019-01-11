@@ -26,12 +26,12 @@ const broadcastFields = `
  * @var {String}
  */
 const typeDefs = gql`
-  # A DoSomething.org chatbot topic.
+  # A DoSomething.org conversation topic.
   interface Topic {
     ${entryFields}
   }
 
-  # A hardcoded chatbot topic.
+  # A hardcoded conversation topic.
   type RivescriptTopic implements Topic {
     # The Rivescript topic (e.g. 'unsubscribed', 'support')
     id: String
@@ -89,7 +89,7 @@ const typeDefs = gql`
     completedTextPost: String!
   }
 
-  # A DoSomething.org chatbot broadcast.
+  # A DoSomething.org broadcast.
   interface Broadcast {
     ${broadcastFields}
   }
@@ -97,15 +97,19 @@ const typeDefs = gql`
   # Broadcast that asks user a yes or no question, and changes topic to its own ID.
   type AskYesNoBroadcastTopic implements Broadcast, Topic {
     ${broadcastFields}
-    # Message sent if user says yes
+    # Message sent if user says yes.
     saidYes: String!
     # The topic ID to change conversation to if user says yes 
     saidYesTopicId: String!
+    # The topic to change conversation to if user says yes.
+    saidYesTopic: Topic
     # Message sent if user says yes 
     saidNo: String!
-    # The topic ID to change conversation to if user says no 
+    # The topic ID to change conversation to if user says no.
     saidNoTopicId: String!
-    # Message sent until user responds with yes or no
+    # The topic to change conversation to if user says no.
+    saidNoTopic: Topic
+    # Message sent until user responds with yes or no.
     invalidAskYesNoResponse: String!
   }
 
@@ -175,6 +179,12 @@ const typeDefs = gql`
  * @var {Object}
  */
 const resolvers = {
+  AskYesNoBroadcastTopic: {
+    saidNoTopic: (topic, args, context) =>
+      Loader(context).topics.load(topic.saidNoTopicId, context),
+    saidYesTopic: (topic, args, context) =>
+      Loader(context).topics.load(topic.saidYesTopicId, context),
+  },
   AutoReplyBroadcast: {
     topic: (broadcast, args, context) =>
       Loader(context).topics.load(broadcast.topicId, context),
