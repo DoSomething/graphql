@@ -4,6 +4,7 @@ import { mergeSchemas } from 'graphql-tools';
 // Schemas
 import rogueSchema from './rogue';
 import northstarSchema from './northstar';
+import gambitContentSchema from './gambitContent';
 import gambitConversationsSchema from './gambitConversations';
 
 /**
@@ -34,6 +35,15 @@ const linkSchema = gql`
   extend type Conversation {
     # The user this conversation is with.
     user: User
+    # The current topic of the conversation.
+    topic: Topic
+  }
+
+  extend type Message {
+    # The user this message was sent to or from (depending on message direction).
+    user: User
+    # The topic that conversation was set to when the message was created.
+    topic: Topic
   }
 `;
 
@@ -123,6 +133,21 @@ const linkResolvers = {
     },
   },
   Conversation: {
+    topic: {
+      fragment: 'fragment TopicFragment on Conversation { topicId }',
+      resolve(conversation, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: gambitContentSchema,
+          operation: 'query',
+          fieldName: 'topic',
+          args: {
+            id: conversation.topicId,
+          },
+          context,
+          info,
+        });
+      },
+    },
     user: {
       fragment: 'fragment UserFragment on Conversation { userId }',
       resolve(conversation, args, context, info) {
@@ -132,6 +157,38 @@ const linkResolvers = {
           fieldName: 'user',
           args: {
             id: conversation.userId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
+  Message: {
+    topic: {
+      fragment: 'fragment TopicFragment on Message { topicId }',
+      resolve(message, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: gambitContentSchema,
+          operation: 'query',
+          fieldName: 'topic',
+          args: {
+            id: message.topicId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+    user: {
+      fragment: 'fragment UserFragment on Message { userId }',
+      resolve(message, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: northstarSchema,
+          operation: 'query',
+          fieldName: 'user',
+          args: {
+            id: message.userId,
           },
           context,
           info,
@@ -151,6 +208,7 @@ const schema = mergeSchemas({
     northstarSchema,
     rogueSchema,
     gambitConversationsSchema,
+    gambitContentSchema,
     linkSchema,
   ],
   resolvers: linkResolvers,

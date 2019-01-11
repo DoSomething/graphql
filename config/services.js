@@ -53,6 +53,12 @@ const environments = {
     displayName: 'QA',
 
     // Gambit
+    gambitContent: {
+      url: 'https://ds-mdata-responder-staging.herokuapp.com',
+      // TODO: Validate requests with Northstar token instead of Gambit header token.
+      apiKey: process.env.QA_GAMBIT_CONTENT_API_KEY,
+      authHeader: 'x-gambit-api-key',
+    },
     gambitConversations: {
       url: 'https://gambit-conversations-staging.herokuapp.com',
       // TODO: Validate requests with Northstar token instead of Gambit basic auth.
@@ -83,6 +89,12 @@ const environments = {
     displayName: 'production',
 
     // Gambit
+    gambitContent: {
+      url: 'https://ds-mdata-responder.herokuapp.com',
+      // TODO: Validate requests with Northstar token instead of Gambit header token.
+      apiKey: process.env.PRODUCTION_GAMBIT_CONTENT_API_KEY,
+      authHeader: 'x-gambit-api-key',
+    },
     gambitConversations: {
       url: 'https://gambit-conversations-prod.herokuapp.com',
       // TODO: Validate requests with Northstar token instead of Gambit basic auth.

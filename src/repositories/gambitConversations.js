@@ -8,6 +8,7 @@ const GAMBIT_CONVERSATIONS_URL = config('services.gambitConversations.url');
 const GAMBIT_CONVERSATIONS_AUTH = `${config(
   'services.gambitConversations.user',
 )}:${config('services.gambitConversations.pass')}`;
+
 // TODO: Add Northstar token support to Gambit Conversations, use helpers.authorizedRequest
 const authorizedRequest = () => ({
   headers: {
@@ -37,6 +38,15 @@ export const transformItem = json => transformResponse(json);
 export const transformCollection = json => map(json, transformResponse);
 
 /**
+ * @param {Number} page
+ * @param {Number} count
+ * @return {String}
+ */
+function getPaginationQueryString(page, count) {
+  return `limit=${count}&skip=${(page - 1) * count}&sort=-createdAt`;
+}
+
+/**
  * Fetch a conversation from Gambit by ID.
  *
  * @param {String} id
@@ -44,11 +54,13 @@ export const transformCollection = json => map(json, transformResponse);
  */
 export const getConversationById = async (id, context) => {
   logger.debug('Loading conversation from Gambit', { id });
+
   try {
     const response = await fetch(
       `${GAMBIT_CONVERSATIONS_URL}/api/v1/conversations/${id}`,
       authorizedRequest(context),
     );
+
     const json = await response.json();
 
     return transformItem(json);
@@ -93,7 +105,54 @@ export const getConversationsByUserId = async (args, context) => {
   const response = await fetch(
     `${GAMBIT_CONVERSATIONS_URL}/api/v1/conversations?query={"userId":"${
       userId
-    }"}`,
+    }"}&${getPaginationQueryString(args.page, args.count)}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
+};
+
+/**
+ * Fetch a message from Gambit by ID.
+ *
+ * @param {String} id
+ * @return {Object}
+ */
+export const getMessageById = async (id, context) => {
+  logger.debug('Loading message from Gambit', { id });
+
+  try {
+    const response = await fetch(
+      `${GAMBIT_CONVERSATIONS_URL}/api/v1/messages/${id}`,
+      authorizedRequest(context),
+    );
+
+    const json = await response.json();
+
+    return transformItem(json);
+  } catch (exception) {
+    const error = exception.message;
+    logger.warn('Unable to load message.', { id, error, context });
+  }
+
+  return null;
+};
+
+/**
+ * Fetch messages from Gambit.
+ *
+ * @return {Array}
+ */
+export const getMessages = async (args, context) => {
+  logger.debug('Loading messages from Gambit');
+
+  const response = await fetch(
+    `${GAMBIT_CONVERSATIONS_URL}/api/v1/messages?${getPaginationQueryString(
+      args.page,
+      args.count,
+    )}`,
     authorizedRequest(context),
   );
 
@@ -108,13 +167,13 @@ export const getConversationsByUserId = async (args, context) => {
  * @param {String} id
  * @return {Array}
  */
-export const getMessagesByConversationId = async (id, context) => {
-  logger.debug('Loading conversation messages from Gambit', { id });
+export const getMessagesByConversationId = async (id, page, count, context) => {
+  logger.debug('Loading messages from Gambit for Conversation', { id });
 
   const response = await fetch(
     `${GAMBIT_CONVERSATIONS_URL}/api/v1/messages?query={"conversationId":"${
       id
-    }"}`,
+    }"}&${getPaginationQueryString(page, count)}`,
     authorizedRequest(context),
   );
 
@@ -122,4 +181,5 @@ export const getMessagesByConversationId = async (id, context) => {
 
   return transformCollection(json);
 };
+
 export default null;
