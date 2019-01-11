@@ -26,7 +26,7 @@ const getCampaignId = json => {
  */
 const getChangeTopicId = json => {
   if (json.fields.topic) {
-    return json.sys.id;
+    return json.fields.topic.sys.id;
   }
   return null;
 };

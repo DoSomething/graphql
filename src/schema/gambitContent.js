@@ -82,20 +82,26 @@ const typeDefs = gql`
 
   type AutoReplyBroadcast implements Broadcast {
     ${broadcastFields}
-    # The Auto Reply Topic ID to save as current topic.
+    # The auto reply topic ID to change conversation to.
     topicId: String!
+    # The auto reply topic to change conversation to.
+    topic: AutoReplyTopic
   }
 
   type PhotoPostBroadcast implements Broadcast {
     ${broadcastFields}
-    # The Photo Post Topic ID to save as current topic.
+    # The photo post topic ID to change conversation to.
     topicId: String!
+    # The photo post topic to change conversation to.
+    topic: PhotoPostTopic
   }
 
   type TextPostBroadcast implements Broadcast {
     ${broadcastFields}
-    # The Photo Post Topic ID to save as current topic.
+    # The text post Topic ID to change conversation to.
     topicId: String!
+    # The text post topic to change conversation to.
+    topic: TextPostTopic
   }
 
   type LegacyBroadcast implements Broadcast {
@@ -135,6 +141,10 @@ const typeDefs = gql`
  * @var {Object}
  */
 const resolvers = {
+  AutoReplyBroadcast: {
+    topic: (broadcast, args, context) =>
+      Loader(context).topics.load(broadcast.topicId, context),
+  },
   Broadcast: {
     __resolveType(broadcast) {
       if (broadcast.type === 'autoReplyBroadcast') {
@@ -162,6 +172,14 @@ const resolvers = {
       Loader(context).broadcasts.load(args.id),
     textPostTopic: (_, args, context) => Loader(context).topics.load(args.id),
     topic: (_, args, context) => Loader(context).topics.load(args.id),
+  },
+  PhotoPostBroadcast: {
+    topic: (broadcast, args, context) =>
+      Loader(context).topics.load(broadcast.topicId, context),
+  },
+  TextPostBroadcast: {
+    topic: (broadcast, args, context) =>
+      Loader(context).topics.load(broadcast.topicId, context),
   },
   Topic: {
     __resolveType(topic) {
