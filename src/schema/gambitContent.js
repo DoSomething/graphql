@@ -53,7 +53,7 @@ const typeDefs = gql`
   type PhotoPostTopic implements Topic {
     ${entryFields}
     # The campaign to create signup and photo post for if conversation changes to this topic.
-    campaignId: Int!
+    campaignId: Int
     # Template sent until user replies with START to begin a photo post.
     startPhotoPostAutoReply: String!
     # Template that asks user to reply with quantity.
@@ -82,7 +82,7 @@ const typeDefs = gql`
   type TextPostTopic implements Topic {
     ${entryFields}
     # The campaign to create signup and text post for if conversation changes to this topic.
-    campaignId: Int!
+    campaignId: Int
     # Template that asks user to resend a message with valid text post.
     invalidText: String!
     # Template that confirms a text post was created. Replying to this creates another text post.
