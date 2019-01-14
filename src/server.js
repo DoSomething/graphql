@@ -37,8 +37,10 @@ if (app.get('env') === 'production') {
 // Use Helmet for security headers.
 app.use(helmet({ noCache: true }));
 
-// Allow cross-origin requests from client-side apps.
+// Allow cross-origin requests from client-side apps,
+// including 'OPTIONS' for pre-flight requests.
 app.use(cors());
+app.options('*', cors());
 
 // Register routes & start it up!
 (async () => {
