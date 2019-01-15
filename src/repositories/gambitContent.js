@@ -31,7 +31,7 @@ const getRedisClient = () => {
 
 const cache = new Cacheman(config('services.gambitContent.cache.name'), {
   ttl: config('services.gambitContent.cache.ttl'),
-  engine: new RedisEngine(getRedisClient),
+  engine: new RedisEngine(getRedisClient()),
 });
 
 /**
