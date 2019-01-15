@@ -1,12 +1,37 @@
 import { createClient } from 'contentful';
+import redis from 'redis';
+import Cacheman from 'cacheman';
+import RedisEngine from 'cacheman-redis';
 import logger from 'heroku-logger';
-import { assign, map } from 'lodash';
-
+import { assign } from 'lodash';
 import config from '../../config';
 
-const client = createClient({
+const contentfulClient = createClient({
   space: config('services.gambitContent.spaceId'),
   accessToken: config('services.gambitContent.accessToken'),
+});
+
+let redisClient = null;
+
+const getRedisClient = () => {
+  if (!redisClient) {
+    redisClient = redis.createClient(config('cache.url'));
+    redisClient.on('error', error => {
+      logger.error('redisClient connection error', error);
+      redisClient.quit();
+      throw error;
+    });
+
+    redisClient.on('reconnecting', () => {
+      logger.debug('redisClient is reconnecting');
+    });
+  }
+  return redisClient;
+};
+
+const cache = new Cacheman(config('services.gambitContent.cache.name'), {
+  ttl: config('services.gambitContent.cache.ttl'),
+  engine: new RedisEngine(getRedisClient),
 });
 
 /**
@@ -146,9 +171,20 @@ export const getGambitContentfulEntryById = async (id, context) => {
   logger.debug('Loading Gambit Contentful entry', { id });
 
   try {
-    const json = await client.getEntry(id);
+    const cachedEntry = await cache.get(id);
 
-    return transformItem(json);
+    if (cachedEntry) {
+      logger.debug('Cache hit for Gambit Contentful entry', { id });
+      return cachedEntry;
+    }
+
+    logger.debug('Cache miss for Gambit Contentful entry', { id });
+
+    const json = await contentfulClient.getEntry(id);
+    const data = transformItem(json);
+    cache.set(id, data);
+
+    return data;
   } catch (exception) {
     const error = exception.message;
     logger.warn('Unable to load Gambit Contentful entry.', {
@@ -156,38 +192,6 @@ export const getGambitContentfulEntryById = async (id, context) => {
       error,
       context,
     });
-  }
-
-  return null;
-};
-
-/**
- * Fetch broadcasts from Gambit Content.
- *
- * @return {Array}
- */
-export const getBroadcasts = async (args, context) => {
-  logger.debug('Loading broadcasts from Gambit Contentful');
-
-  const broadcastTypes = [
-    'autoReplyBroadcast',
-    'askSubscriptionStatus',
-    'askVotingPlanStatus',
-    'askYesNo',
-    'photoPostBroadcast',
-    'textPostBroadcast',
-  ];
-
-  try {
-    const query = { order: '-sys.createdAt' };
-    query['sys.contentType.sys.id[in]'] = broadcastTypes.join(',');
-
-    const json = await client.getEntries(query);
-
-    return map(json.items, transformItem);
-  } catch (exception) {
-    const error = exception.message;
-    logger.warn('Unable to load broadcasts.', { error, context });
   }
 
   return null;

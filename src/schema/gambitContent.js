@@ -3,8 +3,6 @@ import gql from 'tagged-template-noop';
 
 import Loader from '../loader';
 
-import { getBroadcasts } from '../repositories/gambitContent';
-
 const entryFields = `
   # The entry ID.
   id: String
@@ -153,13 +151,6 @@ const typeDefs = gql`
     autoReplyTopic(id: String!): AutoReplyBroadcast
     # Get a broadcast by ID.
     broadcast(id: String!): Broadcast
-    # Get a paginated collection of broadcasts.
-    broadcasts(
-      # The page of results to return.
-      page: Int = 1
-      # The number of results per page.
-      count: Int = 20
-    ): [Broadcast]
     # Get a Photo Post Broadcast by ID.
     photoPostBroadcast(id: String!): PhotoPostBroadcast
     # Get a Photo Post Topic by ID.
@@ -213,7 +204,6 @@ const resolvers = {
       Loader(context).broadcasts.load(args.id),
     autoReplyTopic: (_, args, context) => Loader(context).topics.load(args.id),
     broadcast: (_, args, context) => Loader(context).broadcasts.load(args.id),
-    broadcasts: (_, args, context) => getBroadcasts(args, context),
     photoPostBroadcast: (_, args, context) =>
       Loader(context).broadcasts.load(args.id),
     photoPostTopic: (_, args, context) => Loader(context).topics.load(args.id),

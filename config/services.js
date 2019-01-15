@@ -56,6 +56,10 @@ const environments = {
     gambitContent: {
       spaceId: process.env.GAMBIT_CONTENTFUL_SPACE_ID,
       accessToken: process.env.GAMBIT_CONTENTFUL_ACCESS_TOKEN,
+      cache: {
+        name: 'gambitContent',
+        ttl: 3600,
+      },
     },
     gambitConversations: {
       url: 'https://gambit-conversations-staging.herokuapp.com',
@@ -90,6 +94,10 @@ const environments = {
     gambitContent: {
       spaceId: process.env.GAMBIT_CONTENTFUL_SPACE_ID,
       accessToken: process.env.GAMBIT_CONTENTFUL_ACCESS_TOKEN,
+      cache: {
+        name: 'gambitContent',
+        ttl: 3600,
+      },
     },
     gambitConversations: {
       url: 'https://gambit-conversations-prod.herokuapp.com',
