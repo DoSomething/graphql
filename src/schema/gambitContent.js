@@ -147,8 +147,8 @@ const typeDefs = gql`
     askYesNoBroadcastTopic(id: String!): AskYesNoBroadcastTopic
     # Get a Auto Reply Broadcast by ID.
     autoReplyBroadcast(id: String!): AutoReplyBroadcast
-    # Get a Auto Reply Broadcast by ID.
-    autoReplyTopic(id: String!): AutoReplyBroadcast
+    # Get a Auto Reply Topic by ID.
+    autoReplyTopic(id: String!): AutoReplyTopic
     # Get a broadcast by ID.
     broadcast(id: String!): Broadcast
     # Get a Photo Post Broadcast by ID.
