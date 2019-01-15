@@ -182,7 +182,7 @@ export const getGambitContentfulEntryById = async (id, context) => {
 
     const json = await contentfulClient.getEntry(id);
     const data = transformItem(json);
-    await cache.set(id, data);
+    cache.set(id, data);
 
     return data;
   } catch (exception) {
