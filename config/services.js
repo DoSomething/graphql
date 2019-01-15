@@ -1,3 +1,15 @@
+/**
+ * Gambit Content has a single environment used across all GraphQL environments.
+ */
+const gambitContent = {
+  spaceId: process.env.GAMBIT_CONTENTFUL_SPACE_ID,
+  accessToken: process.env.GAMBIT_CONTENTFUL_ACCESS_TOKEN,
+  cache: {
+    name: 'gambitContent',
+    ttl: 3600,
+  },
+};
+
 const environments = {
   /**
    * Querying against local development instances.
@@ -30,6 +42,15 @@ const environments = {
   dev: {
     displayName: 'Development',
 
+    // Gambit
+    gambitContent,
+    gambitConversations: {
+      // Note: Conversations doesn't have a dev instance, so we use QA.
+      url: 'https://gambit-conversations-staging.herokuapp.com',
+      user: process.env.QA_GAMBIT_CONVERSATIONS_USER,
+      pass: process.env.QA_GAMBIT_CONVERSATIONS_PASS,
+    },
+
     // Northstar
     northstar: {
       url: 'https://identity-dev.dosomething.org',
@@ -53,14 +74,7 @@ const environments = {
     displayName: 'QA',
 
     // Gambit
-    gambitContent: {
-      spaceId: process.env.GAMBIT_CONTENTFUL_SPACE_ID,
-      accessToken: process.env.GAMBIT_CONTENTFUL_ACCESS_TOKEN,
-      cache: {
-        name: 'gambitContent',
-        ttl: 3600,
-      },
-    },
+    gambitContent,
     gambitConversations: {
       url: 'https://gambit-conversations-staging.herokuapp.com',
       // TODO: Validate requests with Northstar token instead of Gambit basic auth.
@@ -91,14 +105,7 @@ const environments = {
     displayName: 'production',
 
     // Gambit
-    gambitContent: {
-      spaceId: process.env.GAMBIT_CONTENTFUL_SPACE_ID,
-      accessToken: process.env.GAMBIT_CONTENTFUL_ACCESS_TOKEN,
-      cache: {
-        name: 'gambitContent',
-        ttl: 3600,
-      },
-    },
+    gambitContent,
     gambitConversations: {
       url: 'https://gambit-conversations-prod.herokuapp.com',
       // TODO: Validate requests with Northstar token instead of Gambit basic auth.
