@@ -39,6 +39,12 @@ const getContentType = json => json.sys.contentType.sys.id;
 
 /**
  * @param {Object} json
+ * @return {String}
+ */
+const getMessageText = json => json.fields.text;
+
+/**
+ * @param {Object} json
  * @return {Object}
  */
 const getSummary = json => ({
@@ -57,6 +63,17 @@ const getFields = json => {
   const type = getContentType(json);
   const fields = json.fields;
 
+  if (type === 'askYesNo') {
+    return {
+      invalidAskYesNoResponse: fields.invalidAskYesNoResponse,
+      saidNo: getMessageText(fields.noTransition),
+      saidNoTopicId: getChangeTopicId(fields.noTransition),
+      saidYes: getMessageText(fields.yesTransition),
+      saidYesTopicId: getChangeTopicId(fields.yesTransition),
+      text: getMessageText(json),
+    };
+  }
+
   if (type === 'autoReply') {
     return {
       autoReply: fields.autoReply,
@@ -66,7 +83,7 @@ const getFields = json => {
 
   if (type === 'autoReplyBroadcast') {
     return {
-      text: fields.text,
+      text: getMessageText(json),
       topicId: getChangeTopicId(json),
     };
   }
