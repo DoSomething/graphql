@@ -171,7 +171,10 @@ const resolvers = {
       if (broadcast.contentType === 'textPostBroadcast') {
         return 'TextPostBroadcast';
       }
-      return 'LegacyBroadcast';
+      if (broadcast.contentType === 'broadcast') {
+        return 'LegacyBroadcast';
+      }
+      return null;
     },
   },
   Query: {
