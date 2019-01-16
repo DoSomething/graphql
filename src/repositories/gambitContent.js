@@ -96,6 +96,7 @@ const getFields = json => {
       saidYes: getMessageText(fields.yesTransition),
       saidYesTopicId: getChangeTopicId(fields.yesTransition),
       text: getMessageText(json),
+      type: 'askYesNoBroadcastTopic',
     };
   }
 
@@ -103,6 +104,7 @@ const getFields = json => {
     return {
       autoReply: fields.autoReply,
       campaignId: getCampaignId(json),
+      type: 'autoReplyTopic',
     };
   }
 
@@ -110,6 +112,7 @@ const getFields = json => {
     return {
       text: getMessageText(json),
       topicId: getChangeTopicId(json),
+      type,
     };
   }
 
@@ -117,23 +120,29 @@ const getFields = json => {
     return {
       text: fields.text,
       topicId: getChangeTopicId(json),
+      type,
     };
   }
 
   if (type === 'photoPostConfig') {
     return {
-      askCaption: fields.askCaptionMessage,
+      askCaption:
+        fields.askCaptionMessage ||
+        'Got it! Now text back a caption for your photo (think Instagram)! Keep it short & sweet, under 60 characters please.',
       askPhoto: fields.askPhotoMessage,
       askQuantity: fields.askQuantityMessage,
       askWhyParticipated: fields.askWhyParticipatedMessage,
       campaignId: getCampaignId(json),
       completedPhotoPost: fields.completedMenuMessage,
       completedPhotoPostAutoReply: fields.invalidCompletedMenuCommandMessage,
-      invalidCaption: fields.invalidCaptionMessage,
+      invalidCaption:
+        fields.invalidCaptionMessage ||
+        "Sorry, I didn't get that. Text Q if you have a question.\n\nText back a caption for your photo -- keep it short & sweet, under 60 characters please. (but more than 3!)",
       invalidQuantity: fields.invalidQuantityMessage,
       invalidPhoto: fields.invalidPhotoMessage,
       invalidWhyParticipated: fields.invalidWhyParticipatedMessage,
       startPhotoPostAutoReply: fields.invalidSignupMenuCommandMessage,
+      type: 'photoPostTopic',
     };
   }
 
@@ -141,6 +150,7 @@ const getFields = json => {
     return {
       text: fields.text,
       topicId: getChangeTopicId(json),
+      type,
     };
   }
 
@@ -149,6 +159,7 @@ const getFields = json => {
       campaignId: getCampaignId(json),
       completedTextPost: fields.completedTextPostMessage,
       invalidText: fields.invalidTextMessage,
+      type: 'textPostTopic',
     };
   }
 
