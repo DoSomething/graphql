@@ -74,7 +74,7 @@ const getMessageText = json => json.fields.text;
  */
 const getSummary = json => ({
   id: json.sys.id,
-  type: getContentType(json),
+  contentType: getContentType(json),
   createdAt: json.sys.createdAt,
   updatedAt: json.sys.updatedAt,
   name: json.fields.name,
@@ -85,10 +85,10 @@ const getSummary = json => ({
  * @return {Object}
  */
 const getFields = json => {
-  const type = getContentType(json);
+  const contentType = getContentType(json);
   const fields = json.fields;
 
-  if (type === 'askYesNo') {
+  if (contentType === 'askYesNo') {
     return {
       invalidAskYesNoResponse: fields.invalidAskYesNoResponse,
       saidNo: getMessageText(fields.noTransition),
@@ -99,37 +99,41 @@ const getFields = json => {
     };
   }
 
-  if (type === 'autoReply') {
+  if (contentType === 'autoReply') {
     return {
       autoReply: fields.autoReply,
       campaignId: getCampaignId(json),
     };
   }
 
-  if (type === 'autoReplyBroadcast') {
+  if (contentType === 'autoReplyBroadcast') {
     return {
       text: getMessageText(json),
       topicId: getChangeTopicId(json),
     };
   }
 
-  if (type === 'photoPostBroadcast') {
+  if (contentType === 'photoPostBroadcast') {
     return {
       text: fields.text,
       topicId: getChangeTopicId(json),
     };
   }
 
-  if (type === 'photoPostConfig') {
+  if (contentType === 'photoPostConfig') {
     return {
-      askCaption: fields.askCaptionMessage,
+      askCaption:
+        fields.askCaptionMessage ||
+        'Got it! Now text back a caption for your photo (think Instagram)! Keep it short & sweet, under 60 characters please.',
       askPhoto: fields.askPhotoMessage,
       askQuantity: fields.askQuantityMessage,
       askWhyParticipated: fields.askWhyParticipatedMessage,
       campaignId: getCampaignId(json),
       completedPhotoPost: fields.completedMenuMessage,
       completedPhotoPostAutoReply: fields.invalidCompletedMenuCommandMessage,
-      invalidCaption: fields.invalidCaptionMessage,
+      invalidCaption:
+        fields.invalidCaptionMessage ||
+        "Sorry, I didn't get that. Text Q if you have a question.\n\nText back a caption for your photo -- keep it short & sweet, under 60 characters please. (but more than 3!)",
       invalidQuantity: fields.invalidQuantityMessage,
       invalidPhoto: fields.invalidPhotoMessage,
       invalidWhyParticipated: fields.invalidWhyParticipatedMessage,
@@ -137,14 +141,14 @@ const getFields = json => {
     };
   }
 
-  if (type === 'textPostBroadcast') {
+  if (contentType === 'textPostBroadcast') {
     return {
       text: fields.text,
       topicId: getChangeTopicId(json),
     };
   }
 
-  if (type === 'textPostConfig') {
+  if (contentType === 'textPostConfig') {
     return {
       campaignId: getCampaignId(json),
       completedTextPost: fields.completedTextPostMessage,
