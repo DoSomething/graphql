@@ -8,8 +8,8 @@ const entryFields = `
   id: String
   # The entry name.
   name: String
-  # The entry type (e.g. 'photoPostConfig', 'askYesNo').
-  type: String
+  # The entry content type (e.g. 'photoPostConfig', 'askYesNo').
+  contentType: String
 `;
 
 const broadcastFields = `
@@ -27,15 +27,6 @@ const typeDefs = gql`
   # A DoSomething.org conversation topic.
   interface Topic {
     ${entryFields}
-  }
-
-  # A hardcoded conversation topic.
-  type RivescriptTopic implements Topic {
-    # The Rivescript topic (e.g. 'unsubscribed', 'support')
-    id: String
-    name: String
-    # The topic type
-    type: String
   }
 
   # Topic for sending an auto-reply message (creates signup if it has a campaign set)
@@ -182,16 +173,16 @@ const resolvers = {
   },
   Broadcast: {
     __resolveType(broadcast) {
-      if (broadcast.type === 'askYesNo') {
+      if (broadcast.contentType === 'askYesNo') {
         return 'AskYesNoBroadcastTopic';
       }
-      if (broadcast.type === 'autoReplyBroadcast') {
+      if (broadcast.contentType === 'autoReplyBroadcast') {
         return 'AutoReplyBroadcast';
       }
-      if (broadcast.type === 'photoPostBroadcast') {
+      if (broadcast.contentType === 'photoPostBroadcast') {
         return 'PhotoPostBroadcast';
       }
-      if (broadcast.type === 'textPostBroadcast') {
+      if (broadcast.contentType === 'textPostBroadcast') {
         return 'TextPostBroadcast';
       }
       return 'LegacyBroadcast';
@@ -222,19 +213,19 @@ const resolvers = {
   },
   Topic: {
     __resolveType(topic) {
-      if (topic.type === 'askYesNo') {
+      if (topic.contentType === 'askYesNo') {
         return 'AskYesNoBroadcastTopic';
       }
-      if (topic.type === 'autoReply') {
+      if (topic.contentType === 'autoReply') {
         return 'AutoReplyTopic';
       }
-      if (topic.type === 'photoPostConfig') {
+      if (topic.contentType === 'photoPostConfig') {
         return 'PhotoPostTopic';
       }
-      if (topic.type === 'textPostConfig') {
+      if (topic.contentType === 'textPostConfig') {
         return 'TextPostTopic';
       }
-      return 'RivescriptTopic';
+      return null;
     },
   },
 };

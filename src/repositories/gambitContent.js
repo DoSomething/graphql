@@ -74,7 +74,7 @@ const getMessageText = json => json.fields.text;
  */
 const getSummary = json => ({
   id: json.sys.id,
-  type: getContentType(json),
+  contentType: getContentType(json),
   createdAt: json.sys.createdAt,
   updatedAt: json.sys.updatedAt,
   name: json.fields.name,
@@ -85,10 +85,10 @@ const getSummary = json => ({
  * @return {Object}
  */
 const getFields = json => {
-  const type = getContentType(json);
+  const contentType = getContentType(json);
   const fields = json.fields;
 
-  if (type === 'askYesNo') {
+  if (contentType === 'askYesNo') {
     return {
       invalidAskYesNoResponse: fields.invalidAskYesNoResponse,
       saidNo: getMessageText(fields.noTransition),
@@ -96,35 +96,31 @@ const getFields = json => {
       saidYes: getMessageText(fields.yesTransition),
       saidYesTopicId: getChangeTopicId(fields.yesTransition),
       text: getMessageText(json),
-      type: 'askYesNoBroadcastTopic',
     };
   }
 
-  if (type === 'autoReply') {
+  if (contentType === 'autoReply') {
     return {
       autoReply: fields.autoReply,
       campaignId: getCampaignId(json),
-      type: 'autoReplyTopic',
     };
   }
 
-  if (type === 'autoReplyBroadcast') {
+  if (contentType === 'autoReplyBroadcast') {
     return {
       text: getMessageText(json),
       topicId: getChangeTopicId(json),
-      type,
     };
   }
 
-  if (type === 'photoPostBroadcast') {
+  if (contentType === 'photoPostBroadcast') {
     return {
       text: fields.text,
       topicId: getChangeTopicId(json),
-      type,
     };
   }
 
-  if (type === 'photoPostConfig') {
+  if (contentType === 'photoPostConfig') {
     return {
       askCaption:
         fields.askCaptionMessage ||
@@ -142,24 +138,21 @@ const getFields = json => {
       invalidPhoto: fields.invalidPhotoMessage,
       invalidWhyParticipated: fields.invalidWhyParticipatedMessage,
       startPhotoPostAutoReply: fields.invalidSignupMenuCommandMessage,
-      type: 'photoPostTopic',
     };
   }
 
-  if (type === 'textPostBroadcast') {
+  if (contentType === 'textPostBroadcast') {
     return {
       text: fields.text,
       topicId: getChangeTopicId(json),
-      type,
     };
   }
 
-  if (type === 'textPostConfig') {
+  if (contentType === 'textPostConfig') {
     return {
       campaignId: getCampaignId(json),
       completedTextPost: fields.completedTextPostMessage,
       invalidText: fields.invalidTextMessage,
-      type: 'textPostTopic',
     };
   }
 
