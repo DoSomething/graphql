@@ -134,22 +134,8 @@ const typeDefs = gql`
   }
 
   type Query {
-    # Get a Ask Yes No Broadcast Topic by ID.
-    askYesNoBroadcastTopic(id: String!): AskYesNoBroadcastTopic
-    # Get a Auto Reply Broadcast by ID.
-    autoReplyBroadcast(id: String!): AutoReplyBroadcast
-    # Get a Auto Reply Topic by ID.
-    autoReplyTopic(id: String!): AutoReplyTopic
     # Get a broadcast by ID.
     broadcast(id: String!): Broadcast
-    # Get a Photo Post Broadcast by ID.
-    photoPostBroadcast(id: String!): PhotoPostBroadcast
-    # Get a Photo Post Topic by ID.
-    photoPostTopic(id: String!): PhotoPostTopic
-    # Get a Text Post Broadcast by ID.
-    textPostBroadcast(id: String!): TextPostBroadcast
-    # Get a Text Post Topic by ID.
-    textPostTopic(id: String!): TextPostTopic
     # Get a topic by ID.
     topic(id: String!): Topic
   }
@@ -189,18 +175,7 @@ const resolvers = {
     },
   },
   Query: {
-    askYesNoBroadcastTopic: (_, args, context) =>
-      Loader(context).broadcasts.load(args.id),
-    autoReplyBroadcast: (_, args, context) =>
-      Loader(context).broadcasts.load(args.id),
-    autoReplyTopic: (_, args, context) => Loader(context).topics.load(args.id),
     broadcast: (_, args, context) => Loader(context).broadcasts.load(args.id),
-    photoPostBroadcast: (_, args, context) =>
-      Loader(context).broadcasts.load(args.id),
-    photoPostTopic: (_, args, context) => Loader(context).topics.load(args.id),
-    textPostBroadcast: (_, args, context) =>
-      Loader(context).broadcasts.load(args.id),
-    textPostTopic: (_, args, context) => Loader(context).topics.load(args.id),
     topic: (_, args, context) => Loader(context).topics.load(args.id),
   },
   PhotoPostBroadcast: {
