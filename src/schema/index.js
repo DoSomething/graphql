@@ -46,18 +46,18 @@ const linkSchema = gql`
     topic: Topic
   }
 
-  extend type AutoReplyTopic {
-    # The campaign that this topic should create signups and posts for.
+  extend type AutoReplySignupTopic {
+    # The campaign that this topic should create signups for.
     campaign: Campaign
   }
 
   extend type PhotoPostTopic {
-    # The campaign that this topic should create signups and posts for.
+    # The campaign that this topic should create signups and photo posts for.
     campaign: Campaign
   }
 
   extend type TextPostTopic {
-    # The campaign that this topic should create signups and posts for.
+    # The campaign that this topic should create signups and text posts for.
     campaign: Campaign
   }
 `;
@@ -211,9 +211,10 @@ const linkResolvers = {
       },
     },
   },
-  AutoReplyTopic: {
+  AutoReplySignupTopic: {
     campaign: {
-      fragment: 'fragment CampaignFragment on AutoReplyTopic { campaignId }',
+      fragment:
+        'fragment CampaignFragment on AutoReplySignupTopic { campaignId }',
       resolve(topic, args, context, info) {
         return info.mergeInfo.delegateToSchema({
           schema: rogueSchema,

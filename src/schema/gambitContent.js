@@ -29,11 +29,17 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  # Topic for sending an auto-reply message (creates signup if it has a campaign set)
+  # Topic for sending a single auto-reply message.
   type AutoReplyTopic implements Topic {
     ${entryFields}
-    # The campaign to create signup for if conversation changes to this topic (optional).
-    campaignId: Int
+    # The auto reply text.
+    autoReply: String!
+  }
+
+  # Topic for creating a signup and sending a single auto-reply message.
+  type AutoReplySignupTopic implements Topic {
+    ${entryFields}
+    campaignId: Int!
     # The auto reply text.
     autoReply: String!
   }
@@ -42,7 +48,7 @@ const typeDefs = gql`
   type PhotoPostTopic implements Topic {
     ${entryFields}
     # The campaign to create signup and photo post for if conversation changes to this topic.
-    campaignId: Int
+    campaignId: Int!
     # Template sent until user replies with START to begin a photo post.
     startPhotoPostAutoReply: String!
     # Template that asks user to reply with quantity.
@@ -71,7 +77,7 @@ const typeDefs = gql`
   type TextPostTopic implements Topic {
     ${entryFields}
     # The campaign to create signup and text post for if conversation changes to this topic.
-    campaignId: Int
+    campaignId: Int!
     # Template that asks user to resend a message with valid text post.
     invalidText: String!
     # Template that confirms a text post was created. Replying to this creates another text post.
@@ -195,7 +201,7 @@ const resolvers = {
         return 'AskYesNoBroadcastTopic';
       }
       if (topic.contentType === 'autoReply') {
-        return 'AutoReplyTopic';
+        return topic.campaignId ? 'AutoReplySignupTopic' : 'AutoReplyTopic';
       }
       if (topic.contentType === 'photoPostConfig') {
         return 'PhotoPostTopic';
