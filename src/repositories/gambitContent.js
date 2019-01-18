@@ -217,16 +217,29 @@ export const getGambitContentfulEntryById = async (id, context) => {
  * @return {Array}
  */
 export const getConversationTriggers = async () => {
+  const ALL_TRIGGERS_KEY = 'conversationTriggers';
+
+  const cachedTriggers = await cache.get(ALL_TRIGGERS_KEY);
+  if (cachedTriggers) {
+    logger.debug('Cache hit for conversation triggers');
+    return cachedTriggers;
+  }
+
+  logger.debug('Cache miss for conversation triggers');
+
   const query = { order: '-sys.createdAt' };
   query['sys.contentType.sys.id'] = 'defaultTopicTrigger';
 
   const json = await contentfulClient.getEntries(query);
   // For now, ignore redirects - let's refactor this in Contentful.
-  const items = json.items.filter(
+  const filteredItems = json.items.filter(
     item => getContentType(item.fields.response) !== 'defaultTopicTrigger',
   );
 
-  return map(items, transformItem);
+  const data = map(filteredItems, transformItem);
+  cache.set(ALL_TRIGGERS_KEY, data);
+
+  return data;
 };
 
 export default null;

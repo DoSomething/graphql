@@ -150,6 +150,8 @@ const typeDefs = gql`
     reply: String!
     # The topic ID to change user conversation to.
     topicId: String
+    # The topic to change user conversation to.
+    topic: Topic
   }
 
   type Query {
@@ -197,6 +199,10 @@ const resolvers = {
       }
       return null;
     },
+  },
+  ConversationTrigger: {
+    topic: (conversationTrigger, args, context) =>
+      Loader(context).topics.load(conversationTrigger.topicId, context),
   },
   Query: {
     broadcast: (_, args, context) => Loader(context).broadcasts.load(args.id),
