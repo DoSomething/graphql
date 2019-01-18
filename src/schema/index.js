@@ -14,50 +14,50 @@ import gambitConversationsSchema from './gambitConversations';
  */
 const linkSchema = gql`
   extend type User {
-    # The posts created by this user.
+    "The posts created by this user."
     posts: [Post]
-    # The signups created by this user.
+    "The signups created by this user."
     signups: [Signup]
-    # The conversations created by this user.
+    "The conversations created by this user."
     conversations: [Conversation]
   }
 
   extend type Post {
-    # The user who created this post.
+    "The user who created this post."
     user: User
   }
 
   extend type Signup {
-    # The user who created this signup.
+    "The user who created this signup."
     user: User
   }
 
   extend type Conversation {
-    # The user this conversation is with.
+    "The user this conversation is with."
     user: User
-    # The current topic of the conversation.
+    "The current topic of the conversation."
     topic: Topic
   }
 
   extend type Message {
-    # The user this message was sent to or from (depending on message direction).
+    "The user this message was sent to or from (depending on message direction)."
     user: User
-    # The topic that conversation was set to when the message was created.
+    "The topic that conversation was set to when the message was created."
     topic: Topic
   }
 
   extend type AutoReplySignupTopic {
-    # The campaign that this topic should create signups for.
+    "The campaign that this topic should create signups for."
     campaign: Campaign
   }
 
   extend type PhotoPostTopic {
-    # The campaign that this topic should create signups and photo posts for.
+    "The campaign that this topic should create signups and photo posts for."
     campaign: Campaign
   }
 
   extend type TextPostTopic {
-    # The campaign that this topic should create signups and text posts for.
+    "The campaign that this topic should create signups and text posts for."
     campaign: Campaign
   }
 `;
@@ -281,8 +281,10 @@ const schema = mergeSchemas({
   resolvers: linkResolvers,
 });
 
-// HACK: Describe the root query. <https://git.io/vFNw6>
+// HACK: Describe the root query/mutation. <https://git.io/vFNw6>
 schema._queryType.description =
-  "The query root of DoSomething.org's GraphQL interface. Start here if you want to read data from any service.";
+  'The query root of our GraphQL schema. Start here if you want to read data.';
+schema._mutationType.description =
+  'The mutation root of our GraphQL schema. Start here if you want to write data';
 
 export default schema;

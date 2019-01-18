@@ -48,7 +48,8 @@
         "error",
         {
           "allow": [
-            "_queryType"
+            "_queryType",
+            "_mutationType"
           ]
         }
       ],
