@@ -21,7 +21,7 @@
           <script>
             var jwt = '{{ user.access_token }}';
             function graphQLHttpFetcher(graphQLParams) {
-              return fetch('{{ config.url }}', {
+              return fetch('/graphql', {
                 method: 'post',
                 headers: {
                   'Accept': 'application/json',

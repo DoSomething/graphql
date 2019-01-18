@@ -9,7 +9,5 @@ export default (req, res, next) => {
   res.locals.config.environmentName = config('services.displayName');
   res.locals.config.northstarUrl = config('services.northstar.url');
 
-  res.locals.config.url = `${config('app.url')}/graphql`;
-
   next();
 };
