@@ -18,20 +18,16 @@ const ROGUE_URL = config('services.rogue.url');
  * @return {Object}
  */
 export const getCampaignById = async (id, context) => {
-  try {
-    const response = await fetch(
-      `${ROGUE_URL}/api/v3/campaigns/${id}`,
-      authorizedRequest(context),
-    );
+  logger.debug('Loading campaign from Rogue', { id });
 
-    const json = await response.json();
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/campaigns/${id}`,
+    authorizedRequest(context),
+  );
 
-    return transformItem(json);
-  } catch (exception) {
-    const error = exception.message;
-    logger.warn('Unable to load campaign.', { id, error, context });
-  }
-  return null;
+  const json = await response.json();
+
+  return transformItem(json);
 };
 
 /**

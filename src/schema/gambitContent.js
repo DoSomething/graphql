@@ -29,11 +29,17 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  # Topic for sending an auto-reply message (creates signup if it has a campaign set)
+  # Topic for sending a single auto-reply message.
   type AutoReplyTopic implements Topic {
     ${entryFields}
-    # The campaign to create signup for if conversation changes to this topic (optional).
-    campaignId: Int
+    # The auto reply text.
+    autoReply: String!
+  }
+
+  # Topic for creating a signup and sending a single auto-reply message.
+  type AutoReplySignupTopic implements Topic {
+    ${entryFields}
+    campaignId: Int!
     # The auto reply text.
     autoReply: String!
   }
@@ -42,7 +48,7 @@ const typeDefs = gql`
   type PhotoPostTopic implements Topic {
     ${entryFields}
     # The campaign to create signup and photo post for if conversation changes to this topic.
-    campaignId: Int
+    campaignId: Int!
     # Template sent until user replies with START to begin a photo post.
     startPhotoPostAutoReply: String!
     # Template that asks user to reply with quantity.
@@ -71,7 +77,7 @@ const typeDefs = gql`
   type TextPostTopic implements Topic {
     ${entryFields}
     # The campaign to create signup and text post for if conversation changes to this topic.
-    campaignId: Int
+    campaignId: Int!
     # Template that asks user to resend a message with valid text post.
     invalidText: String!
     # Template that confirms a text post was created. Replying to this creates another text post.
@@ -134,22 +140,8 @@ const typeDefs = gql`
   }
 
   type Query {
-    # Get a Ask Yes No Broadcast Topic by ID.
-    askYesNoBroadcastTopic(id: String!): AskYesNoBroadcastTopic
-    # Get a Auto Reply Broadcast by ID.
-    autoReplyBroadcast(id: String!): AutoReplyBroadcast
-    # Get a Auto Reply Topic by ID.
-    autoReplyTopic(id: String!): AutoReplyTopic
     # Get a broadcast by ID.
     broadcast(id: String!): Broadcast
-    # Get a Photo Post Broadcast by ID.
-    photoPostBroadcast(id: String!): PhotoPostBroadcast
-    # Get a Photo Post Topic by ID.
-    photoPostTopic(id: String!): PhotoPostTopic
-    # Get a Text Post Broadcast by ID.
-    textPostBroadcast(id: String!): TextPostBroadcast
-    # Get a Text Post Topic by ID.
-    textPostTopic(id: String!): TextPostTopic
     # Get a topic by ID.
     topic(id: String!): Topic
   }
@@ -185,22 +177,14 @@ const resolvers = {
       if (broadcast.contentType === 'textPostBroadcast') {
         return 'TextPostBroadcast';
       }
-      return 'LegacyBroadcast';
+      if (broadcast.contentType === 'broadcast') {
+        return 'LegacyBroadcast';
+      }
+      return null;
     },
   },
   Query: {
-    askYesNoBroadcastTopic: (_, args, context) =>
-      Loader(context).broadcasts.load(args.id),
-    autoReplyBroadcast: (_, args, context) =>
-      Loader(context).broadcasts.load(args.id),
-    autoReplyTopic: (_, args, context) => Loader(context).topics.load(args.id),
     broadcast: (_, args, context) => Loader(context).broadcasts.load(args.id),
-    photoPostBroadcast: (_, args, context) =>
-      Loader(context).broadcasts.load(args.id),
-    photoPostTopic: (_, args, context) => Loader(context).topics.load(args.id),
-    textPostBroadcast: (_, args, context) =>
-      Loader(context).broadcasts.load(args.id),
-    textPostTopic: (_, args, context) => Loader(context).topics.load(args.id),
     topic: (_, args, context) => Loader(context).topics.load(args.id),
   },
   PhotoPostBroadcast: {
@@ -217,7 +201,7 @@ const resolvers = {
         return 'AskYesNoBroadcastTopic';
       }
       if (topic.contentType === 'autoReply') {
-        return 'AutoReplyTopic';
+        return topic.campaignId ? 'AutoReplySignupTopic' : 'AutoReplyTopic';
       }
       if (topic.contentType === 'photoPostConfig') {
         return 'PhotoPostTopic';
