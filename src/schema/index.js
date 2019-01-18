@@ -1,4 +1,4 @@
-import gql from 'tagged-template-noop';
+import { gql } from 'apollo-server';
 import { mergeSchemas } from 'graphql-tools';
 
 // Schemas

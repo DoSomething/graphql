@@ -10,9 +10,10 @@ import logger from 'heroku-logger';
 import favicon from 'serve-favicon';
 import forceDomain from 'forcedomain';
 import { ApolloEngine } from 'apollo-engine';
+import { ApolloServer } from 'apollo-server-express';
 
+import schema from './schema';
 import config from '../config';
-import apiRoutes from './routes/api';
 import webRoutes from './routes/web';
 
 const app = express();
@@ -44,12 +45,22 @@ app.options('*', cors());
 
 // Register routes & start it up!
 (async () => {
-  app.use(apiRoutes);
-  app.use(await webRoutes());
-
   const url = config('app.url');
   const port = config('app.port');
   const apolloEngineApiKey = config('engine.key');
+
+  // Configure Apollo Server 2.x:
+  const server = new ApolloServer({
+    schema,
+    introspection: true,
+    playground: true,
+    context: ({ req }) => ({
+      authorization: req.headers.authorization || '',
+    }),
+  });
+
+  server.applyMiddleware({ app });
+  app.use(await webRoutes());
 
   const onStart = () => {
     logger.info(`GraphQL Server is now running on ${url}/graphql`);
@@ -71,31 +82,6 @@ app.options('*', cors());
     }
   };
 
-  // Start Apollo Engine server if we have an API key.
-  if (apolloEngineApiKey) {
-    const engine = new ApolloEngine({
-      apiKey: apolloEngineApiKey,
-      // Set CORS headers for Automatic Persisted Query support in Apollo Engine.
-      // <https://www.apollographql.com/docs/engine/auto-persisted-queries.html#setup>
-      frontends: [
-        {
-          overrideGraphqlResponseHeaders: {
-            'Access-Control-Allow-Origin': '*',
-          },
-        },
-      ],
-    });
-
-    const engineConfig = {
-      graphqlPaths: ['/graphql'],
-      expressApp: app,
-      logger,
-      port,
-    };
-
-    engine.listen(engineConfig, onStart);
-  } else {
-    // Otherwise, start a plain Express server.
-    app.listen(port, onStart);
-  }
+  // Otherwise, start a plain Express server.
+  app.listen(port, onStart);
 })();

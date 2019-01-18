@@ -1,5 +1,5 @@
 import { makeExecutableSchema } from 'graphql-tools';
-import gql from 'tagged-template-noop';
+import { gql } from 'apollo-server';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 
