@@ -1,6 +1,7 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { gql } from 'apollo-server';
 
+import { getConversationTriggers } from '../repositories/gambitContent';
 import Loader from '../loader';
 
 const entryFields = `
@@ -139,9 +140,23 @@ const typeDefs = gql`
     ${broadcastFields}
   }
 
+  # A conversation trigger, used to change topic or answer a FAQ.
+  type ConversationTrigger {
+    # The Contentful entry id.
+    id: String!
+    # The Rivescript trigger used to match an inbound message from a user.
+    trigger: String!
+    # The Rivescript reply to send user if their inbound message matches the trigger.
+    reply: String!
+    # The topic ID to change user conversation to.
+    topicId: String
+  }
+
   type Query {
     # Get a broadcast by ID.
     broadcast(id: String!): Broadcast
+    # Get all conversation triggers.
+    conversationTriggers: [ConversationTrigger]
     # Get a topic by ID.
     topic(id: String!): Topic
   }
@@ -185,6 +200,8 @@ const resolvers = {
   },
   Query: {
     broadcast: (_, args, context) => Loader(context).broadcasts.load(args.id),
+    conversationTriggers: (_, args, context) =>
+      getConversationTriggers(args, context),
     topic: (_, args, context) => Loader(context).topics.load(args.id),
   },
   PhotoPostBroadcast: {
