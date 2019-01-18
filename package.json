@@ -57,7 +57,6 @@
     }
   },
   "dependencies": {
-    "apollo-engine": "^1.1.0",
     "apollo-link": "^1.2.6",
     "apollo-link-http": "^1.5.9",
     "apollo-server": "^2.3.1",

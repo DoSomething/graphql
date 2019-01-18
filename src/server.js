@@ -9,7 +9,6 @@ import express from 'express';
 import logger from 'heroku-logger';
 import favicon from 'serve-favicon';
 import forceDomain from 'forcedomain';
-import { ApolloEngine } from 'apollo-engine';
 import { ApolloServer } from 'apollo-server-express';
 
 import schema from './schema';
@@ -47,7 +46,6 @@ app.options('*', cors());
 (async () => {
   const url = config('app.url');
   const port = config('app.port');
-  const apolloEngineApiKey = config('engine.key');
 
   // Configure Apollo Server 2.x:
   const server = new ApolloServer({
@@ -62,7 +60,8 @@ app.options('*', cors());
   server.applyMiddleware({ app });
   app.use(await webRoutes());
 
-  const onStart = () => {
+  // Start our Express server, with Apollo Server attached.
+  app.listen(port, () => {
     logger.info(`GraphQL Server is now running on ${url}/graphql`);
 
     if (app.get('env') !== 'production') {
@@ -80,8 +79,5 @@ app.options('*', cors());
         }),
       );
     }
-  };
-
-  // Otherwise, start a plain Express server.
-  app.listen(port, onStart);
+  });
 })();
