@@ -1,5 +1,5 @@
 import { makeExecutableSchema } from 'graphql-tools';
-import gql from 'tagged-template-noop';
+import { gql } from 'apollo-server';
 
 import Loader from '../loader';
 
@@ -90,15 +90,15 @@ const typeDefs = gql`
   }
 
   # Broadcast that asks user a yes or no question, and changes topic to its own ID.
-  type AskYesNoBroadcastTopic implements Broadcast, Topic {
+  type AskYesNoBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
     # Message sent if user says yes.
     saidYes: String!
-    # The topic ID to change conversation to if user says yes 
+    # The topic ID to change conversation to if user says yes
     saidYesTopicId: String!
     # The topic to change conversation to if user says yes.
     saidYesTopic: Topic
-    # Message sent if user says yes 
+    # Message sent if user says yes
     saidNo: String!
     # The topic ID to change conversation to if user says no.
     saidNoTopicId: String!

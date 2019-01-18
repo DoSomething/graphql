@@ -48,6 +48,19 @@
   border-radius: 2px;
 }
 
+/* Reset some Forge defaults that mess with GraphiQL: */
+.graphiql * {
+  box-sizing: content-box;
+}
+
+.graphiql p {
+  font-size: inherit;
+}
+
+.graphiql a {
+  font-weight: normal;
+}
+
 /* Images in documentation */
 .markdown-docs img {
   width: 80%;
