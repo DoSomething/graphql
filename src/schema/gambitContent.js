@@ -202,8 +202,10 @@ const resolvers = {
     },
   },
   ConversationTrigger: {
-    topic: (conversationTrigger, args, context) =>
-      Loader(context).topics.load(conversationTrigger.topicId, context),
+    topic: (conversationTrigger, args, context) => {
+      const topicId = conversationTrigger.topicId;
+      return topicId ? Loader(context).topics.load(topicId, context) : null;
+    },
   },
   Query: {
     broadcast: (_, args, context) => Loader(context).broadcasts.load(args.id),
