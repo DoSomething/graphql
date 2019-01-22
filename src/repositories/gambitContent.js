@@ -235,8 +235,11 @@ export const getConversationTriggers = async () => {
 
   logger.debug('Cache miss for conversation triggers');
 
-  const query = { order: '-sys.createdAt', limit: 250 };
-  query['sys.contentType.sys.id'] = 'defaultTopicTrigger';
+  const query = {
+    order: '-sys.createdAt',
+    limit: 250,
+    content_type: 'defaultTopicTrigger',
+  };
 
   const json = await contentfulClient.getEntries(query);
   const data = map(json.items, transformItem);
@@ -261,16 +264,16 @@ export const getWebSignupConfirmations = async () => {
 
   logger.debug('Cache miss for web signup confirmations');
 
-  const query = { order: '-sys.createdAt', limit: 250 };
-  query['sys.contentType.sys.id'] = 'campaign';
-  //  query['fields.webSignup[exists]'] = true;
+  const query = {
+    order: '-sys.createdAt',
+    limit: 250,
+    content_type: 'campaign',
+  };
+  query['fields.webSignup[exists]'] = true;
 
   const json = await contentfulClient.getEntries(query);
-  const filteredItems = json.items.filter(
-    item => item.fields && item.fields.webSignup,
-  );
 
-  const data = map(filteredItems, transformItem);
+  const data = map(json.items, transformItem);
   cache.set(ALL_CONFIRMATIONS_KEY, data);
 
   return data;
