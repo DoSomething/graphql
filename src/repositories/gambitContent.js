@@ -113,6 +113,14 @@ const getFields = json => {
     };
   }
 
+  if (contentType === 'campaign') {
+    return {
+      campaignId: fields.campaignId,
+      text: getMessageText(json.fields.webSignup),
+      topicId: getChangeTopicId(json.fields.webSignup),
+    };
+  }
+
   if (contentType === 'defaultTopicTrigger') {
     return {
       trigger: fields.trigger,
@@ -233,6 +241,37 @@ export const getConversationTriggers = async () => {
   const json = await contentfulClient.getEntries(query);
   const data = map(json.items, transformItem);
   cache.set(ALL_TRIGGERS_KEY, data);
+
+  return data;
+};
+
+/**
+ * Fetch all web signup confirmations from Gambit Content.
+ *
+ * @return {Array}
+ */
+export const getWebSignupConfirmations = async () => {
+  const ALL_CONFIRMATIONS_KEY = 'webSignupConfirmations';
+
+  const cachedConfirmations = await cache.get(ALL_CONFIRMATIONS_KEY);
+  if (cachedConfirmations) {
+    logger.debug('Cache hit for web signup confirmations');
+    return cachedConfirmations;
+  }
+
+  logger.debug('Cache miss for web signup confirmations');
+
+  const query = { order: '-sys.createdAt', limit: 250 };
+  query['sys.contentType.sys.id'] = 'campaign';
+  //  query['fields.webSignup[exists]'] = true;
+
+  const json = await contentfulClient.getEntries(query);
+  const filteredItems = json.items.filter(
+    item => item.fields && item.fields.webSignup,
+  );
+
+  const data = map(filteredItems, transformItem);
+  cache.set(ALL_CONFIRMATIONS_KEY, data);
 
   return data;
 };
