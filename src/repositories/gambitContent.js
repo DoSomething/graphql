@@ -227,16 +227,11 @@ export const getConversationTriggers = async () => {
 
   logger.debug('Cache miss for conversation triggers');
 
-  const query = { order: '-sys.createdAt' };
+  const query = { order: '-sys.createdAt', limit: 250 };
   query['sys.contentType.sys.id'] = 'defaultTopicTrigger';
 
   const json = await contentfulClient.getEntries(query);
-  // For now, ignore redirects - let's refactor this in Contentful.
-  const filteredItems = json.items.filter(
-    item => getContentType(item.fields.response) !== 'defaultTopicTrigger',
-  );
-
-  const data = map(filteredItems, transformItem);
+  const data = map(json.items, transformItem);
   cache.set(ALL_TRIGGERS_KEY, data);
 
   return data;
