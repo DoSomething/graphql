@@ -1,10 +1,8 @@
 import { Router } from 'express';
-import { graphiqlExpress } from 'apollo-server-express';
 import redis from 'connect-redis';
 import session from 'express-session';
 import path from 'path';
 import config from '../../config';
-import defaultQuery from '../schema/defaultQuery';
 import authMiddleware from '../middleware/auth';
 import viewMiddleware from '../middleware/views';
 import markdown from './markdown';
@@ -35,18 +33,6 @@ export default async () => {
   router.use(passport.initialize());
   router.use(passport.session());
   router.use(viewMiddleware);
-
-  // * /graphiql
-  router.use(
-    '/graphiql',
-    graphiqlExpress(request => ({
-      endpointURL: '/graphql',
-      passHeader: request.user
-        ? `'Authorization': 'Bearer ${request.user.access_token}'`
-        : null,
-      query: defaultQuery,
-    })),
-  );
 
   // GET /
   router.get('/', (req, res) => res.render('home', { user: req.user }));

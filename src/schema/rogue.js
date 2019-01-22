@@ -1,7 +1,7 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
-import gql from 'tagged-template-noop';
+import { gql } from 'apollo-server';
 import { urlWithQuery } from '../repositories/helpers';
 import Loader from '../loader';
 import {
@@ -28,7 +28,7 @@ const typeDefs = gql`
 
   scalar AbsoluteUrl
 
-  # Posts are reviewed by DoSomething.org staff for content.
+  "Posts are reviewed by DoSomething.org staff for content."
   enum ReviewStatus {
     ACCEPTED
     REJECTED
@@ -40,201 +40,199 @@ const typeDefs = gql`
     UNCERTAIN
   }
 
-  # A campaign.
+  "A campaign."
   type Campaign {
-    # The time when this campaign was originally created.
+    "The time when this campaign was originally created."
     createdAt: DateTime
-    # The time when this campaign ends.
+    "The time when this campaign ends."
     endDate: DateTime
-    # The unique ID for this campaign.
+    "The unique ID for this campaign."
     id: Int!
-    # The internal name used to identify the campaign.
+    "The internal name used to identify the campaign."
     internalTitle: String!
-    # The time when this campaign starts.
+    "The time when this campaign starts."
     startDate: DateTime
-    # The time when this campaign last modified.
+    "The time when this campaign last modified."
     updatedAt: DateTime
   }
 
-  # A media resource on a post.
+  "A media resource on a post."
   type Media {
-    # The image URL.
+    "The image URL."
     url(
-      # The desired image width, in pixels.
+      "The desired image width, in pixels."
       w: Int
-      # The desired image height, in pixels.
+      "The desired image height, in pixels."
       h: Int
     ): AbsoluteUrl
-    # The text content of the post, provided by the user.
+    "The text content of the post, provided by the user."
     text: String
   }
 
-  # A user's post on a campaign.
+  "A user's post on a campaign."
   type Post {
-    # The unique ID for this post.
+    "The unique ID for this post."
     id: Int!
-    # The type of action (e.g. 'photo', 'voterReg', or 'text').
+    "The type of action (e.g. 'photo', 'voterReg', or 'text')."
     type: String!
-    # The specific action being performed (or 'default' on a single-action campaign).
+    "The specific action being performed (or 'default' on a single-action campaign)."
     action: String!
-    # The Northstar user ID of the user who created this post.
+    "The Northstar user ID of the user who created this post."
     userId: String!
-    # The campaign ID this post was made for. Either a
-    # numeric Drupal ID, or a alphanumeric Contentful ID.
+    "The Rogue campaign ID this post was made for."
     campaignId: String
-    # The attached media for this post.
+    "The attached media for this post."
     media: Media
       @deprecated(reason: "Use direct 'url' and 'text' properties instead.")
-    # The image URL.
+    "The image URL."
     url(
-      # The desired image width, in pixels.
+      "The desired image width, in pixels."
       w: Int
-      # The desired image height, in pixels.
+      "The desired image height, in pixels."
       h: Int
     ): AbsoluteUrl
-    # The text content of the post, provided by the user.
+    "The text content of the post, provided by the user."
     text: String
-    # The ID of the associated signup for this post.
+    "The ID of the associated signup for this post."
     signupId: String!
-    # The associated signup for this post.
+    "The associated signup for this post."
     signup: Signup
-    # The review status of the post.
+    "The review status of the post."
     status: ReviewStatus
-    # The source of this post. This is often a Northstar OAuth client.
+    "The source of this post. This is often a Northstar OAuth client."
     source: String
-    # The number of items added or removed in this post.
+    "The number of items added or removed in this post."
     quantity: Int
-    # The tags that have been applied to this post by DoSomething.org staffers.
+    "The tags that have been applied to this post by DoSomething.org staffers."
     tags: [String]
-    # The total number of reactions to this post.
+    "The total number of reactions to this post."
     reactions: Int
-    # Has the current user reacted to this post?
+    "Has the current user reacted to this post?"
     reacted: Boolean
-    # The IP address this post was created from.
-    remoteAddr: String
-    # The time this post was last modified.
+    "The IP address this post was created from."
+    remoteAddr: String @deprecated(reason: "This field is no longer stored.")
+    "The time this post was last modified."
     updatedAt: DateTime
-    # The time when this post was originally created.
+    "The time when this post was originally created."
     createdAt: DateTime
   }
 
-  # A user's signup for a campaign.
+  "A user's signup for a campaign."
   type Signup {
-    # The unique ID for this signup.
+    "The unique ID for this signup."
     id: Int!
-    # The associated posts made under this signup.
+    "The associated posts made under this signup."
     posts: [Post]
-    # The associated campaign for this signup.
+    "The associated campaign for this signup."
     campaign: Campaign
-    # The campaign ID this signup was made for. Either a
-    # numeric Drupal ID, or a alphanumeric Contentful ID.
+    "The Rogue campaign ID this post was made for."
     campaignId: String
-    # The Drupal campaign run ID this signup was made for.
-    campaignRunId: String @deprecated
-    # The Northstar ID of the user who created this signup.
+    "The Drupal campaign run ID this signup was made for."
+    campaignRunId: String @deprecated(reason: "We no longer stored campaign run IDs.")
+    "The Northstar ID of the user who created this signup."
     userId: String
-    # The total number of items on all posts attached to this signup.
+    "The total number of items on all posts attached to this signup."
     quantity: Int
-    # The user's self-reported reason for doing this campaign.
+    "The user's self-reported reason for doing this campaign."
     whyParticipated: String
-    # The source of this signup (e.g. sms, phoenix-next)
+    "The source of this signup (e.g. sms, phoenix-next)"
     source: String
-    # More information about the signup (for example, third-party messaging opt-ins).
+    "More information about the signup (for example, third-party messaging opt-ins)."
     details: String
-    # The time this signup was last modified.
+    "The time this signup was last modified."
     updatedAt: DateTime
-    # The time when this signup was originally created.
+    "The time when this signup was originally created."
     createdAt: DateTime
-    # Permalink to Admin view.
+    "Permalink to Admin view."
     permalink: String
   }
 
   type Query {
-    # Get a campaign by ID.
+    "Get a campaign by ID."
     campaign(id: Int!): Campaign
-    # Get a paginated collection of campaigns.
+    "Get a paginated collection of campaigns."
     campaigns(
-      # The internal title to load campaigns for.
+      "The internal title to load campaigns for."
       internalTitle: String
-      # The page of results to return.
+      "The page of results to return."
       page: Int = 1
-      # The number of results per page.
+      "The number of results per page."
       count: Int = 20
     ): [Campaign]
-    # Get a post by ID.
+    "Get a post by ID."
     post(
-      # The desired post ID.
+      "The desired post ID."
       id: Int!
     ): Post
-    # Get a paginated collection of posts.
+    "Get a paginated collection of posts."
     posts(
-      # The action name to load posts for.
+      "The action name to load posts for."
       action: String
-      # The campaign ID to load posts for.
+      "# The campaign ID to load posts for."
       campaignId: String
-      # The post source to load posts for.
+      "# The post source to load posts for."
       source: String
-      # The type name to load posts for.
+      "# The type name to load posts for."
       type: String
-      # The user ID to load posts for.
+      "# The user ID to load posts for."
       userId: String
-      # The page of results to return.
+      "# The page of results to return."
       page: Int = 1
-      # The number of results per page.
+      "# The number of results per page."
       count: Int = 20
     ): [Post]
-    # Get a paginated collection of posts by campaign ID.
+    " Get a paginated collection of posts by campaign ID."
     postsByCampaignId(
-      # The campaign ID to load.
+      "The campaign ID to load."
       id: String!
-      # The page of results to return.
+      "The page of results to return."
       page: Int = 1
-      # The number of results per page.
+      "The number of results per page."
       count: Int = 20
     ): [Post]
-    # Get a paginated collection of posts by user ID.
+    "Get a paginated collection of posts by user ID."
     postsByUserId(
-      # The Northstar user ID to filter posts by.
+      "The Northstar user ID to filter posts by."
       id: String!
-      # The page of results to return.
+      "The page of results to return."
       page: Int = 1
-      # The number of results per page.
+      "The number of results per page."
       count: Int = 20
     ): [Post]
-    # Get a signup by ID.
+    "Get a signup by ID."
     signup(id: Int!): Signup
-    # Get a paginated collection of signups.
+    "Get a paginated collection of signups."
     signups(
-      # The Campaign ID load signups for.
+      "The Campaign ID load signups for."
       campaignId: String
-      # The signup source to load signups for.
+      "The signup source to load signups for."
       source: String
-      # The user ID to load signups for.
+      "The user ID to load signups for."
       userId: String
-      # The page of results to return.
+      "The page of results to return."
       page: Int = 1
-      # The number of results per page.
+      "The number of results per page."
       count: Int = 20
-      # How to order the results (e.g. "id,desc").
+      "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
     ): [Signup]
-    # Get a paginated collection of signups by user ID.
+    "Get a paginated collection of signups by user ID."
     signupsByUserId(
-      # The Northstar user ID to filter signups by.
+      "The Northstar user ID to filter signups by."
       id: String!
-      # The page of results to return.
+      "The page of results to return."
       page: Int = 1
-      # The number of results per page.
+      "The number of results per page."
       count: Int = 20
-      # How to order the results (e.g. "id,desc").
+      "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
     ): [Signup]
   }
 
   type Mutation {
-    # Add or remove a reaction to a post. Requires an access token.
+    "Add or remove a reaction to a post. Requires an access token."
     toggleReaction(
-      # The post ID to react to.
+      "The post ID to react to."
       postId: Int!
     ): Post
   }
