@@ -3,7 +3,7 @@ import redis from 'redis';
 import Cacheman from 'cacheman';
 import RedisEngine from 'cacheman-redis';
 import logger from 'heroku-logger';
-import { assign } from 'lodash';
+import { assign, map } from 'lodash';
 import config from '../../config';
 
 const contentfulClient = createClient({
@@ -113,6 +113,16 @@ const getFields = json => {
     };
   }
 
+  if (contentType === 'defaultTopicTrigger') {
+    return {
+      trigger: fields.trigger,
+      reply: fields.response.fields.text,
+      topicId: fields.response.fields.topic
+        ? fields.response.fields.topic.sys.id
+        : null,
+    };
+  }
+
   if (contentType === 'photoPostBroadcast') {
     return {
       text: fields.text,
@@ -199,6 +209,37 @@ export const getGambitContentfulEntryById = async (id, context) => {
   }
 
   return null;
+};
+
+/**
+ * Fetch all conversation triggers from Gambit Content.
+ *
+ * @return {Array}
+ */
+export const getConversationTriggers = async () => {
+  const ALL_TRIGGERS_KEY = 'conversationTriggers';
+
+  const cachedTriggers = await cache.get(ALL_TRIGGERS_KEY);
+  if (cachedTriggers) {
+    logger.debug('Cache hit for conversation triggers');
+    return cachedTriggers;
+  }
+
+  logger.debug('Cache miss for conversation triggers');
+
+  const query = { order: '-sys.createdAt' };
+  query['sys.contentType.sys.id'] = 'defaultTopicTrigger';
+
+  const json = await contentfulClient.getEntries(query);
+  // For now, ignore redirects - let's refactor this in Contentful.
+  const filteredItems = json.items.filter(
+    item => getContentType(item.fields.response) !== 'defaultTopicTrigger',
+  );
+
+  const data = map(filteredItems, transformItem);
+  cache.set(ALL_TRIGGERS_KEY, data);
+
+  return data;
 };
 
 export default null;
