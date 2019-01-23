@@ -1,7 +1,10 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { gql } from 'apollo-server';
 
-import { getConversationTriggers } from '../repositories/gambitContent';
+import {
+  getConversationTriggers,
+  getWebSignupConfirmations,
+} from '../repositories/gambitContent';
 import Loader from '../loader';
 
 const entryFields = `
@@ -15,7 +18,7 @@ const entryFields = `
 
 const broadcastFields = `
   ${entryFields}
-  "Message to broadcast"
+  "Broadcast message to send."
   text: String
 `;
 
@@ -155,6 +158,18 @@ const typeDefs = gql`
     topic: Topic
   }
 
+  "Confirmation to send a user when they sign up for a campaign from web."
+  type WebSignupConfirmation {
+    "The campaign ID that the user signed up for."
+    campaignId: Int!
+    "The confirmation message text to the user."
+    text: String!
+    "The topic ID to change the user conversation to."
+    topicId: String!
+    "The topic to change user conversation to."
+    topic: Topic
+  }
+
   type Query {
     "Get a broadcast by ID."
     broadcast(id: String!): Broadcast
@@ -162,6 +177,8 @@ const typeDefs = gql`
     conversationTriggers: [ConversationTrigger]
     "Get a topic by ID."
     topic(id: String!): Topic
+    "Get all web signup confirmations."
+    webSignupConfirmations: [WebSignupConfirmation]
   }
 `;
 
@@ -212,6 +229,8 @@ const resolvers = {
     conversationTriggers: (_, args, context) =>
       getConversationTriggers(args, context),
     topic: (_, args, context) => Loader(context).topics.load(args.id),
+    webSignupConfirmations: (_, args, context) =>
+      getWebSignupConfirmations(args, context),
   },
   PhotoPostBroadcast: {
     topic: (broadcast, args, context) =>
@@ -237,6 +256,10 @@ const resolvers = {
       }
       return null;
     },
+  },
+  WebSignupConfirmation: {
+    topic: (webSignupConfirmation, args, context) =>
+      Loader(context).topics.load(webSignupConfirmation.topicId, context),
   },
 };
 

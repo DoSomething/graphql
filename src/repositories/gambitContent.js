@@ -113,6 +113,14 @@ const getFields = json => {
     };
   }
 
+  if (contentType === 'campaign') {
+    return {
+      campaignId: fields.campaignId,
+      text: getMessageText(json.fields.webSignup),
+      topicId: getChangeTopicId(json.fields.webSignup),
+    };
+  }
+
   if (contentType === 'defaultTopicTrigger') {
     return {
       trigger: fields.trigger,
@@ -227,17 +235,46 @@ export const getConversationTriggers = async () => {
 
   logger.debug('Cache miss for conversation triggers');
 
-  const query = { order: '-sys.createdAt' };
-  query['sys.contentType.sys.id'] = 'defaultTopicTrigger';
+  const query = {
+    order: '-sys.createdAt',
+    limit: 250,
+    content_type: 'defaultTopicTrigger',
+  };
 
   const json = await contentfulClient.getEntries(query);
-  // For now, ignore redirects - let's refactor this in Contentful.
-  const filteredItems = json.items.filter(
-    item => getContentType(item.fields.response) !== 'defaultTopicTrigger',
-  );
-
-  const data = map(filteredItems, transformItem);
+  const data = map(json.items, transformItem);
   cache.set(ALL_TRIGGERS_KEY, data);
+
+  return data;
+};
+
+/**
+ * Fetch all web signup confirmations from Gambit Content.
+ *
+ * @return {Array}
+ */
+export const getWebSignupConfirmations = async () => {
+  const ALL_CONFIRMATIONS_KEY = 'webSignupConfirmations';
+
+  const cachedConfirmations = await cache.get(ALL_CONFIRMATIONS_KEY);
+  if (cachedConfirmations) {
+    logger.debug('Cache hit for web signup confirmations');
+    return cachedConfirmations;
+  }
+
+  logger.debug('Cache miss for web signup confirmations');
+
+  const query = {
+    order: '-sys.createdAt',
+    limit: 250,
+    content_type: 'campaign',
+  };
+  query['fields.webSignup[exists]'] = true;
+
+  const json = await contentfulClient.getEntries(query);
+
+  const data = map(json.items, transformItem);
+  cache.set(ALL_CONFIRMATIONS_KEY, data);
 
   return data;
 };
