@@ -18,8 +18,10 @@ const entryFields = `
 
 const broadcastFields = `
   ${entryFields}
-  "Broadcast message to send."
+  "Broadcast message text to send."
   text: String
+  "Broadcast message attachments to send."
+  attachments: [BroadcastMedia]
 `;
 
 /**
@@ -87,6 +89,14 @@ const typeDefs = gql`
     invalidText: String!
     "Template that confirms a text post was created. Replying to this creates another text post."
     completedTextPost: String!
+  }
+
+  "Media attached to a broadcast."
+  type BroadcastMedia {
+    "The broadcast media URL."
+    url: String!
+    "The broadcast media content type."
+    contentType: String!
   }
 
   "A DoSomething.org broadcast."

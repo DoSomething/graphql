@@ -70,6 +70,20 @@ const getMessageText = json => json.fields.text;
 
 /**
  * @param {Object} json
+ * @return {Array}
+ */
+const getMessageAttachments = json => {
+  if (!json.fields.attachments) {
+    return [];
+  }
+  return json.fields.attachments.map(attachment => ({
+    url: attachment.fields.file.url,
+    contentType: attachment.fields.file.contentType,
+  }));
+};
+
+/**
+ * @param {Object} json
  * @return {Object}
  */
 const getSummary = json => ({
@@ -90,6 +104,7 @@ const getFields = json => {
 
   if (contentType === 'askYesNo') {
     return {
+      attachments: getMessageAttachments(json),
       invalidAskYesNoResponse: fields.invalidAskYesNoResponse,
       saidNo: getMessageText(fields.noTransition),
       saidNoTopicId: getChangeTopicId(fields.noTransition),
@@ -108,6 +123,7 @@ const getFields = json => {
 
   if (contentType === 'autoReplyBroadcast') {
     return {
+      attachments: getMessageAttachments(json),
       text: getMessageText(json),
       topicId: getChangeTopicId(json),
     };
@@ -133,6 +149,7 @@ const getFields = json => {
 
   if (contentType === 'photoPostBroadcast') {
     return {
+      attachments: getMessageAttachments(json),
       text: fields.text,
       topicId: getChangeTopicId(json),
     };
@@ -161,6 +178,7 @@ const getFields = json => {
 
   if (contentType === 'textPostBroadcast') {
     return {
+      attachments: getMessageAttachments(json),
       text: fields.text,
       topicId: getChangeTopicId(json),
     };
