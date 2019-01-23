@@ -72,11 +72,15 @@ const getMessageText = json => json.fields.text;
  * @param {Object} json
  * @return {Array}
  */
-const getMessageAttachments = json =>
-  json.fields.attachments.map(attachment => ({
+const getMessageAttachments = json => {
+  if (!json.fields.attachments) {
+    return [];
+  }
+  return json.fields.attachments.map(attachment => ({
     url: attachment.fields.file.url,
     contentType: attachment.fields.file.contentType,
   }));
+};
 
 /**
  * @param {Object} json
