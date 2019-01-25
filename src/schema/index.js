@@ -60,6 +60,11 @@ const linkSchema = gql`
     "The campaign that this topic should create signups and text posts for."
     campaign: Campaign
   }
+
+  extend type WebSignupConfirmation {
+    "The campaign that this web signup confirmation is for."
+    campaign: Campaign
+  }
 `;
 
 /**
@@ -256,6 +261,24 @@ const linkResolvers = {
           fieldName: 'campaign',
           args: {
             id: topic.campaignId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
+  WebSignupConfirmation: {
+    campaign: {
+      fragment:
+        'fragment CampaignFragment on WebSignupConfirmation { campaignId }',
+      resolve(webSignupConfirmation, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'campaign',
+          args: {
+            id: webSignupConfirmation.campaignId,
           },
           context,
           info,
