@@ -6,7 +6,7 @@ const gambitContent = {
   accessToken: process.env.GAMBIT_CONTENTFUL_ACCESS_TOKEN,
   cache: {
     name: 'gambitContent',
-    expiresIn: 3600 * 1000,
+    expiresIn: 3600 * 1000, // 1 hour (3600 seconds).
   },
 };
 
