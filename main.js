@@ -2,11 +2,11 @@
 // This is our AWS Lambda entry point.
 //
 
-require = require('esm')(module);
+// Attach global 'fetch' polyfill.
 fetch = require('node-fetch');
 
-const { ApolloServer, gql } = require('apollo-server-lambda');
-const schema = require('./src/schema').default;
+const { ApolloServer } = require('apollo-server-lambda');
+const schema = require('./lib/src/schema').default;
 
 const server = new ApolloServer({ schema });
 
