@@ -65,10 +65,27 @@ workflows:
   build-deploy:
     jobs:
       - build
+      - hold:
+          type: approval
       - deploy-development:
           context: dosomething-graphql-dev
           requires:
             - build
+          filters:
+            branches:
+              only: lambda
+      - deploy-qa:
+          context: dosomething-graphql-qa
+          requires:
+            - build
+          filters:
+            branches:
+              only: lambda
+      - deploy-production:
+          context: dosomething-graphql
+          requires:
+            - build
+            - hold
           filters:
             branches:
               only: lambda
