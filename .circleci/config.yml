@@ -67,6 +67,9 @@ workflows:
       - build
       - hold:
           type: approval
+          filters:
+            branches:
+              only: master
       - deploy-development:
           context: dosomething-graphql-dev
           requires:
