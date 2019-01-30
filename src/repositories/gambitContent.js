@@ -1,37 +1,15 @@
 import { createClient } from 'contentful';
-import redis from 'redis';
-import Cacheman from 'cacheman';
-import RedisEngine from 'cacheman-redis';
-import logger from 'heroku-logger';
 import { assign, map } from 'lodash';
+import logger from 'heroku-logger';
+
 import config from '../../config';
+import Cache from '../cache';
+
+const cache = new Cache(config('services.gambitContent.cache'));
 
 const contentfulClient = createClient({
   space: config('services.gambitContent.spaceId'),
   accessToken: config('services.gambitContent.accessToken'),
-});
-
-let redisClient = null;
-
-const getRedisClient = () => {
-  if (!redisClient) {
-    redisClient = redis.createClient(config('cache.url'));
-    redisClient.on('error', error => {
-      logger.error('redisClient connection error', error);
-      redisClient.quit();
-      throw error;
-    });
-
-    redisClient.on('reconnecting', () => {
-      logger.debug('redisClient is reconnecting');
-    });
-  }
-  return redisClient;
-};
-
-const cache = new Cacheman(config('services.gambitContent.cache.name'), {
-  ttl: config('services.gambitContent.cache.ttl'),
-  engine: new RedisEngine(getRedisClient()),
 });
 
 /**
