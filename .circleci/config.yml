@@ -73,14 +73,14 @@ workflows:
             - build
           filters:
             branches:
-              only: lambda
+              only: master
       - deploy-qa:
           context: dosomething-graphql-qa
           requires:
             - build
           filters:
             branches:
-              only: lambda
+              only: master
       - deploy-production:
           context: dosomething-graphql
           requires:
@@ -88,4 +88,4 @@ workflows:
             - hold
           filters:
             branches:
-              only: lambda
+              only: master
