@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const { writeFile } = require('fs');
 const { printSchema } = require('graphql');
-const schema = require('../src/schema').default;
+const schema = require('../src/schema');
 
 // Transform stitched schema into SDL & print to a git-ignored file.
 writeFile(`${__dirname}/../schema.graphql`, printSchema(schema), err => {
