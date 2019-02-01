@@ -119,6 +119,8 @@ const typeDefs = gql`
     saidLessTopicId: String!
     "The topic to change conversation to if user says less."
     saidLessTopic: Topic
+    "Message sent if user says they need more info."
+    saidNeedMoreInfo: String!
     "Message sent until user responds with a valid subscription status."
     invalidAskSubscriptionStatusResponse: String!
   }
@@ -280,6 +282,9 @@ const resolvers = {
   },
   Topic: {
     __resolveType(topic) {
+      if (topic.contentType === 'askSubscriptionStatus') {
+        return 'AskSubscriptionStatusBroadcastTopic';
+      }
       if (topic.contentType === 'askYesNo') {
         return 'AskYesNoBroadcastTopic';
       }
