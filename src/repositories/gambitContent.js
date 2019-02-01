@@ -80,6 +80,19 @@ const getFields = json => {
   const contentType = getContentType(json);
   const fields = json.fields;
 
+  if (contentType === 'askSubscriptionStatus') {
+    return {
+      attachments: getMessageAttachments(json),
+      invalidAskSubscriptionStatusResponse:
+        fields.invalidAskSubscriptionStatusResponse,
+      saidActive: getMessageText(fields.activeTransition),
+      saidActiveTopicId: getChangeTopicId(fields.activeTransition),
+      saidLess: getMessageText(fields.lessTransition),
+      saidLessTopicId: getChangeTopicId(fields.lessTransition),
+      text: getMessageText(json),
+    };
+  }
+
   if (contentType === 'askYesNo') {
     return {
       attachments: getMessageAttachments(json),

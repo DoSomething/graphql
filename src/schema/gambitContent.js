@@ -104,6 +104,25 @@ const typeDefs = gql`
     ${broadcastFields}
   }
 
+  "Broadcast that asks user to confirm SMS status, and changes topic to its own ID."
+  type AskSubscriptionStatusBroadcastTopic implements Broadcast & Topic {
+    ${broadcastFields}
+    "Message sent if user says active."
+    saidActive: String!
+    "The topic ID to change conversation to if user says active."
+    saidActiveTopicId: String!
+    "The topic to change conversation to if user says active."
+    saidActiveTopic: Topic
+    "Message sent if user says less."
+    saidLess: String!
+    "The topic ID to change conversation to if user says less."
+    saidLessTopicId: String!
+    "The topic to change conversation to if user says less."
+    saidLessTopic: Topic
+    "Message sent until user responds with a valid subscription status."
+    invalidAskSubscriptionStatusResponse: String!
+  }
+
   "Broadcast that asks user a yes or no question, and changes topic to its own ID."
   type AskYesNoBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
@@ -113,7 +132,7 @@ const typeDefs = gql`
     saidYesTopicId: String!
     "The topic to change conversation to if user says yes."
     saidYesTopic: Topic
-    "Message sent if user says yes"
+    "Message sent if user says yes."
     saidNo: String!
     "The topic ID to change conversation to if user says no."
     saidNoTopicId: String!
@@ -198,6 +217,12 @@ const typeDefs = gql`
  * @var {Object}
  */
 const resolvers = {
+  AskSubscriptionStatusBroadcastTopic: {
+    saidActiveTopic: (topic, args, context) =>
+      Loader(context).topics.load(topic.saidActiveTopicId, context),
+    saidLessTopic: (topic, args, context) =>
+      Loader(context).topics.load(topic.saidLessTopicId, context),
+  },
   AskYesNoBroadcastTopic: {
     saidNoTopic: (topic, args, context) =>
       Loader(context).topics.load(topic.saidNoTopicId, context),
@@ -210,6 +235,9 @@ const resolvers = {
   },
   Broadcast: {
     __resolveType(broadcast) {
+      if (broadcast.contentType === 'askSubscriptionStatus') {
+        return 'AskSubscriptionStatusBroadcastTopic';
+      }
       if (broadcast.contentType === 'askYesNo') {
         return 'AskYesNoBroadcastTopic';
       }
