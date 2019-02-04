@@ -54,7 +54,7 @@ jobs:
           command: aws lambda update-function-code --region us-east-1 --function-name $FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key release.zip --publish --query '{Name:FunctionName,Version:Version}' --output table
 
   # Configure environment-specific deploy jobs with reference.
-  deploy-development: *deploy
+  deploy-dev: *deploy
   deploy-qa: *deploy
   deploy-production: *deploy
 
@@ -67,10 +67,13 @@ workflows:
       - build
       - hold:
           type: approval
+          requires:
+            - deploy-dev
+            - deploy-qa
           filters:
             branches:
               only: master
-      - deploy-development:
+      - deploy-dev:
           context: dosomething-graphql-dev
           requires:
             - build
@@ -87,7 +90,6 @@ workflows:
       - deploy-production:
           context: dosomething-graphql
           requires:
-            - build
             - hold
           filters:
             branches:
