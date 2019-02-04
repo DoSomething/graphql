@@ -17,10 +17,10 @@ commands:
           command: |
             export LAMBDA_KEY=$(aws ssm get-parameter --name /circleci/$APP_NAME/AWS_ACCESS_KEY_ID --with-decryption --output text --query Parameter.Value)
             export LAMBDA_SECRET=$(aws ssm get-parameter --name /circleci/$APP_NAME/AWS_SECRET_ACCESS_KEY --with-decryption --output text --query Parameter.Value)
-            echo 'export AWS_ACCESS_KEY_ID=$LAMBDA_KEY' >> $BASH_ENV
-            echo 'export AWS_SECRET_ACCESS_KEY=$LAMBDA_SECRET' >> $BASH_ENV
-            echo 'export FUNCTION_NAME=$APP_NAME' >> $BASH_ENV
-            echo 'export DEPLOY_BUCKET=$APP_NAME-deploy' >> $BASH_ENV
+            echo "export AWS_ACCESS_KEY_ID=$LAMBDA_KEY" >> $BASH_ENV
+            echo "export AWS_SECRET_ACCESS_KEY=$LAMBDA_SECRET" >> $BASH_ENV
+            echo "export FUNCTION_NAME=$APP_NAME" >> $BASH_ENV
+            echo "export DEPLOY_BUCKET=$APP_NAME-deploy" >> $BASH_ENV
       - run:
           name: Upload build to S3 bucket
           command: |
