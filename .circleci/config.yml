@@ -5,7 +5,7 @@
 version: 2.1
 
 orbs:
-  deploy: dosomething/deploy@dev:master
+  deploy: dosomething/deploy@0.0.3
 
 jobs:
   # Install dependencies, run tests, and compile for Lambda.
@@ -28,40 +28,21 @@ jobs:
       - run: npm run compile
       # When we're on npm 5.7+, add this back in. <https://git.io/fhMbF>
       # - run: npm prune --production
-      - run:
-          name: Compress source
-          command: cd ~/app && zip -r release.zip .
-      - persist_to_workspace:
-          root: .
-          paths:
-            - release.zip
-
-
-  # Base job to deploy to a Lambda function. <https://goo.gl/iDdcpb>
-  # We use a '&deploy' reference to clone this for each environment.
-  deploy: &deploy
-    docker:
-      - image: circleci/python:3.6
-    working_directory: ~/app
-    steps:
-      - attach_workspace:
-          at: ~/app
-      - deploy/lambda
+      - deploy/store-lambda
 
   # Configure environment-specific deploy jobs with reference.
-  deploy-dev:
-    <<: *deploy
-    environment:
-      APP_NAME: dosomething-graphql-dev
-  deploy-qa:
-    <<: *deploy
-    environment:
-      APP_NAME: dosomething-graphql-qa
-  deploy-production:
-    <<: *deploy
-    environment:
-      APP_NAME: dosomething-graphql
-
+  - deploy/deploy-lambda
+      name: deploy-dev
+      app: dosomething-graphql-dev
+      workspace: ~/app
+  - deploy/deploy-lambda
+      name: deploy-qa
+      app: dosomething-graphql-qa
+      workspace: ~/app
+  - deploy/deploy-lambda
+      name: deploy-production
+      app: dosomething-graphql
+      workspace: ~/app
 
 # Configure workflows & scheduled jobs:
 workflows:
