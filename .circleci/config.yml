@@ -4,36 +4,38 @@
 #
 version: 2.1
 
-commands:
-  aws-setup:
-    steps:
-      - run:
-          name: Install AWS CLI
-          command: sudo pip install awscli
-  lambda-deploy:
-    steps:
-      - run:
-          name: Load deploy credentials
-          command: |
-            export LAMBDA_KEY=$(aws ssm get-parameter --name /circleci/$APP_NAME/AWS_ACCESS_KEY_ID --with-decryption --output text --query Parameter.Value)
-            export LAMBDA_SECRET=$(aws ssm get-parameter --name /circleci/$APP_NAME/AWS_SECRET_ACCESS_KEY --with-decryption --output text --query Parameter.Value)
-            echo "export AWS_ACCESS_KEY_ID=$LAMBDA_KEY" >> $BASH_ENV
-            echo "export AWS_SECRET_ACCESS_KEY=$LAMBDA_SECRET" >> $BASH_ENV
-      - run:
-          name: Prepare deployment targets
-          command: |
-            echo "export FUNCTION_NAME=$APP_NAME" >> $BASH_ENV
-            echo "export DEPLOY_BUCKET=$APP_NAME-deploy" >> $BASH_ENV
-      - run:
-          name: Upload build to S3 bucket
-          command: |
-            aws s3 cp release.zip s3://$DEPLOY_BUCKET --region us-east-1
-      - run:
-          name: Publish new function version
-          command: |
-            aws lambda update-function-code --region us-east-1 --function-name $FUNCTION_NAME \
-              --s3-bucket $DEPLOY_BUCKET --s3-key release.zip --publish \
-              --query '{Name:FunctionName,Version:Version}' --output table
+orbs:
+  aws:
+    commands:
+      setup:
+        steps:
+          - run:
+              name: Install AWS CLI
+              command: sudo pip install awscli
+      lambda-deploy:
+        steps:
+          - run:
+              name: Load deploy credentials
+              command: |
+                export LAMBDA_KEY=$(aws ssm get-parameter --name /circleci/$APP_NAME/AWS_ACCESS_KEY_ID --with-decryption --output text --query Parameter.Value)
+                export LAMBDA_SECRET=$(aws ssm get-parameter --name /circleci/$APP_NAME/AWS_SECRET_ACCESS_KEY --with-decryption --output text --query Parameter.Value)
+                echo "export AWS_ACCESS_KEY_ID=$LAMBDA_KEY" >> $BASH_ENV
+                echo "export AWS_SECRET_ACCESS_KEY=$LAMBDA_SECRET" >> $BASH_ENV
+          - run:
+              name: Prepare deployment targets
+              command: |
+                echo "export FUNCTION_NAME=$APP_NAME" >> $BASH_ENV
+                echo "export DEPLOY_BUCKET=$APP_NAME-deploy" >> $BASH_ENV
+          - run:
+              name: Upload build to S3 bucket
+              command: |
+                aws s3 cp release.zip s3://$DEPLOY_BUCKET --region us-east-1
+          - run:
+              name: Publish new function version
+              command: |
+                aws lambda update-function-code --region us-east-1 --function-name $FUNCTION_NAME \
+                  --s3-bucket $DEPLOY_BUCKET --s3-key release.zip --publish \
+                  --query '{Name:FunctionName,Version:Version}' --output table
 
 
 
@@ -77,8 +79,8 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/app
-      - aws-setup
-      - lambda-deploy
+      - aws/setup
+      - aws/lambda-deploy
 
   # Configure environment-specific deploy jobs with reference.
   deploy-dev:
