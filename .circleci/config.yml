@@ -71,17 +71,17 @@ jobs:
   deploy-dev:
     <<: *deploy
     steps:
-      - lambda-deploy
+      - lambda-deploy:
           app: dosomething-graphql-dev
   deploy-qa:
     <<: *deploy
     steps:
-      - lambda-deploy
+      - lambda-deploy:
           app: dosomething-graphql-qa
   deploy-production:
     <<: *deploy
     steps:
-      - lambda-deploy
+      - lambda-deploy:
           app: dosomething-graphql
 
 
