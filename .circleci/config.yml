@@ -30,20 +30,6 @@ jobs:
       # - run: npm prune --production
       - deploy/store-lambda
 
-  # Configure environment-specific deploy jobs with reference.
-  - deploy/deploy-lambda
-      name: deploy-dev
-      app: dosomething-graphql-dev
-      workspace: ~/app
-  - deploy/deploy-lambda
-      name: deploy-qa
-      app: dosomething-graphql-qa
-      workspace: ~/app
-  - deploy/deploy-lambda
-      name: deploy-production
-      app: dosomething-graphql
-      workspace: ~/app
-
 # Configure workflows & scheduled jobs:
 workflows:
   version: 2
@@ -58,19 +44,28 @@ workflows:
           filters:
             branches:
               only: circleci-workflow
-      - deploy-dev:
+      - deploy/deploy-lambda
+          name: deploy-dev
+          app: dosomething-graphql-dev
+          workspace: ~/app
           requires:
             - build
           filters:
             branches:
               only: circleci-workflow
-      - deploy-qa:
+      - deploy/deploy-lambda
+          name: deploy-qa
+          app: dosomething-graphql-qa
+          workspace: ~/app
           requires:
             - build
           filters:
             branches:
               only: circleci-workflow
-      - deploy-production:
+      - deploy/deploy-lambda
+          name: deploy-production
+          app: dosomething-graphql
+          workspace: ~/app
           requires:
             - hold
           filters:
