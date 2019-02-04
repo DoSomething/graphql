@@ -5,7 +5,7 @@
 version: 2.1
 
 orbs:
-  - deploy: dosomething/deploy@dev:master
+  deploy: dosomething/deploy@dev:master
 
 jobs:
   # Install dependencies, run tests, and compile for Lambda.
