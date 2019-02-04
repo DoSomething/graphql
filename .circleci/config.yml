@@ -4,6 +4,28 @@
 #
 version: 2.1
 
+commands:
+  aws-setup:
+    steps:
+      - run:
+          name: Install AWS CLI
+          command: sudo pip install awscli
+  lambda-deploy:
+    parameters:
+      app:
+        type: string
+    steps:
+      - run:
+          name: Upload build to S3 bucket
+          command: "aws s3 cp release.zip s3://<<parameters.app>>-deploy"
+      - run:
+          name: Publish new function version
+          command: "aws lambda update-function-code --region us-east-1 --function-name <<parameters.app>>  --s3-bucket <<parameters.app>>-deploy --s3-key release.zip --publish --query '{Name:FunctionName,Version:Version}' --output table"
+
+
+
+
+
 jobs:
   # Install dependencies, run tests, and compile for Lambda.
   build:
@@ -43,20 +65,24 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/app
-      - run:
-          name: Install awscli
-          command: sudo pip install awscli
-      - run:
-          name: Upload build to S3 bucket
-          command: aws s3 cp release.zip s3://$S3_BUCKET
-      - run:
-          name: Publish new function version
-          command: aws lambda update-function-code --region us-east-1 --function-name $FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key release.zip --publish --query '{Name:FunctionName,Version:Version}' --output table
+      - aws-setup
 
   # Configure environment-specific deploy jobs with reference.
-  deploy-dev: *deploy
-  deploy-qa: *deploy
-  deploy-production: *deploy
+  deploy-dev:
+    <<: *deploy
+    steps:
+      - lambda-deploy
+          app: dosomething-graphql-dev
+  deploy-qa:
+    <<: *deploy
+    steps:
+      - lambda-deploy
+          app: dosomething-graphql-qa
+  deploy-production:
+    <<: *deploy
+    steps:
+      - lambda-deploy
+          app: dosomething-graphql
 
 
 # Configure workflows & scheduled jobs:
