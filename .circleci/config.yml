@@ -44,28 +44,28 @@ workflows:
           filters:
             branches:
               only: circleci-workflow
-      - deploy/deploy-lambda
+      - deploy/deploy-lambda:
           name: deploy-dev
           app: dosomething-graphql-dev
-          workspace: ~/app
+          working_directory: ~/app
           requires:
             - build
           filters:
             branches:
               only: circleci-workflow
-      - deploy/deploy-lambda
+      - deploy/deploy-lambda:
           name: deploy-qa
           app: dosomething-graphql-qa
-          workspace: ~/app
+          working_directory: ~/app
           requires:
             - build
           filters:
             branches:
               only: circleci-workflow
-      - deploy/deploy-lambda
+      - deploy/deploy-lambda:
           name: deploy-production
           app: dosomething-graphql
-          workspace: ~/app
+          working_directory: ~/app
           requires:
             - hold
           filters:
