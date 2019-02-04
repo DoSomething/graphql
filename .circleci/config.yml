@@ -1,15 +1,17 @@
-# Javascript Node CircleCI 2.0 configuration file
+# Javascript Node CircleCI 2.1 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
+version: 2.1
+
+orbs:
+  lambda: dosomething/lambda@0.0.3
 
 jobs:
   # Install dependencies, run tests, and compile for Lambda.
   build:
     docker:
       - image: circleci/node:8.10
-    working_directory: ~/app
     steps:
       - checkout
       - restore_cache:
@@ -25,39 +27,7 @@ jobs:
       - run: npm run compile
       # When we're on npm 5.7+, add this back in. <https://git.io/fhMbF>
       # - run: npm prune --production
-      - run:
-          name: Compress source
-          command: cd ~/app && zip -r release.zip .
-      - persist_to_workspace:
-          root: .
-          paths:
-            - release.zip
-
-
-  # Base job to deploy to a Lambda function. <https://goo.gl/iDdcpb>
-  # We use a '&deploy' reference to clone this for each environment.
-  deploy: &deploy
-    docker:
-      - image: circleci/python:3.6
-    working_directory: ~/app
-    steps:
-      - attach_workspace:
-          at: ~/app
-      - run:
-          name: Install awscli
-          command: sudo pip install awscli
-      - run:
-          name: Upload build to S3 bucket
-          command: aws s3 cp release.zip s3://$S3_BUCKET
-      - run:
-          name: Publish new function version
-          command: aws lambda update-function-code --region us-east-1 --function-name $FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key release.zip --publish --query '{Name:FunctionName,Version:Version}' --output table
-
-  # Configure environment-specific deploy jobs with reference.
-  deploy-development: *deploy
-  deploy-qa: *deploy
-  deploy-production: *deploy
-
+      - lambda/store
 
 # Configure workflows & scheduled jobs:
 workflows:
@@ -67,27 +37,32 @@ workflows:
       - build
       - hold:
           type: approval
+          requires:
+            - deploy-dev
+            - deploy-qa
           filters:
             branches:
-              only: master
-      - deploy-development:
-          context: dosomething-graphql-dev
+              only: circleci-workflow
+      - lambda/deploy:
+          name: deploy-dev
+          app: dosomething-graphql-dev
           requires:
             - build
           filters:
             branches:
               only: master
-      - deploy-qa:
-          context: dosomething-graphql-qa
+      - lambda/deploy:
+          name: deploy-qa
+          app: dosomething-graphql-qa
           requires:
             - build
           filters:
             branches:
               only: master
-      - deploy-production:
-          context: dosomething-graphql
+      - lambda/deploy:
+          name: deploy-production
+          app: dosomething-graphql
           requires:
-            - build
             - hold
           filters:
             branches:
