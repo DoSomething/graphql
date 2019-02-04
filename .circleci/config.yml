@@ -52,7 +52,7 @@ workflows:
             - build
           filters:
             branches:
-              only: circleci-workflow
+              only: master
       - lambda/deploy:
           name: deploy-qa
           app: dosomething-graphql-qa
@@ -61,7 +61,7 @@ workflows:
             - build
           filters:
             branches:
-              only: circleci-workflow
+              only: master
       - lambda/deploy:
           name: deploy-production
           app: dosomething-graphql
@@ -70,4 +70,4 @@ workflows:
             - hold
           filters:
             branches:
-              only: circleci-workflow
+              only: master
