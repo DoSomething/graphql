@@ -24,7 +24,7 @@ commands:
       - run:
           name: Upload build to S3 bucket
           command: |
-            aws s3 cp release.zip s3://$DEPLOY_BUCKET
+            aws s3 cp release.zip s3://$DEPLOY_BUCKET --region us-east-1
       - run:
           name: Publish new function version
           command: |
