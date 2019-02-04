@@ -11,16 +11,22 @@ commands:
           name: Install AWS CLI
           command: sudo pip install awscli
   lambda-deploy:
-    parameters:
-      app:
-        type: string
     steps:
       - run:
+          name: Set function name & deploy bucket
+          command: |
+            export FUNCTION_NAME=$APP_NAME
+            export DEPLOY_BUCKET=$APP_NAME-deploy
+      - run:
           name: Upload build to S3 bucket
-          command: "aws s3 cp release.zip s3://<<parameters.app>>-deploy"
+          command: |
+            aws s3 cp release.zip s3://$DEPLOY_BUCKET
       - run:
           name: Publish new function version
-          command: "aws lambda update-function-code --region us-east-1 --function-name <<parameters.app>>  --s3-bucket <<parameters.app>>-deploy --s3-key release.zip --publish --query '{Name:FunctionName,Version:Version}' --output table"
+          command: |
+            aws lambda update-function-code --region us-east-1 --function-name $FUNCTION_NAME \
+              --s3-bucket $DEPLOY_BUCKET --s3-key release.zip --publish \
+              --query '{Name:FunctionName,Version:Version}' --output table
 
 
 
@@ -57,30 +63,29 @@ jobs:
 
   # Base job to deploy to a Lambda function. <https://goo.gl/iDdcpb>
   # We use a '&deploy' reference to clone this for each environment.
-  deploy: &deploy-env
+  deploy: &deploy
     docker:
       - image: circleci/python:3.6
     working_directory: ~/app
-    steps: &deploy-steps
-      - attach_workspace: { at: "~/app" }
+    steps:
+      - attach_workspace:
+          at: ~/app
       - aws-setup
+      - lambda-deploy
 
   # Configure environment-specific deploy jobs with reference.
   deploy-dev:
-    <<: *deploy-env
-    steps:
-      <<: *deploy-steps
-      - lambda-deploy: { app: dosomething-graphql-dev }
+    <<: *deploy
+    environment:
+      APP_NAME: dosomething-graphql-dev
   deploy-qa:
-    <<: *deploy-env
-    steps:
-      <<: *deploy-steps
-      - lambda-deploy: { app: dosomething-graphql-qa }
+    <<: *deploy
+    environment:
+      APP_NAME: dosomething-graphql-qa
   deploy-production:
-    <<: *deploy-env
-    steps:
-      <<: *deploy-steps
-      - lambda-deploy: { app: dosomething-graphql }
+    <<: *deploy
+    environment:
+      APP_NAME: dosomething-graphql
 
 
 # Configure workflows & scheduled jobs:
