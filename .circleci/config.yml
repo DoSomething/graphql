@@ -72,25 +72,25 @@ workflows:
             - deploy-qa
           filters:
             branches:
-              only: master
+              only: circleci-workflow
       - deploy-dev:
           context: dosomething-graphql-dev
           requires:
             - build
           filters:
             branches:
-              only: master
+              only: circleci-workflow
       - deploy-qa:
           context: dosomething-graphql-qa
           requires:
             - build
           filters:
             branches:
-              only: master
+              only: circleci-workflow
       - deploy-production:
           context: dosomething-graphql
           requires:
             - hold
           filters:
             branches:
-              only: master
+              only: circleci-workflow
