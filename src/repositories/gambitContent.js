@@ -89,6 +89,7 @@ const getFields = json => {
       saidActiveTopicId: getChangeTopicId(fields.activeTransition),
       saidLess: getMessageText(fields.lessTransition),
       saidLessTopicId: getChangeTopicId(fields.lessTransition),
+      saidNeedMoreInfo: fields.needMoreInfo,
       text: getMessageText(json),
     };
   }
