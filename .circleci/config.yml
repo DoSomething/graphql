@@ -5,7 +5,7 @@
 version: 2.1
 
 orbs:
-  deploy: dosomething/deploy@0.0.3
+  lambda: dosomething/lambda@0.0.2
 
 jobs:
   # Install dependencies, run tests, and compile for Lambda.
@@ -28,7 +28,7 @@ jobs:
       - run: npm run compile
       # When we're on npm 5.7+, add this back in. <https://git.io/fhMbF>
       # - run: npm prune --production
-      - deploy/store-lambda
+      - lambda/store
 
 # Configure workflows & scheduled jobs:
 workflows:
@@ -44,7 +44,7 @@ workflows:
           filters:
             branches:
               only: circleci-workflow
-      - deploy/deploy-lambda:
+      - lambda/deploy:
           name: deploy-dev
           app: dosomething-graphql-dev
           working_directory: ~/app
@@ -53,7 +53,7 @@ workflows:
           filters:
             branches:
               only: circleci-workflow
-      - deploy/deploy-lambda:
+      - lambda/deploy:
           name: deploy-qa
           app: dosomething-graphql-qa
           working_directory: ~/app
@@ -62,7 +62,7 @@ workflows:
           filters:
             branches:
               only: circleci-workflow
-      - deploy/deploy-lambda:
+      - lambda/deploy:
           name: deploy-production
           app: dosomething-graphql
           working_directory: ~/app
