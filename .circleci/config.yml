@@ -5,7 +5,7 @@
 version: 2.1
 
 orbs:
-  lambda: dosomething/lambda@0.0.2
+  lambda: dosomething/lambda@0.0.3
 
 jobs:
   # Install dependencies, run tests, and compile for Lambda.
