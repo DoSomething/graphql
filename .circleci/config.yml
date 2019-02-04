@@ -13,10 +13,10 @@ commands:
   lambda-deploy:
     steps:
       - run:
-          name: Set function name & deploy bucket
+          name: Set function name & deploy bucket # See: https://goo.gl/NYM85H
           command: |
-            export FUNCTION_NAME=$APP_NAME
-            export DEPLOY_BUCKET=$APP_NAME-deploy
+            echo 'export FUNCTION_NAME=$APP_NAME' >> $BASH_ENV
+            echo 'export DEPLOY_BUCKET=$APP_NAME-deploy' >> $BASH_ENV
       - run:
           name: Upload build to S3 bucket
           command: |
