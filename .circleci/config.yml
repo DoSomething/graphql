@@ -42,7 +42,7 @@ workflows:
             - deploy-qa
           filters:
             branches:
-              only: circleci-workflow
+              only: master
       - lambda/deploy:
           name: deploy-dev
           app: dosomething-graphql-dev
