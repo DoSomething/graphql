@@ -25,7 +25,6 @@ commands:
 
 
 
-
 jobs:
   # Install dependencies, run tests, and compile for Lambda.
   build:
@@ -58,31 +57,30 @@ jobs:
 
   # Base job to deploy to a Lambda function. <https://goo.gl/iDdcpb>
   # We use a '&deploy' reference to clone this for each environment.
-  deploy: &deploy
+  deploy: &deploy-env
     docker:
       - image: circleci/python:3.6
     working_directory: ~/app
-    steps:
-      - attach_workspace:
-          at: ~/app
+    steps: &deploy-steps
+      - attach_workspace: { at: "~/app" }
       - aws-setup
 
   # Configure environment-specific deploy jobs with reference.
   deploy-dev:
-    <<: *deploy
+    <<: *deploy-env
     steps:
-      - lambda-deploy:
-          app: dosomething-graphql-dev
+      <<: *deploy-steps
+      - lambda-deploy: { app: dosomething-graphql-dev }
   deploy-qa:
-    <<: *deploy
+    <<: *deploy-env
     steps:
-      - lambda-deploy:
-          app: dosomething-graphql-qa
+      <<: *deploy-steps
+      - lambda-deploy: { app: dosomething-graphql-qa }
   deploy-production:
-    <<: *deploy
+    <<: *deploy-env
     steps:
-      - lambda-deploy:
-          app: dosomething-graphql
+      <<: *deploy-steps
+      - lambda-deploy: { app: dosomething-graphql }
 
 
 # Configure workflows & scheduled jobs:
