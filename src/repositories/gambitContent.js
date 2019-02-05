@@ -94,6 +94,19 @@ const getFields = json => {
     };
   }
 
+  if (contentType === 'askVotingPlanStatus') {
+    return {
+      attachments: getMessageAttachments(json),
+      saidCantVote: getMessageText(fields.cantVoteTransition),
+      saidCantVoteTopicId: getChangeTopicId(fields.cantVoteTransition),
+      saidNotVoting: getMessageText(fields.notVotingTransition),
+      saidNotVotingTopicId: getChangeTopicId(fields.notVotingTransition),
+      saidVoted: getMessageText(fields.votedTransition),
+      saidVotedTopicId: getChangeTopicId(fields.votedTransition),
+      text: getMessageText(json),
+    };
+  }
+
   if (contentType === 'askYesNo') {
     return {
       attachments: getMessageAttachments(json),

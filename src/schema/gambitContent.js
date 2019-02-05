@@ -125,6 +125,29 @@ const typeDefs = gql`
     invalidAskSubscriptionStatusResponse: String!
   }
 
+  "Broadcast that asks user if they plan to vote in an upcoming election, and changes topic to its own ID."
+  type AskVotingPlanStatusBroadcastTopic implements Broadcast & Topic {
+    ${broadcastFields}
+    "Message sent if user says they can't vote."
+    saidCantVote: String!
+    "The topic ID to change conversation to if user says they can't vote."
+    saidCantVoteTopicId: String!
+    "The topic to change conversation to if user says they can't vote."
+    saidCantVoteTopic: Topic
+    "Message sent if user says they aren't voting."
+    saidNotVoting: String!
+    "The topic ID to change conversation to if user says they aren't voting."
+    saidNotVotingTopicId: String!
+    "The topic to change conversation to if user says they aren't voting."
+    saidNotVotingTopic: Topic
+    "Message sent if user says they already voted."
+    saidVoted: String!
+    "The topic ID to change conversation to if user says they already voted."
+    saidVotedTopicId: String!
+    "The topic to change conversation to if user says they already voted."
+    saidVotedTopic: Topic
+  }
+
   "Broadcast that asks user a yes or no question, and changes topic to its own ID."
   type AskYesNoBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
@@ -225,6 +248,14 @@ const resolvers = {
     saidLessTopic: (topic, args, context) =>
       Loader(context).topics.load(topic.saidLessTopicId, context),
   },
+  AskVotingPlanStatusBroadcastTopic: {
+    saidCantVoteTopic: (topic, args, context) =>
+      Loader(context).topics.load(topic.saidCantVoteTopicId, context),
+    saidNotVotingTopic: (topic, args, context) =>
+      Loader(context).topics.load(topic.saidNotVotingTopicId, context),
+    saidVotedTopic: (topic, args, context) =>
+      Loader(context).topics.load(topic.saidVotedTopicId, context),
+  },
   AskYesNoBroadcastTopic: {
     saidNoTopic: (topic, args, context) =>
       Loader(context).topics.load(topic.saidNoTopicId, context),
@@ -239,6 +270,9 @@ const resolvers = {
     __resolveType(broadcast) {
       if (broadcast.contentType === 'askSubscriptionStatus') {
         return 'AskSubscriptionStatusBroadcastTopic';
+      }
+      if (broadcast.contentType === 'askVotingPlanStatus') {
+        return 'AskVotingPlanStatusBroadcastTopic';
       }
       if (broadcast.contentType === 'askYesNo') {
         return 'AskYesNoBroadcastTopic';
@@ -284,6 +318,9 @@ const resolvers = {
     __resolveType(topic) {
       if (topic.contentType === 'askSubscriptionStatus') {
         return 'AskSubscriptionStatusBroadcastTopic';
+      }
+      if (topic.contentType === 'askVotingPlanStatus') {
+        return 'AskVotingPlanStatusBroadcastTopic';
       }
       if (topic.contentType === 'askYesNo') {
         return 'AskYesNoBroadcastTopic';
