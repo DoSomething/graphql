@@ -78,6 +78,8 @@ const typeDefs = gql`
     source: String
     "More information about the user's registration source (for example, a campaign or broadcast ID)."
     sourceDetail: String
+    "The user's email subscription status."
+    emailSubscriptionStatus: Boolean
     "The user's SMS status."
     smsStatus: SubscriptionStatus
     "The user's conversation status will be paused if they are in a support conversation."
