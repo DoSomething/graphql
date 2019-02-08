@@ -9,7 +9,7 @@ import {
   getMessageById,
   getMessages,
   getMessagesByConversationId,
-} from '../repositories/gambitConversations';
+} from '../repositories/gambit';
 
 /**
  * GraphQL types.
@@ -51,8 +51,6 @@ const typeDefs = gql`
     updatedAt: DateTime
     "The topic ID of the conversation topic when message was created."
     topicId: String
-    "The message text."
-    text: String
     "The message template (if outbound)."
     template: String
     "The Rivescript trigger that was matched."

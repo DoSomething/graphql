@@ -2,14 +2,14 @@ import { createClient } from 'contentful';
 import { assign, map } from 'lodash';
 import logger from 'heroku-logger';
 
-import config from '../../config';
-import Cache from '../cache';
+import config from '../../../config';
+import Cache from '../../cache';
 
-const cache = new Cache(config('services.gambitContent.cache'));
+const cache = new Cache(config('services.contentful.gambit.cache'));
 
 const contentfulClient = createClient({
-  space: config('services.gambitContent.spaceId'),
-  accessToken: config('services.gambitContent.accessToken'),
+  space: config('services.contentful.gambit.spaceId'),
+  accessToken: config('services.contentful.gambit.accessToken'),
 });
 
 /**
@@ -243,7 +243,7 @@ export const getGambitContentfulEntryById = async (id, context) => {
 };
 
 /**
- * Fetch all conversation triggers from Gambit Content.
+ * Fetch all conversation triggers from the Gambit Contentful space.
  *
  * @return {Array}
  */
@@ -272,7 +272,7 @@ export const getConversationTriggers = async () => {
 };
 
 /**
- * Fetch all web signup confirmations from Gambit Content.
+ * Fetch all web signup confirmations from the Gambit Contentful space.
  *
  * @return {Array}
  */
