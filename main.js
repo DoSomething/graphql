@@ -12,6 +12,7 @@ const server = new ApolloServer({
   schema,
   cacheControl: true, // Send 'Cache-Control' headers where needed.
   introspection: true, // Enable introspection in our production environment.
+  playground: true, // Enable playground on production for exploration & debugging.
   tracing: true, // Enable tracing on requests.
 });
 
