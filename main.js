@@ -8,7 +8,12 @@ fetch = require('node-fetch');
 const { ApolloServer } = require('apollo-server-lambda');
 const schema = require('./lib/src/schema').default;
 
-const server = new ApolloServer({ schema });
+const server = new ApolloServer({
+  schema,
+  cacheControl: true, // Send 'Cache-Control' headers where needed.
+  introspection: true, // Enable introspection in our production environment.
+  tracing: true, // Enable tracing on requests.
+});
 
 exports.handler = function(event, context, callback) {
   // For some reason `event.path` doesn't include API gateway stage, so we get
