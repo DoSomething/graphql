@@ -20,6 +20,7 @@ const environments = {
   local: {
     displayName: 'local development',
 
+    // Contentful
     contentful,
 
     // Northstar
@@ -52,7 +53,7 @@ const environments = {
       // Note: Gambit doesn't have a dev instance, so we use QA.
       url: 'https://gambit-conversations-staging.herokuapp.com',
       user: process.env.QA_GAMBIT_BASIC_AUTH_USER,
-      pass: process.env.QA_GAMBIT_BAISC_AUTH_PASS,
+      pass: process.env.QA_GAMBIT_BASIC_AUTH_PASS,
     },
 
     // Northstar
