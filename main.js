@@ -11,7 +11,7 @@ const schema = require('./lib/src/schema').default;
 const server = new ApolloServer({
   schema,
   context: ({ event }) => ({
-    authorization: event.headers.authorization,
+    authorization: event.headers.Authorization,
   }),
   cacheControl: true, // Send 'Cache-Control' headers where needed.
   introspection: true, // Enable introspection in our production environment.
