@@ -28,7 +28,7 @@ exports.handler = function(event, context, callback) {
     cors: {
       origin: '*',
       credentials: true,
-      allowedHeaders: ['content-type'],
+      allowedHeaders: ['content-type', 'authorization'],
     },
   };
 
