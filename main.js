@@ -26,8 +26,9 @@ exports.handler = function(event, context, callback) {
   // Enable CORS for cross-domain usage.
   const handlerSettings = {
     cors: {
-      origin: true,
+      origin: '*',
       credentials: true,
+      allowedHeaders: ['content-type'],
     },
   };
 
