@@ -4,8 +4,8 @@ import DataLoader from 'dataloader';
 
 import { getCampaignById, getSignupsById } from './repositories/rogue';
 import { getUserById } from './repositories/northstar';
-import { getConversationById } from './repositories/gambitConversations';
-import { getGambitContentfulEntryById } from './repositories/gambitContent';
+import { getConversationById } from './repositories/gambit';
+import { getGambitContentfulEntryById } from './repositories/contentful/gambit';
 import { authorizedRequest } from './repositories/helpers';
 
 /**

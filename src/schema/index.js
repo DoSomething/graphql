@@ -4,8 +4,8 @@ import { mergeSchemas } from 'graphql-tools';
 // Schemas
 import rogueSchema from './rogue';
 import northstarSchema from './northstar';
-import gambitContentSchema from './gambitContent';
-import gambitConversationsSchema from './gambitConversations';
+import gambitContentfulSchema from './contentful/gambit';
+import gambitSchema from './gambit';
 
 /**
  * The schema used to link services together.
@@ -78,7 +78,7 @@ const linkResolvers = {
       fragment: 'fragment ConversationsFragment on User { id }',
       resolve(user, args, context, info) {
         return info.mergeInfo.delegateToSchema({
-          schema: gambitConversationsSchema,
+          schema: gambitSchema,
           operation: 'query',
           fieldName: 'conversationsByUserId',
           args: {
@@ -157,7 +157,7 @@ const linkResolvers = {
       fragment: 'fragment TopicFragment on Conversation { topicId }',
       resolve(conversation, args, context, info) {
         return info.mergeInfo.delegateToSchema({
-          schema: gambitContentSchema,
+          schema: gambitContentfulSchema,
           operation: 'query',
           fieldName: 'topic',
           args: {
@@ -189,7 +189,7 @@ const linkResolvers = {
       fragment: 'fragment TopicFragment on Message { topicId }',
       resolve(message, args, context, info) {
         return info.mergeInfo.delegateToSchema({
-          schema: gambitContentSchema,
+          schema: gambitContentfulSchema,
           operation: 'query',
           fieldName: 'topic',
           args: {
@@ -297,8 +297,8 @@ const schema = mergeSchemas({
   schemas: [
     northstarSchema,
     rogueSchema,
-    gambitConversationsSchema,
-    gambitContentSchema,
+    gambitContentfulSchema,
+    gambitSchema,
     linkSchema,
   ],
   resolvers: linkResolvers,

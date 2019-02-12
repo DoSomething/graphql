@@ -1,12 +1,12 @@
-/**
- * Gambit Content has a single environment used across all GraphQL environments.
- */
-const gambitContent = {
-  spaceId: process.env.GAMBIT_CONTENTFUL_SPACE_ID,
-  accessToken: process.env.GAMBIT_CONTENTFUL_ACCESS_TOKEN,
-  cache: {
-    name: 'gambitContent',
-    expiresIn: 3600 * 1000, // 1 hour (3600 seconds).
+const contentful = {
+  // Gambit uses a single space/environment used across all GraphQL environments.
+  gambit: {
+    spaceId: process.env.GAMBIT_CONTENTFUL_SPACE_ID,
+    accessToken: process.env.GAMBIT_CONTENTFUL_ACCESS_TOKEN,
+    cache: {
+      name: 'gambitContent',
+      expiresIn: 3600 * 1000, // 1 hour (3600 seconds).
+    },
   },
 };
 
@@ -19,6 +19,9 @@ const environments = {
    */
   local: {
     displayName: 'local development',
+
+    // Contentful
+    contentful,
 
     // Northstar
     northstar: {
@@ -42,13 +45,15 @@ const environments = {
   dev: {
     displayName: 'Development',
 
+    // Contentful
+    contentful,
+
     // Gambit
-    gambitContent,
-    gambitConversations: {
-      // Note: Conversations doesn't have a dev instance, so we use QA.
+    gambit: {
+      // Note: Gambit doesn't have a dev instance, so we use QA.
       url: 'https://gambit-conversations-staging.herokuapp.com',
-      user: process.env.QA_GAMBIT_CONVERSATIONS_USER,
-      pass: process.env.QA_GAMBIT_CONVERSATIONS_PASS,
+      user: process.env.QA_GAMBIT_BASIC_AUTH_USER,
+      pass: process.env.QA_GAMBIT_BASIC_AUTH_PASS,
     },
 
     // Northstar
@@ -73,13 +78,14 @@ const environments = {
   qa: {
     displayName: 'QA',
 
+    // Contentful
+    contentful,
+
     // Gambit
-    gambitContent,
-    gambitConversations: {
+    gambit: {
       url: 'https://gambit-conversations-staging.herokuapp.com',
-      // TODO: Validate requests with Northstar token instead of Gambit basic auth.
-      user: process.env.QA_GAMBIT_CONVERSATIONS_USER,
-      pass: process.env.QA_GAMBIT_CONVERSATIONS_PASS,
+      user: process.env.QA_GAMBIT_BASIC_AUTH_USER,
+      pass: process.env.QA_GAMBIT_BASIC_AUTH_PASS,
     },
 
     // Northstar
@@ -104,13 +110,14 @@ const environments = {
   production: {
     displayName: 'production',
 
+    // Contentful
+    contentful,
+
     // Gambit
-    gambitContent,
-    gambitConversations: {
+    gambit: {
       url: 'https://gambit-conversations-prod.herokuapp.com',
-      // TODO: Validate requests with Northstar token instead of Gambit basic auth.
-      user: process.env.PRODUCTION_GAMBIT_CONVERSATIONS_USER,
-      pass: process.env.PRODUCTION_GAMBIT_CONVERSATIONS_PASS,
+      user: process.env.PRODUCTION_GAMBIT_BASIC_AUTH_USER,
+      pass: process.env.PRODUCTION_GAMBIT_BASIC_AUTH_PASS,
     },
 
     // Northstar

@@ -4,8 +4,8 @@ import { gql } from 'apollo-server';
 import {
   getConversationTriggers,
   getWebSignupConfirmations,
-} from '../repositories/gambitContent';
-import Loader from '../loader';
+} from '../../repositories/contentful/gambit';
+import Loader from '../../loader';
 
 const entryFields = `
   "The entry ID."
