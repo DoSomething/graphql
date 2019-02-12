@@ -26,6 +26,7 @@ exports.handler = function(event, context, callback) {
   // @TODO: Is this a bug with our API Gateway config?
   event.path = event.requestContext.path; // eslint-disable-line
 
+  console.log(event);
   // Enable CORS for cross-domain usage.
   const handlerSettings = {
     cors: {
