@@ -56,9 +56,9 @@ workflows:
           app: dosomething-graphql-qa
           requires:
             - build
-          # filters:
-          #   branches:
-          #     only: master
+          filters:
+            branches:
+              only: master
       - lambda/deploy:
           name: deploy-production
           app: dosomething-graphql
