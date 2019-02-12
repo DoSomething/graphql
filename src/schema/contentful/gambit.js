@@ -104,7 +104,32 @@ const typeDefs = gql`
     ${broadcastFields}
   }
 
-  "Broadcast that asks user to confirm SMS status, and changes topic to its own ID."
+  "Broadcast that asks user a multiple choice question, and changes topic to its own ID."
+  type AskMultipleChoiceBroadcastTopic implements Broadcast & Topic {
+    ${broadcastFields}
+    "Message sent if user selects the first option."
+    saidFirstChoice: String!
+    "The topic ID to change conversation to if user selects the first option."
+    saidFirstChoiceTopicId: String!
+    "The topic to change conversation to if user selects the first option."
+    saidFirstChoiceTopic: Topic
+    "Message sent if user selects the second option."
+    saidSecondChoice: String!
+    "The topic ID to change conversation to if user selects the second option."
+    saidSecondChoiceTopicId: String!
+    "The topic to change conversation to if user selects the second option."
+    saidSecondChoiceTopic: Topic
+    "Message sent if user selects the third option."
+    saidThirdChoice: String!
+    "The topic ID to change conversation to if user selects the third option."
+    saidThirdChoiceTopicId: String!
+    "The topic to change conversation to if user selects the third option."
+    saidThirdChoiceTopic: Topic
+    "Message sent until user responds with a valid multiple choice option."
+    invalidAskMultipleChoiceResponse: String!
+  }
+
+  "Broadcast that asks user for smsStatus and changes topic to its own ID."
   type AskSubscriptionStatusBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
     "Message sent if user says active."
@@ -125,7 +150,7 @@ const typeDefs = gql`
     invalidAskSubscriptionStatusResponse: String!
   }
 
-  "Broadcast that asks user if they plan to vote in an upcoming election, and changes topic to its own ID."
+  "Broadcast that asks user for votingPlanStatus and changes topic to its own ID."
   type AskVotingPlanStatusBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
     "Message sent if user says they can't vote."
@@ -242,6 +267,14 @@ const typeDefs = gql`
  * @var {Object}
  */
 const resolvers = {
+  AskMultipleChoiceBroadcastTopic: {
+    saidFirstChoiceTopic: (topic, args, context) =>
+      Loader(context).topics.load(topic.saidFirstChoiceTopicId, context),
+    saidSecondChoiceTopic: (topic, args, context) =>
+      Loader(context).topics.load(topic.saidSecondChoiceTopicId, context),
+    saidThirdChoiceTopic: (topic, args, context) =>
+      Loader(context).topics.load(topic.saidThirdChoiceTopicId, context),
+  },
   AskSubscriptionStatusBroadcastTopic: {
     saidActiveTopic: (topic, args, context) =>
       Loader(context).topics.load(topic.saidActiveTopicId, context),
@@ -268,6 +301,9 @@ const resolvers = {
   },
   Broadcast: {
     __resolveType(broadcast) {
+      if (broadcast.contentType === 'askMultipleChoice') {
+        return 'AskMultipleChoiceBroadcastTopic';
+      }
       if (broadcast.contentType === 'askSubscriptionStatus') {
         return 'AskSubscriptionStatusBroadcastTopic';
       }
@@ -316,6 +352,9 @@ const resolvers = {
   },
   Topic: {
     __resolveType(topic) {
+      if (topic.contentType === 'askMultipleChoice') {
+        return 'AskMultipleChoiceBroadcastTopic';
+      }
       if (topic.contentType === 'askSubscriptionStatus') {
         return 'AskSubscriptionStatusBroadcastTopic';
       }

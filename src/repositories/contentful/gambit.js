@@ -80,6 +80,20 @@ const getFields = json => {
   const contentType = getContentType(json);
   const fields = json.fields;
 
+  if (contentType === 'askMultipleChoice') {
+    return {
+      attachments: getMessageAttachments(json),
+      invalidAskMultipleChoiceResponse: fields.invalidAskMultipleChoiceResponse,
+      saidFirstChoice: getMessageText(fields.firstChoiceTransition),
+      saidFirstChoiceTopicId: getChangeTopicId(fields.firstChoiceTransition),
+      saidSecondChoice: getMessageText(fields.secondChoiceTransition),
+      saidSecondChoiceTopicId: getChangeTopicId(fields.secondChoiceTransition),
+      saidThirdChoice: getMessageText(fields.thirdChoiceTransition),
+      saidThirdChoiceTopicId: getChangeTopicId(fields.thirdChoiceTransition),
+      text: getMessageText(json),
+    };
+  }
+
   if (contentType === 'askSubscriptionStatus') {
     return {
       attachments: getMessageAttachments(json),
