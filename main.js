@@ -7,6 +7,7 @@ fetch = require('node-fetch');
 
 const { ApolloServer } = require('apollo-server-lambda');
 const schema = require('./lib/src/schema').default;
+const fs = require('fs');
 
 const server = new ApolloServer({
   schema,
@@ -19,12 +20,18 @@ const server = new ApolloServer({
   tracing: true, // Enable tracing on requests.
 });
 
-exports.handler = function(event, context, callback) {
-  // For some reason `event.path` doesn't include API gateway stage, so we get
-  // '/graphql' instead of the real '/development/graphql' path. This conflicts
-  // with what the documentation linked on this PR shows. <https://git.io/fhrEp>.
-  // @TODO: Is this a bug with our API Gateway config?
-  event.path = event.requestContext.path; // eslint-disable-line
+exports.handler = (event, context, callback) => {
+  // Render customized GraphQL Playground when client asks for HTML:
+  const accept = event.headers.Accept || event.headers.accept;
+  if (event.httpMethod === 'GET' && accept && accept.includes('text/html')) {
+    return callback(null, {
+      statusCode: 200,
+      body: fs.readFileSync(`${__dirname}/src/playground.html`),
+      headers: {
+        'Content-Type': 'text/html',
+      },
+    });
+  }
 
   // Enable CORS for cross-domain usage.
   const handlerSettings = {
@@ -35,5 +42,5 @@ exports.handler = function(event, context, callback) {
     },
   };
 
-  server.createHandler(handlerSettings)(event, context, callback);
+  return server.createHandler(handlerSettings)(event, context, callback);
 };
