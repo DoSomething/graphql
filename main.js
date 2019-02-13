@@ -7,17 +7,15 @@ fetch = require('node-fetch');
 
 const { ApolloServer } = require('apollo-server-lambda');
 const schema = require('./lib/src/schema').default;
+const config = require('./lib/config').default;
 const fs = require('fs');
 
 const server = new ApolloServer({
+  ...config('graphql'),
   schema,
   context: ({ event }) => ({
     authorization: event.headers.Authorization,
   }),
-  cacheControl: true, // Send 'Cache-Control' headers where needed.
-  introspection: true, // Enable introspection in our production environment.
-  playground: true, // Enable playground on production for exploration & debugging.
-  tracing: true, // Enable tracing on requests.
 });
 
 exports.handler = (event, context, callback) => {

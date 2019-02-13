@@ -14,10 +14,8 @@ const config = require('./config');
 
 const app = express();
 const server = new ApolloServer({
+  ...config('graphql'),
   schema,
-  introspection: true,
-  playground: false,
-  tracing: true, // Enable tracing on requests.
   context: ({ req }) => ({
     authorization: req.headers.authorization || '',
   }),
