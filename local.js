@@ -1,5 +1,5 @@
 // Compile ES module syntax on-demand, install 'fetch'
-// polyfill, & load environmnet variables from '.env'.
+// polyfill, & load environment variables from '.env'.
 require = require('esm')(module);
 fetch = require('node-fetch');
 require('dotenv').config();
