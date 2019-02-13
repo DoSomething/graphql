@@ -14,7 +14,7 @@ const server = new ApolloServer({
   ...config('graphql'),
   schema,
   context: ({ event }) => ({
-    authorization: event.headers.Authorization,
+    authorization: event.headers.Authorization || event.headers.authorization,
   }),
 });
 
@@ -24,7 +24,7 @@ exports.handler = (event, context, callback) => {
   if (event.httpMethod === 'GET' && accept && accept.includes('text/html')) {
     return callback(null, {
       statusCode: 200,
-      body: fs.readFileSync(`${__dirname}/src/playground.html`),
+      body: fs.readFileSync(`${__dirname}/src/playground.html`, 'utf8'),
       headers: {
         'Content-Type': 'text/html',
       },
