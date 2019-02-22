@@ -2,8 +2,9 @@
   "name": "graphql-api-gateway",
   "description": "An GraphQL API gateway for DoSomething.org services.",
   "scripts": {
-    "start": "nodemon -e js,html local.js",
+    "start": "nodemon -e js --ignore src/playground.js local.js",
     "start:production": "node local.js",
+    "build": "NODE_ENV=production webpack",
     "test": "npm run lint && npm run format:ci",
     "lint": "eslint --ext .js src",
     "format:ci": "prettier-check {src,config}/**/*.js",
@@ -16,9 +17,8 @@
     "npm": "5.3.x"
   },
   "babel": {
-    "plugins": [
-      "@babel/plugin-transform-modules-commonjs",
-      "@babel/plugin-proposal-object-rest-spread"
+    "presets": [
+      "@dosomething/babel-config"
     ]
   },
   "prettier": {
@@ -91,15 +91,28 @@
     "qs": "^6.5.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.2.2",
-    "@babel/plugin-proposal-object-rest-spread": "^7.3.1",
-    "@babel/plugin-transform-modules-commonjs": "^7.2.0",
+    "@dosomething/babel-config": "^2.2.2",
     "@dosomething/eslint-config": "^3.1.2",
+    "@dosomething/webpack-config": "^4.1.1",
+    "apollo-link-http": "^1.5.11",
+    "apollo-link-ws": "^1.0.14",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-polyfill": "^6.26.0",
     "eslint": "^4.19.1",
     "eslint-plugin-prettier": "^2.6.0",
+    "graphql-playground-react": "^1.7.19",
     "nodemon": "^1.18.9",
+    "oidc-client": "^1.6.1",
     "prettier": "1.8.2",
-    "prettier-check": "^2.0.0"
+    "prettier-check": "^2.0.0",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
+    "regenerator-runtime": "^0.13.1",
+    "subscriptions-transport-ws": "^0.9.15",
+    "webpack": "^4.29.5",
+    "webpack-dev-middleware": "^3.6.0"
   }
 }

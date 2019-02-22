@@ -9,8 +9,12 @@ const express = require('express');
 const chalk = require('chalk');
 const boxen = require('boxen');
 
-const schema = require('./src/schema');
-const config = require('./config');
+const webpack = require('webpack');
+const middleware = require('webpack-dev-middleware');
+const webpackConfig = require('./webpack.config');
+
+const schema = require('./src/schema').default;
+const config = require('./config').default;
 
 const app = express();
 const server = new ApolloServer({
@@ -21,7 +25,10 @@ const server = new ApolloServer({
   }),
 });
 
-app.use((req, res, next) => {
+// Compile front-end (playground) dependencies on-demand:
+app.use(middleware(webpack(webpackConfig()), { publicPath: '/dist' }));
+
+app.use('/', (req, res, next) => {
   // Render customized GraphQL Playground when client asks for HTML:
   if (req.headers.accept && req.headers.accept.includes('text/html')) {
     return res.sendFile(`${__dirname}/src/playground.html`);
