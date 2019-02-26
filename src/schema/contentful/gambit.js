@@ -25,6 +25,15 @@ const broadcastFields = `
 `;
 
 /**
+ * TODO: should actionId be required? If so, we need to figure out backward compatibility
+ * with legacy campaign action topics.
+ */
+const campaignActionFields = `
+  "Used by Rogue to attribute this post to an specific action within the campaign"
+  actionId: Int
+`;
+
+/**
  * GraphQL types.
  *
  * @var {String}
@@ -54,6 +63,7 @@ const typeDefs = gql`
   "Topic for creating signup and photo posts. Asks user to reply with START to create a draft photo post."
   type PhotoPostTopic implements Topic {
     ${entryFields}
+    ${campaignActionFields}
     "The campaign ID to create signup and photo post for if conversation changes to this topic."
     campaignId: Int!
     "Template sent until user replies with START to begin a photo post."
@@ -83,6 +93,7 @@ const typeDefs = gql`
   "Topic for creating signup and text posts. Ask user to reply with a text post."
   type TextPostTopic implements Topic {
     ${entryFields}
+    ${campaignActionFields}
     "The campaign ID to create signup and text post for if conversation changes to this topic."
     campaignId: Int!
     "Template that asks user to resend a message with valid text post."
