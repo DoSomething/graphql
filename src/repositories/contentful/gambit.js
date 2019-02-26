@@ -25,6 +25,12 @@ const getCampaignId = json => {
 
 /**
  * @param {Object} json
+ * @return {Number}
+ */
+const getCampaignActionId = json => json.fields.campaignActionId;
+
+/**
+ * @param {Object} json
  * @return {String}
  */
 const getChangeTopicId = json => {
@@ -183,6 +189,7 @@ const getFields = json => {
       askQuantity: fields.askQuantityMessage,
       askWhyParticipated: fields.askWhyParticipatedMessage,
       campaignId: getCampaignId(json),
+      campaignActionId: getCampaignActionId(json),
       completedPhotoPost: fields.completedMenuMessage,
       completedPhotoPostAutoReply: fields.invalidCompletedMenuCommandMessage,
       invalidCaption:
@@ -206,6 +213,7 @@ const getFields = json => {
   if (contentType === 'textPostConfig') {
     return {
       campaignId: getCampaignId(json),
+      campaignActionId: getCampaignActionId(json),
       completedTextPost: fields.completedTextPostMessage,
       invalidText: fields.invalidTextMessage,
     };
