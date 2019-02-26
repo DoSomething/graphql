@@ -25,12 +25,12 @@ const broadcastFields = `
 `;
 
 /**
- * TODO: should campaignActionId be required? If so, we need to figure out backward compatibility
+ * TODO: should actionId be required? If so, we need to figure out backward compatibility
  * with legacy campaign action topics.
  */
 const campaignActionFields = `
   "Used by Rogue to attribute this post to an specific action within the campaign"
-  campaignActionId: Int
+  actionId: Int
 `;
 
 /**
