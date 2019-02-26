@@ -19,6 +19,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = { accesToken: null };
+
     this.auth = new Oidc.UserManager({
       authority: 'http://northstar.test',
       response_type: 'token',
@@ -43,6 +45,7 @@ class App extends React.Component {
   async componentDidMount() {
     const user = await this.auth.getUser();
     if (user) {
+      this.setState({ accessToken: user.access_token });
       this.headers = { Authorization: `Bearer ${user.access_token}` };
     }
 
@@ -68,12 +71,14 @@ class App extends React.Component {
 
   async logout() {
     await this.auth.signoutRedirect({ state: 'random' });
+
+    this.setState({ accessToken: null });
     this.headers = {};
   }
 
   createApolloLink(session) {
     const { endpoint, credentials } = session;
-    const headers = { ...session.headers, ...this.headers };
+    const headers = { ...session.headers, Authorization: '', ...this.headers };
 
     const subscriptionClient = new SubscriptionClient(endpoint, {
       timeout: 20000,
@@ -91,6 +96,8 @@ class App extends React.Component {
   }
 
   render() {
+    const jwt = this.state.accessToken;
+
     // We can't use `headers` prop or `INJECT_HEADERS` Redux action because
     // they're tab-specific, and so logging in or out will only affect the
     // currently selected tab.
@@ -100,8 +107,15 @@ class App extends React.Component {
     // Authorization header for logged-in users.
     return (
       <div>
-        <button onClick={this.login}>Login</button>
-        <button onClick={this.logout}>Logout</button>
+        <div style={{ padding: '16px', paddingLeft: '42px' }}>
+          <button onClick={this.login}>Login</button>
+          <button onClick={this.logout} disabled={!jwt}>
+            Logout
+          </button>
+          <code style={{ float: 'right' }}>
+            {jwt ? `jwt: ${jwt.slice(0, 50)}..${jwt.slice(-50)}` : 'logged out'}
+          </code>
+        </div>
         <Provider store={store}>
           <Playground endpoint="/" createApolloLink={this.createApolloLink} />
         </Provider>
