@@ -40,6 +40,13 @@ const typeDefs = gql`
     UNCERTAIN
   }
 
+  enum LocationFormat {
+    "Machine-readable ISO-3166-2 format (e.g. US-NY)"
+    ISO_FORMAT
+    "Human-readable location name."
+    HUMAN_FORMAT
+  }
+
   "A campaign."
   type Campaign {
     "The time when this campaign was originally created."
@@ -81,6 +88,8 @@ const typeDefs = gql`
     userId: String
     "The Rogue campaign ID this post was made for."
     campaignId: String
+    "The location this post was submitted from. This is provided by Fastly geo-location headers on the web."
+    location(format: LocationFormat = ISO_FORMAT): String
     "The attached media for this post."
     media: Media
       @deprecated(reason: "Use direct 'url' and 'text' properties instead.")
@@ -255,6 +264,16 @@ const resolvers = {
     url: (post, args) => urlWithQuery(post.media.url, args),
     text: post => post.media.text,
     status: post => post.status.toUpperCase().replace('-', '_'),
+    location: (post, { format }) => {
+      switch (format) {
+        case 'HUMAN_FORMAT':
+          return post.locationName;
+        case 'ISO_FORMAT':
+          return post.location;
+        default:
+          return null;
+      }
+    },
     reacted: post => post.reactions.reacted,
     reactions: post => post.reactions.total,
   },
