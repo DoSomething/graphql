@@ -137,7 +137,8 @@ const resolvers = {
     role: user => stringToEnum(user.role),
     smsStatus: user => stringToEnum(user.smsStatus),
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
-    emailSubscriptionTopics: user => user.emailSubscriptionTopics.map(stringToEnum),
+    emailSubscriptionTopics: user =>
+      user.emailSubscriptionTopics.map(stringToEnum),
   },
   Query: {
     user: (_, args, context) => Loader(context).users.load(args.id),
