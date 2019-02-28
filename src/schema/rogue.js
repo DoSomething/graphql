@@ -78,7 +78,7 @@ const typeDefs = gql`
     "The specific action being performed (or 'default' on a single-action campaign)."
     action: String!
     "The Northstar user ID of the user who created this post."
-    userId: String!
+    userId: String
     "The Rogue campaign ID this post was made for."
     campaignId: String
     "The attached media for this post."
