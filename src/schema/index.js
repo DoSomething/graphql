@@ -122,6 +122,10 @@ const linkResolvers = {
     user: {
       fragment: 'fragment UserFragment on Post { userId }',
       resolve(post, args, context, info) {
+        if (!post.userId) {
+          return null;
+        }
+
         return info.mergeInfo.delegateToSchema({
           schema: northstarSchema,
           operation: 'query',
