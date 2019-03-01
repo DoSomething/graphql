@@ -4,7 +4,7 @@ import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 
 import Loader from '../loader';
-import { stringToEnum } from './helpers';
+import { stringToEnum, listToEnums } from './helpers';
 
 /**
  * GraphQL types.
@@ -137,8 +137,7 @@ const resolvers = {
     role: user => stringToEnum(user.role),
     smsStatus: user => stringToEnum(user.smsStatus),
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
-    emailSubscriptionTopics: user => user.emailSubscriptionTopics ?
-      user.emailSubscriptionTopics.map(stringToEnum) : null,
+    emailSubscriptionTopics: user => listToEnums(user.emailSubscriptionTopics),
   },
   Query: {
     user: (_, args, context) => Loader(context).users.load(args.id),
