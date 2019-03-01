@@ -63,6 +63,29 @@ const typeDefs = gql`
     updatedAt: DateTime
   }
 
+  type Action {
+    "The unique ID for this action."
+    id: Int!
+    "The internal name for this action."
+    name: String
+    "Does this action count as a reportback?"
+    reportback: Boolean
+    "Does this action count as a civic action?"
+    civicAction: Boolean
+    "Does this action count as a scholarship entry?"
+    scholarshipEntry: Boolean
+    "Anonymous actions will not be attributed to a particular user in public galleries."
+    anonymous: Boolean
+    "The noun for this action, e.g. 'cards' or 'jeans'."
+    noun: String
+    "The verb for this action, e.g. 'donated' or 'created'."
+    verb: String
+    "The time when this action was originally created."
+    createdAt: DateTime
+    "The time when this action was last modified."
+    updatedAt: DateTime
+  }
+
   "A media resource on a post."
   type Media {
     "The image URL."
