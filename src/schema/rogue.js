@@ -106,7 +106,9 @@ const typeDefs = gql`
     "The type of action (e.g. 'photo', 'voterReg', or 'text')."
     type: String!
     "The specific action being performed (or 'default' on a single-action campaign)."
-    action: String!
+    action: String! @deprecated(reason: "Use 'actionDetails' relationship instead.")
+    "The specific action being performed."
+    actionDetails: Action
     "The Northstar user ID of the user who created this post."
     userId: String
     "The Rogue campaign ID this post was made for."
@@ -287,6 +289,7 @@ const resolvers = {
     url: (post, args) => urlWithQuery(post.media.url, args),
     text: post => post.media.text,
     status: post => post.status.toUpperCase().replace('-', '_'),
+    actionDetails: post => post.actionDetails.data,
     location: (post, { format }) => {
       switch (format) {
         case 'HUMAN_FORMAT':
