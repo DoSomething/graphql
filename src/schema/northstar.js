@@ -48,6 +48,13 @@ const typeDefs = gql`
     UNCERTAIN
   }
 
+  enum EmailSubscriptionTopic {
+    NEWS
+    ACTIONS
+    SCHOLARSHIPS
+    LIFESTYLE
+  }
+
   "A DoSomething.org user profile."
   type User {
     "The user's Northstar ID."
@@ -80,6 +87,8 @@ const typeDefs = gql`
     sourceDetail: String
     "The user's email subscription status."
     emailSubscriptionStatus: Boolean
+    "The user's email subscription status."
+    emailSubscriptionTopics: [EmailSubscriptionTopic]
     "The user's SMS status."
     smsStatus: SubscriptionStatus
     "The user's conversation status will be paused if they are in a support conversation."
@@ -128,6 +137,8 @@ const resolvers = {
     role: user => stringToEnum(user.role),
     smsStatus: user => stringToEnum(user.smsStatus),
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
+    emailSubscriptionTopics: user =>
+      user.emailSubscriptionTopics.map(stringToEnum),
   },
   Query: {
     user: (_, args, context) => Loader(context).users.load(args.id),
