@@ -58,6 +58,7 @@ export const getCampaigns = async (args, context) => {
  * Fetch posts from Rogue.
  *
  * @param {String} action
+ * @param {String} actionIds
  * @param {String} campaignId
  * @param {Number} count
  * @param {Number} page
@@ -70,6 +71,7 @@ export const getPosts = async (args, context) => {
   const queryString = stringify({
     filter: {
       action: args.action,
+      action_id: args.actionIds ? args.actionIds.join(',') : null,
       campaign_id: args.campaignId,
       northstar_id: args.userId,
       source: args.source,

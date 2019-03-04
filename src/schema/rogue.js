@@ -202,6 +202,8 @@ const typeDefs = gql`
     posts(
       "The action name to load posts for."
       action: String
+      "The action IDs to load posts for."
+      actionIds: [String]
       "# The campaign ID to load posts for."
       campaignId: String
       "# The post source to load posts for."
