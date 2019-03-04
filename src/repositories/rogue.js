@@ -58,7 +58,7 @@ export const getCampaigns = async (args, context) => {
  * Fetch posts from Rogue.
  *
  * @param {String} action
- * @param {String} actionId
+ * @param {String} actionIds
  * @param {String} campaignId
  * @param {Number} count
  * @param {Number} page
