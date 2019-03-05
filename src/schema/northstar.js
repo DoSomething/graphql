@@ -5,6 +5,7 @@ import { GraphQLAbsoluteUrl } from 'graphql-url';
 
 import Loader from '../loader';
 import { stringToEnum, listToEnums } from './helpers';
+import { updateEmailSubscriptionTopics } from '../repositories/northstar.js'
 
 /**
  * GraphQL types.
@@ -125,6 +126,16 @@ const typeDefs = gql`
     "Get a user by ID."
     user(id: String!): User
   }
+
+  type Mutation {
+    "Update the list of newsletters a user is subscribed to."
+    updateEmailSubscriptionTopics(
+      "The user to update."
+      id: String!
+      "The newsletters the user should be subscribed to."
+      emailSubscriptionTopics: [EmailSubscriptionTopic]!
+    ): User!
+  }
 `;
 
 /**
@@ -145,6 +156,9 @@ const resolvers = {
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
   AbsoluteUrl: GraphQLAbsoluteUrl,
+  Mutation: {
+    updateEmailSubscriptionTopics: (_, args, context) => updateEmailSubscriptionTopics(args.id, args.emailSubscriptionTopics, context),
+  },
 };
 
 /**
