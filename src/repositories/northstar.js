@@ -31,11 +31,20 @@ export const getUserById = async (id, options) => {
  * @param {Number} postId
  * @return {Object}
  */
-export const updateEmailSubscriptionTopics = async (id, emailSubscriptionTopics, options) => {
-  logger.debug('Updating email_subscription_topics for user in Northstar', { id });
+export const updateEmailSubscriptionTopics = async (
+  id,
+  emailSubscriptionTopics,
+  options,
+) => {
+  logger.debug('Updating email_subscription_topics for user in Northstar', {
+    id,
+  });
 
-  const formattedTopics = emailSubscriptionTopics.toString().toLowerCase().split(',');
-  const body = {'email_subscription_topics': formattedTopics};
+  const formattedTopics = emailSubscriptionTopics
+    .toString()
+    .toLowerCase()
+    .split(',');
+  const body = { email_subscription_topics: formattedTopics };
 
   try {
     const response = await fetch(`${NORTHSTAR_URL}/v2/users/${id}`, {

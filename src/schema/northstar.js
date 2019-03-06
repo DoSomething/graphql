@@ -5,7 +5,7 @@ import { GraphQLAbsoluteUrl } from 'graphql-url';
 
 import Loader from '../loader';
 import { stringToEnum, listToEnums } from './helpers';
-import { updateEmailSubscriptionTopics } from '../repositories/northstar.js'
+import { updateEmailSubscriptionTopics } from '../repositories/northstar';
 
 /**
  * GraphQL types.
@@ -157,7 +157,12 @@ const resolvers = {
   DateTime: GraphQLDateTime,
   AbsoluteUrl: GraphQLAbsoluteUrl,
   Mutation: {
-    updateEmailSubscriptionTopics: (_, args, context) => updateEmailSubscriptionTopics(args.id, args.emailSubscriptionTopics, context),
+    updateEmailSubscriptionTopics: (_, args, context) =>
+      updateEmailSubscriptionTopics(
+        args.id,
+        args.emailSubscriptionTopics,
+        context,
+      ),
   },
 };
 
