@@ -34,11 +34,10 @@ export const getUserById = async (id, options) => {
 export const updateEmailSubscriptionTopics = async (id, emailSubscriptionTopics, options) => {
   logger.debug('Updating email_subscription_topics for user in Northstar', { id });
 
-  const lowerCaseTopics = emailSubscriptionTopics.toString().toLowerCase();
-  const body = {'email_subscription_topics': [lowerCaseTopics]};
+  const formattedTopics = emailSubscriptionTopics.toString().toLowerCase().split(',');
+  const body = {'email_subscription_topics': formattedTopics};
 
   try {
-    logger.debug(JSON.stringify(body));
     const response = await fetch(`${NORTHSTAR_URL}/v2/users/${id}`, {
       ...requireAuthorizedRequest(options),
       method: 'PUT',
@@ -46,8 +45,6 @@ export const updateEmailSubscriptionTopics = async (id, emailSubscriptionTopics,
     });
 
     const json = await response.json();
-
-    logger.debug(JSON.stringify(json));
 
     return transformItem(json);
   } catch (exception) {
