@@ -26,9 +26,12 @@ export const getUserById = async (id, options) => {
 };
 
 /**
- * Toggle a reaction on Rogue.
+ * Update a user's email_subscription_topics in Northstar.
  *
- * @param {Number} postId
+ * @param {String} id
+ * @param {[EmailSubscriptionTopic]} emailSubscriptionTopics
+ * @param {Object} options
+ *
  * @return {Object}
  */
 export const updateEmailSubscriptionTopics = async (
@@ -40,15 +43,9 @@ export const updateEmailSubscriptionTopics = async (
     id,
   });
 
-  let formattedTopics = emailSubscriptionTopics
-    .toString()
-    .toLowerCase()
-    .split(',');
-
-  // If no email topics were passed, send an empty array
-  if (emailSubscriptionTopics.length < 1) {
-    formattedTopics = [];
-  }
+  const formattedTopics = emailSubscriptionTopics.map(value =>
+    value.toLowerCase(),
+  );
 
   const body = { email_subscription_topics: formattedTopics };
 
@@ -64,7 +61,7 @@ export const updateEmailSubscriptionTopics = async (
     return transformItem(json);
   } catch (exception) {
     const error = exception.message;
-    logger.warn('Unable to load user.', { id, error });
+    logger.warn('Unable to update email subscription topics.', { id, error });
   }
 
   return null;
