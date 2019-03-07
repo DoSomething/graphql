@@ -15,6 +15,7 @@ export const authorizedRequest = context => {
     headers: {
       Accept: 'application/json',
       Authorization: context.authorization,
+      'Content-Type': 'application/json',
     },
   };
 };
