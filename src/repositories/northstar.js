@@ -40,10 +40,16 @@ export const updateEmailSubscriptionTopics = async (
     id,
   });
 
-  const formattedTopics = emailSubscriptionTopics
+  var formattedTopics = emailSubscriptionTopics
     .toString()
     .toLowerCase()
     .split(',');
+
+  // If no email topics were passed, send an empty array
+  if (emailSubscriptionTopics.length < 1) {
+    formattedTopics = [];
+  }
+
   const body = { email_subscription_topics: formattedTopics };
 
   try {
