@@ -40,7 +40,7 @@ export const updateEmailSubscriptionTopics = async (
     id,
   });
 
-  var formattedTopics = emailSubscriptionTopics
+  let formattedTopics = emailSubscriptionTopics
     .toString()
     .toLowerCase()
     .split(',');
