@@ -1,4 +1,23 @@
+import { get } from 'lodash';
+
+const environmentMapping = {
+  local: 'dev',
+  dev: 'dev',
+  qa: 'qa',
+  master: 'master',
+};
+
 const contentful = {
+  phoenix: {
+    spaceId: process.env.PHOENIX_CONTENTFUL_SPACE_ID,
+    accessToken: process.env.PHOENIX_CONTENTFUL_ACCESS_TOKEN,
+    environment: get(environmentMapping, process.env.QUERY_ENV),
+    cache: {
+      name: 'phoenixContent',
+      expiresIn: 3600 * 1000, // 1 hour (3600 seconds).
+    },
+  },
+
   // Gambit uses a single space/environment used across all GraphQL environments.
   gambit: {
     spaceId: process.env.GAMBIT_CONTENTFUL_SPACE_ID,
