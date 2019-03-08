@@ -4,6 +4,7 @@ import { mergeSchemas } from 'graphql-tools';
 // Schemas
 import rogueSchema from './rogue';
 import northstarSchema from './northstar';
+import phoenixContentfulSchema from './contentful/phoenix';
 import gambitContentfulSchema from './contentful/gambit';
 import gambitSchema from './gambit';
 
@@ -301,6 +302,7 @@ const schema = mergeSchemas({
   schemas: [
     northstarSchema,
     rogueSchema,
+    phoenixContentfulSchema,
     gambitContentfulSchema,
     gambitSchema,
     linkSchema,
