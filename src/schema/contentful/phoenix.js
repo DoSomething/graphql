@@ -49,6 +49,10 @@ const typeDefs = gql`
     textFieldPlaceholderMessage: String
     "Optional custom text to display on the submission button."
     buttonText: String
+    "Optional custom title for the information block."
+    informationTitle: String
+    "Optional custom content for the information block."
+    informationContent: String
     "Optional content to display once the user successfully submits their petition reportback."
     affirmationContent: String
     "Any custom overrides for this block."
