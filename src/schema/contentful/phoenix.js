@@ -1,6 +1,7 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { upperFirst, camelCase } from 'lodash';
+import GraphQLJSON from 'graphql-type-json';
 import { gql } from 'apollo-server';
 
 import Loader from '../../loader';
@@ -20,6 +21,7 @@ const entryFields = `
  * @var {String}
  */
 const typeDefs = gql`
+  scalar JSON
   scalar DateTime
 
   interface Block {
@@ -27,9 +29,35 @@ const typeDefs = gql`
   }
 
   type PostGallery implements Block {
-    ${entryFields}
     internalTitle: String!
     actionIds: [Int]!
+    ${entryFields}
+  }
+
+  type TextSubmissionAction implements Block {
+    internalTitle: String!
+    actionId: Int
+    title: String
+    textFieldLabel: String
+    textFieldPlaceholderMessage: String
+    buttonText: String
+    affirmationContent: String
+    additionalContent: JSON
+    ${entryFields}
+  }
+
+  type PetitionSubmissionAction implements Block {
+    internalTitle: String!
+    actionId: Int
+    title: String
+    content: String
+    textFieldPlaceholderMessage: String
+    buttonText: String
+    informationTitle: String
+    informationContent: String
+    affirmationContent: String
+    additionalContent: JSON
+    ${entryFields}
   }
 
   type Query {
@@ -44,6 +72,7 @@ const typeDefs = gql`
  * @var {Object}
  */
 const resolvers = {
+  JSON: GraphQLJSON,
   DateTime: GraphQLDateTime,
   Query: {
     block: (_, args, context) => Loader(context).blocks.load(args.id),
