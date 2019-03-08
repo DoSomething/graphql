@@ -29,33 +29,53 @@ const typeDefs = gql`
   }
 
   type PostGallery implements Block {
+    "The internal-facing title for this gallery."
     internalTitle: String!
+    "The list of Rogue Action IDs to show in this gallery."
     actionIds: [Int]!
     ${entryFields}
   }
 
   type TextSubmissionAction implements Block {
+    "The internal-facing title for this text submission action."
     internalTitle: String!
+    "The Rogue Action ID that posts will be submitted for."
     actionId: Int
+    "Optional custom title of the text submission block."
     title: String
+    "Optional label for the text field, helping describe or prompt the user regarding what to submit."
     textFieldLabel: String
+    "Optional placeholder for the text field, providing an example of what a text submission should look like."
     textFieldPlaceholderMessage: String
+    "Optional custom text to display on the submission button."
     buttonText: String
+    "Optional content to display once the user successfully submits their petition reportback."
     affirmationContent: String
+    "Any custom overrides for this block."
     additionalContent: JSON
     ${entryFields}
   }
 
   type PetitionSubmissionAction implements Block {
+    "The internal-facing title for this photo submission action."
     internalTitle: String!
+    "The Rogue Action ID that posts will be submitted for."
     actionId: Int
+    "Optional custom title of the petition block."
     title: String
+    "The petition's content."
     content: String
+    "Optional custom placeholder for the petition message text field."
     textFieldPlaceholderMessage: String
+    "Optional custom text to display on the submission button."
     buttonText: String
+    "Optional custom title for the information block."
     informationTitle: String
+    "Optional custom content for the information block."
     informationContent: String
+    "Optional content to display once the user successfully submits their petition reportback."
     affirmationContent: String
+    "Any custom overrides for this block."
     additionalContent: JSON
     ${entryFields}
   }
