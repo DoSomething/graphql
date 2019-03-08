@@ -50,10 +50,7 @@ export const getPhoenixContentfulEntryById = async id => {
     return data;
   } catch (exception) {
     const error = exception.message;
-    logger.warn('Unable to load Phoenix Contentful entry.', {
-      id,
-      error,
-    });
+    logger.warn('Unable to load Phoenix Contentful entry.', { id, error });
   }
 
   return null;
