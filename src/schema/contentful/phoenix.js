@@ -31,7 +31,7 @@ const typeDefs = gql`
   type PostGallery implements Block {
     "The internal-facing title for this gallery."
     internalTitle: String!
-    "The list of Rogue Action IDs to show in this gallery."
+    "The list of Action IDs to show in this gallery."
     actionIds: [Int]!
     ${entryFields}
   }
@@ -39,7 +39,7 @@ const typeDefs = gql`
   type TextSubmissionAction implements Block {
     "The internal-facing title for this text submission action."
     internalTitle: String!
-    "The Rogue Action ID that posts will be submitted for."
+    "The Action ID that posts will be submitted for."
     actionId: Int
     "Optional custom title of the text submission block."
     title: String
@@ -59,7 +59,7 @@ const typeDefs = gql`
   type PetitionSubmissionAction implements Block {
     "The internal-facing title for this photo submission action."
     internalTitle: String!
-    "The Rogue Action ID that posts will be submitted for."
+    "The Action ID that posts will be submitted for."
     actionId: Int
     "Optional custom title of the petition block."
     title: String
