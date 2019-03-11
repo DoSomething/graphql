@@ -1,10 +1,12 @@
 import { get } from 'lodash';
 
+// Map our environments (local, dev, QA, and production) to the
+// corresponding Contentful environments (e.g. production -> master).
 const environmentMapping = {
   local: 'dev',
   dev: 'dev',
   qa: 'qa',
-  master: 'master',
+  production: 'master',
 };
 
 const contentful = {
