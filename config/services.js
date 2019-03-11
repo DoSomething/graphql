@@ -4,7 +4,7 @@ const environmentMapping = {
   local: 'dev',
   dev: 'dev',
   qa: 'qa',
-  master: 'master',
+  production: 'master',
 };
 
 const contentful = {
