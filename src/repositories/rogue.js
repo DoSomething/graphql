@@ -71,7 +71,7 @@ export const getPosts = async (args, context) => {
   const queryString = stringify({
     filter: {
       action: args.action,
-      action_id: args.actionIds ? args.actionIds.join(',') : null,
+      action_id: args.actionIds ? args.actionIds.join(',') : undefined,
       campaign_id: args.campaignId,
       northstar_id: args.userId,
       source: args.source,
@@ -81,6 +81,8 @@ export const getPosts = async (args, context) => {
     limit: args.count,
     pagination: 'cursor',
   });
+
+  logger.debug('Loading posts from Rogue.', { args, queryString });
 
   const response = await fetch(
     `${ROGUE_URL}/api/v3/posts/?${queryString}`,
