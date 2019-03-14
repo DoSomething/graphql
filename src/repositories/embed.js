@@ -82,7 +82,7 @@ export const getEmbed = async url => {
     return embed;
   } catch (exception) {
     const error = exception.message;
-    logger.warn('Unable to load embed.', { rawUrl, error });
+    logger.warn('Unable to load embed.', { url, error });
   }
 
   return null;
