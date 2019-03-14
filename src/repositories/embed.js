@@ -2,7 +2,7 @@ import { createWindow } from 'domino';
 import OEmbetter from 'oembetter';
 import logger from 'heroku-logger';
 import { getMetadata } from 'page-metadata-parser';
-import { parse } from 'url';
+import { URL } from 'url';
 
 import Cache from '../cache';
 import config from '../../config';
@@ -17,7 +17,7 @@ embedClient.endpoints(embedClient.suggestedEndpoints);
 
 // For sites where we don't support OEmbed, try OpenGraph/Twitter metatags:
 embedClient.addBefore(async (url, options, _, callback) => {
-  const { hostname } = parse(url);
+  const { hostname } = new URL(url);
 
   // We only prefer to fetch metatags for some domains:
   const metatagDomains = config('embed.preferMetatags');
@@ -65,28 +65,33 @@ async function fetchOEmbed(url) {
  * @param {Number} id
  * @return {Object}
  */
-export const getEmbed = async url => {
-  logger.debug('Loading embed', { url });
-
+export const getEmbed = async rawUrl => {
   try {
-    const cachedEntry = await cache.get(url);
+    // Ignore query strings for better cacheability.
+    const url = new URL(rawUrl);
+    url.search = '';
+
+    const { href } = url;
+
+    logger.debug('Loading embed', { href });
+    const cachedEntry = await cache.get(href);
 
     if (cachedEntry) {
-      logger.debug('Cache hit for embed', { url });
+      logger.debug('Cache hit for embed', { href });
       return cachedEntry;
     }
 
-    const response = await fetchOEmbed(url);
+    const response = await fetchOEmbed(href);
     const embed = transformResponse(response, 'version');
     console.log('embed', { embed });
 
-    logger.debug('Cache miss for embed', { url });
+    logger.debug('Cache miss for embed', { href });
     cache.set(url, embed);
 
     return embed;
   } catch (exception) {
     const error = exception.message;
-    logger.warn('Unable to load embed.', { url, error });
+    logger.warn('Unable to load embed.', { rawUrl, error });
   }
 
   return null;
