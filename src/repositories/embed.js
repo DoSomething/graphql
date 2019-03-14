@@ -2,6 +2,7 @@ import { createWindow } from 'domino';
 import OEmbetter from 'oembetter';
 import logger from 'heroku-logger';
 import { getMetadata } from 'page-metadata-parser';
+import { promisify } from 'util';
 import { URL } from 'url';
 
 import Cache from '../cache';
@@ -47,17 +48,7 @@ embedClient.addBefore(async (url, options, _, callback) => {
 });
 
 // Promisify the 'Oembetter.fetch' API:
-async function fetchOEmbed(url) {
-  return new Promise((resolve, reject) => {
-    embedClient.fetch(url, (err, response) => {
-      if (err) {
-        reject(err);
-      }
-
-      resolve(response);
-    });
-  });
-}
+const fetchOEmbed = promisify(embedClient.fetch);
 
 /**
  * Fetch a campaign from Rogue by ID.
