@@ -2,7 +2,7 @@ import { get } from 'lodash';
 
 import app from './app';
 import cache from './cache';
-import embeds from './embeds';
+import embed from './embed';
 import graphql from './graphql';
 import services from './services';
 
@@ -13,7 +13,7 @@ import services from './services';
  * @param {mixed} defaultValue
  */
 export default (key, defaultValue = null) => {
-  const config = { app, cache, embeds, graphql, services };
+  const config = { app, cache, embed, graphql, services };
 
   return get(config, key, defaultValue);
 };
