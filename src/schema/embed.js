@@ -33,6 +33,8 @@ const typeDefs = gql`
     title: String
     "The name of the author/owner of the resource."
     authorName: String
+    "The metatag description for a link."
+    description: String
     "A URL for the author/owner of the resource."
     authorUrl: AbsoluteUrl
     "The name of the resource provider."

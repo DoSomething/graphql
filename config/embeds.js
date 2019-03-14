@@ -10,19 +10,33 @@ export default {
   },
 
   /**
-   * We whitelist "safe" domains to embed content from, since this could
-   * otherwise allow malicious content to be injected onto a page.
+   * We whitelist "safe" domains to embed rich content from, to prevent
+   * malicious content from being injected onto a page.
    *
    * @type {Array}
    */
   whitelist: [
-    'dosomething.carto.com',
     'dosomething.org',
+    'buzzfeed.com',
+    'buzzfeednews.com',
     'facebook.com',
     'instagram.com',
     'nytimes.com',
     'twitter.com',
     'youtu.be',
     'youtube.com',
+  ],
+
+  /**
+   * For some sites, we prefer OpenGraph/Twitter metatags. Note that these
+   * sites still must be whitelisted above!
+   *
+   * @type {Array}
+   */
+  preferMetatags: [
+    'buzzfeed.com',
+    'buzzfeednews.com',
+    'dosomething.org',
+    'nytimes.com',
   ],
 };

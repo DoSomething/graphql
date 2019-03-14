@@ -1,5 +1,8 @@
+import { createWindow } from 'domino';
 import OEmbetter from 'oembetter';
 import logger from 'heroku-logger';
+import { getMetadata } from 'page-metadata-parser';
+import { parse } from 'url';
 
 import Cache from '../cache';
 import config from '../../config';
@@ -7,7 +10,41 @@ import { transformResponse } from './helpers';
 
 const embedClient = OEmbetter();
 const cache = new Cache(config('embeds.cache'));
+
+// Configure whitelisted domains & custom mappings. <https://git.io/fjeVb>
 embedClient.whitelist(config('embeds.whitelist'));
+embedClient.endpoints(embedClient.suggestedEndpoints);
+
+// For sites where we don't support OEmbed, try OpenGraph/Twitter metatags:
+embedClient.addBefore(async (url, options, _, callback) => {
+  const { hostname } = parse(url);
+
+  // We only prefer to fetch metatags for some domains:
+  const metatagDomains = config('embeds.preferMetatags');
+  if (!metatagDomains.some(domain => embedClient.inDomain(domain, hostname))) {
+    return callback(null);
+  }
+
+  const response = await fetch(url);
+  if (!response) {
+    return callback(null);
+  }
+
+  const { document } = createWindow(await response.text());
+  const metadata = getMetadata(document, url);
+  if (!metadata) {
+    return callback(null);
+  }
+
+  return callback(null, url, options, {
+    version: '1.0',
+    type: 'link',
+    title: metadata.title,
+    providerName: metadata.provider,
+    thumbnailUrl: metadata.image,
+    description: metadata.description,
+  });
+});
 
 // Promisify the 'Oembetter.fetch' API:
 async function fetchOEmbed(url) {
@@ -49,10 +86,7 @@ export const getEmbed = async url => {
     return embed;
   } catch (exception) {
     const error = exception.message;
-    logger.warn('Unable to load embed.', {
-      url,
-      error,
-    });
+    logger.warn('Unable to load embed.', { url, error });
   }
 
   return null;
