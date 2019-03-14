@@ -51,18 +51,18 @@ embedClient.addBefore(async (url, options, _, callback) => {
 const fetchOEmbed = promisify(embedClient.fetch);
 
 /**
- * Fetch a campaign from Rogue by ID.
+ * Fetch an embed.
  *
- * @param {Number} id
+ * @param {String} url
  * @return {Object}
  */
-export const getEmbed = async rawUrl => {
+export const getEmbed = async url => {
   try {
     // Ignore query strings for better cacheability.
-    const url = new URL(rawUrl);
-    url.search = '';
+    const urlObject = new URL(url);
+    urlObject.search = '';
 
-    const { href } = url;
+    const { href } = urlObject;
 
     logger.debug('Loading embed', { href });
     const cachedEntry = await cache.get(href);

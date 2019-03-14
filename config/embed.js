@@ -1,11 +1,11 @@
 export default {
   /**
-   * Catbox cache settings for OEmbeds.
+   * Catbox cache settings for embeds.
    *
    * @type {Object}
    */
   cache: {
-    name: 'oembed',
+    name: 'embed',
     expiresIn: 3600 * 1000, // 1 hour (3600 seconds).
   },
 
