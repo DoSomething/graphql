@@ -57,26 +57,21 @@ const fetchOEmbed = promisify(embedClient.fetch);
  * @return {Object}
  */
 export const getEmbed = async url => {
+  logger.debug('Loading embed', { url });
+
   try {
-    // Ignore query strings for better cacheability.
-    const urlObject = new URL(url);
-    urlObject.search = '';
-
-    const { href } = urlObject;
-
-    logger.debug('Loading embed', { href });
-    const cachedEntry = await cache.get(href);
+    const cachedEntry = await cache.get(url);
 
     if (cachedEntry) {
-      logger.debug('Cache hit for embed', { href });
+      logger.debug('Cache hit for embed', { url });
       return cachedEntry;
     }
 
-    const response = await fetchOEmbed(href);
+    const response = await fetchOEmbed(url);
     const embed = transformResponse(response, 'version');
     console.log('embed', { embed });
 
-    logger.debug('Cache miss for embed', { href });
+    logger.debug('Cache miss for embed', { url });
     cache.set(url, embed);
 
     return embed;
