@@ -1,9 +1,8 @@
-import { createWindow } from 'domino';
+import { URL } from 'url';
 import OEmbetter from 'oembetter';
 import logger from 'heroku-logger';
+import { createWindow } from 'domino';
 import { getMetadata } from 'page-metadata-parser';
-import { promisify } from 'util';
-import { URL } from 'url';
 
 import Cache from '../cache';
 import config from '../../config';
@@ -12,43 +11,66 @@ import { transformResponse } from './helpers';
 const embedClient = OEmbetter();
 const cache = new Cache(config('embed.cache'));
 
-// Configure whitelisted domains & custom mappings. <https://git.io/fjeVb>
-embedClient.whitelist(config('embed.whitelist'));
+// Configure custom endpoint mappings. <https://git.io/fjeXT>
 embedClient.endpoints(embedClient.suggestedEndpoints);
 
-// For sites where we don't support OEmbed, try OpenGraph/Twitter metatags:
-embedClient.addBefore(async (url, options, _, callback) => {
-  const { hostname } = new URL(url);
+/**
+ * Do we support OEmbed for the given URL?
+ *
+ * @param {*} url
+ */
+const supportsOEmbed = url =>
+  config('embed.whitelist').some(domain =>
+    embedClient.inDomain(domain, new URL(url).hostname),
+  );
 
-  // We only prefer to fetch metatags for some domains:
-  const metatagDomains = config('embed.preferMetatags');
-  if (!metatagDomains.some(domain => embedClient.inDomain(domain, hostname))) {
-    return callback(null);
-  }
+/**
+ * Fetch OEmbed for a given URL.
+ *
+ * @param {String} url
+ */
+const fetchOEmbed = url =>
+  new Promise(resolve => {
+    if (!supportsOEmbed(url)) {
+      resolve(null);
+    }
 
+    embedClient.fetch(url, (err, result) => {
+      if (err) {
+        resolve(null);
+      }
+
+      resolve(result);
+    });
+  });
+
+/**
+ * Fetch OpenGraph/Twitter metadata for a given URL.
+ *
+ * @param {String} url
+ */
+const fetchMetadata = async url => {
+  logger.debug('Fetching OpenGraph/Twitter metadata.', { url });
   const response = await fetch(url);
   if (!response) {
-    return callback(null);
+    return null;
   }
 
   const { document } = createWindow(await response.text());
   const metadata = getMetadata(document, url);
   if (!metadata) {
-    return callback(null);
+    return null;
   }
 
-  return callback(null, url, options, {
+  return {
     version: '1.0',
     type: 'link',
     title: metadata.title,
     providerName: metadata.provider,
     thumbnailUrl: metadata.image,
     description: metadata.description,
-  });
-});
-
-// Promisify the 'Oembetter.fetch' API:
-const fetchOEmbed = promisify(embedClient.fetch);
+  };
+};
 
 /**
  * Fetch an embed.
@@ -57,21 +79,24 @@ const fetchOEmbed = promisify(embedClient.fetch);
  * @return {Object}
  */
 export const getEmbed = async url => {
-  logger.debug('Loading embed', { url });
-
   try {
-    const cachedEntry = await cache.get(url);
+    const href = new URL(url).href;
+    const cachedEntry = await cache.get(href);
 
     if (cachedEntry) {
-      logger.debug('Cache hit for embed', { url });
+      logger.debug('Cache hit for embed', { href });
       return cachedEntry;
     }
 
-    const response = await fetchOEmbed(url);
-    const embed = transformResponse(response, 'version');
-    console.log('embed', { embed });
+    // Try to fetch OEmbed, or fallback to metadata:
+    logger.debug('Cache miss for embed', { href });
+    let response = await fetchOEmbed(href);
+    if (!response) {
+      response = await fetchMetadata(href);
+    }
 
-    logger.debug('Cache miss for embed', { url });
+    // Validate and cache the embed for future queries:
+    const embed = transformResponse(response, 'version');
     cache.set(url, embed);
 
     return embed;
