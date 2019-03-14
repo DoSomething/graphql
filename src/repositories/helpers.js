@@ -39,10 +39,10 @@ export const requireAuthorizedRequest = context => {
  * @param {Object} data
  * @return {Object}
  */
-export const transformResponse = data => {
+export const transformResponse = (data, idField = 'id') => {
   const result = mapKeys(data, (_, key) => camelCase(key));
 
-  if (!result.id) {
+  if (!result[idField]) {
     return null;
   }
 
