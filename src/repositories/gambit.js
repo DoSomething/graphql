@@ -22,7 +22,7 @@ const authorizedRequest = () => ({
  * @param {Object} json
  * @return {Object}
  */
-export const transformItem = json => transformResponse(json);
+export const transformItem = json => transformResponse(json, 'id');
 
 /**
  * Transform a collection response.
@@ -30,7 +30,7 @@ export const transformItem = json => transformResponse(json);
  * @param {Object} json
  * @return {Object}
  */
-export const transformCollection = json => map(json, transformResponse);
+export const transformCollection = json => map(json, transformItem);
 
 /**
  * @param {Number} page

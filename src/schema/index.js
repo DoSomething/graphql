@@ -2,6 +2,7 @@ import { gql } from 'apollo-server';
 import { mergeSchemas } from 'graphql-tools';
 
 // Schemas
+import embedSchema from './embed';
 import rogueSchema from './rogue';
 import northstarSchema from './northstar';
 import phoenixContentfulSchema from './contentful/phoenix';
@@ -300,6 +301,7 @@ const linkResolvers = {
  */
 const schema = mergeSchemas({
   schemas: [
+    embedSchema,
     northstarSchema,
     rogueSchema,
     phoenixContentfulSchema,

@@ -1,4 +1,4 @@
-import { map, mapKeys, camelCase, omit, isUndefined } from 'lodash';
+import { has, map, mapKeys, camelCase, omit, isUndefined } from 'lodash';
 import { URL, URLSearchParams } from 'url';
 
 /**
@@ -39,10 +39,10 @@ export const requireAuthorizedRequest = context => {
  * @param {Object} data
  * @return {Object}
  */
-export const transformResponse = data => {
+export const transformResponse = (data, idField = 'id') => {
   const result = mapKeys(data, (_, key) => camelCase(key));
 
-  if (!result.id) {
+  if (!has(result, idField)) {
     return null;
   }
 
@@ -67,7 +67,7 @@ export const transformResponse = data => {
  * @param {Object} json
  * @return {Object}
  */
-export const transformItem = json => transformResponse(json.data);
+export const transformItem = json => transformResponse(json.data, 'id');
 
 /**
  * Transform a collection response.
@@ -75,7 +75,8 @@ export const transformItem = json => transformResponse(json.data);
  * @param {Object} json
  * @return {Object}
  */
-export const transformCollection = json => map(json.data, transformResponse);
+export const transformCollection = json =>
+  map(json.data, data => transformResponse(data, 'id'));
 
 /**
  * Append a URL with optional query string arguments.

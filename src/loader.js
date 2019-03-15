@@ -2,6 +2,7 @@ import { set } from 'lodash';
 import logger from 'heroku-logger';
 import DataLoader from 'dataloader';
 
+import { getEmbed } from './repositories/embed';
 import { getCampaignById, getSignupsById } from './repositories/rogue';
 import { getUserById } from './repositories/northstar';
 import { getConversationById } from './repositories/gambit';
@@ -32,6 +33,9 @@ export default context => {
       ),
       conversations: new DataLoader(ids =>
         Promise.all(ids.map(id => getConversationById(id, options))),
+      ),
+      embeds: new DataLoader(urls =>
+        Promise.all(urls.map(url => getEmbed(url))),
       ),
       users: new DataLoader(ids =>
         Promise.all(ids.map(id => getUserById(id, options))),
