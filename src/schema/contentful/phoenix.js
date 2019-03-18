@@ -1,8 +1,8 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { GraphQLDateTime } from 'graphql-iso-date';
-import { upperFirst, camelCase } from 'lodash';
 import GraphQLJSON from 'graphql-type-json';
 import { gql } from 'apollo-server';
+import { get } from 'lodash';
 
 import Loader from '../../loader';
 
@@ -28,7 +28,7 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type PostGallery implements Block {
+  type PostGalleryBlock implements Block {
     "The internal-facing title for this gallery."
     internalTitle: String!
     "The list of Action IDs to show in this gallery."
@@ -36,7 +36,7 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type TextSubmissionAction implements Block {
+  type TextSubmissionBlock implements Block {
     "The internal-facing title for this text submission action."
     internalTitle: String!
     "The Action ID that posts will be submitted for."
@@ -60,7 +60,7 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type PetitionSubmissionAction implements Block {
+  type PetitionSubmissionBlock implements Block {
     "The internal-facing title for this photo submission action."
     internalTitle: String!
     "The Action ID that posts will be submitted for."
@@ -91,6 +91,17 @@ const typeDefs = gql`
 `;
 
 /**
+ * Contentful type to GraphQL type mappings.
+ *
+ * @var {Object}
+ */
+const contentTypeMappings = {
+  petitionSubmissionAction: 'PetitionSubmissionBlock',
+  postGallery: 'PostGalleryBlock',
+  textSubmissionAction: 'TextSubmissionBlock',
+};
+
+/**
  * GraphQL resolvers.
  *
  * @var {Object}
@@ -102,7 +113,7 @@ const resolvers = {
     block: (_, args, context) => Loader(context).blocks.load(args.id),
   },
   Block: {
-    __resolveType: block => upperFirst(camelCase(block.contentType)),
+    __resolveType: block => get(contentTypeMappings, block.contentType),
   },
 };
 
