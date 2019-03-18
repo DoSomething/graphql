@@ -1,10 +1,12 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { GraphQLDateTime } from 'graphql-iso-date';
+import { GraphQLAbsoluteUrl } from 'graphql-url';
 import GraphQLJSON from 'graphql-type-json';
 import { gql } from 'apollo-server';
 import { get } from 'lodash';
 
 import Loader from '../../loader';
+import { createImageUrl } from '../../repositories/contentful/phoenix';
 
 const entryFields = `
     "The Contentful ID for this block."
@@ -23,8 +25,45 @@ const entryFields = `
 const typeDefs = gql`
   scalar JSON
   scalar DateTime
+  scalar AbsoluteUrl
+
+  enum ResizeOption {
+    "Resize the image to the specified dimensions, padding the image if needed."
+    PAD
+    "Resize the image to the specified dimensions, cropping the image if needed."
+    FILL
+    "Resize the image to the specified dimensions, changing the original aspect ratio if needed."
+    SCALE
+    "Crop a part of the original image to fit into the specified dimensions."
+    CROP
+    "Create a thumbnail from the image."
+    THUMB
+  }
 
   interface Block {
+    ${entryFields}
+  }
+
+  type Asset {
+    "Title for this asset."
+    title: String
+    "Description for this asset."
+    description: String
+    "Mime-type for this asset."
+    contentType: String,
+    "The URL where this file is available at."
+    url(w: Int, h: Int, fit: ResizeOption): AbsoluteUrl,
+  }
+
+  type ImagesBlock implements Block {
+    "The images to be included in this block."
+    images: [Asset]
+    ${entryFields}
+  }
+
+  type EmbedBlock implements Block {
+    "The URL of the content to be embedded."
+    url: String!
     ${entryFields}
   }
 
@@ -96,6 +135,8 @@ const typeDefs = gql`
  * @var {Object}
  */
 const contentTypeMappings = {
+  embed: 'EmbedBlock',
+  imagesBlock: 'ImagesBlock',
   petitionSubmissionAction: 'PetitionSubmissionBlock',
   postGallery: 'PostGalleryBlock',
   textSubmissionAction: 'TextSubmissionBlock',
@@ -109,8 +150,15 @@ const contentTypeMappings = {
 const resolvers = {
   JSON: GraphQLJSON,
   DateTime: GraphQLDateTime,
+  AbsoluteUrl: GraphQLAbsoluteUrl,
   Query: {
     block: (_, args, context) => Loader(context).blocks.load(args.id),
+  },
+  Asset: {
+    title: asset => asset.fields.title,
+    description: asset => asset.fields.description,
+    contentType: asset => asset.fields.file.contentType,
+    url: (asset, args) => createImageUrl(asset, args),
   },
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
