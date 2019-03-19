@@ -1,5 +1,6 @@
 import { createClient } from 'contentful';
 import logger from 'heroku-logger';
+import { URL } from 'url';
 
 import { urlWithQuery } from '../helpers';
 import config from '../../../config';
