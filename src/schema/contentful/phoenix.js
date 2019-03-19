@@ -71,7 +71,7 @@ const typeDefs = gql`
     "The internal-facing title for this gallery."
     internalTitle: String!
     "The list of Action IDs to show in this gallery."
-    actionIds: [Int]!
+    actionIds: [String]!
     ${entryFields}
   }
 
@@ -79,7 +79,7 @@ const typeDefs = gql`
     "The internal-facing title for this text submission action."
     internalTitle: String!
     "The Action ID that posts will be submitted for."
-    actionId: Int
+    actionId: String
     "Optional custom title of the text submission block."
     title: String
     "Optional label for the text field, helping describe or prompt the user regarding what to submit."
@@ -103,7 +103,7 @@ const typeDefs = gql`
     "The internal-facing title for this photo submission action."
     internalTitle: String!
     "The Action ID that posts will be submitted for."
-    actionId: Int
+    actionId: String
     "Optional custom title of the petition block."
     title: String
     "The petition's content."
