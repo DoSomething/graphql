@@ -59,6 +59,37 @@ export const getPhoenixContentfulEntryById = async id => {
 };
 
 /**
+ * Fetch a Phoenix Contentful entry by ID.
+ *
+ * @param {String} id
+ * @return {Object}
+ */
+export const getPhoenixContentfulAssetById = async id => {
+  logger.debug('Loading Phoenix Contentful asset', { id });
+
+  try {
+    const cachedEntry = await cache.get(id);
+
+    if (cachedEntry) {
+      logger.debug('Cache hit for Phoenix Contentful asset', { id });
+      return cachedEntry;
+    }
+
+    logger.debug('Cache miss for Phoenix Contentful asset', { id });
+
+    const data = await contentfulClient.getAsset(id);
+    cache.set(id, data);
+
+    return data;
+  } catch (exception) {
+    const error = exception.message;
+    logger.warn('Unable to load Phoenix Contentful asset.', { id, error });
+  }
+
+  return null;
+};
+
+/**
  * Given a Contentful asset, create a URL using Contentful's
  * Image API and the given field arguments.
  *

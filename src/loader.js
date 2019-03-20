@@ -6,9 +6,12 @@ import { getEmbed } from './repositories/embed';
 import { getCampaignById, getSignupsById } from './repositories/rogue';
 import { getUserById } from './repositories/northstar';
 import { getConversationById } from './repositories/gambit';
-import { getPhoenixContentfulEntryById } from './repositories/contentful/phoenix';
 import { getGambitContentfulEntryById } from './repositories/contentful/gambit';
 import { authorizedRequest } from './repositories/helpers';
+import {
+  getPhoenixContentfulAssetById,
+  getPhoenixContentfulEntryById,
+} from './repositories/contentful/phoenix';
 
 /**
  * The data loader handles batching and caching the backend
@@ -22,6 +25,9 @@ export default context => {
     logger.debug('Creating a new loader for this GraphQL request.');
     const options = authorizedRequest(context);
     set(context, 'loader', {
+      assets: new DataLoader(ids =>
+        Promise.all(ids.map(id => getPhoenixContentfulAssetById(id))),
+      ),
       blocks: new DataLoader(ids =>
         Promise.all(ids.map(id => getPhoenixContentfulEntryById(id))),
       ),
