@@ -72,6 +72,8 @@ const typeDefs = gql`
     internalTitle: String!
     "The list of Action IDs to show in this gallery."
     actionIds: [Int]!
+    "The maximum number of items in a single row when viewing the gallery in a large display."
+    itemsPerRow: Int
     ${entryFields}
   }
 
