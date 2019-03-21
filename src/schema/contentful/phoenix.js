@@ -45,6 +45,8 @@ const typeDefs = gql`
   }
 
   type Asset {
+    "The unique ID for this Contentful asset."
+    id: String!
     "Title for this asset."
     title: String
     "Description for this asset."
@@ -130,6 +132,8 @@ const typeDefs = gql`
   type Query {
     "Get a block by ID."
     block(id: String!): Block
+    "Get an asset by ID."
+    asset(id: String!): Asset
   }
 `;
 
@@ -157,8 +161,10 @@ const resolvers = {
   AbsoluteUrl: GraphQLAbsoluteUrl,
   Query: {
     block: (_, args, context) => Loader(context).blocks.load(args.id),
+    asset: (_, args, context) => Loader(context).assets.load(args.id),
   },
   Asset: {
+    id: asset => asset.sys.id,
     title: asset => asset.fields.title,
     description: asset => asset.fields.description,
     contentType: asset => asset.fields.file.contentType,
