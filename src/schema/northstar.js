@@ -51,7 +51,7 @@ const typeDefs = gql`
 
   enum EmailSubscriptionTopic {
     NEWS
-    ACTIONS
+    COMMUNITY
     SCHOLARSHIPS
     LIFESTYLE
   }
