@@ -74,6 +74,8 @@ const typeDefs = gql`
     actionIds: [Int]!
     "The maximum number of items in a single row when viewing the gallery in a large display."
     itemsPerRow: Int
+    "A filter type which users can select to filter the gallery."
+    filterType: String
     ${entryFields}
   }
 
