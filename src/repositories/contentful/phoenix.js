@@ -29,6 +29,17 @@ const transformItem = json => ({
 });
 
 /**
+ * @param {Object} json
+ * @return {Object}
+ */
+const transformAsset = json => ({
+  id: json.sys.id,
+  createdAt: json.sys.createdAt,
+  updatedAt: json.sys.updatedAt,
+  ...json.fields,
+});
+
+/**
  * Fetch a Phoenix Contentful entry by ID.
  *
  * @param {String} id
@@ -79,7 +90,8 @@ export const getPhoenixContentfulAssetById = async id => {
 
     logger.debug('Cache miss for Phoenix Contentful asset', { id });
 
-    const data = await contentfulClient.getAsset(id);
+    const json = await contentfulClient.getAsset(id);
+    const data = transformAsset(json);
     cache.set(id, data);
 
     return data;
@@ -129,7 +141,7 @@ export const linkResolver = (entry, _, context, info) => {
  * @return {String}
  */
 export const createImageUrl = (asset, args) => {
-  const path = asset.fields.file.url;
+  const path = asset.file.url;
   if (!path) {
     return null;
   }

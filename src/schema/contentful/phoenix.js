@@ -261,10 +261,6 @@ const resolvers = {
     asset: (_, args, context) => Loader(context).assets.load(args.id),
   },
   Asset: {
-    id: asset => asset.sys.id,
-    title: asset => asset.fields.title,
-    description: asset => asset.fields.description,
-    contentType: asset => asset.fields.file.contentType,
     url: (asset, args) => createImageUrl(asset, args),
   },
   Block: {
