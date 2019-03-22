@@ -4,6 +4,7 @@ import { URL } from 'url';
 
 import { urlWithQuery } from '../helpers';
 import config from '../../../config';
+import Loader from '../../loader';
 import Cache from '../../cache';
 
 const cache = new Cache(config('services.contentful.phoenix.cache'));
@@ -12,6 +13,7 @@ const contentfulClient = createClient({
   space: config('services.contentful.phoenix.spaceId'),
   accessToken: config('services.contentful.phoenix.accessToken'),
   environment: config('services.contentful.phoenix.environment'),
+  resolveLinks: false,
 });
 
 /**
@@ -87,6 +89,35 @@ export const getPhoenixContentfulAssetById = async id => {
   }
 
   return null;
+};
+
+/**
+ * Resolve a entry or asset from the "link" provided
+ * in a Contentful response.
+ *
+ * @param {Object} entry
+ * @param {Object} context
+ * @param {Object} info
+ */
+export const linkResolver = (entry, _, context, info) => {
+  const { fieldName, parentType } = info;
+  const link = entry[fieldName];
+
+  if (!link) {
+    return null;
+  }
+
+  const { linkType, id } = link.sys;
+  logger.debug(`Resolving link on ${parentType.name}.${fieldName}`, { id });
+
+  switch (linkType) {
+    case 'Asset':
+      return Loader(context).assets.load(id);
+    case 'Entry':
+      return Loader(context).blocks.load(id);
+    default:
+      throw new Error('Unsupported link type.');
+  }
 };
 
 /**

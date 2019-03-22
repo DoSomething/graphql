@@ -6,7 +6,10 @@ import { gql } from 'apollo-server';
 import { get } from 'lodash';
 
 import Loader from '../../loader';
-import { createImageUrl } from '../../repositories/contentful/phoenix';
+import {
+  createImageUrl,
+  linkResolver,
+} from '../../repositories/contentful/phoenix';
 
 const entryFields = `
     "The Contentful ID for this block."
@@ -266,6 +269,12 @@ const resolvers = {
   },
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
+  },
+  ShareBlock: {
+    affirmationBlock: linkResolver,
+  },
+  LinkBlock: {
+    affiliateLogo: linkResolver,
   },
 };
 
