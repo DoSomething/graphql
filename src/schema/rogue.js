@@ -206,6 +206,8 @@ const typeDefs = gql`
       actionIds: [Int]
       "# The campaign ID to load posts for."
       campaignId: String
+      "The location to load posts for."
+      location: String
       "# The post source to load posts for."
       source: String
       "# The type name to load posts for."
