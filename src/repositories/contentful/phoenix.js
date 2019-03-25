@@ -142,7 +142,7 @@ export const linkResolver = (entry, _, context, info) => {
     return link.map(asset => getPhoenixContentfulItemByLink(asset, context));
   }
 
-  return getPhoenixContentfulItemByLink(link);
+  return getPhoenixContentfulItemByLink(link, context);
 };
 
 /**
