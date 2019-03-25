@@ -272,6 +272,9 @@ const resolvers = {
   LinkBlock: {
     affiliateLogo: linkResolver,
   },
+  ImagesBlock: {
+    images: linkResolver,
+  },
 };
 
 /**

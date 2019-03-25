@@ -104,8 +104,29 @@ export const getPhoenixContentfulAssetById = async id => {
 };
 
 /**
- * Resolve a entry or asset from the "link" provided
- * in a Contentful response.
+ * Fetch a Phoenix Contentful entry or asset by "link".
+ *
+ * @param {Object} link
+ * @param {Object} context
+ */
+export const getPhoenixContentfulItemByLink = async (link, context) => {
+  if (!link) {
+    return null;
+  }
+
+  const { linkType, id } = link.sys;
+  switch (linkType) {
+    case 'Asset':
+      return Loader(context).assets.load(id);
+    case 'Entry':
+      return Loader(context).blocks.load(id);
+    default:
+      throw new Error('Unsupported link type.');
+  }
+};
+
+/**
+ * GraphQL resolver for Contentful links.
  *
  * @param {Object} entry
  * @param {Object} context
@@ -115,21 +136,13 @@ export const linkResolver = (entry, _, context, info) => {
   const { fieldName, parentType } = info;
   const link = entry[fieldName];
 
-  if (!link) {
-    return null;
+  logger.debug(`Resolving link(s) on ${parentType.name}.${fieldName}`);
+
+  if (Array.isArray(link)) {
+    return link.map(asset => getPhoenixContentfulItemByLink(asset, context));
   }
 
-  const { linkType, id } = link.sys;
-  logger.debug(`Resolving link on ${parentType.name}.${fieldName}`, { id });
-
-  switch (linkType) {
-    case 'Asset':
-      return Loader(context).assets.load(id);
-    case 'Entry':
-      return Loader(context).blocks.load(id);
-    default:
-      throw new Error('Unsupported link type.');
-  }
+  return getPhoenixContentfulItemByLink(link);
 };
 
 /**
