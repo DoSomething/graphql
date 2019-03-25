@@ -61,6 +61,7 @@ export const getCampaigns = async (args, context) => {
  * @param {String} actionIds
  * @param {String} campaignId
  * @param {Number} count
+ * @param {String} location
  * @param {Number} page
  * @param {String} source
  * @param {String} type
@@ -73,6 +74,7 @@ export const getPosts = async (args, context) => {
       action: args.action,
       action_id: args.actionIds ? args.actionIds.join(',') : undefined,
       campaign_id: args.campaignId,
+      location: args.location,
       northstar_id: args.userId,
       source: args.source,
       type: args.type,
