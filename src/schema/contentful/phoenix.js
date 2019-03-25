@@ -149,6 +149,8 @@ const typeDefs = gql`
     socialPlatform: [String]
     "Optional description of the link."
     content: String
+    "The URL being linked to."
+    link: AbsoluteUrl
     "This will hide the link preview 'embed' on the share action."
     hideEmbed: Boolean
     "This block should be displayed in a modal after a successful share."
