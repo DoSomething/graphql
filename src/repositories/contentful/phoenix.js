@@ -4,6 +4,7 @@ import { URL } from 'url';
 
 import { urlWithQuery } from '../helpers';
 import config from '../../../config';
+import Loader from '../../loader';
 import Cache from '../../cache';
 
 const cache = new Cache(config('services.contentful.phoenix.cache'));
@@ -12,6 +13,7 @@ const contentfulClient = createClient({
   space: config('services.contentful.phoenix.spaceId'),
   accessToken: config('services.contentful.phoenix.accessToken'),
   environment: config('services.contentful.phoenix.environment'),
+  resolveLinks: false,
 });
 
 /**
@@ -21,6 +23,17 @@ const contentfulClient = createClient({
 const transformItem = json => ({
   id: json.sys.id,
   contentType: json.sys.contentType.sys.id,
+  createdAt: json.sys.createdAt,
+  updatedAt: json.sys.updatedAt,
+  ...json.fields,
+});
+
+/**
+ * @param {Object} json
+ * @return {Object}
+ */
+const transformAsset = json => ({
+  id: json.sys.id,
   createdAt: json.sys.createdAt,
   updatedAt: json.sys.updatedAt,
   ...json.fields,
@@ -77,7 +90,8 @@ export const getPhoenixContentfulAssetById = async id => {
 
     logger.debug('Cache miss for Phoenix Contentful asset', { id });
 
-    const data = await contentfulClient.getAsset(id);
+    const json = await contentfulClient.getAsset(id);
+    const data = transformAsset(json);
     cache.set(id, data);
 
     return data;
@@ -90,6 +104,48 @@ export const getPhoenixContentfulAssetById = async id => {
 };
 
 /**
+ * Fetch a Phoenix Contentful entry or asset by "link".
+ *
+ * @param {Object} link
+ * @param {Object} context
+ */
+export const getPhoenixContentfulItemByLink = async (link, context) => {
+  if (!link) {
+    return null;
+  }
+
+  const { linkType, id } = link.sys;
+  switch (linkType) {
+    case 'Asset':
+      return Loader(context).assets.load(id);
+    case 'Entry':
+      return Loader(context).blocks.load(id);
+    default:
+      throw new Error('Unsupported link type.');
+  }
+};
+
+/**
+ * GraphQL resolver for Contentful links.
+ *
+ * @param {Object} entry
+ * @param {Object} context
+ * @param {Object} info
+ */
+export const linkResolver = (entry, _, context, info) => {
+  const { fieldName, parentType } = info;
+  const link = entry[fieldName];
+
+  logger.debug(`Resolving link(s) on ${parentType.name}.${fieldName}`);
+
+  if (Array.isArray(link)) {
+    return link.map(asset => getPhoenixContentfulItemByLink(asset, context));
+  }
+
+  return getPhoenixContentfulItemByLink(link, context);
+};
+
+/**
  * Given a Contentful asset, create a URL using Contentful's
  * Image API and the given field arguments.
  *
@@ -98,7 +154,7 @@ export const getPhoenixContentfulAssetById = async id => {
  * @return {String}
  */
 export const createImageUrl = (asset, args) => {
-  const path = asset.fields.file.url;
+  const path = asset.file.url;
   if (!path) {
     return null;
   }

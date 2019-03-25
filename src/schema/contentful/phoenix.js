@@ -6,7 +6,10 @@ import { gql } from 'apollo-server';
 import { get } from 'lodash';
 
 import Loader from '../../loader';
-import { createImageUrl } from '../../repositories/contentful/phoenix';
+import {
+  createImageUrl,
+  linkResolver,
+} from '../../repositories/contentful/phoenix';
 
 const entryFields = `
     "The Contentful ID for this block."
@@ -81,6 +84,84 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type LinkBlock implements Block {
+    "The internal-facing title for this link block."
+    internalTitle: String!
+    "The user-facing title for this link block."
+    title: String
+    "Optional description of the link."
+    content: String
+    "The URL being linked to."
+    link: AbsoluteUrl
+    "Optional custom text to display on the submission button."
+    buttonText: String
+    "The logo of the partner or sponsor for this link action."
+    affiliateLogo: Asset
+    "The template to be used for this link action."
+    template: String
+    "Any custom overrides for this block."
+    additionalContent: JSON
+    ${entryFields}
+  }
+
+  type PhotoSubmissionBlock implements Block {
+    "The internal-facing title for this photo submission action."
+    internalTitle: String!
+    "The Action ID that posts will be submitted for."
+    actionId: Int
+    "Optional custom title of the text submission block."
+    title: String
+    "Optional label for the caption field, helping describe or prompt the user regarding what to submit."
+    captionFieldLabel: String
+    "Optional placeholder for the caption field, providing an example of what a text submission should look like."
+    captionFieldPlaceholderMessage: String
+    "Should the form ask for the quantity of items in member's photo submission?"
+    showQuantityField: Boolean
+    "Optional label for the quantity field."
+    quantityFieldLabel: String
+    "Optional placeholder for the quantity field."
+    quantityFieldPlaceholder: String
+    "Optional label for the 'why participated' field."
+    whyParticipatedFieldLabel: String
+    "Optional placeholder for the 'why participated' field."
+    whyParticipatedFieldPlaceholder: String
+    "Optional custom text to display on the submission button."
+    buttonText: String
+    "Optional custom title for the information block."
+    informationTitle: String
+    "Optional custom content for the information block."
+    informationContent: String
+    "Optional content to display once the user successfully submits their petition reportback."
+    affirmationContent: String
+    "Any custom overrides for this block."
+    additionalContent: JSON
+    ${entryFields}
+  }
+
+  type ShareBlock implements Block {
+    "The internal-facing title for this text submission action."
+    internalTitle: String!
+    "The Action ID that 'share' posts will be submitted for."
+    actionId: Int
+    "The user-facing title for this share block."
+    title: String
+    "The social platform that should be offered for sharing this link."
+    socialPlatform: [String]
+    "Optional description of the link."
+    content: String
+    "The URL being linked to."
+    link: AbsoluteUrl
+    "This will hide the link preview 'embed' on the share action."
+    hideEmbed: Boolean
+    "This block should be displayed in a modal after a successful share."
+    affirmationBlock: Block
+    "A quick text-only affirmation message. Ignored if an affirmation block is set."
+    affirmation: String
+    "Any custom overrides for this block."
+    additionalContent: JSON
+    ${entryFields}
+  }
+
   type TextSubmissionBlock implements Block {
     "The internal-facing title for this text submission action."
     internalTitle: String!
@@ -129,6 +210,20 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type VoterRegistrationBlock implements Block {
+    "The internal-facing title for this photo submission action."
+    internalTitle: String!
+    "The user-facing title for this share block."
+    title: String
+    "The voter registration block's text content."
+    content: String
+    "The link to the appropriate Instapage or partner flow."
+    link: AbsoluteUrl
+    "Any custom overrides for this block."
+    additionalContent: JSON
+    ${entryFields}
+  }
+
   type Query {
     "Get a block by ID."
     block(id: String!): Block
@@ -145,9 +240,13 @@ const typeDefs = gql`
 const contentTypeMappings = {
   embed: 'EmbedBlock',
   imagesBlock: 'ImagesBlock',
+  linkAction: 'LinkBlock',
   petitionSubmissionAction: 'PetitionSubmissionBlock',
+  photoSubmissionAction: 'PhotoSubmissionBlock',
   postGallery: 'PostGalleryBlock',
+  shareAction: 'ShareBlock',
   textSubmissionAction: 'TextSubmissionBlock',
+  voterRegistrationAction: 'VoterRegistrationBlock',
 };
 
 /**
@@ -164,14 +263,19 @@ const resolvers = {
     asset: (_, args, context) => Loader(context).assets.load(args.id),
   },
   Asset: {
-    id: asset => asset.sys.id,
-    title: asset => asset.fields.title,
-    description: asset => asset.fields.description,
-    contentType: asset => asset.fields.file.contentType,
     url: (asset, args) => createImageUrl(asset, args),
   },
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
+  },
+  ShareBlock: {
+    affirmationBlock: linkResolver,
+  },
+  LinkBlock: {
+    affiliateLogo: linkResolver,
+  },
+  ImagesBlock: {
+    images: linkResolver,
   },
 };
 
