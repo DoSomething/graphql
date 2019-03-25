@@ -34,7 +34,7 @@ const getActionId = json => json.fields.actionId;
  * @return {String}
  */
 const getChangeTopicId = json => {
-  if (json.fields.topic) {
+  if (json && json.fields.topic) {
     return json.fields.topic.sys.id;
   }
   return null;
@@ -50,7 +50,12 @@ const getContentType = json => json.sys.contentType.sys.id;
  * @param {Object} json
  * @return {String}
  */
-const getMessageText = json => json.fields.text;
+const getMessageText = json => {
+  if (json && json.fields) {
+    return json.fields.text;
+  }
+  return null;
+};
 
 /**
  * @param {Object} json
