@@ -136,6 +136,18 @@ const typeDefs = gql`
     saidThirdChoiceTopicId: String!
     "The topic to change conversation to if user selects the third option."
     saidThirdChoiceTopic: Topic
+    "Message sent if user selects the fourth option."
+    saidFourthChoice: String
+    "The topic ID to change conversation to if user selects the fourth option."
+    saidFourthChoiceTopicId: String
+    "The topic to change conversation to if user selects the fourth option."
+    saidFourthChoiceTopic: Topic
+    "Message sent if user selects the fifth option."
+    saidFifthChoice: String
+    "The topic ID to change conversation to if user selects the fifth option."
+    saidFifthChoiceTopicId: String
+    "The topic to change conversation to if user selects the fifth option."
+    saidFifthChoiceTopic: Topic
     "Message sent until user responds with a valid multiple choice option."
     invalidAskMultipleChoiceResponse: String!
   }
@@ -285,6 +297,10 @@ const resolvers = {
       Loader(context).topics.load(topic.saidSecondChoiceTopicId, context),
     saidThirdChoiceTopic: (topic, args, context) =>
       Loader(context).topics.load(topic.saidThirdChoiceTopicId, context),
+    saidFourthChoiceTopic: (topic, args, context) =>
+      Loader(context).topics.load(topic.saidFourthChoiceTopicId, context),
+    saidFifthChoiceTopic: (topic, args, context) =>
+      Loader(context).topics.load(topic.saidFifthChoiceTopicId, context),
   },
   AskSubscriptionStatusBroadcastTopic: {
     saidActiveTopic: (topic, args, context) =>

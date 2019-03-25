@@ -96,6 +96,10 @@ const getFields = json => {
       saidSecondChoiceTopicId: getChangeTopicId(fields.secondChoiceTransition),
       saidThirdChoice: getMessageText(fields.thirdChoiceTransition),
       saidThirdChoiceTopicId: getChangeTopicId(fields.thirdChoiceTransition),
+      saidFourthChoice: getMessageText(fields.fourthChoiceTransition),
+      saidFourthChoiceTopicId: getChangeTopicId(fields.fourthChoiceTransition),
+      saidFifthChoice: getMessageText(fields.fifthChoiceTransition),
+      saidFifthChoiceTopicId: getChangeTopicId(fields.fifthChoiceTransition),
       text: getMessageText(json),
     };
   }
