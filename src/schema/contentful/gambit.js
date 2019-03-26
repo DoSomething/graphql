@@ -297,10 +297,26 @@ const resolvers = {
       Loader(context).topics.load(topic.saidSecondChoiceTopicId, context),
     saidThirdChoiceTopic: (topic, args, context) =>
       Loader(context).topics.load(topic.saidThirdChoiceTopicId, context),
-    saidFourthChoiceTopic: (topic, args, context) =>
-      Loader(context).topics.load(topic.saidFourthChoiceTopicId, context),
-    saidFifthChoiceTopic: (topic, args, context) =>
-      Loader(context).topics.load(topic.saidFifthChoiceTopicId, context),
+    /**
+     * This is the easiest way to prevent sending en empty value to the loader,
+     * which would end up in an exception. Ideally, I think we should create a local
+     * loading function that is aware of optional fields.
+     */
+    saidFourthChoiceTopic: (topic, args, context) => {
+      if (!topic.saidFourthChoiceTopicId) {
+        return null;
+      }
+      return Loader(context).topics.load(
+        topic.saidFourthChoiceTopicId,
+        context,
+      );
+    },
+    saidFifthChoiceTopic: (topic, args, context) => {
+      if (!topic.saidFifthChoiceTopicId) {
+        return null;
+      }
+      return Loader(context).topics.load(topic.saidFifthChoiceTopicId, context);
+    },
   },
   AskSubscriptionStatusBroadcastTopic: {
     saidActiveTopic: (topic, args, context) =>
