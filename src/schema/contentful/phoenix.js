@@ -81,6 +81,8 @@ const typeDefs = gql`
     itemsPerRow: Int
     "A filter type which users can select to filter the gallery."
     filterType: String
+    "Hide the post reactions for this gallery"
+    hideReactions: Boolean
     ${entryFields}
   }
 
