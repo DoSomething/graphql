@@ -172,12 +172,19 @@ const getFields = json => {
   }
 
   if (contentType === 'defaultTopicTrigger') {
+    // The askMultipleChoice broadcast id is the topic we want to switch the member to
+    const multipleChoiceTopicId =
+      getContentType(fields.response) === 'askMultipleChoice'
+        ? fields.response.sys.id
+        : null;
+    const changeTopicId = fields.response.fields.topic
+      ? fields.response.fields.topic.sys.id
+      : null;
+
     return {
       trigger: fields.trigger,
       reply: fields.response.fields.text,
-      topicId: fields.response.fields.topic
-        ? fields.response.fields.topic.sys.id
-        : null,
+      topicId: multipleChoiceTopicId || changeTopicId,
     };
   }
 
