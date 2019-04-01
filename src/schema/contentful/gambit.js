@@ -75,8 +75,6 @@ const typeDefs = gql`
   type PhotoPostTopic implements Topic {
     ${entryFields}
     ${campaignActionFields}
-    "The Rogue action"
-    action: CampaignAction
     "The campaign ID to create signup and photo post for if conversation changes to this topic."
     campaignId: Int!
     "Template sent until user replies with START to begin a photo post."
@@ -107,8 +105,6 @@ const typeDefs = gql`
   type TextPostTopic implements Topic {
     ${entryFields}
     ${campaignActionFields}
-    "The Rogue action"
-    action: CampaignAction
     "The campaign ID to create signup and text post for if conversation changes to this topic."
     campaignId: Int!
     "Template that asks user to resend a message with valid text post."
@@ -242,6 +238,8 @@ const typeDefs = gql`
   "Broadcast that asks user to reply with START and changes topic to a PhotoPostTopic."
   type PhotoPostBroadcast implements Broadcast {
     ${broadcastFields}
+    "The Rogue action"
+    action: CampaignAction
     "The ID of the PhotoPostTopic to change conversation to."
     topicId: String!
     "The PhotoPostTopic to change conversation to."
@@ -251,6 +249,8 @@ const typeDefs = gql`
   "Broadcast that asks user to reply with a text post and changes topic to a TextPostTopic."
   type TextPostBroadcast implements Broadcast {
     ${broadcastFields}
+    "The Rogue action"
+    action: CampaignAction
     "The ID of the TextPostTopic to change conversation to."
     topicId: String!
     "The TextPostBroadcast to change conversation to."
@@ -298,6 +298,16 @@ const typeDefs = gql`
     webSignupConfirmations: [WebSignupConfirmation]
   }
 `;
+
+/**
+ * @param {Object} entry
+ * @param {Object} args
+ * @param {Object} context
+ */
+function loadAction(entry = {}, args, context) {
+  const actionId = entry.actionId;
+  return actionId ? Loader(context).actions.load(actionId, context) : null;
+}
 
 /**
  * GraphQL resolvers.
@@ -401,18 +411,12 @@ const resolvers = {
       getWebSignupConfirmations(args, context),
   },
   PhotoPostBroadcast: {
+    action: loadAction,
     topic: (broadcast, args, context) =>
       Loader(context).topics.load(broadcast.topicId, context),
   },
-  PhotoPostTopic: {
-    action: (photoPostTopic, args, context) =>
-      Loader(context).actions.load(photoPostTopic.actionId, context),
-  },
-  TextPostTopic: {
-    action: (textPostTopic, args, context) =>
-      Loader(context).actions.load(textPostTopic.actionId, context),
-  },
   TextPostBroadcast: {
+    action: loadAction,
     topic: (broadcast, args, context) =>
       Loader(context).topics.load(broadcast.topicId, context),
   },
