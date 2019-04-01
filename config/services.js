@@ -48,8 +48,6 @@ const environments = {
     // Northstar
     northstar: {
       url: process.env.LOCAL_NORTHSTAR_URL || 'http://northstar.test',
-      clientId: process.env.LOCAL_NORTHSTAR_AUTH_ID,
-      clientSecret: process.env.LOCAL_NORTHSTAR_AUTH_SECRET,
     },
 
     // Rogue
@@ -81,8 +79,6 @@ const environments = {
     // Northstar
     northstar: {
       url: 'https://identity-dev.dosomething.org',
-      clientId: process.env.DEV_NORTHSTAR_AUTH_ID,
-      clientSecret: process.env.DEV_NORTHSTAR_AUTH_SECRET,
     },
 
     // Rogue
@@ -113,8 +109,6 @@ const environments = {
     // Northstar
     northstar: {
       url: 'https://identity-qa.dosomething.org',
-      clientId: process.env.QA_NORTHSTAR_AUTH_ID,
-      clientSecret: process.env.QA_NORTHSTAR_AUTH_SECRET,
     },
 
     // Rogue
@@ -145,8 +139,6 @@ const environments = {
     // Northstar
     northstar: {
       url: 'https://identity.dosomething.org',
-      clientId: process.env.PRODUCTION_NORTHSTAR_AUTH_ID,
-      clientSecret: process.env.PRODUCTION_NORTHSTAR_AUTH_SECRET,
     },
 
     // Rogue
