@@ -3,7 +3,11 @@ import logger from 'heroku-logger';
 import DataLoader from 'dataloader';
 
 import { getEmbed } from './repositories/embed';
-import { getCampaignById, getSignupsById } from './repositories/rogue';
+import {
+  getActionById,
+  getCampaignById,
+  getSignupsById,
+} from './repositories/rogue';
 import { getUserById } from './repositories/northstar';
 import { getConversationById } from './repositories/gambit';
 import { getGambitContentfulEntryById } from './repositories/contentful/gambit';
@@ -25,6 +29,9 @@ export default context => {
     logger.debug('Creating a new loader for this GraphQL request.');
     const options = authorizedRequest(context);
     set(context, 'loader', {
+      actions: new DataLoader(ids =>
+        Promise.all(ids.map(id => getActionById(id, options))),
+      ),
       assets: new DataLoader(ids =>
         Promise.all(ids.map(id => getPhoenixContentfulAssetById(id))),
       ),
