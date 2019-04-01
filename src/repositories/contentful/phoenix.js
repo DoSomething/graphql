@@ -9,10 +9,10 @@ import Cache from '../../cache';
 
 const cache = new Cache(config('services.contentful.phoenix.cache'));
 
-const contentfulClient = createClient({
+const contentApi = createClient({
   space: config('services.contentful.phoenix.spaceId'),
-  accessToken: config('services.contentful.phoenix.accessToken'),
   environment: config('services.contentful.phoenix.environment'),
+  accessToken: config('services.contentful.phoenix.accessToken'),
   resolveLinks: false,
 });
 
@@ -48,27 +48,19 @@ const transformAsset = json => ({
 export const getPhoenixContentfulEntryById = async id => {
   logger.debug('Loading Phoenix Contentful entry', { id });
 
-  try {
-    const cachedEntry = await cache.get(id);
-
-    if (cachedEntry) {
-      logger.debug('Cache hit for Phoenix Contentful entry', { id });
-      return cachedEntry;
+  return cache.remember(id, async () => {
+    try {
+      const json = await contentApi.getEntry(id);
+      return transformItem(json);
+    } catch (exception) {
+      logger.warn('Unable to load Phoenix Contentful entry.', {
+        id,
+        error: exception.message,
+      });
     }
 
-    logger.debug('Cache miss for Phoenix Contentful entry', { id });
-
-    const json = await contentfulClient.getEntry(id);
-    const data = transformItem(json);
-    cache.set(id, data);
-
-    return data;
-  } catch (exception) {
-    const error = exception.message;
-    logger.warn('Unable to load Phoenix Contentful entry.', { id, error });
-  }
-
-  return null;
+    return null;
+  });
 };
 
 /**
@@ -80,27 +72,19 @@ export const getPhoenixContentfulEntryById = async id => {
 export const getPhoenixContentfulAssetById = async id => {
   logger.debug('Loading Phoenix Contentful asset', { id });
 
-  try {
-    const cachedEntry = await cache.get(id);
-
-    if (cachedEntry) {
-      logger.debug('Cache hit for Phoenix Contentful asset', { id });
-      return cachedEntry;
+  return cache.remember(id, async () => {
+    try {
+      const json = await contentApi.getAsset(id);
+      return transformAsset(json);
+    } catch (exception) {
+      logger.warn('Unable to load Phoenix Contentful asset.', {
+        id,
+        error: exception.message,
+      });
     }
 
-    logger.debug('Cache miss for Phoenix Contentful asset', { id });
-
-    const json = await contentfulClient.getAsset(id);
-    const data = transformAsset(json);
-    cache.set(id, data);
-
-    return data;
-  } catch (exception) {
-    const error = exception.message;
-    logger.warn('Unable to load Phoenix Contentful asset.', { id, error });
-  }
-
-  return null;
+    return null;
+  });
 };
 
 /**
@@ -115,6 +99,7 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
   }
 
   const { linkType, id } = link.sys;
+
   switch (linkType) {
     case 'Asset':
       return Loader(context).assets.load(id);
