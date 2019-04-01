@@ -41,6 +41,18 @@ const getChangeTopicId = json => {
 };
 
 /**
+ *
+ * @param {Object} json
+ * @return
+ */
+const getChangeTopicActionId = json => {
+  if (json && json.fields.topic) {
+    return json.fields.topic.fields.actionId;
+  }
+  return null;
+};
+
+/**
  * @param {Object} json
  * @return {String}
  */
@@ -93,6 +105,7 @@ const getFields = json => {
 
   if (contentType === 'askMultipleChoice') {
     return {
+      // TODO: determine how to get the actionId for this broadcast
       attachments: getMessageAttachments(json),
       invalidAskMultipleChoiceResponse: fields.invalidAskMultipleChoiceResponse,
       saidFirstChoice: getMessageText(fields.firstChoiceTransition),
@@ -125,6 +138,7 @@ const getFields = json => {
 
   if (contentType === 'askVotingPlanStatus') {
     return {
+      actionId: getChangeTopicActionId(fields.votedTransition),
       attachments: getMessageAttachments(json),
       saidCantVote: getMessageText(fields.cantVoteTransition),
       saidCantVoteTopicId: getChangeTopicId(fields.cantVoteTransition),
@@ -138,6 +152,7 @@ const getFields = json => {
 
   if (contentType === 'askYesNo') {
     return {
+      actionId: getChangeTopicActionId(fields.yesTransition),
       attachments: getMessageAttachments(json),
       invalidAskYesNoResponse: fields.invalidAskYesNoResponse,
       saidNo: getMessageText(fields.noTransition),
@@ -190,6 +205,7 @@ const getFields = json => {
 
   if (contentType === 'photoPostBroadcast') {
     return {
+      actionId: getChangeTopicActionId(json),
       attachments: getMessageAttachments(json),
       text: fields.text,
       topicId: getChangeTopicId(json),
@@ -198,6 +214,7 @@ const getFields = json => {
 
   if (contentType === 'photoPostConfig') {
     return {
+      actionId: getActionId(json),
       askCaption:
         fields.askCaptionMessage ||
         'Got it! Now text back a caption for your photo (think Instagram)! Keep it short & sweet, under 60 characters please.',
@@ -205,7 +222,6 @@ const getFields = json => {
       askQuantity: fields.askQuantityMessage,
       askWhyParticipated: fields.askWhyParticipatedMessage,
       campaignId: getCampaignId(json),
-      actionId: getActionId(json),
       completedPhotoPost: fields.completedMenuMessage,
       completedPhotoPostAutoReply: fields.invalidCompletedMenuCommandMessage,
       invalidCaption:
@@ -220,6 +236,7 @@ const getFields = json => {
 
   if (contentType === 'textPostBroadcast') {
     return {
+      actionId: getChangeTopicActionId(json),
       attachments: getMessageAttachments(json),
       text: fields.text,
       topicId: getChangeTopicId(json),
@@ -228,8 +245,8 @@ const getFields = json => {
 
   if (contentType === 'textPostConfig') {
     return {
-      campaignId: getCampaignId(json),
       actionId: getActionId(json),
+      campaignId: getCampaignId(json),
       completedTextPost: fields.completedTextPostMessage,
       invalidText: fields.invalidTextMessage,
     };
