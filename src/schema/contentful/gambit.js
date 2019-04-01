@@ -5,6 +5,7 @@ import {
   getConversationTriggers,
   getWebSignupConfirmations,
 } from '../../repositories/contentful/gambit';
+
 import Loader from '../../loader';
 
 const entryFields = `
@@ -39,6 +40,16 @@ const campaignActionFields = `
  * @var {String}
  */
 const typeDefs = gql`
+  "The Rogue action associated with this broadcast."
+  type CampaignAction {
+    id: Int!
+    name: String!
+    "The campaign_id this action belongs to."
+    campaignId: Int!
+    "The expected action submitted type"
+    postType: String!
+  }
+
   "A DoSomething.org conversation topic."
   interface Topic {
     ${entryFields}
@@ -64,6 +75,8 @@ const typeDefs = gql`
   type PhotoPostTopic implements Topic {
     ${entryFields}
     ${campaignActionFields}
+    "The Rogue action"
+    action: CampaignAction
     "The campaign ID to create signup and photo post for if conversation changes to this topic."
     campaignId: Int!
     "Template sent until user replies with START to begin a photo post."
@@ -94,6 +107,8 @@ const typeDefs = gql`
   type TextPostTopic implements Topic {
     ${entryFields}
     ${campaignActionFields}
+    "The Rogue action"
+    action: CampaignAction
     "The campaign ID to create signup and text post for if conversation changes to this topic."
     campaignId: Int!
     "Template that asks user to resend a message with valid text post."
@@ -388,6 +403,14 @@ const resolvers = {
   PhotoPostBroadcast: {
     topic: (broadcast, args, context) =>
       Loader(context).topics.load(broadcast.topicId, context),
+  },
+  PhotoPostTopic: {
+    action: (photoPostTopic, args, context) =>
+      Loader(context).actions.load(photoPostTopic.actionId, context),
+  },
+  TextPostTopic: {
+    action: (textPostTopic, args, context) =>
+      Loader(context).actions.load(textPostTopic.actionId, context),
   },
   TextPostBroadcast: {
     topic: (broadcast, args, context) =>
