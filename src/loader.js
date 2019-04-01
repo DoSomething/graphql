@@ -19,17 +19,23 @@ import {
  *
  * @var {DataLoader}
  */
-export default context => {
+export default (context, preview = false) => {
+  // Keep track of whether or not we're in "preview" mode:
+  if (preview) {
+    set(context, 'preview', true);
+  }
+
   // If this is a new GraphQL request, configure a loader.
   if (!context.loader) {
     logger.debug('Creating a new loader for this GraphQL request.');
     const options = authorizedRequest(context);
+
     set(context, 'loader', {
       assets: new DataLoader(ids =>
-        Promise.all(ids.map(id => getPhoenixContentfulAssetById(id))),
+        Promise.all(ids.map(id => getPhoenixContentfulAssetById(id, context))),
       ),
       blocks: new DataLoader(ids =>
-        Promise.all(ids.map(id => getPhoenixContentfulEntryById(id))),
+        Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
       ),
       broadcasts: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulEntryById(id, options))),

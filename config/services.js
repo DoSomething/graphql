@@ -13,6 +13,7 @@ const contentful = {
   phoenix: {
     spaceId: process.env.PHOENIX_CONTENTFUL_SPACE_ID,
     accessToken: process.env.PHOENIX_CONTENTFUL_ACCESS_TOKEN,
+    previewToken: process.env.PHOENIX_CONTENTFUL_PREVIEW_TOKEN,
     environment: get(environmentMapping, process.env.QUERY_ENV),
     cache: {
       name: 'phoenixContent',

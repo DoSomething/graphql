@@ -228,9 +228,9 @@ const typeDefs = gql`
 
   type Query {
     "Get a block by ID."
-    block(id: String!): Block
+    block(id: String!, preview: Boolean = false): Block
     "Get an asset by ID."
-    asset(id: String!): Asset
+    asset(id: String!, preview: Boolean = false): Asset
   }
 `;
 
@@ -261,8 +261,10 @@ const resolvers = {
   DateTime: GraphQLDateTime,
   AbsoluteUrl: GraphQLAbsoluteUrl,
   Query: {
-    block: (_, args, context) => Loader(context).blocks.load(args.id),
-    asset: (_, args, context) => Loader(context).assets.load(args.id),
+    block: (_, { id, preview }, context) =>
+      Loader(context, preview).blocks.load(id),
+    asset: (_, { id, preview }, context) =>
+      Loader(context, preview).assets.load(id),
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),

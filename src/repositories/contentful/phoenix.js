@@ -8,12 +8,21 @@ import Loader from '../../loader';
 import Cache from '../../cache';
 
 const cache = new Cache(config('services.contentful.phoenix.cache'));
-
-const contentApi = createClient({
+const contentfulSpaceConfig = {
   space: config('services.contentful.phoenix.spaceId'),
   environment: config('services.contentful.phoenix.environment'),
-  accessToken: config('services.contentful.phoenix.accessToken'),
   resolveLinks: false,
+};
+
+const contentApi = createClient({
+  ...contentfulSpaceConfig,
+  accessToken: config('services.contentful.phoenix.accessToken'),
+});
+
+const previewApi = createClient({
+  ...contentfulSpaceConfig,
+  host: 'preview.contentful.com',
+  accessToken: config('services.contentful.phoenix.previewToken'),
 });
 
 /**
@@ -45,9 +54,19 @@ const transformAsset = json => ({
  * @param {String} id
  * @return {Object}
  */
-export const getPhoenixContentfulEntryById = async id => {
-  logger.debug('Loading Phoenix Contentful entry', { id });
+export const getPhoenixContentfulEntryById = async (id, context) => {
+  const { preview } = context;
 
+  logger.debug('Loading Phoenix Contentful entry', { id, preview });
+
+  // If we're previewing, use Contentful's Preview API and
+  // don't bother trying to cache content on our end:
+  if (preview) {
+    const json = await previewApi.getEntry(id);
+    return transformItem(json);
+  }
+
+  // Otherwise, read from cache or Contentful's Content API:
   return cache.remember(id, async () => {
     try {
       const json = await contentApi.getEntry(id);
@@ -69,9 +88,19 @@ export const getPhoenixContentfulEntryById = async id => {
  * @param {String} id
  * @return {Object}
  */
-export const getPhoenixContentfulAssetById = async id => {
-  logger.debug('Loading Phoenix Contentful asset', { id });
+export const getPhoenixContentfulAssetById = async (id, context) => {
+  const { preview } = context;
 
+  logger.debug('Loading Phoenix Contentful asset', { id, preview });
+
+  // If we're previewing, use Contentful's Preview API and
+  // don't bother trying to cache content on our end:
+  if (preview) {
+    const json = await previewApi.getAsset(id);
+    return transformAsset(json);
+  }
+
+  // Otherwise, read from cache or Contentful's Content API:
   return cache.remember(id, async () => {
     try {
       const json = await contentApi.getAsset(id);
