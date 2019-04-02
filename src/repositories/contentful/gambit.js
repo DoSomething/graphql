@@ -52,6 +52,12 @@ const getChangeTopicActionId = json => {
   return null;
 };
 
+const getChangeTopicEntry = async json => {
+  const topicId = getChangeTopicId(json);
+  const entry = await getGambitContentfulEntryById(topicId);
+  return entry;
+};
+
 /**
  * @param {Object} json
  * @return {String}
@@ -99,7 +105,7 @@ const getSummary = json => ({
  * @param {Object} json
  * @return {Object}
  */
-const getFields = json => {
+const getFields = async json => {
   const contentType = getContentType(json);
   const fields = json.fields;
 
@@ -137,7 +143,9 @@ const getFields = json => {
   }
 
   if (contentType === 'askVotingPlanStatus') {
+    const saidVotedTopic = await getChangeTopicEntry(fields.votedTransition);
     return {
+      actionId: saidVotedTopic.actionId,
       attachments: getMessageAttachments(json),
       saidCantVote: getMessageText(fields.cantVoteTransition),
       saidCantVoteTopicId: getChangeTopicId(fields.cantVoteTransition),
@@ -150,7 +158,9 @@ const getFields = json => {
   }
 
   if (contentType === 'askYesNo') {
+    const saidYesTopic = await getChangeTopicEntry(fields.yesTransition);
     return {
+      actionId: saidYesTopic.actionId,
       attachments: getMessageAttachments(json),
       invalidAskYesNoResponse: fields.invalidAskYesNoResponse,
       saidNo: getMessageText(fields.noTransition),
@@ -257,7 +267,10 @@ const getFields = json => {
  * @param {Object} json
  * @return {Object}
  */
-const transformItem = json => assign(getSummary(json), getFields(json));
+const transformItem = async json => {
+  const fields = await getFields(json);
+  return assign(getSummary(json), fields);
+};
 
 /**
  * Fetch a Gambit Contentful entry by ID.
@@ -279,7 +292,7 @@ export const getGambitContentfulEntryById = async (id, context) => {
     logger.debug('Cache miss for Gambit Contentful entry', { id });
 
     const json = await contentfulClient.getEntry(id);
-    const data = transformItem(json);
+    const data = await transformItem(json);
     cache.set(id, data);
 
     return data;
@@ -318,7 +331,7 @@ export const getConversationTriggers = async () => {
   };
 
   const json = await contentfulClient.getEntries(query);
-  const data = map(json.items, transformItem);
+  const data = await Promise.all(map(json.items, transformItem));
   cache.set(ALL_TRIGGERS_KEY, data);
 
   return data;
@@ -349,7 +362,7 @@ export const getWebSignupConfirmations = async () => {
 
   const json = await contentfulClient.getEntries(query);
 
-  const data = map(json.items, transformItem);
+  const data = await Promise.all(map(json.items, transformItem));
   cache.set(ALL_CONFIRMATIONS_KEY, data);
 
   return data;

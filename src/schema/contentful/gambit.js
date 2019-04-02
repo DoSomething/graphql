@@ -192,6 +192,7 @@ const typeDefs = gql`
   "Broadcast that asks user for votingPlanStatus and changes topic to its own ID."
   type AskVotingPlanStatusBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
+    ${campaignActionFields}
     "Message sent if user says they can't vote."
     saidCantVote: String!
     "The topic ID to change conversation to if user says they can't vote."
@@ -215,6 +216,7 @@ const typeDefs = gql`
   "Broadcast that asks user a yes or no question, and changes topic to its own ID."
   type AskYesNoBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
+    ${campaignActionFields}
     "Message sent if user says yes."
     saidYes: String!
     "The topic ID to change conversation to if user says yes"
@@ -353,6 +355,7 @@ const resolvers = {
       Loader(context).topics.load(topic.saidLessTopicId, context),
   },
   AskVotingPlanStatusBroadcastTopic: {
+    action: loadAction,
     saidCantVoteTopic: (topic, args, context) =>
       Loader(context).topics.load(topic.saidCantVoteTopicId, context),
     saidNotVotingTopic: (topic, args, context) =>
@@ -361,6 +364,7 @@ const resolvers = {
       Loader(context).topics.load(topic.saidVotedTopicId, context),
   },
   AskYesNoBroadcastTopic: {
+    action: loadAction,
     saidNoTopic: (topic, args, context) =>
       Loader(context).topics.load(topic.saidNoTopicId, context),
     saidYesTopic: (topic, args, context) =>
