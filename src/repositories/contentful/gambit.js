@@ -46,7 +46,7 @@ const getChangeTopicId = json => {
  * @return
  */
 const getChangeTopicActionId = json => {
-  if (json && json.fields.topic) {
+  if (json && json.fields.topic && json.fields.topic.fields) {
     return json.fields.topic.fields.actionId;
   }
   return null;
@@ -138,7 +138,6 @@ const getFields = json => {
 
   if (contentType === 'askVotingPlanStatus') {
     return {
-      actionId: getChangeTopicActionId(fields.votedTransition),
       attachments: getMessageAttachments(json),
       saidCantVote: getMessageText(fields.cantVoteTransition),
       saidCantVoteTopicId: getChangeTopicId(fields.cantVoteTransition),
@@ -152,7 +151,6 @@ const getFields = json => {
 
   if (contentType === 'askYesNo') {
     return {
-      actionId: getChangeTopicActionId(fields.yesTransition),
       attachments: getMessageAttachments(json),
       invalidAskYesNoResponse: fields.invalidAskYesNoResponse,
       saidNo: getMessageText(fields.noTransition),

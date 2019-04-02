@@ -29,9 +29,14 @@ const broadcastFields = `
  * TODO: should actionId be required? If so, we need to figure out backward compatibility
  * with legacy campaign action topics.
  */
-const campaignActionFields = `
+const actionIdField = `
   "Used by Rogue to attribute this post to an specific action within the campaign"
   actionId: Int
+`;
+
+const campaignActionFields = `
+  "The Rogue campaign action metadata associated with this entry"
+  action: CampaignAction
 `;
 
 /**
@@ -74,7 +79,7 @@ const typeDefs = gql`
   "Topic for creating signup and photo posts. Asks user to reply with START to create a draft photo post."
   type PhotoPostTopic implements Topic {
     ${entryFields}
-    ${campaignActionFields}
+    ${actionIdField}
     "The campaign ID to create signup and photo post for if conversation changes to this topic."
     campaignId: Int!
     "Template sent until user replies with START to begin a photo post."
@@ -104,7 +109,7 @@ const typeDefs = gql`
   "Topic for creating signup and text posts. Ask user to reply with a text post."
   type TextPostTopic implements Topic {
     ${entryFields}
-    ${campaignActionFields}
+    ${actionIdField}
     "The campaign ID to create signup and text post for if conversation changes to this topic."
     campaignId: Int!
     "Template that asks user to resend a message with valid text post."
@@ -238,8 +243,7 @@ const typeDefs = gql`
   "Broadcast that asks user to reply with START and changes topic to a PhotoPostTopic."
   type PhotoPostBroadcast implements Broadcast {
     ${broadcastFields}
-    "The Rogue action"
-    action: CampaignAction
+    ${campaignActionFields}
     "The ID of the PhotoPostTopic to change conversation to."
     topicId: String!
     "The PhotoPostTopic to change conversation to."
@@ -249,8 +253,7 @@ const typeDefs = gql`
   "Broadcast that asks user to reply with a text post and changes topic to a TextPostTopic."
   type TextPostBroadcast implements Broadcast {
     ${broadcastFields}
-    "The Rogue action"
-    action: CampaignAction
+    ${campaignActionFields}
     "The ID of the TextPostTopic to change conversation to."
     topicId: String!
     "The TextPostBroadcast to change conversation to."
