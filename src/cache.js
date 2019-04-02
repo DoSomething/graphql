@@ -2,6 +2,7 @@ import { Client, Policy } from 'catbox';
 import Redis from 'catbox-redis';
 import DynamoDB from 'catbox-dynamodb';
 import Memory from 'catbox-memory';
+import logger from 'heroku-logger';
 
 import config from '../config';
 
@@ -59,5 +60,29 @@ export default class {
     }
 
     return this.policy.set(`${this.name}:${key}`, value);
+  }
+
+  /**
+   * Get an item from the cache, or run the callback
+   * to fetch it and then store the result.
+   *
+   * @param {String} key
+   * @param {Function} callback
+   */
+  async remember(key, callback) {
+    const cachedEntry = await this.get(key);
+
+    if (cachedEntry) {
+      logger.debug('Cache hit.', { cache: this.name, key });
+
+      return cachedEntry;
+    }
+
+    logger.debug('Cache miss.', { cache: this.name, key });
+    const data = await callback();
+
+    this.set(key, data);
+
+    return data;
   }
 }
