@@ -69,6 +69,8 @@ const typeDefs = gql`
   type EmbedBlock implements Block {
     "The URL of the content to be embedded."
     url: String!
+    "A preview image of the embed content. If set, replaces the embed on smaller screens."
+    previewImage: Asset
     ${entryFields}
   }
 
