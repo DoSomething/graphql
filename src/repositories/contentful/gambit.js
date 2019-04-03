@@ -54,7 +54,7 @@ const getChangeTopicActionId = json => {
 
 const getChangeTopicEntry = async json => {
   const topicId = getChangeTopicId(json);
-  const entry = await getGambitContentfulEntryById(topicId);
+  const entry = await exports.getGambitContentfulEntryById(topicId);
   return entry;
 };
 
