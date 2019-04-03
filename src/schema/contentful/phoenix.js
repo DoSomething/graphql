@@ -283,6 +283,9 @@ const resolvers = {
   ImagesBlock: {
     images: linkResolver,
   },
+  EmbedBlock: {
+    previewImage: linkResolver,
+  },
 };
 
 /**
