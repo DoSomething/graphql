@@ -38,7 +38,9 @@ exports.handler = async event => {
 
   const id = body.sys.id;
   try {
-    cache.forget(id);
+    logger.info('Clearing cache via Contentful webhook.', { id });
+
+    await cache.forget(id);
 
     logger.info('Cleared cache via Contentful webhook.', { id });
   } catch (exception) {
