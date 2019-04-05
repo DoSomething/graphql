@@ -149,6 +149,8 @@ const typeDefs = gql`
     updatedAt: DateTime
     "The time when this post was originally created."
     createdAt: DateTime
+    "Permalink to Admin view."
+    permalink: String
   }
 
   "A user's signup for a campaign."
@@ -306,6 +308,7 @@ const resolvers = {
     },
     reacted: post => post.reactions.reacted,
     reactions: post => post.reactions.total,
+    permalink: post => getPermalinkBySignupId(post.signupId),
   },
   Signup: {
     campaign: (signup, args, context) =>
