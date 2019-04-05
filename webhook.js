@@ -37,8 +37,17 @@ exports.handler = async event => {
   const cache = new Cache(config('services.contentful.phoenix.cache'));
 
   const id = body.sys.id;
-  cache.forget(id);
+  try {
+    cache.forget(id);
 
-  logger.info('Cleared cache via Contentful webhook.', { id });
+    logger.info('Cleared cache via Contentful webhook.', { id });
+  } catch (exception) {
+    console.log(exception);
+    logger.error('Could not remove from cache.', {
+      id,
+      error: exception.message,
+    });
+  }
+
   return response('Success.', 200);
 };
