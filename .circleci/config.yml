@@ -45,7 +45,23 @@ workflows:
               only: master
       - lambda/deploy:
           name: deploy-dev
+          app: dosomething-graphql-dev
+          requires:
+            - build
+          filters:
+            branches:
+              only: contentful-cache-clear
+      - lambda/deploy:
+          name: deploy-dev
           app: dosomething-graphql-dev-webhook
+          requires:
+            - build
+          filters:
+            branches:
+              only: contentful-cache-clear
+      - lambda/deploy:
+          name: deploy-qa
+          app: dosomething-graphql-qa
           requires:
             - build
           filters:
