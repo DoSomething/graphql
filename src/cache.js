@@ -72,6 +72,8 @@ export default class {
       await this.client.start();
     }
 
+    logger.debug('Clearing cache key.', { key: `${this.name}:${key}` });
+
     return this.policy.drop(`${this.name}:${key}`);
   }
 
