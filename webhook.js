@@ -7,7 +7,7 @@
 const logger = require('heroku-logger');
 
 const config = require('./lib/config').default;
-const Cache = require('./lib/cache').default;
+const Cache = require('./lib/src/cache').default;
 
 // A simple helper for building a Lambda response.
 const response = (body, statusCode = 200) => ({ statusCode, body });
