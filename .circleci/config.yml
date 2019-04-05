@@ -42,10 +42,10 @@ workflows:
             - deploy-qa
           filters:
             branches:
-              only: master
+              only: contentful-cache-clear
       - lambda/deploy:
           name: deploy-dev
-          app: dosomething-graphql-dev
+          app: dosomething-graphql-dev-webhook
           requires:
             - build
           filters:
@@ -53,12 +53,12 @@ workflows:
               only: master
       - lambda/deploy:
           name: deploy-qa
-          app: dosomething-graphql-qa
+          app: dosomething-graphql-qa-webhook
           requires:
             - build
           filters:
             branches:
-              only: master
+              only: contentful-cache-clear
       - lambda/deploy:
           name: deploy-production
           app: dosomething-graphql
