@@ -7,9 +7,11 @@ import config from '../../../config';
 import Loader from '../../loader';
 import Cache from '../../cache';
 
-const cache = new Cache(config('services.contentful.phoenix.cache'));
+const cache = new Cache(config('services.contentful.cache'));
+const spaceId = config('services.contentful.phoenix.spaceId');
+
 const contentfulSpaceConfig = {
-  space: config('services.contentful.phoenix.spaceId'),
+  space: spaceId,
   environment: config('services.contentful.phoenix.environment'),
   resolveLinks: false,
 };
@@ -67,7 +69,7 @@ export const getPhoenixContentfulEntryById = async (id, context) => {
   }
 
   // Otherwise, read from cache or Contentful's Content API:
-  return cache.remember(id, async () => {
+  return cache.remember(`Entry:${spaceId}:${id}`, async () => {
     try {
       const json = await contentApi.getEntry(id);
       return transformItem(json);
@@ -101,7 +103,7 @@ export const getPhoenixContentfulAssetById = async (id, context) => {
   }
 
   // Otherwise, read from cache or Contentful's Content API:
-  return cache.remember(id, async () => {
+  return cache.remember(`Asset:${spaceId}:${id}`, async () => {
     try {
       const json = await contentApi.getAsset(id);
       return transformAsset(json);

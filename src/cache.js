@@ -63,6 +63,19 @@ export default class {
   }
 
   /**
+   * Remove the given key from the cache.
+   * @param {String} key
+   * @param {*} value
+   */
+  async forget(key) {
+    if (!this.policy.isReady()) {
+      await this.client.start();
+    }
+
+    return this.policy.drop(`${this.name}:${key}`);
+  }
+
+  /**
    * Get an item from the cache, or run the callback
    * to fetch it and then store the result.
    *
