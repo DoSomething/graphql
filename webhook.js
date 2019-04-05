@@ -20,36 +20,32 @@ exports.handler = async event => {
     return response('Invalid API key.', 401);
   }
 
+  // Ensure the request has a payload.
   if (event.body === null || event.body === undefined) {
     return response('Invalid format.', 422);
   }
 
-  // Validate the request format.
+  // Validate against expected request format.
   const body = JSON.parse(event.body);
-  const expectedFormat = body && body.sys && body.sys.id;
+  const expectedFormat =
+    body && body.sys && body.sys.id && body.sys.space.sys.id;
+
   if (!expectedFormat) {
     logger.error('Got unexpected webhook payload', { body });
     return response('Invalid format.', 422);
   }
 
-  // Clear cache for the specified ID from the Phoenix cache.
-  // @TODO: Determine which cache to use based on provided space ID.
-  const cache = new Cache(config('services.contentful.phoenix.cache'));
+  // Clear cache for the specified entry from the Contentful cache.
+  const cache = new Cache(config('services.contentful.cache'));
 
   const id = body.sys.id;
-  try {
-    logger.info('Clearing cache via Contentful webhook.', { id });
+  const type = body.sys.type;
+  const spaceId = body.sys.space.sys.id;
 
-    await cache.forget(id);
+  // Clear from DynamoDB (and await to make sure this completes).
+  await cache.forget(`${type}:${spaceId}:${id}`);
 
-    logger.info('Cleared cache via Contentful webhook.', { id });
-  } catch (exception) {
-    console.log(exception);
-    logger.error('Could not remove from cache.', {
-      id,
-      error: exception.message,
-    });
-  }
+  logger.info('Cleared cache via Contentful webhook.', { spaceId, id });
 
   return response('Success.', 200);
 };
