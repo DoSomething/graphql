@@ -38,13 +38,15 @@ workflows:
       - hold:
           type: approval
           requires:
-            - deploy-dev
-            - deploy-qa
+            - deploy-app-dev
+            - deploy-webhook-dev
+            - deploy-app-qa
+            - deploy-webhook-qa
           filters:
             branches:
               only: master
       - lambda/deploy:
-          name: deploy-dev
+          name: deploy-app-dev
           app: dosomething-graphql-dev
           requires:
             - build
@@ -52,7 +54,7 @@ workflows:
             branches:
               only: contentful-cache-clear
       - lambda/deploy:
-          name: deploy-dev
+          name: deploy-webhook-dev
           app: dosomething-graphql-dev-webhook
           requires:
             - build
@@ -60,7 +62,7 @@ workflows:
             branches:
               only: contentful-cache-clear
       - lambda/deploy:
-          name: deploy-qa
+          name: deploy-app-qa
           app: dosomething-graphql-qa
           requires:
             - build
@@ -68,7 +70,7 @@ workflows:
             branches:
               only: contentful-cache-clear
       - lambda/deploy:
-          name: deploy-qa
+          name: deploy-webhook-qa
           app: dosomething-graphql-qa-webhook
           requires:
             - build
@@ -76,8 +78,16 @@ workflows:
             branches:
               only: contentful-cache-clear
       - lambda/deploy:
-          name: deploy-production
+          name: deploy-app-production
           app: dosomething-graphql
+          requires:
+            - hold
+          filters:
+            branches:
+              only: master
+      - lambda/deploy:
+          name: deploy-webhook-production
+          app: dosomething-graphql-webhook
           requires:
             - hold
           filters:
