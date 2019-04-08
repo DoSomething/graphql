@@ -77,7 +77,7 @@ export default class {
       // DynamoDB will throw an exception if you try to drop a key
       // that doesn't exist. We want to handle that gracefully.
       if (exception.errorMessage === 'Item does not exist') {
-        return Promise.resolve(null);
+        return null;
       }
 
       throw exception;
