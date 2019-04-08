@@ -65,14 +65,23 @@ export default class {
   /**
    * Remove the given key from the cache.
    * @param {String} key
-   * @param {*} value
    */
   async forget(key) {
     if (!this.policy.isReady()) {
       await this.client.start();
     }
 
-    return this.policy.drop(`${this.name}:${key}`);
+    try {
+      return this.policy.drop(`${this.name}:${key}`);
+    } catch (exception) {
+      // DynamoDB will throw an exception if you try to drop a key
+      // that doesn't exist. We want to handle that gracefully.
+      if (exception.errorMessage === 'Item does not exist') {
+        return Promise.resolve(null);
+      }
+
+      throw exception;
+    }
   }
 
   /**
