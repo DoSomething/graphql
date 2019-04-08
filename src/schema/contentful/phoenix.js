@@ -176,7 +176,9 @@ const typeDefs = gql`
     "Optional label for the text field, helping describe or prompt the user regarding what to submit."
     textFieldLabel: String
     "Optional placeholder for the text field, providing an example of what a text submission should look like."
-    textFieldPlaceholderMessage: String
+    textFieldPlaceholderMessage: String  @deprecated(reason: "Use 'textFieldPlaceholder' instead.")
+    "Optional placeholder for the text field, providing an example of what a text submission should look like."
+    textFieldPlaceholder: String
     "Optional custom text to display on the submission button."
     buttonText: String
     "Optional custom title for the information block."
@@ -273,6 +275,9 @@ const resolvers = {
   },
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
+  },
+  TextSubmissionBlock: {
+    textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
   ShareBlock: {
     affirmationBlock: linkResolver,
