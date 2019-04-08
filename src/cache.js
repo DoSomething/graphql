@@ -72,11 +72,14 @@ export default class {
     }
 
     return this.policy.drop(`${this.name}:${key}`).catch(exception => {
-      logger.error('cache.forget exception', { exception });
+      logger.error('cache.forget exception', {
+        errorMessage: exception.errorMessage,
+        message: exception.message,
+      });
 
       // DynamoDB will throw an exception if you try to drop a key
       // that doesn't exist. We want to handle that gracefully.
-      if (exception.errorMessage === 'Item does not exist') {
+      if (exception.message === 'Item does not exist') {
         return null;
       }
 
