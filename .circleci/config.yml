@@ -60,7 +60,7 @@ workflows:
             - build
           filters:
             branches:
-              only: master
+              only: why-u-no-catch
       - lambda/deploy:
           name: deploy-app-qa
           app: dosomething-graphql-qa
