@@ -202,7 +202,9 @@ const typeDefs = gql`
     "The petition's content."
     content: String
     "Optional custom placeholder for the petition message text field."
-    textFieldPlaceholderMessage: String
+    textFieldPlaceholder: String
+    "Optional custom placeholder for the petition message text field."
+    textFieldPlaceholderMessage: String  @deprecated(reason: "Use 'textFieldPlaceholder' instead.")
     "Optional custom text to display on the submission button."
     buttonText: String
     "Optional custom title for the information block."
@@ -277,6 +279,9 @@ const resolvers = {
     __resolveType: block => get(contentTypeMappings, block.contentType),
   },
   TextSubmissionBlock: {
+    textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
+  },
+  PetitionSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
   ShareBlock: {
