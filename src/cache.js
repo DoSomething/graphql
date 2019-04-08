@@ -71,17 +71,15 @@ export default class {
       await this.client.start();
     }
 
-    try {
-      return this.policy.drop(`${this.name}:${key}`);
-    } catch (exception) {
+    return this.policy.drop(`${this.name}:${key}`).catch(exception => {
       // DynamoDB will throw an exception if you try to drop a key
       // that doesn't exist. We want to handle that gracefully.
-      if (exception.errorMessage === 'Item does not exist') {
+      if (exception.message === 'Item does not exist') {
         return null;
       }
 
       throw exception;
-    }
+    });
   }
 
   /**
