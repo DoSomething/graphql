@@ -8,7 +8,7 @@
     "lint": "eslint --ext .js src",
     "format:ci": "prettier-check {src,config}/**/*.js",
     "format": "prettier --write {src,config}/**/*.js",
-    "heroku-postbuild": "node bin/export.js && apollo service:push --localSchemaFile=schema.graphql --key=$ENGINE_API_KEY",
+    "service:push": "apollo service:push",
     "compile": "babel src -d lib/src && babel config -d lib/config"
   },
   "engines": {
