@@ -44,10 +44,8 @@ jobs:
           - v1-dependencies-
       - run: npm install
       - run:
-          name: publish to apollo engine
-          command: |
-            echo <<parameters.key>>
-            npm run service:push --  --endpoint=<<parameters.endpoint>> --key=${<<parameters.key>>}
+          name: publish schema to apollo engine
+          command: npm run service:push --  --endpoint=<<parameters.endpoint>> --key=${<<parameters.key>>}
 
 # Configure workflows & scheduled jobs:
 workflows:
