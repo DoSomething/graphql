@@ -34,11 +34,6 @@ const actionIdField = `
   actionId: Int
 `;
 
-const campaignActionFields = `
-  "The Rogue campaign action metadata associated with this entry"
-  action: CampaignAction
-`;
-
 /**
  * GraphQL types.
  *
@@ -192,7 +187,7 @@ const typeDefs = gql`
   "Broadcast that asks user for votingPlanStatus and changes topic to its own ID."
   type AskVotingPlanStatusBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
-    ${campaignActionFields}
+    ${actionIdField}
     "Message sent if user says they can't vote."
     saidCantVote: String!
     "The topic ID to change conversation to if user says they can't vote."
@@ -216,7 +211,7 @@ const typeDefs = gql`
   "Broadcast that asks user a yes or no question, and changes topic to its own ID."
   type AskYesNoBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
-    ${campaignActionFields}
+    ${actionIdField}
     "Message sent if user says yes."
     saidYes: String!
     "The topic ID to change conversation to if user says yes"
@@ -245,7 +240,7 @@ const typeDefs = gql`
   "Broadcast that asks user to reply with START and changes topic to a PhotoPostTopic."
   type PhotoPostBroadcast implements Broadcast {
     ${broadcastFields}
-    ${campaignActionFields}
+    ${actionIdField}
     "The ID of the PhotoPostTopic to change conversation to."
     topicId: String!
     "The PhotoPostTopic to change conversation to."
@@ -255,7 +250,7 @@ const typeDefs = gql`
   "Broadcast that asks user to reply with a text post and changes topic to a TextPostTopic."
   type TextPostBroadcast implements Broadcast {
     ${broadcastFields}
-    ${campaignActionFields}
+    ${actionIdField}
     "The ID of the TextPostTopic to change conversation to."
     topicId: String!
     "The TextPostBroadcast to change conversation to."
@@ -305,16 +300,6 @@ const typeDefs = gql`
 `;
 
 /**
- * @param {Object} entry
- * @param {Object} args
- * @param {Object} context
- */
-function loadAction(entry = {}, args, context) {
-  const actionId = entry.actionId;
-  return actionId ? Loader(context).actions.load(actionId, context) : null;
-}
-
-/**
  * GraphQL resolvers.
  *
  * @var {Object}
@@ -355,7 +340,6 @@ const resolvers = {
       Loader(context).topics.load(topic.saidLessTopicId, context),
   },
   AskVotingPlanStatusBroadcastTopic: {
-    action: loadAction,
     saidCantVoteTopic: (topic, args, context) =>
       Loader(context).topics.load(topic.saidCantVoteTopicId, context),
     saidNotVotingTopic: (topic, args, context) =>
@@ -364,7 +348,6 @@ const resolvers = {
       Loader(context).topics.load(topic.saidVotedTopicId, context),
   },
   AskYesNoBroadcastTopic: {
-    action: loadAction,
     saidNoTopic: (topic, args, context) =>
       Loader(context).topics.load(topic.saidNoTopicId, context),
     saidYesTopic: (topic, args, context) =>
@@ -418,12 +401,10 @@ const resolvers = {
       getWebSignupConfirmations(args, context),
   },
   PhotoPostBroadcast: {
-    action: loadAction,
     topic: (broadcast, args, context) =>
       Loader(context).topics.load(broadcast.topicId, context),
   },
   TextPostBroadcast: {
-    action: loadAction,
     topic: (broadcast, args, context) =>
       Loader(context).topics.load(broadcast.topicId, context),
   },
