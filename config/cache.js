@@ -21,4 +21,11 @@ export default {
    * @type {String}
    */
   table: process.env.DYNAMODB_TABLE,
+
+  /**
+   * The secret key for clearing cache via a webhook.
+   *
+   * @type {String}
+   */
+  secret: process.env.WEBHOOK_SECRET,
 };

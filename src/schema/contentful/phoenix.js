@@ -69,6 +69,8 @@ const typeDefs = gql`
   type EmbedBlock implements Block {
     "The URL of the content to be embedded."
     url: String!
+    "A preview image of the embed content. If set, replaces the embed on smaller screens."
+    previewImage: Asset
     ${entryFields}
   }
 
@@ -174,7 +176,9 @@ const typeDefs = gql`
     "Optional label for the text field, helping describe or prompt the user regarding what to submit."
     textFieldLabel: String
     "Optional placeholder for the text field, providing an example of what a text submission should look like."
-    textFieldPlaceholderMessage: String
+    textFieldPlaceholderMessage: String  @deprecated(reason: "Use 'textFieldPlaceholder' instead.")
+    "Optional placeholder for the text field, providing an example of what a text submission should look like."
+    textFieldPlaceholder: String
     "Optional custom text to display on the submission button."
     buttonText: String
     "Optional custom title for the information block."
@@ -198,7 +202,9 @@ const typeDefs = gql`
     "The petition's content."
     content: String
     "Optional custom placeholder for the petition message text field."
-    textFieldPlaceholderMessage: String
+    textFieldPlaceholder: String
+    "Optional custom placeholder for the petition message text field."
+    textFieldPlaceholderMessage: String  @deprecated(reason: "Use 'textFieldPlaceholder' instead.")
     "Optional custom text to display on the submission button."
     buttonText: String
     "Optional custom title for the information block."
@@ -228,9 +234,9 @@ const typeDefs = gql`
 
   type Query {
     "Get a block by ID."
-    block(id: String!): Block
+    block(id: String!, preview: Boolean = false): Block
     "Get an asset by ID."
-    asset(id: String!): Asset
+    asset(id: String!, preview: Boolean = false): Asset
   }
 `;
 
@@ -261,14 +267,22 @@ const resolvers = {
   DateTime: GraphQLDateTime,
   AbsoluteUrl: GraphQLAbsoluteUrl,
   Query: {
-    block: (_, args, context) => Loader(context).blocks.load(args.id),
-    asset: (_, args, context) => Loader(context).assets.load(args.id),
+    block: (_, { id, preview }, context) =>
+      Loader(context, preview).blocks.load(id),
+    asset: (_, { id, preview }, context) =>
+      Loader(context, preview).assets.load(id),
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
   },
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
+  },
+  TextSubmissionBlock: {
+    textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
+  },
+  PetitionSubmissionBlock: {
+    textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
   ShareBlock: {
     affirmationBlock: linkResolver,
@@ -278,6 +292,9 @@ const resolvers = {
   },
   ImagesBlock: {
     images: linkResolver,
+  },
+  EmbedBlock: {
+    previewImage: linkResolver,
   },
 };
 

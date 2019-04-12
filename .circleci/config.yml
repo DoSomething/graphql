@@ -28,6 +28,24 @@ jobs:
       # When we're on npm 5.7+, add this back in. <https://git.io/fhMbF>
       # - run: npm prune --production
       - lambda/store
+  publish:
+    parameters:
+      endpoint:
+        type: string
+      key:
+        type: env_var_name
+    docker:
+      - image: circleci/node:8.10
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package-lock.json" }}
+          - v1-dependencies-
+      - run: npm install
+      - run:
+          name: publish schema to apollo engine
+          command: npm run service:push --  --endpoint=<<parameters.endpoint>> --key=${<<parameters.key>>}
 
 # Configure workflows & scheduled jobs:
 workflows:
@@ -38,13 +56,15 @@ workflows:
       - hold:
           type: approval
           requires:
-            - deploy-dev
-            - deploy-qa
+            - deploy-app-dev
+            - deploy-webhook-dev
+            - deploy-app-qa
+            - deploy-webhook-qa
           filters:
             branches:
               only: master
       - lambda/deploy:
-          name: deploy-dev
+          name: deploy-app-dev
           app: dosomething-graphql-dev
           requires:
             - build
@@ -52,7 +72,15 @@ workflows:
             branches:
               only: master
       - lambda/deploy:
-          name: deploy-qa
+          name: deploy-webhook-dev
+          app: dosomething-graphql-dev-webhook
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - lambda/deploy:
+          name: deploy-app-qa
           app: dosomething-graphql-qa
           requires:
             - build
@@ -60,10 +88,44 @@ workflows:
             branches:
               only: master
       - lambda/deploy:
-          name: deploy-production
+          name: deploy-webhook-qa
+          app: dosomething-graphql-qa-webhook
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - lambda/deploy:
+          name: deploy-app-production
           app: dosomething-graphql
           requires:
             - hold
           filters:
             branches:
               only: master
+      - lambda/deploy:
+          name: deploy-webhook-production
+          app: dosomething-graphql-webhook
+          requires:
+            - hold
+          filters:
+            branches:
+              only: master
+      - publish:
+          name: publish-app-dev
+          endpoint: https://graphql-dev.dosomething.org/graphql
+          key: ENGINE_KEY_DEVELOPMENT
+          requires:
+            - deploy-app-dev
+      - publish:
+          name: publish-app-qa
+          endpoint: https://graphql-qa.dosomething.org/graphql
+          key: ENGINE_KEY_QA
+          requires:
+            - deploy-app-qa
+      - publish:
+          name: publish-app-production
+          endpoint: https://graphql.dosomething.org/graphql
+          key: ENGINE_KEY_PRODUCTION
+          requires:
+            - deploy-app-production

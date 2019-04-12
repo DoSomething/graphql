@@ -7,13 +7,24 @@ import config from '../../../config';
 import Loader from '../../loader';
 import Cache from '../../cache';
 
-const cache = new Cache(config('services.contentful.phoenix.cache'));
+const cache = new Cache(config('services.contentful.cache'));
+const spaceId = config('services.contentful.phoenix.spaceId');
 
-const contentfulClient = createClient({
-  space: config('services.contentful.phoenix.spaceId'),
-  accessToken: config('services.contentful.phoenix.accessToken'),
+const contentfulSpaceConfig = {
+  space: spaceId,
   environment: config('services.contentful.phoenix.environment'),
   resolveLinks: false,
+};
+
+const contentApi = createClient({
+  ...contentfulSpaceConfig,
+  accessToken: config('services.contentful.phoenix.accessToken'),
+});
+
+const previewApi = createClient({
+  ...contentfulSpaceConfig,
+  host: 'preview.contentful.com',
+  accessToken: config('services.contentful.phoenix.previewToken'),
 });
 
 /**
@@ -45,30 +56,32 @@ const transformAsset = json => ({
  * @param {String} id
  * @return {Object}
  */
-export const getPhoenixContentfulEntryById = async id => {
-  logger.debug('Loading Phoenix Contentful entry', { id });
+export const getPhoenixContentfulEntryById = async (id, context) => {
+  const { preview } = context;
 
-  try {
-    const cachedEntry = await cache.get(id);
+  logger.debug('Loading Phoenix Contentful entry', { id, preview });
 
-    if (cachedEntry) {
-      logger.debug('Cache hit for Phoenix Contentful entry', { id });
-      return cachedEntry;
-    }
-
-    logger.debug('Cache miss for Phoenix Contentful entry', { id });
-
-    const json = await contentfulClient.getEntry(id);
-    const data = transformItem(json);
-    cache.set(id, data);
-
-    return data;
-  } catch (exception) {
-    const error = exception.message;
-    logger.warn('Unable to load Phoenix Contentful entry.', { id, error });
+  // If we're previewing, use Contentful's Preview API and
+  // don't bother trying to cache content on our end:
+  if (preview) {
+    const json = await previewApi.getEntry(id);
+    return transformItem(json);
   }
 
-  return null;
+  // Otherwise, read from cache or Contentful's Content API:
+  return cache.remember(`Entry:${spaceId}:${id}`, async () => {
+    try {
+      const json = await contentApi.getEntry(id);
+      return transformItem(json);
+    } catch (exception) {
+      logger.warn('Unable to load Phoenix Contentful entry.', {
+        id,
+        error: exception.message,
+      });
+    }
+
+    return null;
+  });
 };
 
 /**
@@ -77,30 +90,32 @@ export const getPhoenixContentfulEntryById = async id => {
  * @param {String} id
  * @return {Object}
  */
-export const getPhoenixContentfulAssetById = async id => {
-  logger.debug('Loading Phoenix Contentful asset', { id });
+export const getPhoenixContentfulAssetById = async (id, context) => {
+  const { preview } = context;
 
-  try {
-    const cachedEntry = await cache.get(id);
+  logger.debug('Loading Phoenix Contentful asset', { id, preview });
 
-    if (cachedEntry) {
-      logger.debug('Cache hit for Phoenix Contentful asset', { id });
-      return cachedEntry;
-    }
-
-    logger.debug('Cache miss for Phoenix Contentful asset', { id });
-
-    const json = await contentfulClient.getAsset(id);
-    const data = transformAsset(json);
-    cache.set(id, data);
-
-    return data;
-  } catch (exception) {
-    const error = exception.message;
-    logger.warn('Unable to load Phoenix Contentful asset.', { id, error });
+  // If we're previewing, use Contentful's Preview API and
+  // don't bother trying to cache content on our end:
+  if (preview) {
+    const json = await previewApi.getAsset(id);
+    return transformAsset(json);
   }
 
-  return null;
+  // Otherwise, read from cache or Contentful's Content API:
+  return cache.remember(`Asset:${spaceId}:${id}`, async () => {
+    try {
+      const json = await contentApi.getAsset(id);
+      return transformAsset(json);
+    } catch (exception) {
+      logger.warn('Unable to load Phoenix Contentful asset.', {
+        id,
+        error: exception.message,
+      });
+    }
+
+    return null;
+  });
 };
 
 /**
@@ -115,6 +130,7 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
   }
 
   const { linkType, id } = link.sys;
+
   switch (linkType) {
     case 'Asset':
       return Loader(context).assets.load(id);

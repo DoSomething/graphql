@@ -1,5 +1,6 @@
-import logger from 'heroku-logger';
+import { find } from 'lodash';
 import { stringify } from 'qs';
+import logger from 'heroku-logger';
 
 import config from '../../config';
 import {
@@ -278,8 +279,10 @@ export const getSignupsById = async (ids, options) => {
     options,
   );
   const json = await response.json();
+  const signups = transformCollection(json);
 
-  return transformCollection(json);
+  // Return signups in the same format requested. <https://git.io/fjLrM>
+  return ids.map(id => find(signups, ['id', id], null));
 };
 
 /**
