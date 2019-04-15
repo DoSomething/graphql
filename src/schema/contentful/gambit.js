@@ -5,6 +5,7 @@ import {
   getConversationTriggers,
   getWebSignupConfirmations,
 } from '../../repositories/contentful/gambit';
+
 import Loader from '../../loader';
 
 const entryFields = `
@@ -28,7 +29,7 @@ const broadcastFields = `
  * TODO: should actionId be required? If so, we need to figure out backward compatibility
  * with legacy campaign action topics.
  */
-const campaignActionFields = `
+const actionIdField = `
   "Used by Rogue to attribute this post to an specific action within the campaign"
   actionId: Int
 `;
@@ -39,6 +40,16 @@ const campaignActionFields = `
  * @var {String}
  */
 const typeDefs = gql`
+  "The Rogue action associated with this broadcast."
+  type CampaignAction {
+    id: Int!
+    name: String!
+    "The campaign_id this action belongs to."
+    campaignId: Int!
+    "The expected action submitted type"
+    postType: String!
+  }
+
   "A DoSomething.org conversation topic."
   interface Topic {
     ${entryFields}
@@ -63,7 +74,7 @@ const typeDefs = gql`
   "Topic for creating signup and photo posts. Asks user to reply with START to create a draft photo post."
   type PhotoPostTopic implements Topic {
     ${entryFields}
-    ${campaignActionFields}
+    ${actionIdField}
     "The campaign ID to create signup and photo post for if conversation changes to this topic."
     campaignId: Int!
     "Template sent until user replies with START to begin a photo post."
@@ -93,7 +104,7 @@ const typeDefs = gql`
   "Topic for creating signup and text posts. Ask user to reply with a text post."
   type TextPostTopic implements Topic {
     ${entryFields}
-    ${campaignActionFields}
+    ${actionIdField}
     "The campaign ID to create signup and text post for if conversation changes to this topic."
     campaignId: Int!
     "Template that asks user to resend a message with valid text post."
@@ -176,6 +187,7 @@ const typeDefs = gql`
   "Broadcast that asks user for votingPlanStatus and changes topic to its own ID."
   type AskVotingPlanStatusBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
+    ${actionIdField}
     "Message sent if user says they can't vote."
     saidCantVote: String!
     "The topic ID to change conversation to if user says they can't vote."
@@ -199,6 +211,7 @@ const typeDefs = gql`
   "Broadcast that asks user a yes or no question, and changes topic to its own ID."
   type AskYesNoBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
+    ${actionIdField}
     "Message sent if user says yes."
     saidYes: String!
     "The topic ID to change conversation to if user says yes"
@@ -227,6 +240,7 @@ const typeDefs = gql`
   "Broadcast that asks user to reply with START and changes topic to a PhotoPostTopic."
   type PhotoPostBroadcast implements Broadcast {
     ${broadcastFields}
+    ${actionIdField}
     "The ID of the PhotoPostTopic to change conversation to."
     topicId: String!
     "The PhotoPostTopic to change conversation to."
@@ -236,6 +250,7 @@ const typeDefs = gql`
   "Broadcast that asks user to reply with a text post and changes topic to a TextPostTopic."
   type TextPostBroadcast implements Broadcast {
     ${broadcastFields}
+    ${actionIdField}
     "The ID of the TextPostTopic to change conversation to."
     topicId: String!
     "The TextPostBroadcast to change conversation to."

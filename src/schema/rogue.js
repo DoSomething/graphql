@@ -5,6 +5,7 @@ import { gql } from 'apollo-server';
 import { urlWithQuery } from '../repositories/helpers';
 import Loader from '../loader';
 import {
+  getActionById,
   getCampaignById,
   getCampaigns,
   getPermalinkBySignupId,
@@ -70,6 +71,8 @@ const typeDefs = gql`
     name: String
     "Does this action count as a reportback?"
     reportback: Boolean
+    "Campaign ID this action belongs to"
+    campaignId: Int!
     "Does this action count as a civic action?"
     civicAction: Boolean
     "Does this action count as a scholarship entry?"
@@ -184,6 +187,8 @@ const typeDefs = gql`
   }
 
   type Query {
+    "Get an Action by ID."
+    action(id: Int!): Action
     "Get a campaign by ID."
     campaign(id: Int!): Campaign
     "Get a paginated collection of campaigns."
@@ -317,6 +322,7 @@ const resolvers = {
     posts: (signup, args, context) => getPostsBySignupId(signup.id, context),
   },
   Query: {
+    action: (_, args, context) => getActionById(args.id, context),
     campaign: (_, args, context) => getCampaignById(args.id, context),
     campaigns: (_, args, context) => getCampaigns(args, context),
     post: (_, args, context) => getPostById(args.id, context),

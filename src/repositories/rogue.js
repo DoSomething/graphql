@@ -13,6 +13,25 @@ import {
 const ROGUE_URL = config('services.rogue.url');
 
 /**
+ * Fetch an action from Rogue by ID.
+ *
+ * @param {Number} id
+ * @return {Object}
+ */
+export const getActionById = async (id, context) => {
+  logger.debug('Loading action from Rogue', { id });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/actions/${id}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformItem(json);
+};
+
+/**
  * Fetch a campaign from Rogue by ID.
  *
  * @param {Number} id

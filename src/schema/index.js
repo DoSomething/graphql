@@ -67,7 +67,45 @@ const linkSchema = gql`
     "The campaign that this web signup confirmation is for."
     campaign: Campaign
   }
+
+  extend type AskVotingPlanStatusBroadcastTopic {
+    "The action that this broadcast is associated to."
+    action: Action
+  }
+
+  extend type AskYesNoBroadcastTopic {
+    "The action that this broadcast is associated to."
+    action: Action
+  }
+
+  extend type PhotoPostBroadcast {
+    "The action that this broadcast is associated to."
+    action: Action
+  }
+
+  extend type TextPostBroadcast {
+    "The action that this broadcast is associated to."
+    action: Action
+  }
 `;
+
+/**
+ * @param {Object} broadcastTopic
+ * @param {Object} context
+ * @param {Object} info
+ */
+function getGambitActionDelegateOptions(broadcastTopic, context, info) {
+  return {
+    schema: rogueSchema,
+    operation: 'query',
+    fieldName: 'action',
+    args: {
+      id: broadcastTopic.actionId,
+    },
+    context,
+    info,
+  };
+}
 
 /**
  * Resolvers between resources in different schemas.
@@ -75,6 +113,48 @@ const linkSchema = gql`
  * @var {Object}
  */
 const linkResolvers = {
+  AskVotingPlanStatusBroadcastTopic: {
+    action: {
+      fragment:
+        'fragment ActionFragment on AskVotingPlanStatusBroadcastTopic { actionId }',
+      resolve(broadcastTopic, args, context, info) {
+        return info.mergeInfo.delegateToSchema(
+          getGambitActionDelegateOptions(broadcastTopic, context, info),
+        );
+      },
+    },
+  },
+  AskYesNoBroadcastTopic: {
+    action: {
+      fragment:
+        'fragment ActionFragment on AskYesNoBroadcastTopic { actionId }',
+      resolve(broadcastTopic, args, context, info) {
+        return info.mergeInfo.delegateToSchema(
+          getGambitActionDelegateOptions(broadcastTopic, context, info),
+        );
+      },
+    },
+  },
+  PhotoPostBroadcast: {
+    action: {
+      fragment: 'fragment ActionFragment on PhotoPostBroadcast { actionId }',
+      resolve(broadcastTopic, args, context, info) {
+        return info.mergeInfo.delegateToSchema(
+          getGambitActionDelegateOptions(broadcastTopic, context, info),
+        );
+      },
+    },
+  },
+  TextPostBroadcast: {
+    action: {
+      fragment: 'fragment ActionFragment on TextPostBroadcast { actionId }',
+      resolve(broadcastTopic, args, context, info) {
+        return info.mergeInfo.delegateToSchema(
+          getGambitActionDelegateOptions(broadcastTopic, context, info),
+        );
+      },
+    },
+  },
   User: {
     conversations: {
       fragment: 'fragment ConversationsFragment on User { id }',
