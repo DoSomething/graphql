@@ -45,8 +45,11 @@ const getChangeTopicId = json => {
  * @param {Object} json
  * @return
  */
-const getChangeTopicActionId = (json = {}) => {
-  if (json && json.fields.topic && json.fields.topic.fields) {
+const getChangeTopicActionId = json => {
+  if (!json || !json.fields) {
+    return null;
+  }
+  if (json.fields.topic && json.fields.topic.fields) {
     return json.fields.topic.fields.actionId;
   }
   return null;
