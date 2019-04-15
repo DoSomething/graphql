@@ -45,7 +45,7 @@ const getChangeTopicId = json => {
  * @param {Object} json
  * @return
  */
-const getChangeTopicActionId = json => {
+const getChangeTopicActionId = (json = {}) => {
   if (json && json.fields.topic && json.fields.topic.fields) {
     return json.fields.topic.fields.actionId;
   }
