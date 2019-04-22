@@ -5,11 +5,13 @@ import logger from 'heroku-logger';
 import config from '../../../config';
 import Cache from '../../cache';
 
-const cache = new Cache(config('services.contentful.gambit.cache'));
+const cache = new Cache(config('services.contentful.cache'));
+const spaceId = config('services.contentful.gambit.spaceId');
 
 const contentfulClient = createClient({
-  space: config('services.contentful.gambit.spaceId'),
+  space: spaceId,
   accessToken: config('services.contentful.gambit.accessToken'),
+  // resolveLinks: false,
 });
 
 /**
@@ -284,31 +286,20 @@ const transformItem = async json => {
 export const getGambitContentfulEntryById = async (id, context) => {
   logger.debug('Loading Gambit Contentful entry', { id });
 
-  try {
-    const cachedEntry = await cache.get(id);
-
-    if (cachedEntry) {
-      logger.debug('Cache hit for Gambit Contentful entry', { id });
-      return cachedEntry;
+  return cache.remember(`Entry:${spaceId}:${id}`, async () => {
+    try {
+      const json = await contentfulClient.getEntry(id);
+      // TODO: Should not be async
+      return await transformItem(json);
+    } catch (exception) {
+      logger.warn('Unable to load Gambit Contentful entry.', {
+        id,
+        error: exception.message,
+        context,
+      });
     }
-
-    logger.debug('Cache miss for Gambit Contentful entry', { id });
-
-    const json = await contentfulClient.getEntry(id);
-    const data = await transformItem(json);
-    cache.set(id, data);
-
-    return data;
-  } catch (exception) {
-    const error = exception.message;
-    logger.warn('Unable to load Gambit Contentful entry.', {
-      id,
-      error,
-      context,
-    });
-  }
-
-  return null;
+    return null;
+  });
 };
 
 /**
@@ -317,26 +308,15 @@ export const getGambitContentfulEntryById = async (id, context) => {
  * @return {Array}
  */
 export const getConversationTriggers = async () => {
-  const ALL_TRIGGERS_KEY = 'conversationTriggers';
-
-  const cachedTriggers = await cache.get(ALL_TRIGGERS_KEY);
-  if (cachedTriggers) {
-    logger.debug('Cache hit for conversation triggers');
-    return cachedTriggers;
-  }
-
-  logger.debug('Cache miss for conversation triggers');
-
   const query = {
+    // TODO: Allow customizable ordering
     order: '-sys.createdAt',
+    // TODO: Allow pagination instead of sending a high arbitrary limit
     limit: 250,
     content_type: 'defaultTopicTrigger',
   };
-
   const json = await contentfulClient.getEntries(query);
   const data = await Promise.all(map(json.items, transformItem));
-  cache.set(ALL_TRIGGERS_KEY, data);
-
   return data;
 };
 
