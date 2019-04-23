@@ -315,6 +315,7 @@ export const getConversationTriggers = async () => {
     limit: 250,
     content_type: 'defaultTopicTrigger',
   };
+
   const json = await contentfulClient.getEntries(query);
   const data = await Promise.all(map(json.items, transformItem));
   return data;
@@ -326,16 +327,6 @@ export const getConversationTriggers = async () => {
  * @return {Array}
  */
 export const getWebSignupConfirmations = async () => {
-  const ALL_CONFIRMATIONS_KEY = 'webSignupConfirmations';
-
-  const cachedConfirmations = await cache.get(ALL_CONFIRMATIONS_KEY);
-  if (cachedConfirmations) {
-    logger.debug('Cache hit for web signup confirmations');
-    return cachedConfirmations;
-  }
-
-  logger.debug('Cache miss for web signup confirmations');
-
   const query = {
     order: '-sys.createdAt',
     limit: 250,
@@ -344,10 +335,7 @@ export const getWebSignupConfirmations = async () => {
   query['fields.webSignup[exists]'] = true;
 
   const json = await contentfulClient.getEntries(query);
-
   const data = await Promise.all(map(json.items, transformItem));
-  cache.set(ALL_CONFIRMATIONS_KEY, data);
-
   return data;
 };
 
