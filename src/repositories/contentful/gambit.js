@@ -316,9 +316,18 @@ export const getConversationTriggers = async () => {
     content_type: 'defaultTopicTrigger',
   };
 
-  const json = await contentfulClient.getEntries(query);
-  const data = await Promise.all(map(json.items, transformItem));
-  return data;
+  logger.debug('Loading Gambit Conversation Triggers', { query });
+
+  try {
+    const json = await contentfulClient.getEntries(query);
+    return await Promise.all(map(json.items, transformItem));
+  } catch (exception) {
+    logger.warn('Unable to load Gambit Conversation Triggers.', {
+      query,
+      error: exception.message,
+    });
+  }
+  return [];
 };
 
 /**
@@ -334,9 +343,18 @@ export const getWebSignupConfirmations = async () => {
   };
   query['fields.webSignup[exists]'] = true;
 
-  const json = await contentfulClient.getEntries(query);
-  const data = await Promise.all(map(json.items, transformItem));
-  return data;
+  logger.debug('Loading Gambit Web Signup Confirmations', { query });
+
+  try {
+    const json = await contentfulClient.getEntries(query);
+    return await Promise.all(map(json.items, transformItem));
+  } catch (exception) {
+    logger.warn('Unable to load Gambit Web Signup Confirmations.', {
+      query,
+      error: exception.message,
+    });
+  }
+  return [];
 };
 
 export default null;
