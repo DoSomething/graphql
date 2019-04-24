@@ -232,6 +232,18 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type AffiliateBlock implements Block {
+    "The internal-facing title for this affiliate block."
+    internalTitle: String!
+    "The title for this affiliate."
+    title: String!
+    "The link to the affiliate's website."
+    link: String
+    "The affiliate's logo."
+    logo: Asset
+    ${entryFields}
+  }
+
   type Query {
     "Get a block by ID."
     block(id: String!, preview: Boolean = false): Block
@@ -246,6 +258,7 @@ const typeDefs = gql`
  * @var {Object}
  */
 const contentTypeMappings = {
+  affiliates: 'AffiliateBlock',
   embed: 'EmbedBlock',
   imagesBlock: 'ImagesBlock',
   linkAction: 'LinkBlock',
@@ -296,6 +309,9 @@ const resolvers = {
   EmbedBlock: {
     previewImage: linkResolver,
   },
+  AffiliateBlock: {
+    logo: linkResolver,
+  }
 };
 
 /**
