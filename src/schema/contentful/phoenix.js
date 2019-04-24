@@ -143,7 +143,7 @@ const typeDefs = gql`
   }
 
   type ShareBlock implements Block {
-    "The internal-facing title for this text submission action."
+    "The internal-facing title for this share block."
     internalTitle: String!
     "The Action ID that 'share' posts will be submitted for."
     actionId: Int
@@ -193,7 +193,7 @@ const typeDefs = gql`
   }
 
   type PetitionSubmissionBlock implements Block {
-    "The internal-facing title for this photo submission action."
+    "The internal-facing title for this petition submission block."
     internalTitle: String!
     "The Action ID that posts will be submitted for."
     actionId: Int
@@ -219,9 +219,9 @@ const typeDefs = gql`
   }
 
   type VoterRegistrationBlock implements Block {
-    "The internal-facing title for this photo submission action."
+    "The internal-facing title for this voter registration block."
     internalTitle: String!
-    "The user-facing title for this share block."
+    "The user-facing title for this voter registration block."
     title: String
     "The voter registration block's text content."
     content: String
