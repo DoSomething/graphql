@@ -85,6 +85,34 @@ export const getPhoenixContentfulEntryById = async (id, context) => {
 };
 
 /**
+ * Load a Phoenix Contentful Entry by query.
+ *
+ * @param  {Object} api
+ * @param  {Object} query
+ * @return {Object}
+ */
+const loadEntryByQuery = async (api, query) => {
+  try {
+    const json = await api.getEntries(query);
+
+    const item = json.items[0];
+
+    if (!item) {
+      return null;
+    }
+
+    return transformItem(item);
+  } catch (exception) {
+    logger.warn('Unable to load Phoenix Contentful entry.', {
+      query,
+      error: exception.message,
+    });
+  }
+
+  return null;
+};
+
+/**
  * Search for Phoenix Contentful affiliate entries by text.
  *
  * @param {String} id
@@ -93,45 +121,26 @@ export const getPhoenixContentfulEntryById = async (id, context) => {
 export const getAffiliateByTitle = async (title, context) => {
   const { preview } = context;
 
-  logger.debug('Loading Phoenix Contentful affiliate entry', {
-    title,
+  const query = {
+    content_type: 'affiliates',
+    'fields.title': title,
+    limit: 1,
+  };
+
+  logger.debug('Loading Phoenix Contentful entry', {
+    query,
     preview,
   });
-
-  const loadEntry = async api => {
-    try {
-      const json = await api.getEntries({
-        content_type: 'affiliates',
-        'fields.title': title,
-        limit: 1,
-      });
-
-      const item = json.items[0];
-
-      if (!item) {
-        return null;
-      }
-
-      return transformItem(item);
-    } catch (exception) {
-      logger.warn('Unable to load Phoenix Contentful affiliate entry.', {
-        title,
-        error: exception.message,
-      });
-    }
-
-    return null;
-  };
 
   // If we're previewing, use Contentful's Preview API and
   // don't bother trying to cache content on our end:
   if (preview) {
-    return loadEntry(previewApi);
+    return loadEntryByQuery(previewApi, query);
   }
 
   // Otherwise, read from cache or Contentful's Content API:
   return cache.remember(`Affiliate:${spaceId}:${title}`, async () =>
-    loadEntry(contentApi),
+    loadEntryByQuery(contentApi, query),
   );
 };
 
