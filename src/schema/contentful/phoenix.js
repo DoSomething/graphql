@@ -311,7 +311,7 @@ const resolvers = {
   },
   AffiliateBlock: {
     logo: linkResolver,
-  }
+  },
 };
 
 /**
