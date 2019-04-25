@@ -93,7 +93,10 @@ export const getPhoenixContentfulEntryById = async (id, context) => {
 export const getAffiliateByTitle = async (title, context) => {
   const { preview } = context;
 
-  logger.debug('Loading Phoenix Contentful affiliate entry', { title, preview });
+  logger.debug('Loading Phoenix Contentful affiliate entry', {
+    title,
+    preview,
+  });
 
   const loadEntry = async api => {
     try {
@@ -118,17 +121,18 @@ export const getAffiliateByTitle = async (title, context) => {
     }
 
     return null;
-  }
+  };
 
   // If we're previewing, use Contentful's Preview API and
   // don't bother trying to cache content on our end:
   if (preview) {
-    return loadEntry(previewApi)
+    return loadEntry(previewApi);
   }
 
   // Otherwise, read from cache or Contentful's Content API:
   return cache.remember(`Affiliate:${spaceId}:${title}`, async () =>
-    loadEntry(contentApi));
+    loadEntry(contentApi),
+  );
 };
 
 /**

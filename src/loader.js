@@ -40,7 +40,7 @@ export default (context, preview = false) => {
         Promise.all(ids.map(id => getActionById(id, options))),
       ),
       affiliates: new DataLoader(titles =>
-        Promise.all(titles.map(title => getAffiliateByTitle(title, context)))
+        Promise.all(titles.map(title => getAffiliateByTitle(title, context))),
       ),
       assets: new DataLoader(ids =>
         Promise.all(ids.map(id => getPhoenixContentfulAssetById(id, context))),

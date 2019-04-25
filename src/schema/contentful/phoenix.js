@@ -9,7 +9,6 @@ import Loader from '../../loader';
 import {
   createImageUrl,
   linkResolver,
-  getAffiliateByTitle,
 } from '../../repositories/contentful/phoenix';
 
 const entryFields = `
@@ -287,7 +286,7 @@ const resolvers = {
     asset: (_, { id, preview }, context) =>
       Loader(context, preview).assets.load(id),
     affiliate: (_, { title, preview }, context) =>
-      Loader(context, preview).affiliates.load(title)
+      Loader(context, preview).affiliates.load(title),
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
