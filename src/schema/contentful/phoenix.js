@@ -249,7 +249,7 @@ const typeDefs = gql`
     block(id: String!, preview: Boolean = false): Block
     "Get an asset by ID."
     asset(id: String!, preview: Boolean = false): Asset
-    affiliate(title: String!, preview: Boolean = false): Block
+    affiliate(title: String!, preview: Boolean = false): AffiliateBlock
   }
 `;
 
