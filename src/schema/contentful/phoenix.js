@@ -9,6 +9,7 @@ import Loader from '../../loader';
 import {
   createImageUrl,
   linkResolver,
+  getAffiliateByTitle,
 } from '../../repositories/contentful/phoenix';
 
 const entryFields = `
@@ -249,6 +250,7 @@ const typeDefs = gql`
     block(id: String!, preview: Boolean = false): Block
     "Get an asset by ID."
     asset(id: String!, preview: Boolean = false): Asset
+    affiliate(title: String!, preview: Boolean = false): Block
   }
 `;
 
@@ -284,6 +286,8 @@ const resolvers = {
       Loader(context, preview).blocks.load(id),
     asset: (_, { id, preview }, context) =>
       Loader(context, preview).assets.load(id),
+    affiliate: (_, { title, preview }, context) =>
+      Loader(context, preview).affiliates.load(title)
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
