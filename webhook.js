@@ -50,12 +50,14 @@ exports.handler = async event => {
 
   // Clear AffiliateByTitle results for the specified title from the Contentful cache.
   if (contentType === 'affiliates') {
-    const title = body.fields.title;
+    const title = body.fields.title && body.fields.title['en-US'];
 
-    // Clear from DynamoDB (and await to make sure this completes).
-    await cache.forget(`Affiliate:${spaceId}:${title}`);
+    if (title) {
+      // Clear from DynamoDB (and await to make sure this completes).
+      await cache.forget(`Affiliate:${spaceId}:${title}`);
 
-    logger.info('Cleared affiliate cache via Contentful webhook.', { spaceId, title });
+      logger.info('Cleared affiliate cache via Contentful webhook.', { spaceId, title });
+    }
   }
 
   return response('Success.', 200);
