@@ -347,7 +347,7 @@ export const getContentfulItemByLink = async (link, context) => {
 
   switch (linkType) {
     case 'Asset':
-      return Loader(context).gambiniAssets.load(id);
+      return Loader(context).gambitAssets.load(id);
     case 'Entry':
       return Loader(context).topics.load(id);
     default:

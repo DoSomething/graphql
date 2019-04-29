@@ -59,7 +59,7 @@ export default (context, preview = false) => {
       embeds: new DataLoader(urls =>
         Promise.all(urls.map(url => getEmbed(url))),
       ),
-      gambiniAssets: new DataLoader(ids =>
+      gambitAssets: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulAssetById(id, context))),
       ),
       users: new DataLoader(ids =>
