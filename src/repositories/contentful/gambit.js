@@ -60,12 +60,13 @@ const getSummary = json => ({
 const getFields = json => {
   const contentType = getContentType(json);
   const fields = json.fields;
+  const attachments = fields.attachments || [];
 
   // TODO: determine how to get the actionId for this broadcast since the choices
   // can point to different campaigns through their action ids.
   if (contentType === 'askMultipleChoice') {
     return {
-      attachments: fields.attachments || [],
+      attachments,
       invalidAskMultipleChoiceResponse: fields.invalidAskMultipleChoiceResponse,
       text: getMessageText(json),
       // Links
@@ -78,7 +79,7 @@ const getFields = json => {
   }
   if (contentType === 'askSubscriptionStatus') {
     return {
-      attachments: fields.attachments || [],
+      attachments,
       invalidAskSubscriptionStatusResponse:
         fields.invalidAskSubscriptionStatusResponse,
       saidNeedMoreInfo: fields.needMoreInfo,
@@ -90,7 +91,7 @@ const getFields = json => {
   }
   if (contentType === 'askVotingPlanStatus') {
     return {
-      attachments: fields.attachments || [],
+      attachments,
       text: getMessageText(json),
       // Links ---
       saidCantVoteTransition: fields.cantVoteTransition,
@@ -100,7 +101,7 @@ const getFields = json => {
   }
   if (contentType === 'askYesNo') {
     return {
-      attachments: fields.attachments || [],
+      attachments,
       invalidAskYesNoResponse: fields.invalidAskYesNoResponse,
       text: getMessageText(json),
       // Start Links ---
@@ -117,7 +118,7 @@ const getFields = json => {
   }
   if (contentType === 'autoReplyBroadcast') {
     return {
-      attachments: fields.attachments || [],
+      attachments,
       text: getMessageText(json),
       // Links ---
       topic: fields.topic,
@@ -152,7 +153,7 @@ const getFields = json => {
   }
   if (contentType === 'photoPostBroadcast') {
     return {
-      attachments: fields.attachments || [],
+      attachments,
       text: getMessageText(json),
       // Links ---
       topic: fields.topic,
@@ -189,7 +190,7 @@ const getFields = json => {
   }
   if (contentType === 'textPostBroadcast') {
     return {
-      attachments: fields.attachments || [],
+      attachments,
       text: getMessageText(json),
       // Links ---
       topic: fields.topic,
