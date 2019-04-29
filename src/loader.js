@@ -10,7 +10,10 @@ import {
 } from './repositories/rogue';
 import { getUserById } from './repositories/northstar';
 import { getConversationById } from './repositories/gambit';
-import { getGambitContentfulEntryById } from './repositories/contentful/gambit';
+import {
+  getGambitContentfulEntryById,
+  getGambitContentfulAssetById,
+} from './repositories/contentful/gambit';
 import { authorizedRequest } from './repositories/helpers';
 import {
   getPhoenixContentfulAssetById,
@@ -55,6 +58,9 @@ export default (context, preview = false) => {
       ),
       embeds: new DataLoader(urls =>
         Promise.all(urls.map(url => getEmbed(url))),
+      ),
+      gambiniAssets: new DataLoader(ids =>
+        Promise.all(ids.map(id => getGambitContentfulAssetById(id, context))),
       ),
       users: new DataLoader(ids =>
         Promise.all(ids.map(id => getUserById(id, options))),
