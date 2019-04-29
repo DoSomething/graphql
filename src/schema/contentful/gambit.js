@@ -4,9 +4,12 @@ import { gql } from 'apollo-server';
 import {
   getConversationTriggers,
   getWebSignupConfirmations,
+  linkResolver,
 } from '../../repositories/contentful/gambit';
 
 import Loader from '../../loader';
+
+// Start shared fields ---
 
 const entryFields = `
   "The entry ID."
@@ -20,7 +23,7 @@ const entryFields = `
 const broadcastFields = `
   ${entryFields}
   "Broadcast message text to send."
-  text: String
+  text: String!
   "Broadcast message attachments to send."
   attachments: [BroadcastMedia]
 `;
@@ -34,49 +37,79 @@ const actionIdField = `
   actionId: Int
 `;
 
+// --- End shared fields
+
+// Start Interfaces ---
+
+const topicInterface = `
+  "A DoSomething.org conversation topic."
+  interface Topic {
+    ${entryFields}
+  }
+`;
+
+const broadcastInterface = `
+  "A DoSomething.org broadcast."
+  interface Broadcast {
+    ${broadcastFields}
+  }
+`;
+
+// --- End Interfaces
+
 /**
  * GraphQL types.
  *
  * @var {String}
  */
 const typeDefs = gql`
-  "The Rogue action associated with this broadcast."
-  type CampaignAction {
-    id: Int!
-    name: String!
-    "The campaign_id this action belongs to."
-    campaignId: Int!
-    "The expected action submitted type"
-    postType: String!
+  ${topicInterface}
+  ${broadcastInterface}
+
+  type LegacyCampaign {
+    campaignId: Int
+    webSignup: Topic
   }
 
-  "A DoSomething.org conversation topic."
-  interface Topic {
+  "Transition topic for autoReply broadcasts"
+  type AutoReplyTransition implements Topic {
     ${entryFields}
+    "The transition text"
+    text: String!
+    "The autoReply Topic to switch the member to"
+    topic: AutoReplyTopic!
   }
 
-  "Topic for sending a single auto-reply message."
+  "Topic for sending a single auto-reply message. If there is a campaign set, we sign up the member to that campaign"
   type AutoReplyTopic implements Topic {
     ${entryFields}
     "The auto reply text."
-    autoReply: String!
+    autoReply: String
+    "The campaign to switch the member to if this is a signup auto reply topic"
+    legacyCampaign: LegacyCampaign
   }
 
-  "Topic for creating a signup and sending a single auto-reply message."
-  type AutoReplySignupTopic implements Topic {
+  "FAQ topic"
+  type FaqAnswerTopic implements Topic {
     ${entryFields}
-    "The campaign ID to create signup for if conversation changes to this topic."
-    campaignId: Int!
-    "Template sent as an auto reply to user messages."
-    autoReply: String!
+    "The answer to the FAQ"
+    text: String!
+  }
+
+  "Transition topic for photoPosts"
+  type PhotoPostTransition implements Topic {
+    ${entryFields}
+    "The transition text"
+    text: String!
+    "The photoPostTopic to switch the member to"
+    topic: PhotoPostTopic!
   }
 
   "Topic for creating signup and photo posts. Asks user to reply with START to create a draft photo post."
   type PhotoPostTopic implements Topic {
     ${entryFields}
     ${actionIdField}
-    "The campaign ID to create signup and photo post for if conversation changes to this topic."
-    campaignId: Int!
+    legacyCampaign: LegacyCampaign
     "Template sent until user replies with START to begin a photo post."
     startPhotoPostAutoReply: String!
     "Template that asks user to reply with quantity."
@@ -101,12 +134,20 @@ const typeDefs = gql`
     completedPhotoPostAutoReply: String!
   }
 
+  "Transition topic for textPosts"
+  type TextPostTransition implements Topic {
+    ${entryFields}
+    "The transition text"
+    text: String!
+    "The transition Topic"
+    topic: TextPostTopic!
+  }
+
   "Topic for creating signup and text posts. Ask user to reply with a text post."
   type TextPostTopic implements Topic {
     ${entryFields}
     ${actionIdField}
-    "The campaign ID to create signup and text post for if conversation changes to this topic."
-    campaignId: Int!
+    legacyCampaign: LegacyCampaign
     "Template that asks user to resend a message with valid text post."
     invalidText: String!
     "Template that confirms a text post was created. Replying to this creates another text post."
@@ -121,44 +162,19 @@ const typeDefs = gql`
     contentType: String!
   }
 
-  "A DoSomething.org broadcast."
-  interface Broadcast {
-    ${broadcastFields}
-  }
-
   "Broadcast that asks user a multiple choice question, and changes topic to its own ID."
   type AskMultipleChoiceBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
-    "Message sent if user selects the first option."
-    saidFirstChoice: String!
-    "The topic ID to change conversation to if user selects the first option."
-    saidFirstChoiceTopicId: String!
     "The topic to change conversation to if user selects the first option."
-    saidFirstChoiceTopic: Topic
-    "Message sent if user selects the second option."
-    saidSecondChoice: String!
-    "The topic ID to change conversation to if user selects the second option."
-    saidSecondChoiceTopicId: String!
+    saidFirstChoiceTransition: Topic
     "The topic to change conversation to if user selects the second option."
-    saidSecondChoiceTopic: Topic
-    "Message sent if user selects the third option."
-    saidThirdChoice: String!
-    "The topic ID to change conversation to if user selects the third option."
-    saidThirdChoiceTopicId: String!
+    saidSecondChoiceTransition: Topic
     "The topic to change conversation to if user selects the third option."
-    saidThirdChoiceTopic: Topic
-    "Message sent if user selects the fourth option."
-    saidFourthChoice: String
-    "The topic ID to change conversation to if user selects the fourth option."
-    saidFourthChoiceTopicId: String
+    saidThirdChoiceTransition: Topic
     "The topic to change conversation to if user selects the fourth option."
-    saidFourthChoiceTopic: Topic
-    "Message sent if user selects the fifth option."
-    saidFifthChoice: String
-    "The topic ID to change conversation to if user selects the fifth option."
-    saidFifthChoiceTopicId: String
+    saidFourthChoiceTransition: Topic
     "The topic to change conversation to if user selects the fifth option."
-    saidFifthChoiceTopic: Topic
+    saidFifthChoiceTransition: Topic
     "Message sent until user responds with a valid multiple choice option."
     invalidAskMultipleChoiceResponse: String!
   }
@@ -166,18 +182,10 @@ const typeDefs = gql`
   "Broadcast that asks user for smsStatus and changes topic to its own ID."
   type AskSubscriptionStatusBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
-    "Message sent if user says active."
-    saidActive: String!
-    "The topic ID to change conversation to if user says active."
-    saidActiveTopicId: String!
     "The topic to change conversation to if user says active."
-    saidActiveTopic: Topic
-    "Message sent if user says less."
-    saidLess: String!
-    "The topic ID to change conversation to if user says less."
-    saidLessTopicId: String!
+    saidActiveTransition: AutoReplyTransition
     "The topic to change conversation to if user says less."
-    saidLessTopic: Topic
+    saidLessTransition: AutoReplyTransition
     "Message sent if user says they need more info."
     saidNeedMoreInfo: String!
     "Message sent until user responds with a valid subscription status."
@@ -187,43 +195,21 @@ const typeDefs = gql`
   "Broadcast that asks user for votingPlanStatus and changes topic to its own ID."
   type AskVotingPlanStatusBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
-    ${actionIdField}
-    "Message sent if user says they can't vote."
-    saidCantVote: String!
-    "The topic ID to change conversation to if user says they can't vote."
-    saidCantVoteTopicId: String!
     "The topic to change conversation to if user says they can't vote."
-    saidCantVoteTopic: Topic
-    "Message sent if user says they aren't voting."
-    saidNotVoting: String!
-    "The topic ID to change conversation to if user says they aren't voting."
-    saidNotVotingTopicId: String!
+    saidCantVoteTransition: Topic
     "The topic to change conversation to if user says they aren't voting."
-    saidNotVotingTopic: Topic
-    "Message sent if user says they already voted."
-    saidVoted: String!
-    "The topic ID to change conversation to if user says they already voted."
-    saidVotedTopicId: String!
+    saidNotVotingTransition: Topic
     "The topic to change conversation to if user says they already voted."
-    saidVotedTopic: Topic
+    saidVotedTransition: Topic
   }
 
   "Broadcast that asks user a yes or no question, and changes topic to its own ID."
   type AskYesNoBroadcastTopic implements Broadcast & Topic {
     ${broadcastFields}
-    ${actionIdField}
-    "Message sent if user says yes."
-    saidYes: String!
-    "The topic ID to change conversation to if user says yes"
-    saidYesTopicId: String!
     "The topic to change conversation to if user says yes."
-    saidYesTopic: Topic
-    "Message sent if user says yes."
-    saidNo: String!
-    "The topic ID to change conversation to if user says no."
-    saidNoTopicId: String!
+    saidYesTransition: Topic
     "The topic to change conversation to if user says no."
-    saidNoTopic: Topic
+    saidNoTransition: Topic
     "Message sent until user responds with yes or no."
     invalidAskYesNoResponse: String!
   }
@@ -231,8 +217,6 @@ const typeDefs = gql`
   "Broadcast that changes topic to an AutoReplyTopic."
   type AutoReplyBroadcast implements Broadcast {
     ${broadcastFields}
-    "The ID of the AutoReplyTopic to change conversation to."
-    topicId: String!
     "The AutoReplyTopic to change conversation to."
     topic: AutoReplyTopic
   }
@@ -240,9 +224,6 @@ const typeDefs = gql`
   "Broadcast that asks user to reply with START and changes topic to a PhotoPostTopic."
   type PhotoPostBroadcast implements Broadcast {
     ${broadcastFields}
-    ${actionIdField}
-    "The ID of the PhotoPostTopic to change conversation to."
-    topicId: String!
     "The PhotoPostTopic to change conversation to."
     topic: PhotoPostTopic
   }
@@ -250,9 +231,6 @@ const typeDefs = gql`
   "Broadcast that asks user to reply with a text post and changes topic to a TextPostTopic."
   type TextPostBroadcast implements Broadcast {
     ${broadcastFields}
-    ${actionIdField}
-    "The ID of the TextPostTopic to change conversation to."
-    topicId: String!
     "The TextPostBroadcast to change conversation to."
     topic: TextPostTopic
   }
@@ -267,22 +245,16 @@ const typeDefs = gql`
     id: String!
     "The Rivescript trigger used to match an inbound message from a user."
     trigger: String!
-    "The Rivescript reply to send user if their inbound message matches the trigger."
-    reply: String!
-    "The topic ID to change user conversation to."
-    topicId: String
-    "The topic to change user conversation to."
-    topic: Topic
+    "The transition to change user conversation to."
+    response: Topic!
   }
 
   "Confirmation to send a user when they sign up for a campaign from web."
   type WebSignupConfirmation {
+    "The entry id"
+    id: String!
     "The campaign ID that the user signed up for."
     campaignId: Int!
-    "The confirmation message text to the user."
-    text: String!
-    "The topic ID to change the user conversation to."
-    topicId: String!
     "The topic to change user conversation to."
     topic: Topic
   }
@@ -305,57 +277,34 @@ const typeDefs = gql`
  * @var {Object}
  */
 const resolvers = {
+  AutoReplyTopic: {
+    legacyCampaign: linkResolver,
+  },
+  AutoReplyTransition: {
+    topic: linkResolver,
+  },
   AskMultipleChoiceBroadcastTopic: {
-    saidFirstChoiceTopic: (topic, args, context) =>
-      Loader(context).topics.load(topic.saidFirstChoiceTopicId, context),
-    saidSecondChoiceTopic: (topic, args, context) =>
-      Loader(context).topics.load(topic.saidSecondChoiceTopicId, context),
-    saidThirdChoiceTopic: (topic, args, context) =>
-      Loader(context).topics.load(topic.saidThirdChoiceTopicId, context),
-    /**
-     * This is the easiest way to prevent sending en empty value to the loader,
-     * which would end up in an exception. Ideally, I think we should create a local
-     * loading function that is aware of optional fields.
-     */
-    saidFourthChoiceTopic: (topic, args, context) => {
-      if (!topic.saidFourthChoiceTopicId) {
-        return null;
-      }
-      return Loader(context).topics.load(
-        topic.saidFourthChoiceTopicId,
-        context,
-      );
-    },
-    saidFifthChoiceTopic: (topic, args, context) => {
-      if (!topic.saidFifthChoiceTopicId) {
-        return null;
-      }
-      return Loader(context).topics.load(topic.saidFifthChoiceTopicId, context);
-    },
+    saidFirstChoiceTransition: linkResolver,
+    saidSecondChoiceTransition: linkResolver,
+    saidThirdChoiceTransition: linkResolver,
+    saidFourthChoiceTransition: linkResolver,
+    saidFifthChoiceTransition: linkResolver,
   },
   AskSubscriptionStatusBroadcastTopic: {
-    saidActiveTopic: (topic, args, context) =>
-      Loader(context).topics.load(topic.saidActiveTopicId, context),
-    saidLessTopic: (topic, args, context) =>
-      Loader(context).topics.load(topic.saidLessTopicId, context),
+    saidActiveTransition: linkResolver,
+    saidLessTransition: linkResolver,
   },
   AskVotingPlanStatusBroadcastTopic: {
-    saidCantVoteTopic: (topic, args, context) =>
-      Loader(context).topics.load(topic.saidCantVoteTopicId, context),
-    saidNotVotingTopic: (topic, args, context) =>
-      Loader(context).topics.load(topic.saidNotVotingTopicId, context),
-    saidVotedTopic: (topic, args, context) =>
-      Loader(context).topics.load(topic.saidVotedTopicId, context),
+    saidCantVoteTransition: linkResolver,
+    saidNotVotingTransition: linkResolver,
+    saidVotedTransition: linkResolver,
   },
   AskYesNoBroadcastTopic: {
-    saidNoTopic: (topic, args, context) =>
-      Loader(context).topics.load(topic.saidNoTopicId, context),
-    saidYesTopic: (topic, args, context) =>
-      Loader(context).topics.load(topic.saidYesTopicId, context),
+    saidNoTransition: linkResolver,
+    saidYesTransition: linkResolver,
   },
   AutoReplyBroadcast: {
-    topic: (broadcast, args, context) =>
-      Loader(context).topics.load(broadcast.topicId, context),
+    topic: linkResolver,
   },
   Broadcast: {
     __resolveType(broadcast) {
@@ -386,11 +335,11 @@ const resolvers = {
       return null;
     },
   },
+  LegacyCampaign: {
+    webSignup: linkResolver,
+  },
   ConversationTrigger: {
-    topic: (conversationTrigger, args, context) => {
-      const topicId = conversationTrigger.topicId;
-      return topicId ? Loader(context).topics.load(topicId, context) : null;
-    },
+    response: linkResolver,
   },
   Query: {
     broadcast: (_, args, context) => Loader(context).broadcasts.load(args.id),
@@ -401,15 +350,28 @@ const resolvers = {
       getWebSignupConfirmations(args, context),
   },
   PhotoPostBroadcast: {
-    topic: (broadcast, args, context) =>
-      Loader(context).topics.load(broadcast.topicId, context),
+    topic: linkResolver,
+  },
+  PhotoPostTransition: {
+    topic: linkResolver,
+  },
+  PhotoPostTopic: {
+    legacyCampaign: linkResolver,
+  },
+  TextPostTransition: {
+    topic: linkResolver,
+  },
+  TextPostTopic: {
+    legacyCampaign: linkResolver,
   },
   TextPostBroadcast: {
-    topic: (broadcast, args, context) =>
-      Loader(context).topics.load(broadcast.topicId, context),
+    topic: linkResolver,
   },
   Topic: {
     __resolveType(topic) {
+      if (topic.contentType === 'autoReplyTransition') {
+        return 'AutoReplyTransition';
+      }
       if (topic.contentType === 'askMultipleChoice') {
         return 'AskMultipleChoiceBroadcastTopic';
       }
@@ -423,7 +385,10 @@ const resolvers = {
         return 'AskYesNoBroadcastTopic';
       }
       if (topic.contentType === 'autoReply') {
-        return topic.campaignId ? 'AutoReplySignupTopic' : 'AutoReplyTopic';
+        return 'AutoReplyTopic';
+      }
+      if (topic.contentType === 'faqAnswer') {
+        return 'FaqAnswerTopic';
       }
       if (topic.contentType === 'photoPostConfig') {
         return 'PhotoPostTopic';
@@ -431,12 +396,17 @@ const resolvers = {
       if (topic.contentType === 'textPostConfig') {
         return 'TextPostTopic';
       }
+      if (topic.contentType === 'photoPostTransition') {
+        return 'PhotoPostTransition';
+      }
+      if (topic.contentType === 'textPostTransition') {
+        return 'TextPostTransition';
+      }
       return null;
     },
   },
   WebSignupConfirmation: {
-    topic: (webSignupConfirmation, args, context) =>
-      Loader(context).topics.load(webSignupConfirmation.topicId, context),
+    topic: linkResolver,
   },
 };
 
