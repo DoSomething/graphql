@@ -241,6 +241,8 @@ const typeDefs = gql`
     link: String
     "The affiliate's logo."
     logo: Asset
+    "The affiliate's UTM label."
+    utmLabel: String
     ${entryFields}
   }
 
