@@ -251,7 +251,7 @@ const typeDefs = gql`
     block(id: String!, preview: Boolean = false): Block
     "Get an asset by ID."
     asset(id: String!, preview: Boolean = false): Asset
-    affiliate(title: String!, preview: Boolean = false): AffiliateBlock
+    affiliate(utmLabel: String!, preview: Boolean = false): AffiliateBlock
   }
 `;
 
@@ -287,8 +287,8 @@ const resolvers = {
       Loader(context, preview).blocks.load(id),
     asset: (_, { id, preview }, context) =>
       Loader(context, preview).assets.load(id),
-    affiliate: (_, { title, preview }, context) =>
-      Loader(context, preview).affiliates.load(title),
+    affiliate: (_, { utmLabel, preview }, context) =>
+      Loader(context, preview).affiliates.load(utmLabel),
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),

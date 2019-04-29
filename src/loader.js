@@ -15,7 +15,7 @@ import { authorizedRequest } from './repositories/helpers';
 import {
   getPhoenixContentfulAssetById,
   getPhoenixContentfulEntryById,
-  getAffiliateByTitle,
+  getAffiliateByUtmLabel,
 } from './repositories/contentful/phoenix';
 
 /**
@@ -39,8 +39,8 @@ export default (context, preview = false) => {
       actions: new DataLoader(ids =>
         Promise.all(ids.map(id => getActionById(id, options))),
       ),
-      affiliates: new DataLoader(titles =>
-        Promise.all(titles.map(title => getAffiliateByTitle(title, context))),
+      affiliates: new DataLoader(utmLabels =>
+        Promise.all(utmLabels.map(utmLabel => getAffiliateByUtmLabel(utmLabel, context))),
       ),
       assets: new DataLoader(ids =>
         Promise.all(ids.map(id => getPhoenixContentfulAssetById(id, context))),

@@ -113,17 +113,17 @@ const loadEntryByQuery = async (api, query) => {
 };
 
 /**
- * Search for Phoenix Contentful affiliate entries by text.
+ * Search for a Phoenix Contentful affiliate entry by utmLabel.
  *
  * @param {String} id
  * @return {Object}
  */
-export const getAffiliateByTitle = async (title, context) => {
+export const getAffiliateByUtmLabel = async (utmLabel, context) => {
   const { preview } = context;
 
   const query = {
     content_type: 'affiliates',
-    'fields.title': title,
+    'fields.utmLabel': utmLabel,
     limit: 1,
   };
 
@@ -139,7 +139,7 @@ export const getAffiliateByTitle = async (title, context) => {
   }
 
   // Otherwise, read from cache or Contentful's Content API:
-  return cache.remember(`Affiliate:${spaceId}:${title}`, async () =>
+  return cache.remember(`Affiliate:${spaceId}:${utmLabel}`, async () =>
     loadEntryByQuery(contentApi, query),
   );
 };
