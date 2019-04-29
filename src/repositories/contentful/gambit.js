@@ -249,7 +249,7 @@ const transformItem = json => {
  * @return {Object}
  */
 const transformAsset = json => {
-  // console.log(json);
+  console.log(json);
   return null;
   // TODO: Implement transformAsset
   // const fields = getFields(json);
