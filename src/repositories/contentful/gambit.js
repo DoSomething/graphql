@@ -139,6 +139,8 @@ const getFields = json => {
       topic: fields.webSignup,
     };
   }
+  // TODO: If the response is an askMultipleChoice we should inject the broadcast itself as a topic
+  // otherwise, the response's topic.
   if (contentType === 'defaultTopicTrigger') {
     return {
       trigger: fields.trigger,
