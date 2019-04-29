@@ -63,11 +63,8 @@ const getFields = json => {
 
   // TODO: determine how to get the actionId for this broadcast since the choices
   // can point to different campaigns through their action ids.
-  // done
   if (contentType === 'askMultipleChoice') {
     return {
-      // TODO: Attachments have nested links, check that the link resolver logic
-      // works as expected here.
       attachments: fields.attachments || [],
       invalidAskMultipleChoiceResponse: fields.invalidAskMultipleChoiceResponse,
       text: getMessageText(json),
@@ -79,7 +76,6 @@ const getFields = json => {
       saidFifthChoiceTransition: fields.fifthChoiceTransition,
     };
   }
-  // done
   if (contentType === 'askSubscriptionStatus') {
     return {
       attachments: fields.attachments || [],
@@ -92,7 +88,6 @@ const getFields = json => {
       saidLessTransition: fields.lessTransition,
     };
   }
-  // done
   if (contentType === 'askVotingPlanStatus') {
     return {
       attachments: fields.attachments || [],
@@ -103,10 +98,8 @@ const getFields = json => {
       saidVotedTransition: fields.votedTransition,
     };
   }
-  // done
   if (contentType === 'askYesNo') {
     return {
-      // TODO: Add the action based on the saidYesTransition topic's action Id
       attachments: fields.attachments || [],
       invalidAskYesNoResponse: fields.invalidAskYesNoResponse,
       text: getMessageText(json),
@@ -115,7 +108,6 @@ const getFields = json => {
       saidYesTransition: fields.yesTransition,
     };
   }
-  // done
   if (contentType === 'autoReply') {
     return {
       autoReply: fields.autoReply,
@@ -123,7 +115,6 @@ const getFields = json => {
       legacyCampaign: fields.campaign,
     };
   }
-  // done
   if (contentType === 'autoReplyBroadcast') {
     return {
       attachments: fields.attachments || [],
@@ -132,7 +123,6 @@ const getFields = json => {
       topic: fields.topic,
     };
   }
-  // done
   if (contentType === 'autoReplyTransition') {
     return {
       text: getMessageText(json),
@@ -141,7 +131,6 @@ const getFields = json => {
     };
   }
   // Also known as WebSignupConfirmation
-  // done
   if (contentType === 'campaign') {
     return {
       campaignId: fields.campaignId,
@@ -149,7 +138,6 @@ const getFields = json => {
       topic: fields.webSignup,
     };
   }
-
   if (contentType === 'defaultTopicTrigger') {
     return {
       trigger: fields.trigger,
@@ -157,23 +145,19 @@ const getFields = json => {
       response: fields.response,
     };
   }
-  // done
   if (contentType === 'faqAnswer') {
     return {
       text: getMessageText(json),
     };
   }
-  // done
   if (contentType === 'photoPostBroadcast') {
     return {
-      // TODO: Get actionId based on topic's photoPostConfig actionId
       attachments: fields.attachments || [],
       text: getMessageText(json),
       // Links ---
       topic: fields.topic,
     };
   }
-  // done
   if (contentType === 'photoPostConfig') {
     return {
       actionId: getActionId(json),
@@ -196,7 +180,6 @@ const getFields = json => {
       legacyCampaign: fields.campaign,
     };
   }
-  // done
   if (contentType === 'photoPostTransition') {
     return {
       text: getMessageText(json),
@@ -204,17 +187,14 @@ const getFields = json => {
       topic: fields.topic,
     };
   }
-  // done
   if (contentType === 'textPostBroadcast') {
     return {
-      // TODO: Get actionId based on topic's textPostConfig actionId
       attachments: fields.attachments || [],
       text: getMessageText(json),
       // Links ---
       topic: fields.topic,
     };
   }
-  // done
   if (contentType === 'textPostConfig') {
     return {
       actionId: getActionId(json),
@@ -223,7 +203,6 @@ const getFields = json => {
       legacyCampaign: fields.campaign,
     };
   }
-  // done
   if (contentType === 'textPostTransition') {
     return {
       text: getMessageText(json),
@@ -231,7 +210,6 @@ const getFields = json => {
       topic: fields.topic,
     };
   }
-
   return null;
 };
 
@@ -239,22 +217,17 @@ const getFields = json => {
  * @param {Object} json
  * @return {Object}
  */
-const transformItem = json => {
-  const fields = getFields(json);
-  return assign(getSummary(json), fields);
-};
+const transformItem = json => assign(getSummary(json), getFields(json));
 
 /**
  * @param {Object} json
  * @return {Object}
  */
-const transformAsset = json => {
-  console.log(json);
-  return null;
-  // TODO: Implement transformAsset
-  // const fields = getFields(json);
-  // return assign(getSummary(json), fields);
-};
+const transformAsset = json => ({
+  id: json.sys.id,
+  url: json.fields.file.url,
+  contentType: json.fields.file.contentType,
+});
 
 /**
  * Fetch a Gambit Contentful entry by ID.
@@ -291,7 +264,7 @@ export const getGambitContentfulAssetById = async (id, context) => {
 
   return cache.remember(`Asset:${spaceId}:${id}`, async () => {
     try {
-      const json = await contentfulClient.getEntry(id);
+      const json = await contentfulClient.getAsset(id);
       return transformAsset(json);
     } catch (exception) {
       logger.warn('Unable to load Gambit Contentful asset.', {
@@ -394,7 +367,7 @@ export const linkResolver = (entry, args, context, info) => {
   const link = entry[fieldName];
 
   logger.debug(`Resolving link(s) on ${parentType.name}.${fieldName}`);
-  // TODO: Check that attachments in broadcasts are correctly resolved by this logic
+
   if (Array.isArray(link)) {
     return link.map(asset => getContentfulItemByLink(asset, context));
   }

@@ -156,9 +156,11 @@ const typeDefs = gql`
 
   "Media attached to a broadcast."
   type BroadcastMedia {
-    "The broadcast media URL."
+    "The unique ID for this Contentful asset."
+    id: String!
+    "The URL where this broadcast media is available at."
     url: String!
-    "The broadcast media content type."
+    "Mime-type for this broadcast media asset."
     contentType: String!
   }
 
@@ -284,6 +286,7 @@ const resolvers = {
     topic: linkResolver,
   },
   AskMultipleChoiceBroadcastTopic: {
+    attachments: linkResolver,
     saidFirstChoiceTransition: linkResolver,
     saidSecondChoiceTransition: linkResolver,
     saidThirdChoiceTransition: linkResolver,
@@ -291,19 +294,23 @@ const resolvers = {
     saidFifthChoiceTransition: linkResolver,
   },
   AskSubscriptionStatusBroadcastTopic: {
+    attachments: linkResolver,
     saidActiveTransition: linkResolver,
     saidLessTransition: linkResolver,
   },
   AskVotingPlanStatusBroadcastTopic: {
+    attachments: linkResolver,
     saidCantVoteTransition: linkResolver,
     saidNotVotingTransition: linkResolver,
     saidVotedTransition: linkResolver,
   },
   AskYesNoBroadcastTopic: {
+    attachments: linkResolver,
     saidNoTransition: linkResolver,
     saidYesTransition: linkResolver,
   },
   AutoReplyBroadcast: {
+    attachments: linkResolver,
     topic: linkResolver,
   },
   Broadcast: {
@@ -350,6 +357,7 @@ const resolvers = {
       getWebSignupConfirmations(args, context),
   },
   PhotoPostBroadcast: {
+    attachments: linkResolver,
     topic: linkResolver,
   },
   PhotoPostTransition: {
@@ -365,6 +373,7 @@ const resolvers = {
     legacyCampaign: linkResolver,
   },
   TextPostBroadcast: {
+    attachments: linkResolver,
     topic: linkResolver,
   },
   Topic: {
