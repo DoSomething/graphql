@@ -85,6 +85,66 @@ export const getPhoenixContentfulEntryById = async (id, context) => {
 };
 
 /**
+ * Load a Phoenix Contentful Entry by query.
+ *
+ * @param  {Object} api
+ * @param  {Object} query
+ * @return {Object}
+ */
+const loadEntryByQuery = async (api, query) => {
+  try {
+    const json = await api.getEntries(query);
+
+    const item = json.items[0];
+
+    if (!item) {
+      return null;
+    }
+
+    return transformItem(item);
+  } catch (exception) {
+    logger.warn('Unable to load Phoenix Contentful entry.', {
+      query,
+      error: exception.message,
+    });
+  }
+
+  return null;
+};
+
+/**
+ * Search for a Phoenix Contentful affiliate entry by utmLabel.
+ *
+ * @param {String} id
+ * @return {Object}
+ */
+export const getAffiliateByUtmLabel = async (utmLabel, context) => {
+  const { preview } = context;
+
+  const query = {
+    content_type: 'affiliates',
+    'fields.utmLabel': utmLabel,
+    limit: 1,
+  };
+
+  logger.debug('Loading Phoenix Contentful entry', {
+    query,
+    preview,
+  });
+
+  // If we're previewing, use Contentful's Preview API and
+  // don't bother trying to cache content on our end:
+  if (preview) {
+    return loadEntryByQuery(previewApi, query);
+  }
+
+  // Otherwise, read from cache or Contentful's Content API:
+  return cache.remember(`Affiliate:${spaceId}:${utmLabel}`, async () =>
+    loadEntryByQuery(contentApi, query),
+  );
+};
+
+/**
  * Fetch a Phoenix Contentful entry by ID.
  *
  * @param {String} id
