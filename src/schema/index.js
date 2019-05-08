@@ -129,6 +129,11 @@ const linkResolvers = {
       fragment:
         'fragment ActionFragment on AskYesNoBroadcastTopic { actionId }',
       resolve(broadcastTopic, args, context, info) {
+        // AskYesNo broadcasts that reference an autoReplyTransition as the
+        // saidYes field will not have an actionId set
+        if (!broadcastTopic.actionId) {
+          return null;
+        }
         return info.mergeInfo.delegateToSchema(
           getGambitActionDelegateOptions(broadcastTopic, context, info),
         );
