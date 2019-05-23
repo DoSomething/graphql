@@ -319,7 +319,7 @@ export const getSignupsByUserId = async (args, context) => {
 };
 
 /**
- * Fetch number of signups from Rogue by User ID.
+ * Fetch number of signups from Rogue based on the given filters.
  * NOTE: This will only find the number of signups up to the "limit" provided.
  * The limit defaults to 20.
  *
@@ -353,6 +353,47 @@ export const getSignupsCount = async (args, context) => {
 
   return result.length;
 };
+
+/**
+ * Fetch number of posts from Rogue based on the given filters.
+ * NOTE: This will only find the number of posts up to the "limit" provided.
+ * The limit defaults to 20.
+ *
+ * @param {String} action
+ * @param {String} actionIds
+ * @param {String} campaignId
+ * @param {Number} count
+ * @param {String} location
+ * @param {String} source
+ * @param {String} type
+ * @param {String} userId
+ * @param {String} tags
+ * @return Int
+ */
+export const getPostsCount = async (args, context) => {
+  const queryString = stringify({
+    filter: {
+      action: args.action,
+      action_id: args.actionIds ? args.actionIds.join(',') : undefined,
+      campaign_id: args.campaignId,
+      location: args.location,
+      northstar_id: args.userId,
+      source: args.source,
+      type: args.type,
+      tag: args.tags,
+    },
+    limit: args.count,
+    pagination: 'cursor',
+  });
+
+  logger.debug('Loading posts count from Rogue.', { args, queryString });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/posts/?${queryString}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
 
   const result = transformCollection(json);
 

@@ -18,6 +18,7 @@ import {
   getSignupsByUserId,
   getSignupsCount,
   toggleReaction,
+  getPostsCount,
 } from '../repositories/rogue';
 
 /**
@@ -284,6 +285,27 @@ const typeDefs = gql`
       "The number of results per page."
       count: Int = 20
     ): Int
+    "Get post counts."
+    postsCount(
+      "The action name to load posts for."
+      action: String
+      "The action IDs to load posts for."
+      actionIds: [Int]
+      "# The campaign ID to load posts for."
+      campaignId: String
+      "The location to load posts for."
+      location: String
+      "# The post source to load posts for."
+      source: String
+      "# The type name to load posts for."
+      type: String
+      "# The user ID to load posts for."
+      userId: String
+      "A comma-separated list of tags to filter by."
+      tags: String
+      "# The number of results per page."
+      count: Int = 20
+    ): Int
   }
 
   type Mutation {
@@ -347,6 +369,7 @@ const resolvers = {
     signups: (_, args, context) => getSignups(args, context),
     signupsByUserId: (_, args, context) => getSignupsByUserId(args, context),
     signupsCount: (_, args, context) => getSignupsCount(args, context),
+    postsCount: (_, args, context) => getPostsCount(args, context),
   },
   Mutation: {
     toggleReaction: (_, args, context) => toggleReaction(args.postId, context),
