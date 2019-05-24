@@ -336,8 +336,7 @@ export const getSignupsCount = async (args, context) => {
       northstar_id: args.userId,
       source: args.source,
     },
-    limit: args.count,
-    pagination: 'cursor',
+    limit: args.limit,
   });
 
   logger.debug('Loading signups count from Rogue.', { args, queryString });
@@ -382,8 +381,7 @@ export const getPostsCount = async (args, context) => {
       type: args.type,
       tag: args.tags,
     },
-    limit: args.count,
-    pagination: 'cursor',
+    limit: args.limit,
   });
 
   logger.debug('Loading posts count from Rogue.', { args, queryString });

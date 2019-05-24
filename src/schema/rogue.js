@@ -282,8 +282,8 @@ const typeDefs = gql`
       source: String
       "The user ID to count signups for."
       userId: String
-      count: Int = 20
       "# The maximum count to report."
+      limit: Int = 20
     ): Int
     "Get post counts."
     postsCount(
@@ -303,8 +303,8 @@ const typeDefs = gql`
       userId: String
       "A comma-separated list of tags to filter by."
       tags: String
-      count: Int = 20
       "# The maximum count to report."
+      limit: Int = 20
     ): Int
   }
 
