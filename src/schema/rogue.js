@@ -276,35 +276,35 @@ const typeDefs = gql`
     ): [Signup]
     "Find out how many signups a particular user has. Intended for use with badges."
     signupsCount(
-      "The Campaign ID load signups for."
+      "The Campaign ID count signups for."
       campaignId: String
-      "The signup source to load signups for."
+      "The signup source to count signups for."
       source: String
-      "The user ID to load signups for."
+      "The user ID to count signups for."
       userId: String
-      "The number of results per page."
       count: Int = 20
+      "# The maximum count to report."
     ): Int
     "Get post counts."
     postsCount(
-      "The action name to load posts for."
+      "The action name to count posts for."
       action: String
-      "The action IDs to load posts for."
+      "The action IDs to count posts for."
       actionIds: [Int]
-      "# The campaign ID to load posts for."
+      "# The campaign ID to count posts for."
       campaignId: String
-      "The location to load posts for."
+      "The location to count posts for."
       location: String
-      "# The post source to load posts for."
+      "# The post source to count posts for."
       source: String
-      "# The type name to load posts for."
+      "# The type name to count posts for."
       type: String
-      "# The user ID to load posts for."
+      "# The user ID to count posts for."
       userId: String
       "A comma-separated list of tags to filter by."
       tags: String
-      "# The number of results per page."
       count: Int = 20
+      "# The maximum count to report."
     ): Int
   }
 
