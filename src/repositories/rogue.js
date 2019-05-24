@@ -324,7 +324,7 @@ export const getSignupsByUserId = async (args, context) => {
  * The limit defaults to 20.
  *
  * @param {String} campaignId
- * @param {Number} count
+ * @param {Number} limit
  * @param {String} source
  * @param {String} userId
  * @return Int
@@ -361,7 +361,7 @@ export const getSignupsCount = async (args, context) => {
  * @param {String} action
  * @param {String} actionIds
  * @param {String} campaignId
- * @param {Number} count
+ * @param {Number} limit
  * @param {String} location
  * @param {String} source
  * @param {String} type
