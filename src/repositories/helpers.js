@@ -8,7 +8,7 @@ import { URL, URLSearchParams } from 'url';
  */
 export const authorizedRequest = context => {
   if (!context.authorization) {
-    return { Accept: 'application/json' };
+    return { headers: { Accept: 'application/json' } };
   }
 
   return {
