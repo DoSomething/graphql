@@ -82,7 +82,7 @@
     "dotenv": "^6.2.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
-    "graphql": "~14.0.0",
+    "graphql": "~14.2.1",
     "graphql-iso-date": "^3.5.0",
     "graphql-tools": "^4.0.3",
     "graphql-type-json": "^0.2.4",
