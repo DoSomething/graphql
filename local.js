@@ -9,8 +9,8 @@ const express = require('express');
 const chalk = require('chalk');
 const boxen = require('boxen');
 
-const schema = require('./src/schema');
-const config = require('./config');
+const schema = require('./src/schema').default;
+const config = require('./config').default;
 
 const app = express();
 const server = new ApolloServer({
