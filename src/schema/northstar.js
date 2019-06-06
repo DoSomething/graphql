@@ -152,7 +152,8 @@ const resolvers = {
     smsStatus: user => stringToEnum(user.smsStatus),
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
     emailSubscriptionTopics: user => listToEnums(user.emailSubscriptionTopics),
-    badges: user => has(user, 'featureFlags.badges') ? user.featureFlags.badges : null,
+    badges: user =>
+      has(user, 'featureFlags.badges') ? user.featureFlags.badges : null,
   },
   Query: {
     user: (_, args, context) => Loader(context).users.load(args.id),

@@ -62,7 +62,8 @@
         }
       ],
       "space-unary-ops": "off",
-      "arrow-parens": "off"
+      "arrow-parens": "off",
+      "no-confusing-arrow": "off"
     }
   },
   "dependencies": {
