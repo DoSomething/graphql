@@ -2,6 +2,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { gql } from 'apollo-server';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
+import { has } from 'lodash';
 
 import Loader from '../loader';
 import { stringToEnum, listToEnums } from './helpers';
@@ -120,6 +121,8 @@ const typeDefs = gql`
     votingPlanMethodOfTransport: String
     "What time of day user plans to get the polls to vote in upcoming election."
     votingPlanTimeOfDay: String
+    "Whether or not the user is opted-in to the badges experiment."
+    badges: Boolean
   }
 
   type Query {
@@ -149,6 +152,7 @@ const resolvers = {
     smsStatus: user => stringToEnum(user.smsStatus),
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
     emailSubscriptionTopics: user => listToEnums(user.emailSubscriptionTopics),
+    badges: user => has(user, 'featureFlags.badges') ? user.featureFlags.badges : null,
   },
   Query: {
     user: (_, args, context) => Loader(context).users.load(args.id),
