@@ -2,10 +2,9 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { gql } from 'apollo-server';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
-import { has } from 'lodash';
 
 import Loader from '../loader';
-import { stringToEnum, listToEnums } from './helpers';
+import { stringToEnum, listToEnums, hasFeatureFlag } from './helpers';
 import { updateEmailSubscriptionTopics } from '../repositories/northstar';
 
 /**
@@ -152,8 +151,7 @@ const resolvers = {
     smsStatus: user => stringToEnum(user.smsStatus),
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
     emailSubscriptionTopics: user => listToEnums(user.emailSubscriptionTopics),
-    badges: user =>
-      has(user, 'featureFlags.badges') ? user.featureFlags.badges : null,
+    badges: user => hasFeatureFlag(user, 'badges'),
   },
   Query: {
     user: (_, args, context) => Loader(context).users.load(args.id),
