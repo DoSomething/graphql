@@ -153,8 +153,8 @@ const resolvers = {
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
     emailSubscriptionTopics: user => listToEnums(user.emailSubscriptionTopics),
     hasFeatureFlag: (user, { feature }) =>
-      has(user, `featureFlags.${feature}`) && user.featureFlags[feature] !== false
-    ,
+      has(user, `featureFlags.${feature}`) &&
+      user.featureFlags[feature] !== false,
   },
   Query: {
     user: (_, args, context) => Loader(context).users.load(args.id),
