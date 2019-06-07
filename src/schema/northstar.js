@@ -2,9 +2,10 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { gql } from 'apollo-server';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
+import { has } from 'lodash';
 
 import Loader from '../loader';
-import { stringToEnum, listToEnums, hasFeatureFlag } from './helpers';
+import { stringToEnum, listToEnums } from './helpers';
 import { updateEmailSubscriptionTopics } from '../repositories/northstar';
 
 /**
@@ -120,8 +121,8 @@ const typeDefs = gql`
     votingPlanMethodOfTransport: String
     "What time of day user plans to get the polls to vote in upcoming election."
     votingPlanTimeOfDay: String
-    "Whether or not the user is opted-in to the badges experiment."
-    badges: Boolean
+    "Whether or not the user is opted-in to the given feature."
+    hasFeatureFlag(feature: String): Boolean
   }
 
   type Query {
@@ -151,7 +152,9 @@ const resolvers = {
     smsStatus: user => stringToEnum(user.smsStatus),
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
     emailSubscriptionTopics: user => listToEnums(user.emailSubscriptionTopics),
-    badges: user => hasFeatureFlag(user, 'badges'),
+    hasFeatureFlag: (user, { feature }) =>
+      has(user, `featureFlags.${feature}`) && user.featureFlags[feature] !== false
+    ,
   },
   Query: {
     user: (_, args, context) => Loader(context).users.load(args.id),
