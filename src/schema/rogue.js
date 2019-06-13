@@ -16,7 +16,9 @@ import {
   getPostById,
   getSignups,
   getSignupsByUserId,
+  getSignupsCount,
   toggleReaction,
+  getPostsCount,
 } from '../repositories/rogue';
 
 /**
@@ -272,6 +274,38 @@ const typeDefs = gql`
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
     ): [Signup]
+    "Find out how many signups a particular user has. Intended for use with badges."
+    signupsCount(
+      "The Campaign ID count signups for."
+      campaignId: String
+      "The signup source to count signups for."
+      source: String
+      "The user ID to count signups for."
+      userId: String
+      "# The maximum count to report."
+      limit: Int = 20
+    ): Int
+    "Get post counts."
+    postsCount(
+      "The action name to count posts for."
+      action: String
+      "The action IDs to count posts for."
+      actionIds: [Int]
+      "# The campaign ID to count posts for."
+      campaignId: String
+      "The location to count posts for."
+      location: String
+      "# The post source to count posts for."
+      source: String
+      "# The type name to count posts for."
+      type: String
+      "# The user ID to count posts for."
+      userId: String
+      "A comma-separated list of tags to filter by."
+      tags: String
+      "# The maximum count to report."
+      limit: Int = 20
+    ): Int
   }
 
   type Mutation {
@@ -334,6 +368,8 @@ const resolvers = {
     signup: (_, args, context) => Loader(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args, context),
     signupsByUserId: (_, args, context) => getSignupsByUserId(args, context),
+    signupsCount: (_, args, context) => getSignupsCount(args, context),
+    postsCount: (_, args, context) => getPostsCount(args, context),
   },
   Mutation: {
     toggleReaction: (_, args, context) => toggleReaction(args.postId, context),

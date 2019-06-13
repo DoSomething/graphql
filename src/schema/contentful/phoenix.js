@@ -143,7 +143,7 @@ const typeDefs = gql`
   }
 
   type ShareBlock implements Block {
-    "The internal-facing title for this text submission action."
+    "The internal-facing title for this share block."
     internalTitle: String!
     "The Action ID that 'share' posts will be submitted for."
     actionId: Int
@@ -193,7 +193,7 @@ const typeDefs = gql`
   }
 
   type PetitionSubmissionBlock implements Block {
-    "The internal-facing title for this photo submission action."
+    "The internal-facing title for this petition submission block."
     internalTitle: String!
     "The Action ID that posts will be submitted for."
     actionId: Int
@@ -219,9 +219,9 @@ const typeDefs = gql`
   }
 
   type VoterRegistrationBlock implements Block {
-    "The internal-facing title for this photo submission action."
+    "The internal-facing title for this voter registration block."
     internalTitle: String!
-    "The user-facing title for this share block."
+    "The user-facing title for this voter registration block."
     title: String
     "The voter registration block's text content."
     content: String
@@ -232,11 +232,26 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type AffiliateBlock implements Block {
+    "The internal-facing title for this affiliate block."
+    internalTitle: String!
+    "The title for this affiliate."
+    title: String!
+    "The link to the affiliate's website."
+    link: String
+    "The affiliate's logo."
+    logo: Asset
+    "The affiliate's UTM label."
+    utmLabel: String
+    ${entryFields}
+  }
+
   type Query {
     "Get a block by ID."
     block(id: String!, preview: Boolean = false): Block
     "Get an asset by ID."
     asset(id: String!, preview: Boolean = false): Asset
+    affiliate(utmLabel: String!, preview: Boolean = false): AffiliateBlock
   }
 `;
 
@@ -246,6 +261,7 @@ const typeDefs = gql`
  * @var {Object}
  */
 const contentTypeMappings = {
+  affiliates: 'AffiliateBlock',
   embed: 'EmbedBlock',
   imagesBlock: 'ImagesBlock',
   linkAction: 'LinkBlock',
@@ -271,6 +287,8 @@ const resolvers = {
       Loader(context, preview).blocks.load(id),
     asset: (_, { id, preview }, context) =>
       Loader(context, preview).assets.load(id),
+    affiliate: (_, { utmLabel, preview }, context) =>
+      Loader(context, preview).affiliates.load(utmLabel),
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
@@ -295,6 +313,9 @@ const resolvers = {
   },
   EmbedBlock: {
     previewImage: linkResolver,
+  },
+  AffiliateBlock: {
+    logo: linkResolver,
   },
 };
 

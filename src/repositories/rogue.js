@@ -306,6 +306,8 @@ export const getSignupsByUserId = async (args, context) => {
     pagination: 'cursor',
   });
 
+  logger.debug('Loading signups from Rogue.', { args, queryString });
+
   const response = await fetch(
     `${ROGUE_URL}/api/v3/signups/?${queryString}`,
     authorizedRequest(context),
@@ -314,4 +316,84 @@ export const getSignupsByUserId = async (args, context) => {
   const json = await response.json();
 
   return transformCollection(json);
+};
+
+/**
+ * Fetch number of signups from Rogue based on the given filters.
+ * NOTE: This will only find the number of signups up to the "limit" provided.
+ * The limit defaults to 20.
+ *
+ * @param {String} campaignId
+ * @param {Number} limit
+ * @param {String} source
+ * @param {String} userId
+ * @return Int
+ */
+export const getSignupsCount = async (args, context) => {
+  const queryString = stringify({
+    filter: {
+      campaign_id: args.campaignId,
+      northstar_id: args.userId,
+      source: args.source,
+    },
+    limit: args.limit,
+  });
+
+  logger.debug('Loading signups count from Rogue.', { args, queryString });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/signups/?${queryString}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  const result = await transformCollection(json);
+
+  return result.length;
+};
+
+/**
+ * Fetch number of posts from Rogue based on the given filters.
+ * NOTE: This will only find the number of posts up to the "limit" provided.
+ * The limit defaults to 20.
+ *
+ * @param {String} action
+ * @param {String} actionIds
+ * @param {String} campaignId
+ * @param {Number} limit
+ * @param {String} location
+ * @param {String} source
+ * @param {String} type
+ * @param {String} userId
+ * @param {String} tags
+ * @return Int
+ */
+export const getPostsCount = async (args, context) => {
+  const queryString = stringify({
+    filter: {
+      action: args.action,
+      action_id: args.actionIds ? args.actionIds.join(',') : undefined,
+      campaign_id: args.campaignId,
+      location: args.location,
+      northstar_id: args.userId,
+      source: args.source,
+      type: args.type,
+      tag: args.tags,
+    },
+    limit: args.limit,
+  });
+
+  logger.debug('Loading posts count from Rogue.', { args, queryString });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/posts/?${queryString}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  const result = transformCollection(json);
+
+  return result.length;
 };

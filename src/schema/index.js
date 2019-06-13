@@ -128,6 +128,8 @@ const linkResolvers = {
         // We assume the broadcast will be associated with the
         // action's campaign Id of the saidYesTransition topic
         const actionId = broadcastTopic.saidYesTransition.topic.actionId;
+        // AskYesNo broadcasts that reference an autoReplyTransition as the
+        // saidYes field will not have an actionId set
         if (!actionId) {
           return null;
         }

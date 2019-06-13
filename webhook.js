@@ -41,11 +41,24 @@ exports.handler = async event => {
   const id = body.sys.id;
   const type = body.sys.type;
   const spaceId = body.sys.space.sys.id;
+  const contentType = body.sys.contentType && body.sys.contentType.sys.id;
 
   // Clear from DynamoDB (and await to make sure this completes).
   await cache.forget(`${type}:${spaceId}:${id}`);
 
   logger.info('Cleared cache via Contentful webhook.', { spaceId, id });
+
+  // Clear AffiliateByTitle results for the specified utmLabel from the Contentful cache.
+  if (contentType === 'affiliates') {
+    const utmLabel = body.fields.utmLabel && body.fields.utmLabel['en-US'];
+
+    if (utmLabel) {
+      // Clear from DynamoDB (and await to make sure this completes).
+      await cache.forget(`Affiliate:${spaceId}:${utmLabel}`);
+
+      logger.info('Cleared affiliate cache via Contentful webhook.', { spaceId, utmLabel });
+    }
+  }
 
   return response('Success.', 200);
 };
