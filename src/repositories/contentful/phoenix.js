@@ -113,18 +113,25 @@ const loadEntryByQuery = async (api, query) => {
 };
 
 /**
- * Search for a Phoenix Contentful Campaign entry by campaignId.
+ * Search for a Phoenix Contentful Entry by field.
  *
- * @param {String} id
+ * @param  {String} contentType
+ * @param  {String} fieldName
+ * @param  {String} fieldValue
+ * @param  {Object} context
  * @return {Object}
  */
-export const getCampaignWebsiteByCampaignId = async (campaignId, context) => {
+export const getPhoenixContentfulEntryByField = async (
+  contentType,
+  fieldName,
+  fieldValue,
+  context,
+) => {
   const { preview } = context;
 
   const query = {
-    content_type: 'campaign',
-    // The Contentful field ID is (unfortunately) legacyCampaignId. (An #Ashes remnant 😿).
-    'fields.legacyCampaignId': campaignId,
+    content_type: contentType,
+    [`fields.${fieldName}`]: fieldValue,
     order: '-sys.updatedAt',
     limit: 1,
   };
@@ -141,10 +148,24 @@ export const getCampaignWebsiteByCampaignId = async (campaignId, context) => {
   }
 
   // Otherwise, read from cache or Contentful's Content API:
-  return cache.remember(`CampaignWebste:${spaceId}:${campaignId}`, async () =>
+  return cache.remember(`${contentType}:${spaceId}:${fieldValue}`, async () =>
     loadEntryByQuery(contentApi, query),
   );
 };
+
+/**
+ * Search for a Phoenix Contentful Campaign entry by campaignId.
+ *
+ * @param {String} id
+ * @return {Object}
+ */
+export const getCampaignWebsiteByCampaignId = async (campaignId, context) =>
+  getPhoenixContentfulEntryByField(
+    'campaign',
+    'legacyCampaignId',
+    campaignId,
+    context,
+  );
 
 /**
  * Search for a Phoenix Contentful affiliate entry by utmLabel.
@@ -152,31 +173,8 @@ export const getCampaignWebsiteByCampaignId = async (campaignId, context) => {
  * @param {String} id
  * @return {Object}
  */
-export const getAffiliateByUtmLabel = async (utmLabel, context) => {
-  const { preview } = context;
-
-  const query = {
-    content_type: 'affiliates',
-    'fields.utmLabel': utmLabel,
-    limit: 1,
-  };
-
-  logger.debug('Loading Phoenix Contentful entry', {
-    query,
-    preview,
-  });
-
-  // If we're previewing, use Contentful's Preview API and
-  // don't bother trying to cache content on our end:
-  if (preview) {
-    return loadEntryByQuery(previewApi, query);
-  }
-
-  // Otherwise, read from cache or Contentful's Content API:
-  return cache.remember(`Affiliate:${spaceId}:${utmLabel}`, async () =>
-    loadEntryByQuery(contentApi, query),
-  );
-};
+export const getAffiliateByUtmLabel = async (utmLabel, context) =>
+  getPhoenixContentfulEntryByField('affiliates', 'utmLabel', utmLabel, context);
 
 /**
  * Fetch a Phoenix Contentful entry by ID.
