@@ -144,7 +144,7 @@ export const getCampaignWebsiteByCampaignId = async (campaignId, context) => {
   return cache.remember(`CampaignWebste:${spaceId}:${campaignId}`, async () =>
     loadEntryByQuery(contentApi, query),
   );
-}
+};
 
 /**
  * Search for a Phoenix Contentful affiliate entry by utmLabel.
