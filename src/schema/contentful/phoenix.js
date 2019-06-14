@@ -263,6 +263,7 @@ const typeDefs = gql`
     asset(id: String!, preview: Boolean = false): Asset
     affiliate(utmLabel: String!, preview: Boolean = false): AffiliateBlock
     campaignWebsite(id: String!, preview: Boolean = false): CampaignWebsite
+    campaignWebsiteByCampaignId(campaignId: String!, preview: Boolean = false): CampaignWebsite
   }
 `;
 
@@ -303,6 +304,8 @@ const resolvers = {
       Loader(context, preview).affiliates.load(utmLabel),
     campaignWebsite: (_, { id, preview }, context) =>
       Loader(context, preview).campaignWebsites.load(id),
+    campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
+      Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
