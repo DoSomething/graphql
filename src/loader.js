@@ -56,6 +56,9 @@ export default (context, preview = false) => {
       campaigns: new DataLoader(ids =>
         Promise.all(ids.map(id => getCampaignById(id, options))),
       ),
+      campaignWebsites: new DataLoader(ids =>
+        Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
+      ),
       conversations: new DataLoader(ids =>
         Promise.all(ids.map(id => getConversationById(id, options))),
       ),

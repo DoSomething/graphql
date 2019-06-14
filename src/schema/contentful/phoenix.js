@@ -60,6 +60,16 @@ const typeDefs = gql`
     url(w: Int, h: Int, fit: ResizeOption): AbsoluteUrl,
   }
 
+  type CampaignWebsite {
+    "The internal-facing title for this campaign."
+    internalTitle: String!
+    "The user-facing title for this campaign."
+    title: String!
+    "The slug for this campaign."
+    slug: String!
+    ${entryFields}
+  }
+
   type ImagesBlock implements Block {
     "The images to be included in this block."
     images: [Asset]
@@ -252,6 +262,7 @@ const typeDefs = gql`
     "Get an asset by ID."
     asset(id: String!, preview: Boolean = false): Asset
     affiliate(utmLabel: String!, preview: Boolean = false): AffiliateBlock
+    campaignWebsite(id: String!, preview: Boolean = false): CampaignWebsite
   }
 `;
 
@@ -262,6 +273,7 @@ const typeDefs = gql`
  */
 const contentTypeMappings = {
   affiliates: 'AffiliateBlock',
+  campaignWebsite: 'CampaignWebsite',
   embed: 'EmbedBlock',
   imagesBlock: 'ImagesBlock',
   linkAction: 'LinkBlock',
@@ -289,6 +301,8 @@ const resolvers = {
       Loader(context, preview).assets.load(id),
     affiliate: (_, { utmLabel, preview }, context) =>
       Loader(context, preview).affiliates.load(utmLabel),
+    campaignWebsite: (_, { id, preview }, context) =>
+      Loader(context, preview).campaignWebsites.load(id),
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
