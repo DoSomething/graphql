@@ -113,6 +113,40 @@ const loadEntryByQuery = async (api, query) => {
 };
 
 /**
+ * Search for a Phoenix Contentful Campaign entry by campaignId.
+ *
+ * @param {String} id
+ * @return {Object}
+ */
+export const getCampaignWebsiteByCampaignId = async (campaignId, context) => {
+  const { preview } = context;
+
+  const query = {
+    content_type: 'campaign',
+    // The Contentful field ID is (unfortunately) legacyCampaignId. (An #Ashes remnant 😿).
+    'fields.legacyCampaignId': campaignId,
+    order: '-sys.updatedAt',
+    limit: 1,
+  };
+
+  logger.debug('Loading Phoenix Contentful entry', {
+    query,
+    preview,
+  });
+
+  // If we're previewing, use Contentful's Preview API and
+  // don't bother trying to cache content on our end:
+  if (preview) {
+    return loadEntryByQuery(previewApi, query);
+  }
+
+  // Otherwise, read from cache or Contentful's Content API:
+  return cache.remember(`CampaignWebste:${spaceId}:${campaignId}`, async () =>
+    loadEntryByQuery(contentApi, query),
+  );
+}
+
+/**
  * Search for a Phoenix Contentful affiliate entry by utmLabel.
  *
  * @param {String} id
