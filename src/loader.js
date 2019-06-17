@@ -16,6 +16,7 @@ import {
   getPhoenixContentfulAssetById,
   getPhoenixContentfulEntryById,
   getAffiliateByUtmLabel,
+  getCampaignWebsiteByCampaignId,
 } from './repositories/contentful/phoenix';
 
 /**
@@ -55,6 +56,16 @@ export default (context, preview = false) => {
       ),
       campaigns: new DataLoader(ids =>
         Promise.all(ids.map(id => getCampaignById(id, options))),
+      ),
+      campaignWebsites: new DataLoader(ids =>
+        Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
+      ),
+      campaignWebsiteByCampaignIds: new DataLoader(campaignIds =>
+        Promise.all(
+          campaignIds.map(campaignId =>
+            getCampaignWebsiteByCampaignId(campaignId, context),
+          ),
+        ),
       ),
       conversations: new DataLoader(ids =>
         Promise.all(ids.map(id => getConversationById(id, options))),

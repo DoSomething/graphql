@@ -113,17 +113,26 @@ const loadEntryByQuery = async (api, query) => {
 };
 
 /**
- * Search for a Phoenix Contentful affiliate entry by utmLabel.
+ * Search for a Phoenix Contentful Entry by field.
  *
- * @param {String} id
+ * @param  {String} contentType
+ * @param  {String} fieldName
+ * @param  {String} fieldValue
+ * @param  {Object} context
  * @return {Object}
  */
-export const getAffiliateByUtmLabel = async (utmLabel, context) => {
+export const getPhoenixContentfulEntryByField = async (
+  contentType,
+  fieldName,
+  fieldValue,
+  context,
+) => {
   const { preview } = context;
 
   const query = {
-    content_type: 'affiliates',
-    'fields.utmLabel': utmLabel,
+    content_type: contentType,
+    [`fields.${fieldName}`]: fieldValue,
+    order: '-sys.updatedAt',
     limit: 1,
   };
 
@@ -139,10 +148,33 @@ export const getAffiliateByUtmLabel = async (utmLabel, context) => {
   }
 
   // Otherwise, read from cache or Contentful's Content API:
-  return cache.remember(`Affiliate:${spaceId}:${utmLabel}`, async () =>
+  return cache.remember(`${contentType}:${spaceId}:${fieldValue}`, async () =>
     loadEntryByQuery(contentApi, query),
   );
 };
+
+/**
+ * Search for a Phoenix Contentful Campaign entry by campaignId.
+ *
+ * @param {String} id
+ * @return {Object}
+ */
+export const getCampaignWebsiteByCampaignId = async (campaignId, context) =>
+  getPhoenixContentfulEntryByField(
+    'campaign',
+    'legacyCampaignId',
+    campaignId,
+    context,
+  );
+
+/**
+ * Search for a Phoenix Contentful affiliate entry by utmLabel.
+ *
+ * @param {String} id
+ * @return {Object}
+ */
+export const getAffiliateByUtmLabel = async (utmLabel, context) =>
+  getPhoenixContentfulEntryByField('affiliates', 'utmLabel', utmLabel, context);
 
 /**
  * Fetch a Phoenix Contentful entry by ID.
