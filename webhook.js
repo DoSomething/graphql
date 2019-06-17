@@ -66,7 +66,7 @@ exports.handler = async event => {
         // Clear from DynamoDB (and await to make sure this completes).
         await cache.forget(`${contentType}:${spaceId}:${fieldValue}`);
 
-        logger.info(`Cleared ${contentType} cache via Contentful webhook`);
+        logger.info(`Cleared ${contentType} cache via Contentful webhook`, { spaceId, id, [cacheKey]: fieldValue });
       }
     };
   }
