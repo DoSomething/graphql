@@ -60,7 +60,8 @@ exports.handler = async event => {
 
     for (let i = 0; i < cacheKeys.length; i++) {
       const cacheKey = cacheKeys[i];
-      const fieldValue = body.fields[cacheKey] && body.fields[cacheKey]['en-US'];
+        const fieldValue =
+          body.fields && body.fields['cacheKey'] && body.fields['cacheKey']['en-US'];
 
       if (fieldValue) {
         // Clear from DynamoDB (and await to make sure this completes).
