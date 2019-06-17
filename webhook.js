@@ -48,28 +48,27 @@ exports.handler = async event => {
 
   logger.info('Cleared cache via Contentful webhook.', { spaceId, id });
 
-  // Clear AffiliateByUtmLabel results for the specified utmLabel from the Contentful cache.
-  if (contentType === 'affiliates') {
-    const utmLabel = body.fields.utmLabel && body.fields.utmLabel['en-US'];
+  // List of content types with secondary cache keys (cached by a field other than cannonical ID).
+  const secondaryKeys = {
+    affiliates: ['utmLabel'],
+    campaign: ['legacyCampaignId'],
+  };
 
-    if (utmLabel) {
-      // Clear from DynamoDB (and await to make sure this completes).
-      await cache.forget(`Affiliate:${spaceId}:${utmLabel}`);
+  // Clear secondary cache key results from the Contentful cache if applicable.
+  if (secondaryKeys[contentType]) {
+    const cacheKeys = secondaryKeys[contentType];
 
-      logger.info('Cleared affiliate cache via Contentful webhook.', { spaceId, utmLabel });
-    }
-  }
+    for (let i = 0; i < cacheKeys.length; i++) {
+      const cacheKey = cacheKeys[i];
+      const fieldValue = body.fields[cacheKey] && body.fields[cacheKey]['en-US'];
 
-  // Clear CampaignWebsiteByCampaignId results for the specified campaignId from the Contentful cache.
-  if (contentType === 'campaign') {
-    const campaignId = body.fields.legacyCampaignId && body.fields.legacyCampaignId['en-US'];
+      if (fieldValue) {
+        // Clear from DynamoDB (and await to make sure this completes).
+        await cache.forget(`${contentType}:${spaceId}:${fieldValue}`);
 
-    if (campaignId) {
-      // Clear from DynamoDB (and await to make sure this completes).
-      await cache.forget(`CampaignWebsite:${spaceId}:${campaignId}`);
-
-      logger.info('Cleared campaignWebsite cache via Contentful webhook.', { spaceId, campaignId });
-    }
+        logger.info(`Cleared ${contentType} cache via Contentful webhook`);
+      }
+    };
   }
 
   return response('Success.', 200);
