@@ -257,7 +257,7 @@ export const getGambitContentfulEntryById = async (id, context) => {
 };
 
 /**
- * Fetch a Gambit Contentful entry by ID.
+ * Fetch a Gambit Contentful asset by ID.
  *
  * @param {String} id
  * @return {Object}
