@@ -100,6 +100,14 @@ const linkResolvers = {
       fragment:
         'fragment ActionFragment on AskVotingPlanStatusBroadcastTopic { saidVotedTransition }',
       resolve(broadcastTopic, args, context, info) {
+        // We might get asked for the broadcast without including the saidVotedTransition
+        // NOTE: However, if this is true, action would not be included!
+        if (
+          !broadcastTopic.saidVotedTransition ||
+          !broadcastTopic.saidVotedTransition.topic
+        ) {
+          return null;
+        }
         // We assume the broadcast will be associated with the
         // action's campaign Id of the saidVotedTransition topic
         const actionId = broadcastTopic.saidVotedTransition.topic.actionId;
