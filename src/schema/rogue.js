@@ -219,6 +219,8 @@ const typeDefs = gql`
       location: String
       "# The post source to load posts for."
       source: String
+      "# The tags to load posts for."
+      tags: [String]
       "# The type name to load posts for."
       type: String
       "# The user ID to load posts for."
