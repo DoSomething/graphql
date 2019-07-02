@@ -84,6 +84,7 @@ export const getCampaigns = async (args, context) => {
  * @param {String} location
  * @param {Number} page
  * @param {String} source
+ * @param {String} tags
  * @param {String} type
  * @param {String} userId
  * @return {Array}
@@ -97,6 +98,7 @@ export const getPosts = async (args, context) => {
       location: args.location,
       northstar_id: args.userId,
       source: args.source,
+      tag: args.tags ? args.tags.join(',') : undefined,
       type: args.type,
     },
     page: args.page,
