@@ -48,7 +48,7 @@ const linkSchema = gql`
     topic: Topic
   }
 
-  extend type AutoReplySignupTopic {
+  extend type AutoReplyTopic {
     "The campaign that this topic should create signups for."
     campaign: Campaign
   }
@@ -90,24 +90,6 @@ const linkSchema = gql`
 `;
 
 /**
- * @param {Object} broadcastTopic
- * @param {Object} context
- * @param {Object} info
- */
-function getGambitActionDelegateOptions(broadcastTopic, context, info) {
-  return {
-    schema: rogueSchema,
-    operation: 'query',
-    fieldName: 'action',
-    args: {
-      id: broadcastTopic.actionId,
-    },
-    context,
-    info,
-  };
-}
-
-/**
  * Resolvers between resources in different schemas.
  *
  * @var {Object}
@@ -116,47 +98,93 @@ const linkResolvers = {
   AskVotingPlanStatusBroadcastTopic: {
     action: {
       fragment:
-        'fragment ActionFragment on AskVotingPlanStatusBroadcastTopic { actionId }',
+        'fragment ActionFragment on AskVotingPlanStatusBroadcastTopic { saidVotedTransition }',
       resolve(broadcastTopic, args, context, info) {
-        return info.mergeInfo.delegateToSchema(
-          getGambitActionDelegateOptions(broadcastTopic, context, info),
-        );
+        // We might get asked for the broadcast without including the saidVotedTransition
+        // NOTE: However, if this is true, action would not be included!
+        if (
+          !broadcastTopic.saidVotedTransition ||
+          !broadcastTopic.saidVotedTransition.topic
+        ) {
+          return null;
+        }
+        // We assume the broadcast will be associated with the
+        // action's campaign Id of the saidVotedTransition topic
+        const actionId = broadcastTopic.saidVotedTransition.topic.actionId;
+        // check in case the transition does not support an actionId
+        if (!actionId) {
+          return null;
+        }
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'action',
+          args: {
+            id: actionId,
+          },
+          context,
+          info,
+        });
       },
     },
   },
   AskYesNoBroadcastTopic: {
     action: {
       fragment:
-        'fragment ActionFragment on AskYesNoBroadcastTopic { actionId }',
+        'fragment ActionFragment on AskYesNoBroadcastTopic { saidYesTransition }',
       resolve(broadcastTopic, args, context, info) {
+        // We assume the broadcast will be associated with the
+        // action's campaign Id of the saidYesTransition topic
+        const actionId = broadcastTopic.saidYesTransition.topic.actionId;
         // AskYesNo broadcasts that reference an autoReplyTransition as the
         // saidYes field will not have an actionId set
-        if (!broadcastTopic.actionId) {
+        if (!actionId) {
           return null;
         }
-        return info.mergeInfo.delegateToSchema(
-          getGambitActionDelegateOptions(broadcastTopic, context, info),
-        );
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'action',
+          args: {
+            id: actionId,
+          },
+          context,
+          info,
+        });
       },
     },
   },
   PhotoPostBroadcast: {
     action: {
-      fragment: 'fragment ActionFragment on PhotoPostBroadcast { actionId }',
+      fragment: 'fragment ActionFragment on PhotoPostBroadcast { topic }',
       resolve(broadcastTopic, args, context, info) {
-        return info.mergeInfo.delegateToSchema(
-          getGambitActionDelegateOptions(broadcastTopic, context, info),
-        );
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'action',
+          args: {
+            id: broadcastTopic.topic.actionId,
+          },
+          context,
+          info,
+        });
       },
     },
   },
   TextPostBroadcast: {
     action: {
-      fragment: 'fragment ActionFragment on TextPostBroadcast { actionId }',
+      fragment: 'fragment ActionFragment on TextPostBroadcast { topic }',
       resolve(broadcastTopic, args, context, info) {
-        return info.mergeInfo.delegateToSchema(
-          getGambitActionDelegateOptions(broadcastTopic, context, info),
-        );
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'action',
+          args: {
+            id: broadcastTopic.topic.actionId,
+          },
+          context,
+          info,
+        });
       },
     },
   },
@@ -307,17 +335,21 @@ const linkResolvers = {
       },
     },
   },
-  AutoReplySignupTopic: {
+  AutoReplyTopic: {
     campaign: {
       fragment:
-        'fragment CampaignFragment on AutoReplySignupTopic { campaignId }',
+        'fragment CampaignFragment on AutoReplyTopic { legacyCampaign }',
       resolve(topic, args, context, info) {
+        // not required in Gambini so it could be empty
+        if (!topic.legacyCampaign) {
+          return null;
+        }
         return info.mergeInfo.delegateToSchema({
           schema: rogueSchema,
           operation: 'query',
           fieldName: 'campaign',
           args: {
-            id: topic.campaignId,
+            id: topic.legacyCampaign.campaignId,
           },
           context,
           info,
@@ -327,14 +359,15 @@ const linkResolvers = {
   },
   PhotoPostTopic: {
     campaign: {
-      fragment: 'fragment CampaignFragment on PhotoPostTopic { campaignId }',
+      fragment:
+        'fragment CampaignFragment on PhotoPostTopic { legacyCampaign }',
       resolve(topic, args, context, info) {
         return info.mergeInfo.delegateToSchema({
           schema: rogueSchema,
           operation: 'query',
           fieldName: 'campaign',
           args: {
-            id: topic.campaignId,
+            id: topic.legacyCampaign.campaignId,
           },
           context,
           info,
@@ -344,14 +377,14 @@ const linkResolvers = {
   },
   TextPostTopic: {
     campaign: {
-      fragment: 'fragment CampaignFragment on TextPostTopic { campaignId }',
+      fragment: 'fragment CampaignFragment on TextPostTopic { legacyCampaign }',
       resolve(topic, args, context, info) {
         return info.mergeInfo.delegateToSchema({
           schema: rogueSchema,
           operation: 'query',
           fieldName: 'campaign',
           args: {
-            id: topic.campaignId,
+            id: topic.legacyCampaign.campaignId,
           },
           context,
           info,

@@ -4,62 +4,24 @@ import logger from 'heroku-logger';
 
 import config from '../../../config';
 import Cache from '../../cache';
+import Loader from '../../loader';
 
-const cache = new Cache(config('services.contentful.gambit.cache'));
+// const inspect = require('util').inspect;
+
+const cache = new Cache(config('services.contentful.cache'));
+const spaceId = config('services.contentful.gambit.spaceId');
 
 const contentfulClient = createClient({
-  space: config('services.contentful.gambit.spaceId'),
+  space: spaceId,
   accessToken: config('services.contentful.gambit.accessToken'),
+  resolveLinks: false,
 });
 
 /**
  * @param {Object} json
  * @return {Number}
  */
-const getCampaignId = json => {
-  if (json.fields.campaign) {
-    return json.fields.campaign.fields.campaignId;
-  }
-  return null;
-};
-
-/**
- * @param {Object} json
- * @return {Number}
- */
 const getActionId = json => json.fields.actionId;
-
-/**
- * @param {Object} json
- * @return {String}
- */
-const getChangeTopicId = json => {
-  if (json && json.fields.topic) {
-    return json.fields.topic.sys.id;
-  }
-  return null;
-};
-
-/**
- *
- * @param {Object} json
- * @return
- */
-const getChangeTopicActionId = json => {
-  if (!json || !json.fields) {
-    return null;
-  }
-  if (json.fields.topic && json.fields.topic.fields) {
-    return json.fields.topic.fields.actionId;
-  }
-  return null;
-};
-
-const getChangeTopicEntry = async json => {
-  const topicId = getChangeTopicId(json);
-  const entry = await exports.getGambitContentfulEntryById(topicId);
-  return entry;
-};
 
 /**
  * @param {Object} json
@@ -80,20 +42,6 @@ const getMessageText = json => {
 
 /**
  * @param {Object} json
- * @return {Array}
- */
-const getMessageAttachments = json => {
-  if (!json.fields.attachments) {
-    return [];
-  }
-  return json.fields.attachments.map(attachment => ({
-    url: attachment.fields.file.url,
-    contentType: attachment.fields.file.contentType,
-  }));
-};
-
-/**
- * @param {Object} json
  * @return {Object}
  */
 const getSummary = json => ({
@@ -105,124 +53,114 @@ const getSummary = json => ({
 });
 
 /**
+ * Reference fields are Link objects with the Entry Id which we will use to resolve later.
  * @param {Object} json
  * @return {Object}
  */
-const getFields = async json => {
+const getFields = json => {
   const contentType = getContentType(json);
   const fields = json.fields;
+  const attachments = fields.attachments || [];
 
+  // TODO: determine how to get the actionId for this broadcast since the choices
+  // can point to different campaigns through their action ids.
   if (contentType === 'askMultipleChoice') {
     return {
-      // TODO: determine how to get the actionId for this broadcast
-      attachments: getMessageAttachments(json),
+      attachments,
       invalidAskMultipleChoiceResponse: fields.invalidAskMultipleChoiceResponse,
-      saidFirstChoice: getMessageText(fields.firstChoiceTransition),
-      saidFirstChoiceTopicId: getChangeTopicId(fields.firstChoiceTransition),
-      saidSecondChoice: getMessageText(fields.secondChoiceTransition),
-      saidSecondChoiceTopicId: getChangeTopicId(fields.secondChoiceTransition),
-      saidThirdChoice: getMessageText(fields.thirdChoiceTransition),
-      saidThirdChoiceTopicId: getChangeTopicId(fields.thirdChoiceTransition),
-      saidFourthChoice: getMessageText(fields.fourthChoiceTransition),
-      saidFourthChoiceTopicId: getChangeTopicId(fields.fourthChoiceTransition),
-      saidFifthChoice: getMessageText(fields.fifthChoiceTransition),
-      saidFifthChoiceTopicId: getChangeTopicId(fields.fifthChoiceTransition),
       text: getMessageText(json),
+      // Links
+      saidFirstChoiceTransition: fields.firstChoiceTransition,
+      saidSecondChoiceTransition: fields.secondChoiceTransition,
+      saidThirdChoiceTransition: fields.thirdChoiceTransition,
+      saidFourthChoiceTransition: fields.fourthChoiceTransition,
+      saidFifthChoiceTransition: fields.fifthChoiceTransition,
     };
   }
-
   if (contentType === 'askSubscriptionStatus') {
     return {
-      attachments: getMessageAttachments(json),
+      attachments,
       invalidAskSubscriptionStatusResponse:
         fields.invalidAskSubscriptionStatusResponse,
-      saidActive: getMessageText(fields.activeTransition),
-      saidActiveTopicId: getChangeTopicId(fields.activeTransition),
-      saidLess: getMessageText(fields.lessTransition),
-      saidLessTopicId: getChangeTopicId(fields.lessTransition),
       saidNeedMoreInfo: fields.needMoreInfo,
       text: getMessageText(json),
+      // Links ---
+      saidActiveTransition: fields.activeTransition,
+      saidLessTransition: fields.lessTransition,
     };
   }
-
   if (contentType === 'askVotingPlanStatus') {
-    const saidVotedTopic = await getChangeTopicEntry(fields.votedTransition);
     return {
-      actionId: saidVotedTopic.actionId,
-      attachments: getMessageAttachments(json),
-      saidCantVote: getMessageText(fields.cantVoteTransition),
-      saidCantVoteTopicId: getChangeTopicId(fields.cantVoteTransition),
-      saidNotVoting: getMessageText(fields.notVotingTransition),
-      saidNotVotingTopicId: getChangeTopicId(fields.notVotingTransition),
-      saidVoted: getMessageText(fields.votedTransition),
-      saidVotedTopicId: getChangeTopicId(fields.votedTransition),
+      attachments,
       text: getMessageText(json),
+      // Links ---
+      saidCantVoteTransition: fields.cantVoteTransition,
+      saidNotVotingTransition: fields.notVotingTransition,
+      saidVotedTransition: fields.votedTransition,
     };
   }
-
   if (contentType === 'askYesNo') {
-    const saidYesTopic = await getChangeTopicEntry(fields.yesTransition);
     return {
-      actionId: saidYesTopic.actionId,
-      attachments: getMessageAttachments(json),
+      attachments,
       invalidAskYesNoResponse: fields.invalidAskYesNoResponse,
-      saidNo: getMessageText(fields.noTransition),
-      saidNoTopicId: getChangeTopicId(fields.noTransition),
-      saidYes: getMessageText(fields.yesTransition),
-      saidYesTopicId: getChangeTopicId(fields.yesTransition),
       text: getMessageText(json),
+      // Start Links ---
+      saidNoTransition: fields.noTransition,
+      saidYesTransition: fields.yesTransition,
     };
   }
-
   if (contentType === 'autoReply') {
     return {
       autoReply: fields.autoReply,
-      campaignId: getCampaignId(json),
+      // Links ---
+      legacyCampaign: fields.campaign,
     };
   }
-
   if (contentType === 'autoReplyBroadcast') {
     return {
-      attachments: getMessageAttachments(json),
+      attachments,
       text: getMessageText(json),
-      topicId: getChangeTopicId(json),
+      // Links ---
+      topic: fields.topic,
     };
   }
-
+  if (contentType === 'autoReplyTransition') {
+    return {
+      text: getMessageText(json),
+      // Links ---
+      topic: fields.topic,
+    };
+  }
+  // Also known as WebSignupConfirmation
   if (contentType === 'campaign') {
     return {
       campaignId: fields.campaignId,
-      text: getMessageText(json.fields.webSignup),
-      topicId: getChangeTopicId(json.fields.webSignup),
+      // Links ---
+      topic: fields.webSignup,
     };
   }
-
+  // TODO: If the response is an askMultipleChoice we should inject the broadcast itself as a topic
+  // otherwise, the response's topic.
   if (contentType === 'defaultTopicTrigger') {
-    // The askMultipleChoice broadcast id is the topic we want to switch the member to
-    const multipleChoiceTopicId =
-      getContentType(fields.response) === 'askMultipleChoice'
-        ? fields.response.sys.id
-        : null;
-    const changeTopicId = fields.response.fields.topic
-      ? fields.response.fields.topic.sys.id
-      : null;
-
     return {
       trigger: fields.trigger,
-      reply: fields.response.fields.text,
-      topicId: multipleChoiceTopicId || changeTopicId,
+      // Links --
+      response: fields.response,
     };
   }
-
+  if (contentType === 'faqAnswer') {
+    return {
+      text: getMessageText(json),
+    };
+  }
   if (contentType === 'photoPostBroadcast') {
     return {
-      actionId: getChangeTopicActionId(json),
-      attachments: getMessageAttachments(json),
-      text: fields.text,
-      topicId: getChangeTopicId(json),
+      attachments,
+      text: getMessageText(json),
+      // Links ---
+      topic: fields.topic,
     };
   }
-
   if (contentType === 'photoPostConfig') {
     return {
       actionId: getActionId(json),
@@ -232,7 +170,6 @@ const getFields = async json => {
       askPhoto: fields.askPhotoMessage,
       askQuantity: fields.askQuantityMessage,
       askWhyParticipated: fields.askWhyParticipatedMessage,
-      campaignId: getCampaignId(json),
       completedPhotoPost: fields.completedMenuMessage,
       completedPhotoPostAutoReply: fields.invalidCompletedMenuCommandMessage,
       invalidCaption:
@@ -242,27 +179,40 @@ const getFields = async json => {
       invalidPhoto: fields.invalidPhotoMessage,
       invalidWhyParticipated: fields.invalidWhyParticipatedMessage,
       startPhotoPostAutoReply: fields.invalidSignupMenuCommandMessage,
+      // Links ---
+      legacyCampaign: fields.campaign,
     };
   }
-
+  if (contentType === 'photoPostTransition') {
+    return {
+      text: getMessageText(json),
+      // Links ---
+      topic: fields.topic,
+    };
+  }
   if (contentType === 'textPostBroadcast') {
     return {
-      actionId: getChangeTopicActionId(json),
-      attachments: getMessageAttachments(json),
-      text: fields.text,
-      topicId: getChangeTopicId(json),
+      attachments,
+      text: getMessageText(json),
+      // Links ---
+      topic: fields.topic,
     };
   }
-
   if (contentType === 'textPostConfig') {
     return {
       actionId: getActionId(json),
-      campaignId: getCampaignId(json),
       completedTextPost: fields.completedTextPostMessage,
       invalidText: fields.invalidTextMessage,
+      legacyCampaign: fields.campaign,
     };
   }
-
+  if (contentType === 'textPostTransition') {
+    return {
+      text: getMessageText(json),
+      // Links ---
+      topic: fields.topic,
+    };
+  }
   return null;
 };
 
@@ -270,10 +220,17 @@ const getFields = async json => {
  * @param {Object} json
  * @return {Object}
  */
-const transformItem = async json => {
-  const fields = await getFields(json);
-  return assign(getSummary(json), fields);
-};
+const transformItem = json => assign(getSummary(json), getFields(json));
+
+/**
+ * @param {Object} json
+ * @return {Object}
+ */
+const transformAsset = json => ({
+  id: json.sys.id,
+  url: json.fields.file.url,
+  contentType: json.fields.file.contentType,
+});
 
 /**
  * Fetch a Gambit Contentful entry by ID.
@@ -284,31 +241,43 @@ const transformItem = async json => {
 export const getGambitContentfulEntryById = async (id, context) => {
   logger.debug('Loading Gambit Contentful entry', { id });
 
-  try {
-    const cachedEntry = await cache.get(id);
-
-    if (cachedEntry) {
-      logger.debug('Cache hit for Gambit Contentful entry', { id });
-      return cachedEntry;
+  return cache.remember(`Entry:${spaceId}:${id}`, async () => {
+    try {
+      const json = await contentfulClient.getEntry(id);
+      return transformItem(json);
+    } catch (exception) {
+      logger.warn('Unable to load Gambit Contentful entry.', {
+        id,
+        error: exception.message,
+        context,
+      });
     }
+    return null;
+  });
+};
 
-    logger.debug('Cache miss for Gambit Contentful entry', { id });
+/**
+ * Fetch a Gambit Contentful asset by ID.
+ *
+ * @param {String} id
+ * @return {Object}
+ */
+export const getGambitContentfulAssetById = async (id, context) => {
+  logger.debug('Loading Gambit Contentful asset', { id });
 
-    const json = await contentfulClient.getEntry(id);
-    const data = await transformItem(json);
-    cache.set(id, data);
-
-    return data;
-  } catch (exception) {
-    const error = exception.message;
-    logger.warn('Unable to load Gambit Contentful entry.', {
-      id,
-      error,
-      context,
-    });
-  }
-
-  return null;
+  return cache.remember(`Asset:${spaceId}:${id}`, async () => {
+    try {
+      const json = await contentfulClient.getAsset(id);
+      return transformAsset(json);
+    } catch (exception) {
+      logger.warn('Unable to load Gambit Contentful asset.', {
+        id,
+        error: exception.message,
+        context,
+      });
+    }
+    return null;
+  });
 };
 
 /**
@@ -317,27 +286,26 @@ export const getGambitContentfulEntryById = async (id, context) => {
  * @return {Array}
  */
 export const getConversationTriggers = async () => {
-  const ALL_TRIGGERS_KEY = 'conversationTriggers';
-
-  const cachedTriggers = await cache.get(ALL_TRIGGERS_KEY);
-  if (cachedTriggers) {
-    logger.debug('Cache hit for conversation triggers');
-    return cachedTriggers;
-  }
-
-  logger.debug('Cache miss for conversation triggers');
-
   const query = {
+    // TODO: Allow customizable ordering
     order: '-sys.createdAt',
+    // TODO: Allow pagination instead of sending a high arbitrary limit
     limit: 250,
     content_type: 'defaultTopicTrigger',
   };
 
-  const json = await contentfulClient.getEntries(query);
-  const data = await Promise.all(map(json.items, transformItem));
-  cache.set(ALL_TRIGGERS_KEY, data);
+  logger.debug('Loading Gambit Conversation Triggers', { query });
 
-  return data;
+  try {
+    const json = await contentfulClient.getEntries(query);
+    return map(json.items, transformItem);
+  } catch (exception) {
+    logger.warn('Unable to load Gambit Conversation Triggers.', {
+      query,
+      error: exception.message,
+    });
+  }
+  return [];
 };
 
 /**
@@ -346,16 +314,6 @@ export const getConversationTriggers = async () => {
  * @return {Array}
  */
 export const getWebSignupConfirmations = async () => {
-  const ALL_CONFIRMATIONS_KEY = 'webSignupConfirmations';
-
-  const cachedConfirmations = await cache.get(ALL_CONFIRMATIONS_KEY);
-  if (cachedConfirmations) {
-    logger.debug('Cache hit for web signup confirmations');
-    return cachedConfirmations;
-  }
-
-  logger.debug('Cache miss for web signup confirmations');
-
   const query = {
     order: '-sys.createdAt',
     limit: 250,
@@ -363,12 +321,61 @@ export const getWebSignupConfirmations = async () => {
   };
   query['fields.webSignup[exists]'] = true;
 
-  const json = await contentfulClient.getEntries(query);
+  logger.debug('Loading Gambit Web Signup Confirmations', { query });
 
-  const data = await Promise.all(map(json.items, transformItem));
-  cache.set(ALL_CONFIRMATIONS_KEY, data);
+  try {
+    const json = await contentfulClient.getEntries(query);
+    return map(json.items, transformItem);
+  } catch (exception) {
+    logger.warn('Unable to load Gambit Web Signup Confirmations.', {
+      query,
+      error: exception.message,
+    });
+  }
+  return [];
+};
 
-  return data;
+/**
+ * Fetch a Gambit Contentful entry by "link".
+ *
+ * @param {Object} link
+ * @param {Object} context
+ */
+export const getContentfulItemByLink = async (link, context) => {
+  if (!link) {
+    return null;
+  }
+
+  const { linkType, id } = link.sys;
+
+  switch (linkType) {
+    case 'Asset':
+      return Loader(context).gambitAssets.load(id);
+    case 'Entry':
+      return Loader(context).topics.load(id);
+    default:
+      throw new Error('Unsupported link type.');
+  }
+};
+
+/**
+ * GraphQL resolver for Contentful links.
+ *
+ * @param {Object} entry
+ * @param {Object} context
+ * @param {Object} info
+ */
+export const linkResolver = (entry, args, context, info) => {
+  const { fieldName, parentType } = info;
+  const link = entry[fieldName];
+
+  logger.debug(`Resolving link(s) on ${parentType.name}.${fieldName}`);
+
+  if (Array.isArray(link)) {
+    return link.map(asset => getContentfulItemByLink(asset, context));
+  }
+
+  return getContentfulItemByLink(link, context);
 };
 
 export default null;
