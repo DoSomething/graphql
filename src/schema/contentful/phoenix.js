@@ -76,6 +76,24 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type PersonBlock implements Block {
+    "Name of the person displayed on the block"
+    name: String
+    "The type of employer this person is"
+    type: String
+    "Current working status"
+    active: Boolean
+    "Laboral title represented by the person in question"
+    jobTitle: String
+    "Photo of the person"
+    photo: Asset
+    "Alternate Photo of the person"
+    alternatePhoto: Asset
+    "Description of the person"
+    description: String
+    ${entryFields}
+  }
+
   type EmbedBlock implements Block {
     "The URL of the content to be embedded."
     url: String!
@@ -98,6 +116,24 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type GalleryBlock implements Block {
+    "The internal-facing title for this gallery."
+    internalTitle: String
+    "Title of the gallery"
+    title: String
+    "The maximum number of items in a single row when viewing the gallery in a large display."
+    itemsPerRow: Int
+    "The alignment of the image"
+    imageAlignment: String
+    "Text displayed somewhere"
+    content: String
+    "Images displayed on the Gallery"
+    blocks: [Block]
+    "No idea what this does"
+    imageFit: String!
+    ${entryFields}
+  }
+
   type LinkBlock implements Block {
     "The internal-facing title for this link block."
     internalTitle: String!
@@ -115,6 +151,25 @@ const typeDefs = gql`
     template: String
     "Any custom overrides for this block."
     additionalContent: JSON
+    ${entryFields}
+  }
+
+  type ContentBlock implements Block {
+    "The internal-facing title for this link block."
+    internalTitle: String!
+    "An small decorated title positioned over the general title"
+    superTitle: String!
+    "The user-facing title of the block"
+    title: String!
+    "A subtitle that is never displayed"
+    subTitle: String!
+    "Text to display regarding content subject"
+    content: String
+    "Image relevant to the content"
+    image: Asset
+    "The alignment of the image"
+    imageAlignment: String!
+
     ${entryFields}
   }
 
@@ -276,8 +331,11 @@ const contentTypeMappings = {
   affiliates: 'AffiliateBlock',
   campaignWebsite: 'CampaignWebsite',
   embed: 'EmbedBlock',
+  contentBlock: 'ContentBlock',
+  galleryBlock: 'GalleryBlock',
   imagesBlock: 'ImagesBlock',
   linkAction: 'LinkBlock',
+  person: 'PersonBlock',
   petitionSubmissionAction: 'PetitionSubmissionBlock',
   photoSubmissionAction: 'PhotoSubmissionBlock',
   postGallery: 'PostGalleryBlock',
@@ -313,6 +371,9 @@ const resolvers = {
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
   },
+  ContentBlock: {
+    image: linkResolver,
+  },
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
@@ -325,8 +386,15 @@ const resolvers = {
   LinkBlock: {
     affiliateLogo: linkResolver,
   },
+  GalleryBlock: {
+    blocks: linkResolver,
+  },
   ImagesBlock: {
     images: linkResolver,
+  },
+  PersonBlock: {
+    photo: linkResolver,
+    alternatePhoto: linkResolver,
   },
   EmbedBlock: {
     previewImage: linkResolver,
