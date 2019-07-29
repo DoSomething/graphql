@@ -79,11 +79,11 @@ const typeDefs = gql`
   type PersonBlock implements Block {
     "Name of the person displayed on the block"
     name: String
-    "The type of employer this person is"
+    "The person's position within the organization"
     type: String
-    "Current working status"
+    "The person's relationship with the organization: active? non-active?"
     active: Boolean
-    "Laboral title represented by the person in question"
+    "Job title of the person"
     jobTitle: String
     "Photo of the person"
     photo: Asset
@@ -123,14 +123,12 @@ const typeDefs = gql`
     title: String
     "The maximum number of items in a single row when viewing the gallery in a large display."
     itemsPerRow: Int
-    "The alignment of the image"
-    imageAlignment: String
-    "Text displayed somewhere"
-    content: String
-    "Images displayed on the Gallery"
-    blocks: [Block]
-    "No idea what this does"
-    imageFit: String!
+    "The alignment of the gallery images relative to their text content"
+    imageAlignment: String!
+    "Blocks to display or preview in the Gallery"
+    blocks: [Block]!
+    "Controls the cropping method of the gallery images"
+    imageFit: String
     ${entryFields}
   }
 
