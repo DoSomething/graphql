@@ -69,6 +69,8 @@ const typeDefs = gql`
     slug: String!
      "The call to action tagline for this campaign."
     callToAction: String!
+    "The cover image for this campaign."
+    coverImage: Asset
     ${entryFields}
   }
 
@@ -314,6 +316,9 @@ const resolvers = {
   },
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
+  },
+  CampaignWebsite: {
+    coverImage: linkResolver,
   },
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
