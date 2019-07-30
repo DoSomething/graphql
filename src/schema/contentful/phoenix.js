@@ -67,6 +67,8 @@ const typeDefs = gql`
     title: String!
     "The slug for this campaign."
     slug: String!
+     "The call to action tagline for this campaign."
+    callToAction: String!
     ${entryFields}
   }
 
