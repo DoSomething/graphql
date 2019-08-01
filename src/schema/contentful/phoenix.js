@@ -72,6 +72,16 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type Page {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "Text displayed big at the top of the page."
+    title: String!
+    "The slug for this page."
+    slug: String!
+    ${entryFields}
+  }
+
   type ImagesBlock implements Block {
     "The images to be included in this block."
     images: [Asset]
@@ -296,32 +306,6 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type PageBlock implements Block {
-    "This title is used internally to help find this content."
-    internalTitle: String!
-    "Text displayed big at the top of the page."
-    title: String!
-    "Text directly below the title in a smaller font."
-    subTitle: String
-    "The slug for this page."
-    slug: String!
-    "Person writing the content of the page."
-    authors: [Block]
-    "The cover image will display on the page before the content."
-    coverImage: [Asset]
-    "Text displayed on the page"
-    content: String
-    "Add blocks to show up on alongside the main content."
-    sidebar: [Block]
-    "Blocks to display on the page."
-    blocks: [Block]
-    "Select 'Yes' to display Social Sharing buttons on the bottom of the page. (Facebook & Twitter)."
-    displaySocialShare: Boolean
-    "Hide the page from the navigation."
-    hideFromNavigation: Boolean
-    ${entryFields}
-  }
-
   type AffiliateBlock implements Block {
     "The internal-facing title for this affiliate block."
     internalTitle: String!
@@ -355,6 +339,7 @@ const typeDefs = gql`
 const contentTypeMappings = {
   affiliates: 'AffiliateBlock',
   campaignWebsite: 'CampaignWebsite',
+  page: 'PageBlock',
   embed: 'EmbedBlock',
   contentBlock: 'ContentBlock',
   galleryBlock: 'GalleryBlock',
@@ -367,7 +352,6 @@ const contentTypeMappings = {
   shareAction: 'ShareBlock',
   textSubmissionAction: 'TextSubmissionBlock',
   voterRegistrationAction: 'VoterRegistrationBlock',
-  page: 'PageBlock',
 };
 
 /**
@@ -390,6 +374,8 @@ const resolvers = {
       Loader(context, preview).campaignWebsites.load(id),
     campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
       Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
+    page: (_, { id, preview }, context) =>
+      Loader(context, preview).page.load(id),
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
