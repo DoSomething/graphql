@@ -120,11 +120,11 @@ const typeDefs = gql`
 
   type GalleryBlock implements Block {
     "The internal-facing title for this gallery."
-    internalTitle: String
+    internalTitle: String!
     "Title of the gallery"
     title: String
     "The maximum number of items in a single row when viewing the gallery in a large display."
-    itemsPerRow: Int
+    itemsPerRow: Int!
     "The alignment of the gallery images relative to their text content"
     imageAlignment: String!
     "Blocks to display or preview in the Gallery"
@@ -157,18 +157,18 @@ const typeDefs = gql`
   type ContentBlock implements Block {
     "The internal-facing title for this link block."
     internalTitle: String!
-    "An small decorated title positioned over the general title"
-    superTitle: String!
+    "An optional supporting super-title"
+    superTitle: String
     "The user-facing title of the block"
     title: String!
-    "A subtitle that is never displayed"
-    subTitle: String!
-    "Text to display regarding content subject"
-    content: String
-    "Image relevant to the content"
+    "A subtitle for the content block"
+    subTitle: String
+    "The content for the content block"
+    content: String!
+    "An optional Image to display next to the content"
     image: Asset
     "The alignment of the image"
-    imageAlignment: String!
+    imageAlignment: String
     ${entryFields}
   }
 
