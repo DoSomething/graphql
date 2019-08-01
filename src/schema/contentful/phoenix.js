@@ -339,7 +339,7 @@ const typeDefs = gql`
 const contentTypeMappings = {
   affiliates: 'AffiliateBlock',
   campaignWebsite: 'CampaignWebsite',
-  page: 'PageBlock',
+  page: 'Page',
   embed: 'EmbedBlock',
   contentBlock: 'ContentBlock',
   galleryBlock: 'GalleryBlock',
