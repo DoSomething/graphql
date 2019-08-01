@@ -20,6 +20,8 @@ const entryFields = `
     createdAt: DateTime
 `;
 
+//TODO: Add support for metadata reference field
+
 /**
  * GraphQL types.
  *
@@ -167,7 +169,6 @@ const typeDefs = gql`
     image: Asset
     "The alignment of the image"
     imageAlignment: String!
-
     ${entryFields}
   }
 
@@ -295,6 +296,32 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type PageBlock implements Block {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "Text displayed big at the top of the page."
+    title: String!
+    "Text directly below the title in a smaller font."
+    subTitle: String
+    "The slug for this page."
+    slug: String!
+    "Person writing the content of the page."
+    authors: [Block]
+    "The cover image will display on the page before the content."
+    coverImage: [Asset]
+    "Text displayed on the page"
+    content: String
+    "Add blocks to show up on alongside the main content."
+    sidebar: [Block]
+    "Blocks to display on the page."
+    blocks: [Block]
+    "Select 'Yes' to display Social Sharing buttons on the bottom of the page. (Facebook & Twitter)."
+    displaySocialShare: Boolean
+    "Hide the page from the navigation."
+    hideFromNavigation: Boolean
+    ${entryFields}
+  }
+
   type AffiliateBlock implements Block {
     "The internal-facing title for this affiliate block."
     internalTitle: String!
@@ -340,6 +367,7 @@ const contentTypeMappings = {
   shareAction: 'ShareBlock',
   textSubmissionAction: 'TextSubmissionBlock',
   voterRegistrationAction: 'VoterRegistrationBlock',
+  page: 'PageBlock',
 };
 
 /**
@@ -396,6 +424,12 @@ const resolvers = {
   },
   EmbedBlock: {
     previewImage: linkResolver,
+  },
+  PageBlock: {
+    authors: linkResolver,
+    coverImage: linkResolver,
+    sidebar: linkResolver,
+    blocks: linkResolver
   },
   AffiliateBlock: {
     logo: linkResolver,
