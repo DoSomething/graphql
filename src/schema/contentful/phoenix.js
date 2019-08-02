@@ -81,7 +81,7 @@ const typeDefs = gql`
     title: String!
     "The slug for this page."
     slug: String!
-    "Image displayed in the gallery"
+    "Cover image for this page"
     coverImage: [Asset]
     ${entryFields}
   }
@@ -378,7 +378,7 @@ const resolvers = {
       Loader(context, preview).campaignWebsites.load(id),
     campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
       Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
-    pages: (_, { id, preview }, context) =>
+    page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
   Asset: {
