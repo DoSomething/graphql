@@ -386,6 +386,10 @@ const resolvers = {
   ContentBlock: {
     image: linkResolver,
   },
+
+  CampaignWebsite: {
+   coverImage: linkResolver,
+
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
@@ -411,7 +415,7 @@ const resolvers = {
   EmbedBlock: {
     previewImage: linkResolver,
   },
-  PageBlock: {
+  Page: {
     authors: linkResolver,
     coverImage: linkResolver,
     sidebar: linkResolver,
