@@ -20,8 +20,6 @@ const entryFields = `
     createdAt: DateTime
 `;
 
-/*TODO: Add support for metadata reference field*/
-
 /**
  * GraphQL types.
  *
@@ -394,7 +392,7 @@ const resolvers = {
    coverImage: linkResolver,
   },
   TextSubmissionBlock: {
-    textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
+   textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
   PetitionSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
