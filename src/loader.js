@@ -70,7 +70,7 @@ export default (context, preview = false) => {
           ),
         ),
       ),
-      page: new DataLoader(ids =>
+      pages: new DataLoader(ids =>
         Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
       ),
       conversations: new DataLoader(ids =>
