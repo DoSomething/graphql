@@ -1,9 +1,19 @@
-import { makeExecutableSchema } from 'graphql-tools';
-import { GraphQLDateTime } from 'graphql-iso-date';
-import { GraphQLAbsoluteUrl } from 'graphql-url';
+import {
+  makeExecutableSchema
+} from 'graphql-tools';
+import {
+  GraphQLDateTime
+} from 'graphql-iso-date';
+import {
+  GraphQLAbsoluteUrl
+} from 'graphql-url';
 import GraphQLJSON from 'graphql-type-json';
-import { gql } from 'apollo-server';
-import { get } from 'lodash';
+import {
+  gql
+} from 'apollo-server';
+import {
+  get
+} from 'lodash';
 
 import Loader from '../../loader';
 import {
@@ -25,7 +35,7 @@ const entryFields = `
  *
  * @var {String}
  */
-const typeDefs = gql`
+const typeDefs = gql `
   scalar JSON
   scalar DateTime
   scalar AbsoluteUrl
@@ -366,17 +376,35 @@ const resolvers = {
   DateTime: GraphQLDateTime,
   AbsoluteUrl: GraphQLAbsoluteUrl,
   Query: {
-    block: (_, { id, preview }, context) =>
+    block: (_, {
+        id,
+        preview
+      }, context) =>
       Loader(context, preview).blocks.load(id),
-    asset: (_, { id, preview }, context) =>
+    asset: (_, {
+        id,
+        preview
+      }, context) =>
       Loader(context, preview).assets.load(id),
-    affiliate: (_, { utmLabel, preview }, context) =>
+    affiliate: (_, {
+        utmLabel,
+        preview
+      }, context) =>
       Loader(context, preview).affiliates.load(utmLabel),
-    campaignWebsite: (_, { id, preview }, context) =>
+    campaignWebsite: (_, {
+        id,
+        preview
+      }, context) =>
       Loader(context, preview).campaignWebsites.load(id),
-    campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
+    campaignWebsiteByCampaignId: (_, {
+        campaignId,
+        preview
+      }, context) =>
       Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
-    page: (_, { id, preview }, context) =>
+    page: (_, {
+        id,
+        preview
+      }, context) =>
       Loader(context, preview).page.load(id),
   },
   Asset: {
@@ -389,10 +417,10 @@ const resolvers = {
     image: linkResolver,
   },
   CampaignWebsite: {
-   coverImage: linkResolver,
+    coverImage: linkResolver,
   },
   TextSubmissionBlock: {
-   textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
+    textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
   PetitionSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
