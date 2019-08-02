@@ -71,7 +71,7 @@ export default (context, preview = false) => {
         ),
       ),
       page: new DataLoader(ids =>
-        Promise.all(ids.map(id => getPhoenixContenfulEntryById(id, context))),
+        Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
       ),
       conversations: new DataLoader(ids =>
         Promise.all(ids.map(id => getConversationById(id, options))),
