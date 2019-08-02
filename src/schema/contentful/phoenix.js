@@ -69,6 +69,10 @@ const typeDefs = gql`
     title: String!
     "The slug for this campaign."
     slug: String!
+     "The call to action tagline for this campaign."
+    callToAction: String!
+    "The cover image for this campaign."
+    coverImage: Asset
     ${entryFields}
   }
 
@@ -383,6 +387,7 @@ const resolvers = {
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
   },
+  
   ContentBlock: {
     image: linkResolver,
   },
@@ -390,7 +395,7 @@ const resolvers = {
   CampaignWebsite: {
    coverImage: linkResolver,
   },
-
+    
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
