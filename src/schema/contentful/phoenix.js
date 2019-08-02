@@ -77,10 +77,12 @@ const typeDefs = gql`
   type Page {
     "This title is used internally to help find this content."
     internalTitle: String!
-    "Text displayed big at the top of the page."
+    "The title for this page."
     title: String!
     "The slug for this page."
     slug: String!
+    "Image displayed in the gallery"
+    coverImage: [Asset]
     ${entryFields}
   }
 
@@ -376,7 +378,7 @@ const resolvers = {
       Loader(context, preview).campaignWebsites.load(id),
     campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
       Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
-    page: (_, { id, preview }, context) =>
+    pages: (_, { id, preview }, context) =>
       Loader(context, preview).page.load(id),
   },
   Asset: {
@@ -417,10 +419,7 @@ const resolvers = {
     previewImage: linkResolver,
   },
   Page: {
-    authors: linkResolver,
     coverImage: linkResolver,
-    sidebar: linkResolver,
-    blocks: linkResolver,
   },
   AffiliateBlock: {
     logo: linkResolver,
