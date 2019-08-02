@@ -90,11 +90,11 @@ const typeDefs = gql`
 
   type PersonBlock implements Block {
     "Name of the person displayed on the block"
-    name: String
-    "The person's position within the organization"
-    type: String
-    "The person's relationship with the organization: active? non-active?"
-    active: Boolean
+    name: String!
+    "The person's relationship with the organization: member? employee?"
+    type: String!
+    "The status of the person's relationship with the organization: active? non-active?"
+    active: Boolean!
     "Job title of the person"
     jobTitle: String
     "Photo of the person"
