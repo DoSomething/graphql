@@ -379,7 +379,7 @@ const resolvers = {
     campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
       Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
     pages: (_, { id, preview }, context) =>
-      Loader(context, preview).page.load(id),
+      Loader(context, preview).pages.load(id),
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
