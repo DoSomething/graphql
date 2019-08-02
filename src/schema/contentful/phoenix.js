@@ -389,10 +389,10 @@ const resolvers = {
     image: linkResolver,
   },
   CampaignWebsite: {
-   coverImage: linkResolver,
+    coverImage: linkResolver,
   },
   TextSubmissionBlock: {
-   textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
+    textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
   PetitionSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
