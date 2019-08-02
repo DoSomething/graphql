@@ -389,6 +389,7 @@ const resolvers = {
 
   CampaignWebsite: {
    coverImage: linkResolver,
+  },
 
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
