@@ -331,6 +331,7 @@ const typeDefs = gql`
     asset(id: String!, preview: Boolean = false): Asset
     affiliate(utmLabel: String!, preview: Boolean = false): AffiliateBlock
     campaignWebsite(id: String!, preview: Boolean = false): CampaignWebsite
+    page(id: String!, preview: Boolean = false): Page
     campaignWebsiteByCampaignId(campaignId: String!, preview: Boolean = false): CampaignWebsite
   }
 `;
