@@ -240,8 +240,9 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
  * @param {Object} context
  * @param {Object} info
  */
-export const linkResolver = (entry, _, context, info) => {
-  const { fieldName, parentType } = info;
+export const linkResolver = (entry, _, context, info, name) => {
+  const { parentType } = info;
+  const fieldName = name ? name : info.fieldName;
   const link = entry[fieldName];
 
   logger.debug(`Resolving link(s) on ${parentType.name}.${fieldName}`);
@@ -252,6 +253,7 @@ export const linkResolver = (entry, _, context, info) => {
 
   return getPhoenixContentfulItemByLink(link, context);
 };
+
 
 /**
  * Given a Contentful asset, create a URL using Contentful's

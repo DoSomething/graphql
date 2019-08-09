@@ -1,9 +1,9 @@
-import { makeExecutableSchema } from 'graphql-tools';
-import { GraphQLDateTime } from 'graphql-iso-date';
-import { GraphQLAbsoluteUrl } from 'graphql-url';
+import {makeExecutableSchema} from 'graphql-tools';
+import {GraphQLDateTime} from 'graphql-iso-date';
+import {GraphQLAbsoluteUrl} from 'graphql-url';
 import GraphQLJSON from 'graphql-type-json';
-import { gql } from 'apollo-server';
-import { get } from 'lodash';
+import {gql} from 'apollo-server';
+import {get} from 'lodash';
 
 import Loader from '../../loader';
 import {
@@ -25,6 +25,7 @@ const entryFields = `
  *
  * @var {String}
  */
+
 const typeDefs = gql`
   scalar JSON
   scalar DateTime
@@ -44,6 +45,16 @@ const typeDefs = gql`
   }
 
   interface Block {
+    ${entryFields}
+  }
+
+  interface Showcasable {
+    "The title for this block"
+    showcaseTitle: String!
+    "A subtitle"
+    showcaseDescription: String!
+    "Image accompaning"
+    showcaseImage: Asset!
     ${entryFields}
   }
 
@@ -74,7 +85,7 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type Page {
+  type Page implements Showcasable{
     "This title is used internally to help find this content."
     internalTitle: String!
     "The title for this page."
@@ -82,7 +93,13 @@ const typeDefs = gql`
     "The slug for this page."
     slug: String!
     "Cover image for this page"
-    coverImage: [Asset]
+    coverImage: Asset
+    "A title for showcase"
+    showcaseTitle: String!
+    "A description for showcase"
+    showcaseDescription: String!
+    "An image for showcase"
+    showcaseImage: Asset!
     ${entryFields}
   }
 
@@ -92,7 +109,7 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type PersonBlock implements Block {
+  type PersonBlock implements Showcasable & Block{
     "Name of the person displayed on the block"
     name: String!
     "The person's relationship with the organization: member? employee?"
@@ -107,6 +124,12 @@ const typeDefs = gql`
     alternatePhoto: Asset
     "Description of the person"
     description: String
+    "The title for a showcasable relationship."
+    showcaseTitle: String!
+    "The subtitle for a showcasable relationship."
+    showcaseDescription: String!
+    "The image for showcasing"
+    showcaseImage: Asset!
     ${entryFields}
   }
 
@@ -138,11 +161,11 @@ const typeDefs = gql`
     "Title of the gallery"
     title: String
     "The maximum number of items in a single row when viewing the gallery in a large display."
-    itemsPerRow: Int!
+    itemsPerRow: Int
     "The alignment of the gallery images relative to their text content"
     imageAlignment: String!
     "Blocks to display or preview in the Gallery"
-    blocks: [Block]!
+    blocks: [Showcasable]!
     "Controls the cropping method of the gallery images"
     imageFit: String
     ${entryFields}
@@ -371,15 +394,15 @@ const resolvers = {
   Query: {
     block: (_, { id, preview }, context) =>
       Loader(context, preview).blocks.load(id),
-    asset: (_, { id, preview }, context) =>
+    asset: (_, {id, preview}, context) =>
       Loader(context, preview).assets.load(id),
-    affiliate: (_, { utmLabel, preview }, context) =>
+    affiliate: (_, {utmLabel, preview}, context) =>
       Loader(context, preview).affiliates.load(utmLabel),
-    campaignWebsite: (_, { id, preview }, context) =>
+    campaignWebsite: (_, {id, preview}, context) =>
       Loader(context, preview).campaignWebsites.load(id),
-    campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
+    campaignWebsiteByCampaignId: (_, {campaignId, preview}, context) =>
       Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
-    page: (_, { id, preview }, context) =>
+    page: (_, {id, preview}, context) =>
       Loader(context, preview).pages.load(id),
   },
   Asset: {
@@ -387,6 +410,10 @@ const resolvers = {
   },
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
+  },
+  Showcasable: {
+    __resolveType: showcasable =>
+      get(contentTypeMappings, showcasable.contentType),
   },
   ContentBlock: {
     image: linkResolver,
@@ -415,12 +442,21 @@ const resolvers = {
   PersonBlock: {
     photo: linkResolver,
     alternatePhoto: linkResolver,
+    showcaseTitle: person => person.name,
+    showcaseDescription: person =>
+      (person.type.includes('member board'))
+      ? person.description
+      : person.jobTitle,
+    showcaseImage: (person, _, context, info) => linkResolver(person, _, context, info, 'alternatePhoto'),
   },
   EmbedBlock: {
     previewImage: linkResolver,
   },
   Page: {
     coverImage: linkResolver,
+    showcaseTitle: page => page.title,
+    showcaseDescription: page => page.subTitle,
+    showcaseImage: (page, _, context, info) => linkResolver(page, _, context, info, 'coverImage'),
   },
   AffiliateBlock: {
     logo: linkResolver,
