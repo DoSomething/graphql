@@ -473,8 +473,7 @@ const resolvers = {
     showcaseTitle: person => person.name,
     showcaseDescription: person =>
       (person.type.includes('member board')) ?
-      person.description :
-      person.jobTitle,
+      person.description : person.jobTitle,
     showcaseImage: (person, _, context, info) => linkResolver(person, _, context, info, 'alternatePhoto'),
   },
   EmbedBlock: {
