@@ -1,8 +1,8 @@
-import {createClient} from 'contentful';
+import { createClient } from 'contentful';
 import logger from 'heroku-logger';
-import {URL} from 'url';
+import { URL } from 'url';
 
-import {urlWithQuery} from '../helpers';
+import { urlWithQuery } from '../helpers';
 import config from '../../../config';
 import Loader from '../../loader';
 import Cache from '../../cache';
@@ -58,12 +58,12 @@ const transformAsset = json => ({
  */
 export const getPhoenixContentfulEntryById = async (id, context) => {
   const {
-    preview
+    preview,
   } = context;
 
   logger.debug('Loading Phoenix Contentful entry', {
     id,
- preview
+    preview,
   });
 
   // If we're previewing, use Contentful's Preview API and
@@ -156,7 +156,8 @@ export const getPhoenixContentfulEntryByField = async (
 
   // Otherwise, read from cache or Contentful's Content API:
   return cache.remember(`${contentType}:${spaceId}:${fieldValue}`, async () =>
-    loadEntryByQuery(contentApi, query), );
+    loadEntryByQuery(contentApi, query),
+  );
 };
 
 /**
@@ -190,7 +191,7 @@ export const getAffiliateByUtmLabel = async (utmLabel, context) =>
  */
 export const getPhoenixContentfulAssetById = async (id, context) => {
   const {
-    preview
+   preview
   } = context;
 
   logger.debug('Loading Phoenix Contentful asset', {
@@ -233,8 +234,8 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
   }
 
   const {
-    linkType,
-    id
+   linkType,
+   id
   } = link.sys;
 
   switch (linkType) {
@@ -258,7 +259,7 @@ export const linkResolver = (entry, _, context, info, name) => {
   const {
     parentType
   } = info;
-  const fieldName = (name) ? name : info.fieldName;
+  const fieldName = name ? name : info.fieldName;
   const link = entry[fieldName];
 
   logger.debug(`Resolving link(s) on ${parentType.name}.${fieldName}`);
@@ -267,8 +268,7 @@ export const linkResolver = (entry, _, context, info, name) => {
     return link.map(asset => getPhoenixContentfulItemByLink(asset, context));
   }
 
-  return getPhoenixContentfulItemByLink(link, context);
-};
+  return getPhoenixContentfulItemByLink(link, context);};
 
 
 /**
@@ -303,7 +303,7 @@ export const createImageUrl = (asset, args) => {
 
   return urlWithQuery(url, {
     ...args,
-    f: focus
+    f: focus,
   }); // eslint-disable-line id-length
 };
 
