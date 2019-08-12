@@ -290,7 +290,7 @@ export const createImageUrl = (asset, args) => {
     focus = 'faces';
   }
 
-  return urlWithQuery(url, { ...args, f: focus, }); // eslint-disable-line id-length
+  return urlWithQuery(url, { ...args, f: focus }); // eslint-disable-line id-length
 };
 
 export default null;

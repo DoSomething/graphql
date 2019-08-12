@@ -25,7 +25,6 @@ const entryFields = `
  *
  * @var {String}
  */
-
 const typeDefs = gql `
   scalar JSON
   scalar DateTime
@@ -391,35 +390,17 @@ const resolvers = {
   DateTime: GraphQLDateTime,
   AbsoluteUrl: GraphQLAbsoluteUrl,
   Query: {
-    block: (_, {
-        id,
-        preview
-      }, context) =>
+    block: (_, { id, preview }, context) =>
       Loader(context, preview).blocks.load(id),
-    asset: (_, {
-        id,
-        preview
-      }, context) =>
+    asset: (_, { id, preview }, context) =>
       Loader(context, preview).assets.load(id),
-    affiliate: (_, {
-        utmLabel,
-        preview
-      }, context) =>
+    affiliate: (_, { utmLabel, preview }, context) =>
       Loader(context, preview).affiliates.load(utmLabel),
-    campaignWebsite: (_, {
-        id,
-        preview
-      }, context) =>
+    campaignWebsite: (_, { id, preview }, context) =>
       Loader(context, preview).campaignWebsites.load(id),
-    campaignWebsiteByCampaignId: (_, {
-        campaignId,
-        preview
-      }, context) =>
+    campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
       Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
-    page: (_, {
-        id,
-        preview
-      }, context) =>
+    page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
   Asset: {
@@ -461,9 +442,10 @@ const resolvers = {
     alternatePhoto: linkResolver,
     showcaseTitle: person => person.name,
     showcaseDescription: person =>
-      (person.type.includes('member board')) ?
-      person.description : person.jobTitle,
+      (person.type.includes('member board'))
+      ? person.description : person.jobTitle,
     showcaseImage: (person, _, context, info) => linkResolver(person, _, context, info, 'alternatePhoto'),
+
   },
   EmbedBlock: {
     previewImage: linkResolver,
@@ -473,6 +455,7 @@ const resolvers = {
     showcaseTitle: page => page.title,
     showcaseDescription: page => page.subTitle,
     showcaseImage: (page, _, context, info) => linkResolver(page, _, context, info, 'coverImage'),
+
   },
   AffiliateBlock: {
     logo: linkResolver,
