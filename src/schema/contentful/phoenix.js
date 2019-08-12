@@ -25,7 +25,6 @@ const entryFields = `
  *
  * @var {String}
  */
- 
 const typeDefs = gql `
   scalar JSON
   scalar DateTime
@@ -443,8 +442,9 @@ const resolvers = {
     alternatePhoto: linkResolver,
     showcaseTitle: person => person.name,
     showcaseDescription: person =>
-      (person.type.includes('member board')
-        ? person.description : person.jobTitle),
+      person.type.includes('member board')
+        ? person.description
+          : person.jobTitle,
 
     showcaseImage: (person, _, context, info) =>
           linkResolver(person, _, context, info, 'alternatePhoto'),
@@ -457,8 +457,7 @@ const resolvers = {
     showcaseTitle: page => page.title,
     showcaseDescription: page => page.subTitle,
     showcaseImage: (page, _, context, info) =>
-       linkResolver(page, _, context, info, 'coverImage'),
-
+          linkResolver(page, _, context, info, 'coverImage'),
   },
   AffiliateBlock: {
     logo: linkResolver,
