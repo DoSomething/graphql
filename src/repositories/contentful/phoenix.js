@@ -57,9 +57,7 @@ const transformAsset = json => ({
  * @return {Object}
  */
 export const getPhoenixContentfulEntryById = async (id, context) => {
-  const {
-   preview,
-  } = context;
+  const { preview } = context;
 
   logger.debug('Loading Phoenix Contentful entry', {
     id,
@@ -132,9 +130,7 @@ export const getPhoenixContentfulEntryByField = async (
   fieldValue,
   context,
 ) => {
-  const {
-   preview,
-  } = context;
+  const { preview } = context;
 
   const query = {
     content_type: contentType,
@@ -190,9 +186,7 @@ export const getAffiliateByUtmLabel = async (utmLabel, context) =>
  * @return {Object}
  */
 export const getPhoenixContentfulAssetById = async (id, context) => {
-  const {
-   preview,
-  } = context;
+  const { preview } = context;
 
   logger.debug('Loading Phoenix Contentful asset', {
     id,
@@ -233,10 +227,7 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
     return null;
   }
 
-  const {
- linkType,
- id
-  } = link.sys;
+  const { linkType, id } = link.sys;
 
   switch (linkType) {
     case 'Asset':
@@ -256,9 +247,7 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
  * @param {Object} info
  */
 export const linkResolver = (entry, _, context, info, name) => {
-  const {
-   parentType,
-  } = info;
+  const { parentType } = info;
   const fieldName = name ? name : info.fieldName;
   const link = entry[fieldName];
 
