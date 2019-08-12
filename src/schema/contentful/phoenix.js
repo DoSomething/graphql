@@ -24,8 +24,7 @@ const entryFields = `
  * GraphQL types.
  *
  * @var {String}
- */
-const typeDefs = gql `
+ */const typeDefs = gql `
   scalar JSON
   scalar DateTime
   scalar AbsoluteUrl
@@ -444,10 +443,10 @@ const resolvers = {
     showcaseDescription: person =>
       person.type.includes('member board')
         ? person.description
-          : person.jobTitle,
+        : person.jobTitle,
 
     showcaseImage: (person, _, context, info) =>
-          linkResolver(person, _, context, info, 'alternatePhoto'),
+      linkResolver(person, _, context, info, 'alternatePhoto'),
   },
   EmbedBlock: {
     previewImage: linkResolver,
@@ -457,7 +456,7 @@ const resolvers = {
     showcaseTitle: page => page.title,
     showcaseDescription: page => page.subTitle,
     showcaseImage: (page, _, context, info) =>
-          linkResolver(page, _, context, info, 'coverImage'),
+      linkResolver(page, _, context, info, 'coverImage'),
   },
   AffiliateBlock: {
     logo: linkResolver,
