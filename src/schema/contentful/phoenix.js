@@ -1,19 +1,9 @@
-import {
-  makeExecutableSchema
-} from 'graphql-tools';
-import {
-  GraphQLDateTime
-} from 'graphql-iso-date';
-import {
-  GraphQLAbsoluteUrl
-} from 'graphql-url';
+import { makeExecutableSchema } from 'graphql-tools';
+import { GraphQLDateTime } from 'graphql-iso-date';
+import { GraphQLAbsoluteUrl } from 'graphql-url';
 import GraphQLJSON from 'graphql-type-json';
-import {
-  gql
-} from 'apollo-server';
-import {
-  get
-} from 'lodash';
+import { gql } from 'apollo-server';
+import { get } from 'lodash';
 
 import Loader from '../../loader';
 import {
@@ -40,7 +30,6 @@ const typeDefs = gql `
   scalar JSON
   scalar DateTime
   scalar AbsoluteUrl
-
   enum ResizeOption {
     "Resize the image to the specified dimensions, padding the image if needed."
     PAD

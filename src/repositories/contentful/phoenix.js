@@ -248,7 +248,7 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
  */
 export const linkResolver = (entry, _, context, info, name) => {
   const { parentType } = info;
-  const fieldName = name ? name : info.fieldName;
+  const fieldName = name || info.fieldName;
   const link = entry[fieldName];
 
   logger.debug(`Resolving link(s) on ${parentType.name}.${fieldName}`);
@@ -259,7 +259,6 @@ export const linkResolver = (entry, _, context, info, name) => {
 
   return getPhoenixContentfulItemByLink(link, context);
 };
-
 
 /**
  * Given a Contentful asset, create a URL using Contentful's
@@ -291,10 +290,7 @@ export const createImageUrl = (asset, args) => {
     focus = 'faces';
   }
 
-  return urlWithQuery(url, {
-    ...args,
-    f: focus,
-  }); // eslint-disable-line id-length
+  return urlWithQuery(url, { ...args, f: focus, }); // eslint-disable-line id-length
 };
 
 export default null;
