@@ -58,7 +58,7 @@ const transformAsset = json => ({
  */
 export const getPhoenixContentfulEntryById = async (id, context) => {
   const {
-    preview,
+   preview,
   } = context;
 
   logger.debug('Loading Phoenix Contentful entry', {
@@ -133,7 +133,7 @@ export const getPhoenixContentfulEntryByField = async (
   context,
 ) => {
   const {
-    preview
+   preview,
   } = context;
 
   const query = {
@@ -191,12 +191,12 @@ export const getAffiliateByUtmLabel = async (utmLabel, context) =>
  */
 export const getPhoenixContentfulAssetById = async (id, context) => {
   const {
-   preview
+   preview,
   } = context;
 
   logger.debug('Loading Phoenix Contentful asset', {
     id,
-    preview
+    preview,
   });
 
   // If we're previewing, use Contentful's Preview API and
@@ -234,8 +234,8 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
   }
 
   const {
-   linkType,
-   id
+ linkType,
+ id
   } = link.sys;
 
   switch (linkType) {
@@ -257,7 +257,7 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
  */
 export const linkResolver = (entry, _, context, info, name) => {
   const {
-    parentType
+   parentType,
   } = info;
   const fieldName = name ? name : info.fieldName;
   const link = entry[fieldName];
@@ -268,7 +268,8 @@ export const linkResolver = (entry, _, context, info, name) => {
     return link.map(asset => getPhoenixContentfulItemByLink(asset, context));
   }
 
-  return getPhoenixContentfulItemByLink(link, context);};
+  return getPhoenixContentfulItemByLink(link, context);
+};
 
 
 /**
