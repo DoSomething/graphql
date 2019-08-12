@@ -278,7 +278,7 @@ export const createImageUrl = (asset, args) => {
   if (url.hostname !== 'images.ctfassets.net') {
     return url;
   }
-
+  //
   // If using a supported resize behavior, focus on any
   // faces found in the photo. Otherwise, center it.
   let focus = 'center';
