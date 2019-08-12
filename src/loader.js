@@ -1,30 +1,20 @@
-import {
-  set
-} from 'lodash';
+import {set} from 'lodash';
 import logger from 'heroku-logger';
 import DataLoader from 'dataloader';
 
-import {
-  getEmbed
-} from './repositories/embed';
+import {getEmbed} from './repositories/embed';
 import {
   getActionById,
   getCampaignById,
   getSignupsById,
 } from './repositories/rogue';
-import {
-  getUserById
-} from './repositories/northstar';
-import {
-  getConversationById
-} from './repositories/gambit';
+import {getUserById} from './repositories/northstar';
+import {getConversationById} from './repositories/gambit';
 import {
   getGambitContentfulEntryById,
   getGambitContentfulAssetById,
 } from './repositories/contentful/gambit';
-import {
-  authorizedRequest
-} from './repositories/helpers';
+import {authorizedRequest} from './repositories/helpers';
 import {
   getPhoenixContentfulAssetById,
   getPhoenixContentfulEntryById,

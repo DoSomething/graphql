@@ -1,14 +1,8 @@
-import {
-  createClient
-} from 'contentful';
+import {createClient} from 'contentful';
 import logger from 'heroku-logger';
-import {
-  URL
-} from 'url';
+import {URL} from 'url';
 
-import {
-  urlWithQuery
-} from '../helpers';
+import {urlWithQuery} from '../helpers';
 import config from '../../../config';
 import Loader from '../../loader';
 import Cache from '../../cache';
@@ -69,7 +63,7 @@ export const getPhoenixContentfulEntryById = async (id, context) => {
 
   logger.debug('Loading Phoenix Contentful entry', {
     id,
-    preview
+ preview
   });
 
   // If we're previewing, use Contentful's Preview API and
@@ -264,7 +258,7 @@ export const linkResolver = (entry, _, context, info, name) => {
   const {
     parentType
   } = info;
-  const fieldName = name ? name : info.fieldName;
+  const fieldName = (name) ? name : info.fieldName;
   const link = entry[fieldName];
 
   logger.debug(`Resolving link(s) on ${parentType.name}.${fieldName}`);
