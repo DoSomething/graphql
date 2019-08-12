@@ -1,8 +1,14 @@
-import { createClient } from 'contentful';
+import {
+  createClient
+} from 'contentful';
 import logger from 'heroku-logger';
-import { URL } from 'url';
+import {
+  URL
+} from 'url';
 
-import { urlWithQuery } from '../helpers';
+import {
+  urlWithQuery
+} from '../helpers';
 import config from '../../../config';
 import Loader from '../../loader';
 import Cache from '../../cache';
@@ -57,9 +63,14 @@ const transformAsset = json => ({
  * @return {Object}
  */
 export const getPhoenixContentfulEntryById = async (id, context) => {
-  const { preview } = context;
+  const {
+    preview
+  } = context;
 
-  logger.debug('Loading Phoenix Contentful entry', { id, preview });
+  logger.debug('Loading Phoenix Contentful entry', {
+    id,
+    preview
+  });
 
   // If we're previewing, use Contentful's Preview API and
   // don't bother trying to cache content on our end:
@@ -127,7 +138,9 @@ export const getPhoenixContentfulEntryByField = async (
   fieldValue,
   context,
 ) => {
-  const { preview } = context;
+  const {
+    preview
+  } = context;
 
   const query = {
     content_type: contentType,
@@ -149,8 +162,7 @@ export const getPhoenixContentfulEntryByField = async (
 
   // Otherwise, read from cache or Contentful's Content API:
   return cache.remember(`${contentType}:${spaceId}:${fieldValue}`, async () =>
-    loadEntryByQuery(contentApi, query),
-  );
+    loadEntryByQuery(contentApi, query), );
 };
 
 /**
@@ -183,9 +195,14 @@ export const getAffiliateByUtmLabel = async (utmLabel, context) =>
  * @return {Object}
  */
 export const getPhoenixContentfulAssetById = async (id, context) => {
-  const { preview } = context;
+  const {
+    preview
+  } = context;
 
-  logger.debug('Loading Phoenix Contentful asset', { id, preview });
+  logger.debug('Loading Phoenix Contentful asset', {
+    id,
+    preview
+  });
 
   // If we're previewing, use Contentful's Preview API and
   // don't bother trying to cache content on our end:
@@ -221,7 +238,10 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
     return null;
   }
 
-  const { linkType, id } = link.sys;
+  const {
+    linkType,
+    id
+  } = link.sys;
 
   switch (linkType) {
     case 'Asset':
@@ -241,7 +261,9 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
  * @param {Object} info
  */
 export const linkResolver = (entry, _, context, info, name) => {
-  const { parentType } = info;
+  const {
+    parentType
+  } = info;
   const fieldName = name ? name : info.fieldName;
   const link = entry[fieldName];
 
@@ -285,7 +307,10 @@ export const createImageUrl = (asset, args) => {
     focus = 'faces';
   }
 
-  return urlWithQuery(url, { ...args, f: focus }); // eslint-disable-line id-length
+  return urlWithQuery(url, {
+    ...args,
+    f: focus
+  }); // eslint-disable-line id-length
 };
 
 export default null;
