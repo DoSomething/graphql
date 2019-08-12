@@ -74,9 +74,39 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type Page {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The title for this page."
+    title: String!
+    "The slug for this page."
+    slug: String!
+    "Cover image for this page"
+    coverImage: [Asset]
+    ${entryFields}
+  }
+
   type ImagesBlock implements Block {
     "The images to be included in this block."
     images: [Asset]
+    ${entryFields}
+  }
+
+  type PersonBlock implements Block {
+    "Name of the person displayed on the block"
+    name: String!
+    "The person's relationship with the organization: member? employee?"
+    type: String!
+    "The status of the person's relationship with the organization: active? non-active?"
+    active: Boolean!
+    "Job title of the person"
+    jobTitle: String
+    "Photo of the person"
+    photo: Asset
+    "Alternate Photo of the person"
+    alternatePhoto: Asset
+    "Description of the person"
+    description: String
     ${entryFields}
   }
 
@@ -102,6 +132,22 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type GalleryBlock implements Block {
+    "The internal-facing title for this gallery."
+    internalTitle: String!
+    "Title of the gallery"
+    title: String
+    "The maximum number of items in a single row when viewing the gallery in a large display."
+    itemsPerRow: Int!
+    "The alignment of the gallery images relative to their text content"
+    imageAlignment: String!
+    "Blocks to display or preview in the Gallery"
+    blocks: [Block]!
+    "Controls the cropping method of the gallery images"
+    imageFit: String
+    ${entryFields}
+  }
+
   type LinkBlock implements Block {
     "The internal-facing title for this link block."
     internalTitle: String!
@@ -119,6 +165,24 @@ const typeDefs = gql`
     template: String
     "Any custom overrides for this block."
     additionalContent: JSON
+    ${entryFields}
+  }
+
+  type ContentBlock implements Block {
+    "The internal-facing title for this link block."
+    internalTitle: String!
+    "An optional supporting super-title"
+    superTitle: String
+    "The user-facing title of the block"
+    title: String!
+    "A subtitle for the content block"
+    subTitle: String
+    "The content for the content block"
+    content: String!
+    "An optional Image to display next to the content"
+    image: Asset
+    "The alignment of the image"
+    imageAlignment: String
     ${entryFields}
   }
 
@@ -267,6 +331,7 @@ const typeDefs = gql`
     asset(id: String!, preview: Boolean = false): Asset
     affiliate(utmLabel: String!, preview: Boolean = false): AffiliateBlock
     campaignWebsite(id: String!, preview: Boolean = false): CampaignWebsite
+    page(id: String!, preview: Boolean = false): Page
     campaignWebsiteByCampaignId(campaignId: String!, preview: Boolean = false): CampaignWebsite
   }
 `;
@@ -279,9 +344,13 @@ const typeDefs = gql`
 const contentTypeMappings = {
   affiliates: 'AffiliateBlock',
   campaignWebsite: 'CampaignWebsite',
+  page: 'Page',
   embed: 'EmbedBlock',
+  contentBlock: 'ContentBlock',
+  galleryBlock: 'GalleryBlock',
   imagesBlock: 'ImagesBlock',
   linkAction: 'LinkBlock',
+  person: 'PersonBlock',
   petitionSubmissionAction: 'PetitionSubmissionBlock',
   photoSubmissionAction: 'PhotoSubmissionBlock',
   postGallery: 'PostGalleryBlock',
@@ -310,12 +379,17 @@ const resolvers = {
       Loader(context, preview).campaignWebsites.load(id),
     campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
       Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
+    page: (_, { id, preview }, context) =>
+      Loader(context, preview).pages.load(id),
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
   },
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
+  },
+  ContentBlock: {
+    image: linkResolver,
   },
   CampaignWebsite: {
     coverImage: linkResolver,
@@ -332,11 +406,21 @@ const resolvers = {
   LinkBlock: {
     affiliateLogo: linkResolver,
   },
+  GalleryBlock: {
+    blocks: linkResolver,
+  },
   ImagesBlock: {
     images: linkResolver,
   },
+  PersonBlock: {
+    photo: linkResolver,
+    alternatePhoto: linkResolver,
+  },
   EmbedBlock: {
     previewImage: linkResolver,
+  },
+  Page: {
+    coverImage: linkResolver,
   },
   AffiliateBlock: {
     logo: linkResolver,
