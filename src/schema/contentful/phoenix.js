@@ -85,13 +85,13 @@ const typeDefs = gql`
     coverImage: Asset
     "The content of the page"
     content: String
-    "Add blocks to show up on alongside the main content"
+    "Sidebar blocks rendered alongside the content on the page"
     sidebar: [Block]
-    "Blocks of content in page"
+    "Blocks rendered following the content on the page"
     blocks: [Block]
-    "Select 'Yes' to display Social Sharing buttons on the bottom of the page. (Facebook & Twitter)"
+    "Should we display social share buttons on the bottom of the page?"
     displaySocialShare: Boolean
-    "Select 'Yes' to hide the page from the navigator"
+    "Should we hide the page from the navigation bar? (for campaign pages)"
     hideFromNavigation: Boolean
     "Any custom overrides for this block."
     additionalContent: JSON
