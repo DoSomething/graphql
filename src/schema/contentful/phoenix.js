@@ -24,7 +24,8 @@ const entryFields = `
  * GraphQL types.
  *
  * @var {String}
- */const typeDefs = gql `
+ */
+const typeDefs = gql `
   scalar JSON
   scalar DateTime
   scalar AbsoluteUrl
