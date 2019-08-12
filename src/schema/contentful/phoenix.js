@@ -25,10 +25,11 @@ const entryFields = `
  *
  * @var {String}
  */
-const typeDefs = gql `
+const typeDefs = gql`
   scalar JSON
   scalar DateTime
   scalar AbsoluteUrl
+  
   enum ResizeOption {
     "Resize the image to the specified dimensions, padding the image if needed."
     PAD
