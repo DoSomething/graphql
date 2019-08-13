@@ -93,12 +93,24 @@ const typeDefs = gql`
     slug: String!
     "Cover image for this page"
     coverImage: Asset
+    "The content of the page"
+    content: String
+    "Sidebar blocks rendered alongside the content on the page"
+    sidebar: [Block]
+    "Blocks rendered following the content on the page"
+    blocks: [Block]
+    "Should we display social share buttons on the bottom of the page?"
+    displaySocialShare: Boolean
+    "Should we hide the page from the navigation bar? (for campaign pages)"
+    hideFromNavigation: Boolean
     "A title for showcase"
     showcaseTitle: String!
     "A description for showcase"
     showcaseDescription: String!
     "An image for showcase"
     showcaseImage: Asset!
+    "Any custom overrides for this block."
+    additionalContent: JSON
     ${entryFields}
   }
 
@@ -196,7 +208,7 @@ const typeDefs = gql`
     "An optional supporting super-title"
     superTitle: String
     "The user-facing title of the block"
-    title: String!
+    title: String
     "A subtitle for the content block"
     subTitle: String
     "The content for the content block"
@@ -205,6 +217,8 @@ const typeDefs = gql`
     image: Asset
     "The alignment of the image"
     imageAlignment: String
+    "Any custom overrides for this block."
+    additionalContent: JSON
     ${entryFields}
   }
 
@@ -459,6 +473,8 @@ const resolvers = {
     showcaseDescription: page => page.subTitle,
     showcaseImage: (page, _, context, info) =>
       linkResolver(page, _, context, info, 'coverImage'),
+    blocks: linkResolver,
+    sidebar: linkResolver,
   },
   AffiliateBlock: {
     logo: linkResolver,
