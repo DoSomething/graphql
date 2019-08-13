@@ -186,21 +186,12 @@ const typeDefs = gql`
     "An optional supporting super-title"
     superTitle: String
     "The user-facing title of the block"
-<<<<<<< HEAD
     title: String
-    "A subtitle that is never displayed"
-    subTitle: String!
-    "Text to display regarding content subject"
-    content: String
-    "Image relevant to the content"
-=======
-    title: String!
     "A subtitle for the content block"
     subTitle: String
     "The content for the content block"
     content: String!
     "An optional Image to display next to the content"
->>>>>>> b7f76b156c62db33520b2876af5353d5d9ff0de9
     image: Asset
     "The alignment of the image"
     imageAlignment: String
