@@ -186,7 +186,7 @@ const typeDefs = gql`
     "An optional supporting super-title"
     superTitle: String
     "The user-facing title of the block"
-    title: String!
+    title: String
     "A subtitle for the content block"
     subTitle: String
     "The content for the content block"
