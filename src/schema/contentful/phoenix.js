@@ -160,7 +160,7 @@ const typeDefs = gql`
     "An small decorated title positioned over the general title"
     superTitle: String!
     "The user-facing title of the block"
-    title: String!
+    title: String
     "A subtitle that is never displayed"
     subTitle: String!
     "Text to display regarding content subject"
