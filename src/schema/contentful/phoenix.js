@@ -20,8 +20,6 @@ const entryFields = `
     createdAt: DateTime
 `;
 
-//TODO: Add support for metadata reference field
-
 /**
  * GraphQL types.
  *
@@ -69,6 +67,34 @@ const typeDefs = gql`
     title: String!
     "The slug for this campaign."
     slug: String!
+     "The call to action tagline for this campaign."
+    callToAction: String!
+    "The cover image for this campaign."
+    coverImage: Asset
+    ${entryFields}
+  }
+
+  type Page {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The title for this page."
+    title: String!
+    "The slug for this page."
+    slug: String!
+    "Cover image for this page"
+    coverImage: Asset
+    "The content of the page"
+    content: String
+    "Sidebar blocks rendered alongside the content on the page"
+    sidebar: [Block]
+    "Blocks rendered following the content on the page"
+    blocks: [Block]
+    "Should we display social share buttons on the bottom of the page?"
+    displaySocialShare: Boolean
+    "Should we hide the page from the navigation bar? (for campaign pages)"
+    hideFromNavigation: Boolean
+    "Any custom overrides for this block."
+    additionalContent: JSON
     ${entryFields}
   }
 
@@ -80,11 +106,11 @@ const typeDefs = gql`
 
   type PersonBlock implements Block {
     "Name of the person displayed on the block"
-    name: String
-    "The person's position within the organization"
-    type: String
-    "The person's relationship with the organization: active? non-active?"
-    active: Boolean
+    name: String!
+    "The person's relationship with the organization: member? employee?"
+    type: String!
+    "The status of the person's relationship with the organization: active? non-active?"
+    active: Boolean!
     "Job title of the person"
     jobTitle: String
     "Photo of the person"
@@ -120,11 +146,11 @@ const typeDefs = gql`
 
   type GalleryBlock implements Block {
     "The internal-facing title for this gallery."
-    internalTitle: String
+    internalTitle: String!
     "Title of the gallery"
     title: String
     "The maximum number of items in a single row when viewing the gallery in a large display."
-    itemsPerRow: Int
+    itemsPerRow: Int!
     "The alignment of the gallery images relative to their text content"
     imageAlignment: String!
     "Blocks to display or preview in the Gallery"
@@ -157,18 +183,29 @@ const typeDefs = gql`
   type ContentBlock implements Block {
     "The internal-facing title for this link block."
     internalTitle: String!
-    "An small decorated title positioned over the general title"
-    superTitle: String!
+    "An optional supporting super-title"
+    superTitle: String
     "The user-facing title of the block"
+<<<<<<< HEAD
     title: String
     "A subtitle that is never displayed"
     subTitle: String!
     "Text to display regarding content subject"
     content: String
     "Image relevant to the content"
+=======
+    title: String!
+    "A subtitle for the content block"
+    subTitle: String
+    "The content for the content block"
+    content: String!
+    "An optional Image to display next to the content"
+>>>>>>> b7f76b156c62db33520b2876af5353d5d9ff0de9
     image: Asset
     "The alignment of the image"
-    imageAlignment: String!
+    imageAlignment: String
+    "Any custom overrides for this block."
+    additionalContent: JSON
     ${entryFields}
   }
 
@@ -296,32 +333,6 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type PageBlock implements Block {
-    "This title is used internally to help find this content."
-    internalTitle: String!
-    "Text displayed big at the top of the page."
-    title: String!
-    "Text directly below the title in a smaller font."
-    subTitle: String
-    "The slug for this page."
-    slug: String!
-    "Person writing the content of the page."
-    authors: [Block]
-    "The cover image will display on the page before the content."
-    coverImage: [Asset]
-    "Text displayed on the page"
-    content: String
-    "Add blocks to show up on alongside the main content."
-    sidebar: [Block]
-    "Blocks to display on the page."
-    blocks: [Block]
-    "Select 'Yes' to display Social Sharing buttons on the bottom of the page. (Facebook & Twitter)."
-    displaySocialShare: Boolean
-    "Hide the page from the navigation."
-    hideFromNavigation: Boolean
-    ${entryFields}
-  }
-
   type AffiliateBlock implements Block {
     "The internal-facing title for this affiliate block."
     internalTitle: String!
@@ -343,6 +354,7 @@ const typeDefs = gql`
     asset(id: String!, preview: Boolean = false): Asset
     affiliate(utmLabel: String!, preview: Boolean = false): AffiliateBlock
     campaignWebsite(id: String!, preview: Boolean = false): CampaignWebsite
+    page(id: String!, preview: Boolean = false): Page
     campaignWebsiteByCampaignId(campaignId: String!, preview: Boolean = false): CampaignWebsite
   }
 `;
@@ -355,6 +367,7 @@ const typeDefs = gql`
 const contentTypeMappings = {
   affiliates: 'AffiliateBlock',
   campaignWebsite: 'CampaignWebsite',
+  page: 'Page',
   embed: 'EmbedBlock',
   contentBlock: 'ContentBlock',
   galleryBlock: 'GalleryBlock',
@@ -367,7 +380,6 @@ const contentTypeMappings = {
   shareAction: 'ShareBlock',
   textSubmissionAction: 'TextSubmissionBlock',
   voterRegistrationAction: 'VoterRegistrationBlock',
-  page: 'PageBlock',
 };
 
 /**
@@ -390,6 +402,8 @@ const resolvers = {
       Loader(context, preview).campaignWebsites.load(id),
     campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
       Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
+    page: (_, { id, preview }, context) =>
+      Loader(context, preview).pages.load(id),
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
@@ -399,6 +413,9 @@ const resolvers = {
   },
   ContentBlock: {
     image: linkResolver,
+  },
+  CampaignWebsite: {
+    coverImage: linkResolver,
   },
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
@@ -425,11 +442,10 @@ const resolvers = {
   EmbedBlock: {
     previewImage: linkResolver,
   },
-  PageBlock: {
-    authors: linkResolver,
+  Page: {
     coverImage: linkResolver,
+    blocks: linkResolver,
     sidebar: linkResolver,
-    blocks: linkResolver
   },
   AffiliateBlock: {
     logo: linkResolver,
