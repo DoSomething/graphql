@@ -82,7 +82,19 @@ const typeDefs = gql`
     "The slug for this page."
     slug: String!
     "Cover image for this page"
-    coverImage: [Asset]
+    coverImage: Asset
+    "The content of the page"
+    content: String
+    "Sidebar blocks rendered alongside the content on the page"
+    sidebar: [Block]
+    "Blocks rendered following the content on the page"
+    blocks: [Block]
+    "Should we display social share buttons on the bottom of the page?"
+    displaySocialShare: Boolean
+    "Should we hide the page from the navigation bar? (for campaign pages)"
+    hideFromNavigation: Boolean
+    "Any custom overrides for this block."
+    additionalContent: JSON
     ${entryFields}
   }
 
@@ -183,6 +195,8 @@ const typeDefs = gql`
     image: Asset
     "The alignment of the image"
     imageAlignment: String
+    "Any custom overrides for this block."
+    additionalContent: JSON
     ${entryFields}
   }
 
@@ -421,6 +435,8 @@ const resolvers = {
   },
   Page: {
     coverImage: linkResolver,
+    blocks: linkResolver,
+    sidebar: linkResolver,
   },
   AffiliateBlock: {
     logo: linkResolver,
