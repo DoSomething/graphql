@@ -453,7 +453,6 @@ const resolvers = {
     showcaseDescription: campaign => campaign.callToAction,
     showcaseImage: (person, _, context, info) =>
       linkResolver(person, _, context, info, 'coverImage'),
-
   },
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
