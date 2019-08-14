@@ -29,7 +29,7 @@ const typeDefs = gql`
   scalar JSON
   scalar DateTime
   scalar AbsoluteUrl
-  
+
   enum ResizeOption {
     "Resize the image to the specified dimensions, padding the image if needed."
     PAD
@@ -70,7 +70,7 @@ const typeDefs = gql`
     url(w: Int, h: Int, fit: ResizeOption): AbsoluteUrl,
   }
 
-  type CampaignWebsite {
+  type CampaignWebsite implements Showcasable{
     "The internal-facing title for this campaign."
     internalTitle: String!
     "The user-facing title for this campaign."
@@ -81,6 +81,12 @@ const typeDefs = gql`
     callToAction: String!
     "The cover image for this campaign."
     coverImage: Asset
+    "The title for a showcasable relationship."
+    showcaseTitle: String!
+    "The subtitle for a showcasable relationship."
+    showcaseDescription: String!
+    "The image for showcasing"
+    showcaseImage: Asset!
     ${entryFields}
   }
 
@@ -202,7 +208,7 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type ContentBlock implements Block {
+  type ContentBlock implements Block & Showcasable{
     "The internal-facing title for this link block."
     internalTitle: String!
     "An optional supporting super-title"
@@ -217,6 +223,12 @@ const typeDefs = gql`
     image: Asset
     "The alignment of the image"
     imageAlignment: String
+    "The title for a showcasable relationship."
+    showcaseTitle: String!
+    "The subtitle for a showcasable relationship."
+    showcaseDescription: String!
+    "The image for showcasing"
+    showcaseImage: Asset!
     "Any custom overrides for this block."
     additionalContent: JSON
     ${entryFields}
@@ -430,9 +442,18 @@ const resolvers = {
   },
   ContentBlock: {
     image: linkResolver,
+    showcaseTitle: content => content.title,
+    showcaseDescription: content => content.content,
+    showcaseImage: (person, _, context, info) =>
+      linkResolver(person, _, context, info, 'image'),
   },
   CampaignWebsite: {
     coverImage: linkResolver,
+    showcaseTitle: campaign => campaign.title,
+    showcaseDescription: campaign => campaign.callToAction,
+    showcaseImage: (person, _, context, info) =>
+      linkResolver(person, _, context, info, 'coverImage'),
+
   },
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
