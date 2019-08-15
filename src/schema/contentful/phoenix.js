@@ -82,9 +82,9 @@ const typeDefs = gql`
     "The cover image for this campaign."
     coverImage: Asset
     "The showcase title (the title field.)"
-    showcaseTitle: String
+    showcaseTitle: String!
     "The showcase description (the callToAction field.)"
-    showcaseDescription: String
+    showcaseDescription: String!
     "The showcase image (the coverImage field.)"
     showcaseImage: Asset
     ${entryFields}
@@ -110,8 +110,8 @@ const typeDefs = gql`
     "Should we hide the page from the navigation bar? (for campaign pages.)"
     hideFromNavigation: Boolean
     "The Showcase title (the title field.)"
-    showcaseTitle: String
-    "The Showcase description(the subTitle field.)"
+    showcaseTitle: String!
+    "The Showcase description(the content field.)"
     showcaseDescription: String
     "The Showcase image(the coverImage field.)"
     showcaseImage: Asset
@@ -142,7 +142,7 @@ const typeDefs = gql`
     "Description of the person."
     description: String
     "The Showcase title (the name field.)"
-    showcaseTitle: String
+    showcaseTitle: String!
     "The Showcase description ('description' if the person is a board member and 'jobTitle' by default.)"
     showcaseDescription: String
     "The Showcase image ('photo if the person is an advisory board member 'alternatePhoto' by default.)"
@@ -224,9 +224,9 @@ const typeDefs = gql`
     "The alignment of the image."
     imageAlignment: String
     "The Showcase title (the title field.)"
-    showcaseTitle: String
+    showcaseTitle: String!
     "The Showcase description (the content field.)"
-    showcaseDescription: String
+    showcaseDescription: String!
     "The Showcase image (the image field.)"
     showcaseImage: Asset
     "Any custom overrides for this block."
@@ -493,7 +493,7 @@ const resolvers = {
   Page: {
     coverImage: linkResolver,
     showcaseTitle: page => page.title,
-    showcaseDescription: page => page.subTitle,
+    showcaseDescription: page => page.content,
     showcaseImage: (page, _, context, info) =>
       linkResolver(page, _, context, info, 'coverImage'),
     blocks: linkResolver,
