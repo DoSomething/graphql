@@ -246,9 +246,9 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
  * @param {Object} context
  * @param {Object} info
  */
-export const linkResolver = (entry, _, context, info, name) => {
+export const linkResolver = (entry, _, context, info, fieldNameOverride) => {
   const { parentType } = info;
-  const fieldName = name || info.fieldName;
+  const fieldName = fieldNameOverride || info.fieldName;
   const link = entry[fieldName];
 
   logger.debug(`Resolving link(s) on ${parentType.name}.${fieldName}`);
@@ -283,6 +283,7 @@ export const createImageUrl = (asset, args) => {
   if (url.hostname !== 'images.ctfassets.net') {
     return url;
   }
+
   // If using a supported resize behavior, focus on any
   // faces found in the photo. Otherwise, center it.
   let focus = 'center';

@@ -48,12 +48,12 @@ const typeDefs = gql`
   }
 
   interface Showcasable {
-    "The title for this block"
-    showcaseTitle: String!
-    "A subtitle"
-    showcaseDescription: String!
-    "Image accompaning"
-    showcaseImage: Asset!
+    "The showcase title"
+    showcaseTitle: String
+    "The showcase description"
+    showcaseDescription: String
+    "The showcase image"
+    showcaseImage: Asset
     ${entryFields}
   }
 
@@ -81,11 +81,11 @@ const typeDefs = gql`
     callToAction: String!
     "The cover image for this campaign."
     coverImage: Asset
-    "The title for a showcasable relationship."
+    "The showcase title."
     showcaseTitle: String!
-    "The subtitle for a showcasable relationship."
+    "The showcase description."
     showcaseDescription: String!
-    "The image for showcasing"
+    "The showcase image"
     showcaseImage: Asset!
     ${entryFields}
   }
@@ -97,23 +97,23 @@ const typeDefs = gql`
     title: String!
     "The slug for this page."
     slug: String!
-    "Cover image for this page"
+    "Cover image for this page."
     coverImage: Asset
-    "The content of the page"
+    "The content of the page."
     content: String
-    "Sidebar blocks rendered alongside the content on the page"
+    "Sidebar blocks rendered alongside the content on the page."
     sidebar: [Block]
-    "Blocks rendered following the content on the page"
+    "Blocks rendered following the content on the page."
     blocks: [Block]
     "Should we display social share buttons on the bottom of the page?"
     displaySocialShare: Boolean
-    "Should we hide the page from the navigation bar? (for campaign pages)"
+    "Should we hide the page from the navigation bar? (for campaign pages.)"
     hideFromNavigation: Boolean
-    "A title for showcase"
+    "The Showcase title."
     showcaseTitle: String!
-    "A description for showcase"
+    "The Showcase description."
     showcaseDescription: String!
-    "An image for showcase"
+    "The Showcase image."
     showcaseImage: Asset!
     "Any custom overrides for this block."
     additionalContent: JSON
@@ -127,25 +127,25 @@ const typeDefs = gql`
   }
 
   type PersonBlock implements Showcasable & Block{
-    "Name of the person displayed on the block"
+    "Name of the person displayed on the block."
     name: String!
     "The person's relationship with the organization: member? employee?"
     type: String!
     "The status of the person's relationship with the organization: active? non-active?"
     active: Boolean!
-    "Job title of the person"
+    "Job title of the person."
     jobTitle: String
-    "Photo of the person"
+    "Photo of the person."
     photo: Asset
-    "Alternate Photo of the person"
+    "Alternate Photo of the person."
     alternatePhoto: Asset
-    "Description of the person"
+    "Description of the person."
     description: String
-    "The title for a showcasable relationship."
+    "The Showcase title."
     showcaseTitle: String!
-    "The subtitle for a showcasable relationship."
+    "The Showcase description."
     showcaseDescription: String!
-    "The image for showcasing"
+    "The Showcase image."
     showcaseImage: Asset!
     ${entryFields}
   }
@@ -167,7 +167,7 @@ const typeDefs = gql`
     itemsPerRow: Int
     "A filter type which users can select to filter the gallery."
     filterType: String
-    "Hide the post reactions for this gallery"
+    "Hide the post reactions for this gallery."
     hideReactions: Boolean
     ${entryFields}
   }
@@ -175,15 +175,15 @@ const typeDefs = gql`
   type GalleryBlock implements Block {
     "The internal-facing title for this gallery."
     internalTitle: String!
-    "Title of the gallery"
+    "Title of the gallery."
     title: String
     "The maximum number of items in a single row when viewing the gallery in a large display."
     itemsPerRow: Int
-    "The alignment of the gallery images relative to their text content"
+    "The alignment of the gallery images relative to their text content."
     imageAlignment: String!
-    "Blocks to display or preview in the Gallery"
+    "Blocks to display or preview in the Gallery."
     blocks: [Showcasable]!
-    "Controls the cropping method of the gallery images"
+    "Controls the cropping method of the gallery images."
     imageFit: String
     ${entryFields}
   }
@@ -211,23 +211,23 @@ const typeDefs = gql`
   type ContentBlock implements Block & Showcasable{
     "The internal-facing title for this link block."
     internalTitle: String!
-    "An optional supporting super-title"
+    "An optional supporting super-title."
     superTitle: String
-    "The user-facing title of the block"
+    "The user-facing title of the block."
     title: String
-    "A subtitle for the content block"
+    "A subtitle for the content block."
     subTitle: String
-    "The content for the content block"
+    "The content for the content block."
     content: String!
-    "An optional Image to display next to the content"
+    "An optional Image to display next to the content."
     image: Asset
-    "The alignment of the image"
+    "The alignment of the image."
     imageAlignment: String
-    "The title for a showcasable relationship."
+    "The Showcase title."
     showcaseTitle: String!
-    "The subtitle for a showcasable relationship."
+    "The Showcase description."
     showcaseDescription: String!
-    "The image for showcasing"
+    "The Showcase image."
     showcaseImage: Asset!
     "Any custom overrides for this block."
     additionalContent: JSON
