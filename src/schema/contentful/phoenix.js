@@ -482,8 +482,7 @@ const resolvers = {
         : person.jobTitle,
 
     showcaseImage: (person, _, context, info) => {
-      const fieldName = person.type === 'advisory board member' ?
-        'photo' : 'alternatePhoto';
+      const fieldName = person.type === 'advisory board member' ? 'photo' : 'alternatePhoto';
       linkResolver(person, _, context, info, fieldName);
     },
   },
