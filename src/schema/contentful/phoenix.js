@@ -70,7 +70,7 @@ const typeDefs = gql`
     url(w: Int, h: Int, fit: ResizeOption): AbsoluteUrl,
   }
 
-  type CampaignWebsite implements Showcasable{
+  type CampaignWebsite implements Showcasable {
     "The internal-facing title for this campaign."
     internalTitle: String!
     "The user-facing title for this campaign."
@@ -90,7 +90,7 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type Page implements Showcasable{
+  type Page implements Showcasable {
     "This title is used internally to help find this content."
     internalTitle: String!
     "The title for this page."
@@ -126,7 +126,7 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type PersonBlock implements Showcasable & Block{
+  type PersonBlock implements Showcasable & Block {
     "Name of the person displayed on the block."
     name: String!
     "The person's relationship with the organization: member? employee?"
@@ -208,7 +208,7 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type ContentBlock implements Block & Showcasable{
+  type ContentBlock implements Block & Showcasable {
     "The internal-facing title for this link block."
     internalTitle: String!
     "An optional supporting super-title."

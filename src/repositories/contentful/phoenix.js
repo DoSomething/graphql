@@ -246,9 +246,9 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
  * @param {Object} context
  * @param {Object} info
  */
-export const linkResolver = (entry, _, context, info, fieldNameOverride) => {
+export const linkResolver = (entry, _, context, info, resolvedFieldName) => {
   const { parentType } = info;
-  const fieldName = fieldNameOverride || info.fieldName;
+  const fieldName = resolvedFieldName || info.fieldName;
   const link = entry[fieldName];
 
   logger.debug(`Resolving link(s) on ${parentType.name}.${fieldName}`);
