@@ -47,6 +47,16 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  interface Showcasable {
+    "The showcase title"
+    showcaseTitle: String
+    "The showcase description"
+    showcaseDescription: String
+    "The showcase image"
+    showcaseImage: Asset
+    ${entryFields}
+  }
+
   type Asset {
     "The unique ID for this Contentful asset."
     id: String!
@@ -60,7 +70,7 @@ const typeDefs = gql`
     url(w: Int, h: Int, fit: ResizeOption): AbsoluteUrl,
   }
 
-  type CampaignWebsite {
+  type CampaignWebsite implements Showcasable {
     "The internal-facing title for this campaign."
     internalTitle: String!
     "The user-facing title for this campaign."
@@ -71,28 +81,42 @@ const typeDefs = gql`
     callToAction: String!
     "The cover image for this campaign."
     coverImage: Asset
+    "The showcase title (the title field.)"
+    showcaseTitle: String!
+    "The showcase description (the callToAction field.)"
+    showcaseDescription: String!
+    "The showcase image (the coverImage field.)"
+    showcaseImage: Asset
     ${entryFields}
   }
 
-  type Page {
+  type Page implements Showcasable {
     "This title is used internally to help find this content."
     internalTitle: String!
     "The title for this page."
     title: String!
+    "The subtitle for this page."
+    subTitle: String
     "The slug for this page."
     slug: String!
-    "Cover image for this page"
+    "Cover image for this page."
     coverImage: Asset
-    "The content of the page"
+    "The content of the page."
     content: String
-    "Sidebar blocks rendered alongside the content on the page"
+    "Sidebar blocks rendered alongside the content on the page."
     sidebar: [Block]
-    "Blocks rendered following the content on the page"
+    "Blocks rendered following the content on the page."
     blocks: [Block]
     "Should we display social share buttons on the bottom of the page?"
     displaySocialShare: Boolean
-    "Should we hide the page from the navigation bar? (for campaign pages)"
+    "Should we hide the page from the navigation bar? (for campaign pages.)"
     hideFromNavigation: Boolean
+    "The Showcase title (the title field.)"
+    showcaseTitle: String!
+    "The Showcase description (the content field.)"
+    showcaseDescription: String
+    "The Showcase image (the coverImage field.)"
+    showcaseImage: Asset
     "Any custom overrides for this block."
     additionalContent: JSON
     ${entryFields}
@@ -104,21 +128,27 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type PersonBlock implements Block {
-    "Name of the person displayed on the block"
+  type PersonBlock implements Showcasable & Block {
+    "Name of the person displayed on the block."
     name: String!
     "The person's relationship with the organization: member? employee?"
     type: String!
     "The status of the person's relationship with the organization: active? non-active?"
     active: Boolean!
-    "Job title of the person"
+    "Job title of the person."
     jobTitle: String
-    "Photo of the person"
+    "Photo of the person."
     photo: Asset
-    "Alternate Photo of the person"
+    "Alternate Photo of the person."
     alternatePhoto: Asset
-    "Description of the person"
+    "Description of the person."
     description: String
+    "The Showcase title (the name field.)"
+    showcaseTitle: String!
+    "The Showcase description ('description' if the person is a board member and 'jobTitle' by default.)"
+    showcaseDescription: String
+    "The Showcase image ('photo' if the person is an advisory board member 'alternatePhoto' by default.)"
+    showcaseImage: Asset
     ${entryFields}
   }
 
@@ -139,7 +169,7 @@ const typeDefs = gql`
     itemsPerRow: Int
     "A filter type which users can select to filter the gallery."
     filterType: String
-    "Hide the post reactions for this gallery"
+    "Hide the post reactions for this gallery."
     hideReactions: Boolean
     ${entryFields}
   }
@@ -147,15 +177,15 @@ const typeDefs = gql`
   type GalleryBlock implements Block {
     "The internal-facing title for this gallery."
     internalTitle: String!
-    "Title of the gallery"
+    "Title of the gallery."
     title: String
     "The maximum number of items in a single row when viewing the gallery in a large display."
     itemsPerRow: Int!
-    "The alignment of the gallery images relative to their text content"
+    "The alignment of the gallery images relative to their text content."
     imageAlignment: String!
-    "Blocks to display or preview in the Gallery"
-    blocks: [Block]!
-    "Controls the cropping method of the gallery images"
+    "Blocks to display or preview in the Gallery."
+    blocks: [Showcasable]!
+    "Controls the cropping method of the gallery images."
     imageFit: String
     ${entryFields}
   }
@@ -180,21 +210,27 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type ContentBlock implements Block {
+  type ContentBlock implements Block & Showcasable {
     "The internal-facing title for this link block."
     internalTitle: String!
-    "An optional supporting super-title"
+    "An optional supporting super-title."
     superTitle: String
-    "The user-facing title of the block"
+    "The user-facing title of the block."
     title: String
-    "A subtitle for the content block"
+    "A subtitle for the content block."
     subTitle: String
-    "The content for the content block"
+    "The content for the content block."
     content: String!
-    "An optional Image to display next to the content"
+    "An optional Image to display next to the content."
     image: Asset
-    "The alignment of the image"
+    "The alignment of the image."
     imageAlignment: String
+    "The Showcase title (the title field.)"
+    showcaseTitle: String
+    "The Showcase description (the content field.)"
+    showcaseDescription: String!
+    "The Showcase image (the image field.)"
+    showcaseImage: Asset
     "Any custom overrides for this block."
     additionalContent: JSON
     ${entryFields}
@@ -402,11 +438,23 @@ const resolvers = {
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
   },
+  Showcasable: {
+    __resolveType: showcasable =>
+      get(contentTypeMappings, showcasable.contentType),
+  },
   ContentBlock: {
     image: linkResolver,
+    showcaseTitle: content => content.title,
+    showcaseDescription: content => content.content,
+    showcaseImage: (person, _, context, info) =>
+      linkResolver(person, _, context, info, 'image'),
   },
   CampaignWebsite: {
     coverImage: linkResolver,
+    showcaseTitle: campaign => campaign.title,
+    showcaseDescription: campaign => campaign.callToAction,
+    showcaseImage: (person, _, context, info) =>
+      linkResolver(person, _, context, info, 'coverImage'),
   },
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
@@ -429,12 +477,27 @@ const resolvers = {
   PersonBlock: {
     photo: linkResolver,
     alternatePhoto: linkResolver,
+    showcaseTitle: person => person.name,
+    showcaseDescription: person =>
+      person.type.includes('board member')
+        ? person.description
+        : person.jobTitle,
+
+    showcaseImage: (person, _, context, info) => {
+      const fieldName =
+        person.type === 'advisory board member' ? 'photo' : 'alternatePhoto';
+      linkResolver(person, _, context, info, fieldName);
+    },
   },
   EmbedBlock: {
     previewImage: linkResolver,
   },
   Page: {
     coverImage: linkResolver,
+    showcaseTitle: page => page.title,
+    showcaseDescription: page => page.subTitle,
+    showcaseImage: (page, _, context, info) =>
+      linkResolver(page, _, context, info, 'coverImage'),
     blocks: linkResolver,
     sidebar: linkResolver,
   },

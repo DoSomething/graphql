@@ -59,7 +59,10 @@ const transformAsset = json => ({
 export const getPhoenixContentfulEntryById = async (id, context) => {
   const { preview } = context;
 
-  logger.debug('Loading Phoenix Contentful entry', { id, preview });
+  logger.debug('Loading Phoenix Contentful entry', {
+    id,
+    preview,
+  });
 
   // If we're previewing, use Contentful's Preview API and
   // don't bother trying to cache content on our end:
@@ -185,7 +188,10 @@ export const getAffiliateByUtmLabel = async (utmLabel, context) =>
 export const getPhoenixContentfulAssetById = async (id, context) => {
   const { preview } = context;
 
-  logger.debug('Loading Phoenix Contentful asset', { id, preview });
+  logger.debug('Loading Phoenix Contentful asset', {
+    id,
+    preview,
+  });
 
   // If we're previewing, use Contentful's Preview API and
   // don't bother trying to cache content on our end:
@@ -240,8 +246,9 @@ export const getPhoenixContentfulItemByLink = async (link, context) => {
  * @param {Object} context
  * @param {Object} info
  */
-export const linkResolver = (entry, _, context, info) => {
-  const { fieldName, parentType } = info;
+export const linkResolver = (entry, _, context, info, resolvedFieldName) => {
+  const { parentType } = info;
+  const fieldName = resolvedFieldName || info.fieldName;
   const link = entry[fieldName];
 
   logger.debug(`Resolving link(s) on ${parentType.name}.${fieldName}`);
