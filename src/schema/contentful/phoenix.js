@@ -95,6 +95,8 @@ const typeDefs = gql`
     internalTitle: String!
     "The title for this page."
     title: String!
+    "The subtitle for this page."
+    subTitle: String
     "The slug for this page."
     slug: String!
     "Cover image for this page."
@@ -111,9 +113,9 @@ const typeDefs = gql`
     hideFromNavigation: Boolean
     "The Showcase title (the title field.)"
     showcaseTitle: String!
-    "The Showcase description(the content field.)"
+    "The Showcase description (the content field.)"
     showcaseDescription: String
-    "The Showcase image(the coverImage field.)"
+    "The Showcase image (the coverImage field.)"
     showcaseImage: Asset
     "Any custom overrides for this block."
     additionalContent: JSON
@@ -145,7 +147,7 @@ const typeDefs = gql`
     showcaseTitle: String!
     "The Showcase description ('description' if the person is a board member and 'jobTitle' by default.)"
     showcaseDescription: String
-    "The Showcase image ('photo if the person is an advisory board member 'alternatePhoto' by default.)"
+    "The Showcase image ('photo' if the person is an advisory board member 'alternatePhoto' by default.)"
     showcaseImage: Asset
     ${entryFields}
   }
@@ -224,7 +226,7 @@ const typeDefs = gql`
     "The alignment of the image."
     imageAlignment: String
     "The Showcase title (the title field.)"
-    showcaseTitle: String!
+    showcaseTitle: String
     "The Showcase description (the content field.)"
     showcaseDescription: String!
     "The Showcase image (the image field.)"
@@ -493,7 +495,7 @@ const resolvers = {
   Page: {
     coverImage: linkResolver,
     showcaseTitle: page => page.title,
-    showcaseDescription: page => page.content,
+    showcaseDescription: page => page.subTitle,
     showcaseImage: (page, _, context, info) =>
       linkResolver(page, _, context, info, 'coverImage'),
     blocks: linkResolver,
