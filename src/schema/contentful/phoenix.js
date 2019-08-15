@@ -482,11 +482,10 @@ const resolvers = {
       person.type.includes('board member')
         ? person.description
         : person.jobTitle,
-
     showcaseImage: (person, _, context, info) => {
       const fieldName =
         person.type === 'advisory board member' ? 'photo' : 'alternatePhoto';
-      linkResolver(person, _, context, info, fieldName);
+      return linkResolver(person, _, context, info, fieldName);
     },
   },
   EmbedBlock: {
