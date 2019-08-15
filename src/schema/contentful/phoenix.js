@@ -483,7 +483,6 @@ const resolvers = {
 
     showcaseImage: (person, _, context, info) => {
       const fieldName = person.type === 'advisory board member' ? 'photo' : 'alternatePhoto';
-      //
       linkResolver(person, _, context, info, fieldName);
     },
   },
