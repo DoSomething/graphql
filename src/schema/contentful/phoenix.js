@@ -178,7 +178,7 @@ const typeDefs = gql`
     "Title of the gallery."
     title: String
     "The maximum number of items in a single row when viewing the gallery in a large display."
-    itemsPerRow: Int
+    itemsPerRow: Int!
     "The alignment of the gallery images relative to their text content."
     imageAlignment: String!
     "Blocks to display or preview in the Gallery."
@@ -477,12 +477,13 @@ const resolvers = {
     alternatePhoto: linkResolver,
     showcaseTitle: person => person.name,
     showcaseDescription: person =>
-      person.type.includes('member board')
+      person.type.includes('board member')
         ? person.description
         : person.jobTitle,
 
     showcaseImage: (person, _, context, info) =>
-      linkResolver(person, _, context, info, 'alternatePhoto'),
+      const fieldName = person.type === 'advisory board member' ? 'photo' : 'alternatePhoto';
+      linkResolver(person, _, context, info, fieldName),
   },
   EmbedBlock: {
     previewImage: linkResolver,
@@ -500,8 +501,6 @@ const resolvers = {
     logo: linkResolver,
   },
 };
-
-//
 
 /**
  * The generated schema.
