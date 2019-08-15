@@ -82,11 +82,11 @@ const typeDefs = gql`
     "The cover image for this campaign."
     coverImage: Asset
     "The showcase title."
-    showcaseTitle: String!
+    showcaseTitle: String
     "The showcase description."
-    showcaseDescription: String!
+    showcaseDescription: String
     "The showcase image"
-    showcaseImage: Asset!
+    showcaseImage: Asset
     ${entryFields}
   }
 
@@ -110,11 +110,11 @@ const typeDefs = gql`
     "Should we hide the page from the navigation bar? (for campaign pages.)"
     hideFromNavigation: Boolean
     "The Showcase title."
-    showcaseTitle: String!
+    showcaseTitle: String
     "The Showcase description."
-    showcaseDescription: String!
+    showcaseDescription: String
     "The Showcase image."
-    showcaseImage: Asset!
+    showcaseImage: Asset
     "Any custom overrides for this block."
     additionalContent: JSON
     ${entryFields}
@@ -142,11 +142,11 @@ const typeDefs = gql`
     "Description of the person."
     description: String
     "The Showcase title."
-    showcaseTitle: String!
+    showcaseTitle: String
     "The Showcase description."
-    showcaseDescription: String!
+    showcaseDescription: String
     "The Showcase image."
-    showcaseImage: Asset!
+    showcaseImage: Asset
     ${entryFields}
   }
 
@@ -224,11 +224,11 @@ const typeDefs = gql`
     "The alignment of the image."
     imageAlignment: String
     "The Showcase title."
-    showcaseTitle: String!
+    showcaseTitle: String
     "The Showcase description."
-    showcaseDescription: String!
+    showcaseDescription: String
     "The Showcase image."
-    showcaseImage: Asset!
+    showcaseImage: Asset
     "Any custom overrides for this block."
     additionalContent: JSON
     ${entryFields}
@@ -481,9 +481,11 @@ const resolvers = {
         ? person.description
         : person.jobTitle,
 
-    showcaseImage: (person, _, context, info) =>
-      const fieldName = person.type === 'advisory board member' ? 'photo' : 'alternatePhoto';
-      linkResolver(person, _, context, info, fieldName),
+    showcaseImage: (person, _, context, info) => {
+      const fieldName = person.type === 'advisory board member' ?
+        'photo' : 'alternatePhoto';
+      linkResolver(person, _, context, info, fieldName);
+    },
   },
   EmbedBlock: {
     previewImage: linkResolver,
