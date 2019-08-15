@@ -81,11 +81,11 @@ const typeDefs = gql`
     callToAction: String!
     "The cover image for this campaign."
     coverImage: Asset
-    "The showcase title."
+    "The showcase title (the title field.)"
     showcaseTitle: String
-    "The showcase description."
+    "The showcase description (the callToAction field.)"
     showcaseDescription: String
-    "The showcase image"
+    "The showcase image (the coverImage field.)"
     showcaseImage: Asset
     ${entryFields}
   }
@@ -109,11 +109,11 @@ const typeDefs = gql`
     displaySocialShare: Boolean
     "Should we hide the page from the navigation bar? (for campaign pages.)"
     hideFromNavigation: Boolean
-    "The Showcase title."
+    "The Showcase title (the title field.)"
     showcaseTitle: String
-    "The Showcase description."
+    "The Showcase description(the subTitle field.)"
     showcaseDescription: String
-    "The Showcase image."
+    "The Showcase image(the coverImage field.)"
     showcaseImage: Asset
     "Any custom overrides for this block."
     additionalContent: JSON
@@ -141,11 +141,11 @@ const typeDefs = gql`
     alternatePhoto: Asset
     "Description of the person."
     description: String
-    "The Showcase title."
+    "The Showcase title (the name field.)"
     showcaseTitle: String
-    "The Showcase description."
+    "The Showcase description ('description' if the person is a board member and 'jobTitle' by default.)"
     showcaseDescription: String
-    "The Showcase image."
+    "The Showcase image ('photo if the person is an advisory board member 'alternatePhoto' by default.)"
     showcaseImage: Asset
     ${entryFields}
   }
@@ -223,11 +223,11 @@ const typeDefs = gql`
     image: Asset
     "The alignment of the image."
     imageAlignment: String
-    "The Showcase title."
+    "The Showcase title (the title field.)"
     showcaseTitle: String
-    "The Showcase description."
+    "The Showcase description (the content field.)"
     showcaseDescription: String
-    "The Showcase image."
+    "The Showcase image (the image field.)"
     showcaseImage: Asset
     "Any custom overrides for this block."
     additionalContent: JSON
