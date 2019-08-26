@@ -4,8 +4,8 @@ import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { has } from 'lodash';
 
-import Loader from '../loader';
-import { stringToEnum, listToEnums, fieldsToResolve } from './helpers';
+import FieldLoader from '../FieldLoader';
+import { stringToEnum, listToEnums } from './helpers';
 import { updateEmailSubscriptionTopics } from '../repositories/northstar';
 
 /**
@@ -48,6 +48,7 @@ const typeDefs = gql`
     CONFIRMED
     INELIGIBLE
     UNCERTAIN
+    UNREGISTERED
   }
 
   enum EmailSubscriptionTopic {
@@ -148,21 +149,18 @@ const typeDefs = gql`
  */
 const resolvers = {
   User: {
-    role: user => stringToEnum(user.role),
-    smsStatus: user => stringToEnum(user.smsStatus),
-    voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
-    emailSubscriptionTopics: user => listToEnums(user.emailSubscriptionTopics),
-    hasFeatureFlag: (user, { feature }) =>
-      has(user, `featureFlags.${feature}`) &&
+    role: async user => stringToEnum(await user.role),
+    smsStatus: async user => stringToEnum(await user.smsStatus),
+    voterRegistrationStatus: async user =>
+      stringToEnum(await user.voterRegistrationStatus),
+    emailSubscriptionTopics: async user =>
+      listToEnums(await user.emailSubscriptionTopics),
+    hasFeatureFlag: async (user, { feature }) =>
+      has(await user, `featureFlags.${feature}`) &&
       user.featureFlags[feature] !== false,
   },
   Query: {
-    user: (_, args, context, info) => {
-      return Loader(context).users.load({
-        id: args.id,
-        fields: fieldsToResolve(info),
-      });
-    },
+    user: (_, { id }, context) => FieldLoader(id, context),
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,

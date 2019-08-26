@@ -2,14 +2,13 @@ import { set } from 'lodash';
 import logger from 'heroku-logger';
 import DataLoader from 'dataloader';
 
-import FieldMap from './FieldMap';
 import { getEmbed } from './repositories/embed';
 import {
   getActionById,
   getCampaignById,
   getSignupsById,
 } from './repositories/rogue';
-import { getUsersById } from './repositories/northstar';
+// import { getUsersById } from './repositories/northstar';
 import { getConversationById } from './repositories/gambit';
 import {
   getGambitContentfulEntryById,
@@ -29,7 +28,7 @@ import {
  *
  * @var {DataLoader}
  */
-export default (context, preview = false) => {
+const Loader = (context, preview = false) => {
   // Keep track of whether or not we're in "preview" mode:
   if (preview) {
     set(context, 'preview', true);
@@ -80,9 +79,13 @@ export default (context, preview = false) => {
       gambitAssets: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulAssetById(id, context))),
       ),
-      users: new DataLoader(requests => getUsersById(requests, options), {
-        cacheMap: new FieldMap(),
-      }),
+      // userFields: (id) => new DataLoader(fields => {
+      //   console.log(id, fields);
+      //   return fields;
+      // })
+      // users: new DataLoader(requests => getUsersById(requests, options), {
+      //   cacheKeyFn: ({ id, fields }) => `${id}:${new Set(fields)}`,
+      // }),
       signups: new DataLoader(ids => getSignupsById(ids, options)),
       topics: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulEntryById(id, options))),
@@ -92,3 +95,5 @@ export default (context, preview = false) => {
 
   return context.loader;
 };
+
+export default Loader;
