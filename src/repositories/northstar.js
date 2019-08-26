@@ -1,3 +1,4 @@
+import { stringify } from 'qs';
 import logger from 'heroku-logger';
 
 import config from '../../config';
@@ -10,10 +11,17 @@ const NORTHSTAR_URL = config('services.northstar.url');
  *
  * @return {Object}
  */
-export const getUserById = async (id, options) => {
-  logger.debug('Loading user from Northstar', { id });
+export const getUserById = async (id, fields = [], options) => {
+  const include = fields.join();
+
+  logger.debug('Loading user from Northstar', { id, include });
+
   try {
-    const response = await fetch(`${NORTHSTAR_URL}/v2/users/${id}`, options);
+    const response = await fetch(
+      `${NORTHSTAR_URL}/v2/users/${id}?${stringify({ include })}`,
+      options,
+    );
+
     const json = await response.json();
 
     return transformItem(json);

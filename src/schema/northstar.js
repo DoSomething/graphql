@@ -5,7 +5,7 @@ import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { has } from 'lodash';
 
 import Loader from '../loader';
-import { stringToEnum, listToEnums } from './helpers';
+import { stringToEnum, listToEnums, fieldsToResolve } from './helpers';
 import { updateEmailSubscriptionTopics } from '../repositories/northstar';
 
 /**
@@ -157,7 +157,12 @@ const resolvers = {
       user.featureFlags[feature] !== false,
   },
   Query: {
-    user: (_, args, context) => Loader(context).users.load(args.id),
+    user: (_, args, context, info) => {
+      return Loader(context).users.load({
+        id: args.id,
+        fields: fieldsToResolve(info),
+      });
+    },
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,

@@ -79,8 +79,10 @@ export default (context, preview = false) => {
       gambitAssets: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulAssetById(id, context))),
       ),
-      users: new DataLoader(ids =>
-        Promise.all(ids.map(id => getUserById(id, options))),
+      users: new DataLoader(requests =>
+        Promise.all(
+          requests.map(({ id, fields }) => getUserById(id, fields, options)),
+        ),
       ),
       signups: new DataLoader(ids => getSignupsById(ids, options)),
       topics: new DataLoader(ids =>
