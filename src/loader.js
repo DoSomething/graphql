@@ -1,4 +1,4 @@
-import { set } from 'lodash';
+import { flatMap, groupBy, map, mapValues, set, uniq } from 'lodash';
 import logger from 'heroku-logger';
 import DataLoader from 'dataloader';
 
@@ -79,11 +79,23 @@ export default (context, preview = false) => {
       gambitAssets: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulAssetById(id, context))),
       ),
-      users: new DataLoader(requests =>
-        Promise.all(
-          requests.map(({ id, fields }) => getUserById(id, fields, options)),
-        ),
-      ),
+      users: new DataLoader(requests => {
+        // Combine multiple requests for the same user w/ different fields:
+        const batchRequests = mapValues(groupBy(requests, 'id'), request =>
+          uniq(flatMap(request, 'fields')),
+        );
+
+        return Promise.all(
+          // Now, fire off API requests for each of the user IDs:
+          map(batchRequests, (fields, id) => getUserById(id, fields, options)),
+        ).then(responses =>
+          // Finally, we need to return the same length & order as the array of IDs,
+          // so we "un-combine" the responses to match original request format.
+          requests.map(({ id }) =>
+            responses.find(response => id === response.id),
+          ),
+        );
+      }),
       signups: new DataLoader(ids => getSignupsById(ids, options)),
       topics: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulEntryById(id, options))),
