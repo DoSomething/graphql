@@ -34,6 +34,16 @@ export const getUserById = async (id, fields = [], options) => {
 };
 
 /**
+ * Fetch a list of users from Northstar by ID.
+ *
+ * @param {*} requests
+ */
+export const getUsersById = async (requests, options) =>
+  Promise.all(
+    requests.map(({ id, fields }) => getUserById(id, fields, options)),
+  );
+
+/**
  * Update a user's email_subscription_topics in Northstar.
  *
  * @param {String} id
