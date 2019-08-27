@@ -1,4 +1,4 @@
-import { set } from 'lodash';
+import { get, set } from 'lodash';
 import logger from 'heroku-logger';
 import DataLoader from 'dataloader';
 
@@ -21,6 +21,7 @@ import {
   getAffiliateByUtmLabel,
   getCampaignWebsiteByCampaignId,
 } from './repositories/contentful/phoenix';
+import { getUserById } from './repositories/northstar';
 
 /**
  * The data loader handles batching and caching the backend
@@ -79,13 +80,19 @@ const Loader = (context, preview = false) => {
       gambitAssets: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulAssetById(id, context))),
       ),
-      // userFields: (id) => new DataLoader(fields => {
-      //   console.log(id, fields);
-      //   return fields;
-      // })
-      // users: new DataLoader(requests => getUsersById(requests, options), {
-      //   cacheKeyFn: ({ id, fields }) => `${id}:${new Set(fields)}`,
-      // }),
+      users: new DataLoader(ids =>
+        Promise.resolve(
+          ids.map(
+            id =>
+              new DataLoader(async fields => {
+                const result = await getUserById(id, fields, options);
+                const values = fields.map(field => get(result, field));
+
+                return Promise.resolve(values);
+              }),
+          ),
+        ),
+      ),
       signups: new DataLoader(ids => getSignupsById(ids, options)),
       topics: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulEntryById(id, options))),

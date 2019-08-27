@@ -2,10 +2,10 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { gql } from 'apollo-server';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
-import { has } from 'lodash';
+import { has, zipObject, isUndefined } from 'lodash';
 
-import FieldLoader from '../FieldLoader';
-import { stringToEnum, listToEnums } from './helpers';
+import Loader from '../loader';
+import { stringToEnum, listToEnums, fieldsToResolve } from './helpers';
 import { updateEmailSubscriptionTopics } from '../repositories/northstar';
 
 /**
@@ -149,18 +149,26 @@ const typeDefs = gql`
  */
 const resolvers = {
   User: {
-    role: async user => stringToEnum(await user.role),
-    smsStatus: async user => stringToEnum(await user.smsStatus),
-    voterRegistrationStatus: async user =>
-      stringToEnum(await user.voterRegistrationStatus),
-    emailSubscriptionTopics: async user =>
-      listToEnums(await user.emailSubscriptionTopics),
-    hasFeatureFlag: async (user, { feature }) =>
-      has(await user, `featureFlags.${feature}`) &&
+    role: user => stringToEnum(user.role),
+    smsStatus: user => stringToEnum(user.smsStatus),
+    voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
+    emailSubscriptionTopics: user => listToEnums(user.emailSubscriptionTopics),
+    hasFeatureFlag: (user, { feature }) =>
+      has(user, `featureFlags.${feature}`) &&
       user.featureFlags[feature] !== false,
   },
   Query: {
-    user: (_, { id }, context) => FieldLoader(id, context),
+    user: (_, { id }, context, info) => {
+      const fields = fieldsToResolve(info);
+
+      return Loader(context)
+        .users.load(id)
+        .then(user => user.loadMany(fields))
+        .then(
+          values =>
+            values.every(isUndefined) ? null : zipObject(fields, values),
+        );
+    },
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
