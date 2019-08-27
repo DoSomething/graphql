@@ -13,13 +13,25 @@ import {
 
 const NORTHSTAR_URL = config('services.northstar.url');
 
+// The list of fields that we'll need to query via `?include=`.
+// See '$sensitive' in Northstar's User model. <https://git.io/fjAFE>
+// @TODO: Can we read this from a custom directive in the schema?
+const OPTIONAL_USER_FIELDS = [
+  'email',
+  'mobile',
+  'lastName',
+  'addrStreet1',
+  'addrStreet2',
+  'birthdate',
+];
+
 /**
  * Fetch a user from Northstar by ID.
  *
  * @return {Object}
  */
 export const getUserById = async (id, fields = [], options) => {
-  const include = fields.join();
+  const include = intersection(fields, OPTIONAL_USER_FIELDS).join();
 
   logger.debug('Loading user from Northstar', { id, include });
 
