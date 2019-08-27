@@ -8,7 +8,7 @@ import {
   getCampaignById,
   getSignupsById,
 } from './repositories/rogue';
-// import { getUsersById } from './repositories/northstar';
+import { getUserById } from './repositories/northstar';
 import { getConversationById } from './repositories/gambit';
 import {
   getGambitContentfulEntryById,
@@ -21,7 +21,6 @@ import {
   getAffiliateByUtmLabel,
   getCampaignWebsiteByCampaignId,
 } from './repositories/contentful/phoenix';
-import { getUserById } from './repositories/northstar';
 
 /**
  * The data loader handles batching and caching the backend
@@ -29,7 +28,7 @@ import { getUserById } from './repositories/northstar';
  *
  * @var {DataLoader}
  */
-const Loader = (context, preview = false) => {
+export default (context, preview = false) => {
   // Keep track of whether or not we're in "preview" mode:
   if (preview) {
     set(context, 'preview', true);
@@ -102,5 +101,3 @@ const Loader = (context, preview = false) => {
 
   return context.loader;
 };
-
-export default Loader;

@@ -15,7 +15,6 @@ const NORTHSTAR_URL = config('services.northstar.url');
 
 // The list of fields that we'll need to query via `?include=`.
 // See '$sensitive' in Northstar's User model. <https://git.io/fjAFE>
-// @TODO: Can we read this from a custom directive in the schema?
 const OPTIONAL_USER_FIELDS = [
   'email',
   'mobile',
