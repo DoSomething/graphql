@@ -2,7 +2,7 @@
   "name": "graphql-api-gateway",
   "description": "An GraphQL API gateway for DoSomething.org services.",
   "scripts": {
-    "start": "nodemon -e js,html local.js",
+    "start": "nodemon --inspect -e js,html local.js",
     "start:production": "node local.js",
     "test": "npm run lint && npm run format:ci",
     "lint": "eslint --ext .js src",
