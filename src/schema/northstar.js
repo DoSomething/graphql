@@ -2,11 +2,13 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { gql } from 'apollo-server';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
-import { has, zipObject, isUndefined } from 'lodash';
+import { has } from 'lodash';
 
-import Loader from '../loader';
-import { stringToEnum, listToEnums, fieldsToResolve } from './helpers';
-import { updateEmailSubscriptionTopics } from '../repositories/northstar';
+import { stringToEnum, listToEnums } from './helpers';
+import {
+  usersResolver,
+  updateEmailSubscriptionTopics,
+} from '../repositories/northstar';
 
 /**
  * GraphQL types.
@@ -158,17 +160,7 @@ const resolvers = {
       user.featureFlags[feature] !== false,
   },
   Query: {
-    user: (_, { id }, context, info) => {
-      const fields = fieldsToResolve(info);
-
-      return Loader(context)
-        .users.load(id)
-        .then(user => user.loadMany(fields))
-        .then(
-          values =>
-            values.every(isUndefined) ? null : zipObject(fields, values),
-        );
-    },
+    user: usersResolver,
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,

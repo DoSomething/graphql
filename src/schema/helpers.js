@@ -25,13 +25,3 @@ export const listToEnums = list => {
 
   return list.map(stringToEnum);
 };
-
-/**
- * Determine the requested fields for the object returned from the resolver,
- * via the AST provided in the resolver's `info` argument. <dfurn.es/30usMgs>
- *
- * @param {GraphQLResolveInfo} info
- * @return {String[]}
- */
-export const fieldsToResolve = info =>
-  info.fieldNodes[0].selectionSet.selections.map(field => field.name.value);
