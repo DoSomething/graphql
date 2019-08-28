@@ -48,6 +48,7 @@ const typeDefs = gql`
     CONFIRMED
     INELIGIBLE
     UNCERTAIN
+    UNREGISTERED
   }
 
   enum EmailSubscriptionTopic {
