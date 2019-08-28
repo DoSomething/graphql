@@ -3,4 +3,3 @@ node_modules
 .DS_Store
 schema.graphql
 lib/
-.vscode
