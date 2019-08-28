@@ -30,13 +30,16 @@ const OPTIONAL_USER_FIELDS = [
  * @return {Object}
  */
 export const getUserById = async (id, fields = [], options) => {
-  const include = intersection(fields, OPTIONAL_USER_FIELDS).join();
+  const includes = intersection(fields, OPTIONAL_USER_FIELDS);
 
-  logger.debug('Loading user from Northstar', { id, include });
+  logger.debug('Loading user from Northstar', { id, include: includes.join() });
 
   try {
     const response = await fetch(
-      `${NORTHSTAR_URL}/v2/users/${id}?${stringify({ include })}`,
+      // @TODO: This is clunky! Can we simplify?
+      `${NORTHSTAR_URL}/v2/users/${id}?${stringify({
+        include: includes.length ? includes.join() : undefined,
+      })}`,
       options,
     );
 
