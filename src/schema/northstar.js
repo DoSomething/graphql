@@ -4,9 +4,11 @@ import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { has } from 'lodash';
 
-import Loader from '../loader';
 import { stringToEnum, listToEnums } from './helpers';
-import { updateEmailSubscriptionTopics } from '../repositories/northstar';
+import {
+  usersResolver,
+  updateEmailSubscriptionTopics,
+} from '../repositories/northstar';
 
 /**
  * GraphQL types.
@@ -48,6 +50,7 @@ const typeDefs = gql`
     CONFIRMED
     INELIGIBLE
     UNCERTAIN
+    UNREGISTERED
   }
 
   enum EmailSubscriptionTopic {
@@ -157,7 +160,7 @@ const resolvers = {
       user.featureFlags[feature] !== false,
   },
   Query: {
-    user: (_, args, context) => Loader(context).users.load(args.id),
+    user: usersResolver,
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
