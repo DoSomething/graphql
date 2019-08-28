@@ -25,3 +25,5 @@ export const listToEnums = list => {
 
   return list.map(stringToEnum);
 };
+
+export default null;
