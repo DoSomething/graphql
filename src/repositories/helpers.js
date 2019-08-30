@@ -98,3 +98,13 @@ export const urlWithQuery = (path, args) => {
     return null;
   }
 };
+
+/**
+ * Determine the fields that were requested for an item, via the query's
+ * AST provided in the resolver's `info` argument. <dfurn.es/30usMgs>
+ *
+ * @param {GraphQLResolveInfo} info
+ * @return {string[]}
+ */
+export const queriedFields = info =>
+  info.fieldNodes[0].selectionSet.selections.map(field => field.name.value);
