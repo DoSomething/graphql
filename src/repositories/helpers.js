@@ -1,9 +1,9 @@
 import { URL, URLSearchParams } from 'url';
 import {
-  get,
-  has,
+  flatMap,
   map,
   mapKeys,
+  has,
   camelCase,
   omit,
   isUndefined,
@@ -117,14 +117,15 @@ export const urlWithQuery = (path, args) => {
  * @return {string[]}
  */
 export const queriedFields = info => {
-  const mapping = {
-    hasFeatureFlag: 'featureFlags',
-  };
+  const type = info.schema.getType(info.returnType.name);
+  const fields = type.getFields();
 
-  return info.fieldNodes[0].selectionSet.selections.map(field => {
-    const fieldName = field.name.value;
+  return flatMap(info.fieldNodes[0].selectionSet.selections, field => {
+    const name = field.name.value;
 
-    return get(mapping, fieldName, fieldName);
+    // Optionally, the `@requires` directive can be used to
+    // specify a custom mapping of GraphQL->REST fields:
+    return fields[name].requiredHttpIncludes || name;
   });
 };
 

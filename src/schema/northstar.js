@@ -1,10 +1,11 @@
-import { makeExecutableSchema } from 'graphql-tools';
-import { gql } from 'apollo-server';
-import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
-import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { has } from 'lodash';
+import { gql } from 'apollo-server';
+import { GraphQLAbsoluteUrl } from 'graphql-url';
+import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
+import { makeExecutableSchema } from 'graphql-tools';
 
 import { stringToEnum, listToEnums } from './helpers';
+import RequiresDirective from './directives/RequiresDirective';
 import {
   usersResolver,
   updateEmailSubscriptionTopics,
@@ -21,6 +22,8 @@ const typeDefs = gql`
   scalar DateTime
 
   scalar AbsoluteUrl
+
+  directive @requires(fields: [String]!) on FIELD_DEFINITION
 
   "The user's role defines their abilities on any DoSomething.org site."
   enum Role {
@@ -125,7 +128,7 @@ const typeDefs = gql`
     "What time of day user plans to get the polls to vote in upcoming election."
     votingPlanTimeOfDay: String
     "Whether or not the user is opted-in to the given feature."
-    hasFeatureFlag(feature: String): Boolean
+    hasFeatureFlag(feature: String): Boolean @requires(fields: ["featureFlags"])
   }
 
   type Query {
@@ -183,4 +186,7 @@ const resolvers = {
 export default makeExecutableSchema({
   typeDefs,
   resolvers,
+  schemaDirectives: {
+    requires: RequiresDirective,
+  },
 });

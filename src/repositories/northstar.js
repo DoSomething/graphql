@@ -64,7 +64,6 @@ export const getUserById = async (id, fields = [], options) => {
  */
 export const usersResolver = async (_, { id }, context, info) => {
   const fields = queriedFields(info);
-  console.log(fields);
 
   return Loader(context)
     .users.load(id)
