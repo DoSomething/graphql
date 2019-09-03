@@ -1,5 +1,15 @@
-import { has, map, mapKeys, camelCase, omit, isUndefined } from 'lodash';
 import { URL, URLSearchParams } from 'url';
+import {
+  get,
+  has,
+  map,
+  mapKeys,
+  camelCase,
+  omit,
+  isUndefined,
+  isNil,
+  zipObject,
+} from 'lodash';
 
 /**
  * Attach the user's authorization token to a request.
@@ -108,3 +118,13 @@ export const urlWithQuery = (path, args) => {
  */
 export const queriedFields = info =>
   info.fieldNodes[0].selectionSet.selections.map(field => field.name.value);
+
+/**
+ * Zip the provided list of fields & values, unless all the provided
+ * values are `null` (in which case the item must have 404'd).
+ *
+ * @param {string[]} fields
+ * @param {any[]} values
+ */
+export const zipUnlessEmpty = (fields, values) =>
+  values.every(isNil) ? null : zipObject(fields, values);
