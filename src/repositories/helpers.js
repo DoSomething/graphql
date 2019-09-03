@@ -116,8 +116,17 @@ export const urlWithQuery = (path, args) => {
  * @param {GraphQLResolveInfo} info
  * @return {string[]}
  */
-export const queriedFields = info =>
-  info.fieldNodes[0].selectionSet.selections.map(field => field.name.value);
+export const queriedFields = info => {
+  const mapping = {
+    hasFeatureFlag: 'featureFlags',
+  };
+
+  return info.fieldNodes[0].selectionSet.selections.map(field => {
+    const fieldName = field.name.value;
+
+    return get(mapping, fieldName, fieldName);
+  });
+};
 
 /**
  * Zip the provided list of fields & values, unless all the provided
