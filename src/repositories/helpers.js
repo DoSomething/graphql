@@ -138,6 +138,28 @@ export const queriedFields = info => {
 };
 
 /**
+ * Keep track of any `@sensitive` fields that must be specifically
+ * queried using the `?include=` query string on our REST APIs.
+ *
+ * @param {GraphQLResolveInfo} info
+ * @return {string[]}
+ */
+export const markSensitiveFieldsInContext = (info, context) => {
+  if (!context.optionalFields) {
+    context.optionalFields = {};
+  }
+
+  const type = info.schema.getType(info.returnType.name);
+  if (!context.optionalFields[type]) {
+    const fields = type.getFields();
+
+    context.optionalFields[type] = getSelection(info)
+      .map(field => field.name.value)
+      .filter(field => fields[field].isSensitive);
+  }
+};
+
+/**
  * Zip the provided list of fields & values, unless all the provided
  * values are `null` (in which case the item must have 404'd).
  *

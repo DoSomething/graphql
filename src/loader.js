@@ -85,13 +85,15 @@ export default (context, preview = false) => {
       // The 'users' loader is a little special. It batches up all the unique
       // user IDs we've asked for, and returns a DataLoader for each one to
       // batch up all the fields we're reading for each particular user.
+      //
+      // See also: usersResolver in resolvers/northstar.js.
       users: new DataLoader(async ids =>
         ids.map(
           id =>
             new DataLoader(async fields => {
               // We run this once per user w/ all their queried fields,
               // and then cache each resolved field in this user's loader.
-              const result = await getUserById(id, fields, options);
+              const result = await getUserById(id, fields, context);
               return fields.map(field => get(result, field));
             }),
         ),

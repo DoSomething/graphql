@@ -6,6 +6,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 
 import { stringToEnum, listToEnums } from './helpers';
 import RequiresDirective from './directives/RequiresDirective';
+import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
 import {
   usersResolver,
   updateEmailSubscriptionTopics,
@@ -24,6 +25,8 @@ const typeDefs = gql`
   scalar AbsoluteUrl
 
   directive @requires(fields: [String]!) on FIELD_DEFINITION
+
+  directive @sensitive on FIELD_DEFINITION
 
   "The user's role defines their abilities on any DoSomething.org site."
   enum Role {
@@ -70,19 +73,19 @@ const typeDefs = gql`
     "The user's first name."
     firstName: String
     "The user's last name."
-    lastName: String
+    lastName: String @sensitive
     "The user's last initial."
     lastInitial: String
     "The user's email address."
-    email: String
+    email: String @sensitive
     "The user's mobile number."
-    mobile: String
+    mobile: String @sensitive
     "The user's birthdate, formatted YYYY-MM-DD."
-    birthdate: Date
+    birthdate: Date @sensitive
     "The user's street address. Null if unauthorized."
-    addrStreet1: String
+    addrStreet1: String @sensitive
     "The user's extended street address (for example, apartment number). Null if unauthorized."
-    addrStreet2: String
+    addrStreet2: String @sensitive
     "The user's city. Null if unauthorized."
     addrCity: String
     "The user's state. Null if unauthorized."
@@ -188,5 +191,6 @@ export default makeExecutableSchema({
   resolvers,
   schemaDirectives: {
     requires: RequiresDirective,
+    sensitive: SensitiveFieldDirective,
   },
 });

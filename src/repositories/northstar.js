@@ -6,31 +6,22 @@ import Loader from '../loader';
 import config from '../../config';
 import {
   transformItem,
-  requireAuthorizedRequest,
   queriedFields,
   zipUnlessEmpty,
+  authorizedRequest,
+  requireAuthorizedRequest,
+  markSensitiveFieldsInContext,
 } from './helpers';
 
 const NORTHSTAR_URL = config('services.northstar.url');
-
-// The list of fields that we'll need to query via `?include=`.
-// See '$sensitive' in Northstar's User model. <https://git.io/fjAFE>
-const OPTIONAL_USER_FIELDS = [
-  'email',
-  'mobile',
-  'lastName',
-  'addrStreet1',
-  'addrStreet2',
-  'birthdate',
-];
 
 /**
  * Fetch a user from Northstar by ID.
  *
  * @return {Object}
  */
-export const getUserById = async (id, fields = [], options) => {
-  const optionalFields = intersection(fields, OPTIONAL_USER_FIELDS);
+export const getUserById = async (id, fields, context) => {
+  const optionalFields = intersection(fields, context.optionalFields.User);
 
   // Northstar expects a comma-separated list of snake_case fields.
   // If not querying anything, use 'undefined' to omit query string.
@@ -41,17 +32,15 @@ export const getUserById = async (id, fields = [], options) => {
   logger.debug('Loading user from Northstar', { id, include });
 
   try {
-    const response = await fetch(
-      `${NORTHSTAR_URL}/v2/users/${id}?${stringify({ include })}`,
-      options,
-    );
+    const url = `${NORTHSTAR_URL}/v2/users/${id}?${stringify({ include })}`;
+    const response = await fetch(url, authorizedRequest(context));
 
     const json = await response.json();
 
     return transformItem(json);
   } catch (exception) {
     const error = exception.message;
-    logger.warn('Unable to load user.', { id, error, options });
+    logger.warn('Unable to load user.', { id, error });
   }
 
   return null;
@@ -63,6 +52,8 @@ export const getUserById = async (id, fields = [], options) => {
  * @return {Object}
  */
 export const usersResolver = async (_, { id }, context, info) => {
+  markSensitiveFieldsInContext(info, context);
+
   const fields = queriedFields(info);
 
   return Loader(context)
