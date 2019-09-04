@@ -4,13 +4,17 @@ import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
 
-import { stringToEnum, listToEnums } from './helpers';
+import Loader from '../loader';
 import RequiresDirective from './directives/RequiresDirective';
 import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
+import { updateEmailSubscriptionTopics } from '../repositories/northstar';
 import {
-  usersResolver,
-  updateEmailSubscriptionTopics,
-} from '../repositories/northstar';
+  stringToEnum,
+  listToEnums,
+  queriedFields,
+  zipUnlessEmpty,
+  markSensitiveFieldsInContext,
+} from './helpers';
 
 /**
  * GraphQL types.
@@ -166,7 +170,15 @@ const resolvers = {
       user.featureFlags[feature] !== false,
   },
   Query: {
-    user: usersResolver,
+    user: (_, { id }, context, info) => {
+      const fields = queriedFields(info);
+      markSensitiveFieldsInContext(info, context);
+
+      return Loader(context)
+        .users.load(id)
+        .then(user => user.loadMany(fields))
+        .then(values => zipUnlessEmpty(fields, values));
+    },
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,

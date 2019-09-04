@@ -2,15 +2,11 @@ import { stringify } from 'qs';
 import logger from 'heroku-logger';
 import { intersection, snakeCase } from 'lodash';
 
-import Loader from '../loader';
 import config from '../../config';
 import {
   transformItem,
-  queriedFields,
-  zipUnlessEmpty,
   authorizedRequest,
   requireAuthorizedRequest,
-  markSensitiveFieldsInContext,
 } from './helpers';
 
 const NORTHSTAR_URL = config('services.northstar.url');
@@ -44,22 +40,6 @@ export const getUserById = async (id, fields, context) => {
   }
 
   return null;
-};
-
-/**
- * Fetch users from Northstar by IDs.
- *
- * @return {Object}
- */
-export const usersResolver = async (_, { id }, context, info) => {
-  markSensitiveFieldsInContext(info, context);
-
-  const fields = queriedFields(info);
-
-  return Loader(context)
-    .users.load(id)
-    .then(user => user.loadMany(fields))
-    .then(values => zipUnlessEmpty(fields, values));
 };
 
 /**
