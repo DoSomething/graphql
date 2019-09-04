@@ -68,6 +68,8 @@ export const markSensitiveFieldsInContext = (info, context) => {
     context.optionalFields = {};
   }
 
+  // If this is the first time we're resolving this type (e.g. User)
+  // mark any `@sensitive` fields in the context for later:
   const type = info.schema.getType(info.returnType.name);
   if (!context.optionalFields[type]) {
     const fields = type.getFields();
