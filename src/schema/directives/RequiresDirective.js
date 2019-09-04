@@ -3,7 +3,7 @@ import { SchemaDirectiveVisitor } from 'graphql-tools';
 
 class RequiresDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition(field) {
-    field.requiredHttpIncludes = this.args.fields;
+    set(field, 'requiredHttpIncludes', this.args.fields);
   }
 }
 
