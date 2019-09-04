@@ -116,11 +116,19 @@ export const urlWithQuery = (path, args) => {
  * @param {GraphQLResolveInfo} info
  * @return {string[]}
  */
+export const getSelection = info => info.fieldNodes[0].selectionSet.selections;
+
+/**
+ * Get a list of fields that we should query from the backend.
+ *
+ * @param {GraphQLResolveInfo} info
+ * @return {string[]}
+ */
 export const queriedFields = info => {
   const type = info.schema.getType(info.returnType.name);
   const fields = type.getFields();
 
-  return flatMap(info.fieldNodes[0].selectionSet.selections, field => {
+  return flatMap(getSelection(info), field => {
     const name = field.name.value;
 
     // Optionally, the `@requires` directive can be used to
