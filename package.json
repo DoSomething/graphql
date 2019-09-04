@@ -63,7 +63,8 @@
       ],
       "space-unary-ops": "off",
       "arrow-parens": "off",
-      "no-confusing-arrow": "off"
+      "no-confusing-arrow": "off",
+      "no-param-reassign": "off"
     }
   },
   "dependencies": {
