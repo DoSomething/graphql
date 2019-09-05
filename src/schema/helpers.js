@@ -1,4 +1,4 @@
-import { isNil, flatMap, zipObject } from 'lodash';
+import { isNil, flatMap, zipObject, values } from 'lodash';
 
 /**
  * Transform a string constant into a GraphQL-style enum.
@@ -74,9 +74,9 @@ export const markSensitiveFieldsInContext = (info, context) => {
   if (!context.optionalFields[type]) {
     const fields = type.getFields();
 
-    context.optionalFields[type] = getSelection(info)
-      .map(field => field.name.value)
-      .filter(field => fields[field].isSensitive);
+    context.optionalFields[type] = values(fields)
+      .filter(field => field.isSensitive)
+      .map(field => field.name);
   }
 };
 
