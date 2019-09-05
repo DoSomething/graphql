@@ -81,11 +81,11 @@ export const markSensitiveFieldsInContext = (info, context) => {
 };
 
 /**
- * Zip the provided list of fields & values, unless all the provided
+ * Zip the provided list of keys & entries, unless all the provided
  * values are `null` (in which case the item must have 404'd).
  *
- * @param {string[]} fields
- * @param {any[]} values
+ * @param {string[]} keys
+ * @param {any[]} entries
  */
-export const zipUnlessEmpty = (fields, values) =>
-  values.every(isNil) ? null : zipObject(fields, values);
+export const zipUnlessEmpty = (keys, entries) =>
+  entries.every(isNil) ? null : zipObject(keys, entries);
