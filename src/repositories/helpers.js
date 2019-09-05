@@ -1,5 +1,5 @@
-import { has, map, mapKeys, camelCase, omit, isUndefined } from 'lodash';
 import { URL, URLSearchParams } from 'url';
+import { map, mapKeys, has, camelCase, omit, isUndefined } from 'lodash';
 
 /**
  * Attach the user's authorization token to a request.

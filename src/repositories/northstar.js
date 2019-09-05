@@ -1,7 +1,13 @@
+import { stringify } from 'qs';
 import logger from 'heroku-logger';
+import { intersection, snakeCase } from 'lodash';
 
 import config from '../../config';
-import { transformItem, requireAuthorizedRequest } from './helpers';
+import {
+  transformItem,
+  authorizedRequest,
+  requireAuthorizedRequest,
+} from './helpers';
 
 const NORTHSTAR_URL = config('services.northstar.url');
 
@@ -10,16 +16,27 @@ const NORTHSTAR_URL = config('services.northstar.url');
  *
  * @return {Object}
  */
-export const getUserById = async (id, options) => {
-  logger.debug('Loading user from Northstar', { id });
+export const getUserById = async (id, fields, context) => {
+  const optionalFields = intersection(fields, context.optionalFields.User);
+
+  // Northstar expects a comma-separated list of snake_case fields.
+  // If not querying anything, use 'undefined' to omit query string.
+  const include = optionalFields.length
+    ? optionalFields.map(snakeCase).join()
+    : undefined;
+
+  logger.debug('Loading user from Northstar', { id, include });
+
   try {
-    const response = await fetch(`${NORTHSTAR_URL}/v2/users/${id}`, options);
+    const url = `${NORTHSTAR_URL}/v2/users/${id}?${stringify({ include })}`;
+    const response = await fetch(url, authorizedRequest(context));
+
     const json = await response.json();
 
     return transformItem(json);
   } catch (exception) {
     const error = exception.message;
-    logger.warn('Unable to load user.', { id, error, options });
+    logger.warn('Unable to load user.', { id, error });
   }
 
   return null;

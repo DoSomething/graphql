@@ -1,12 +1,20 @@
-import { makeExecutableSchema } from 'graphql-tools';
-import { gql } from 'apollo-server';
-import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
-import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { has } from 'lodash';
+import { gql } from 'apollo-server';
+import { GraphQLAbsoluteUrl } from 'graphql-url';
+import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
+import { makeExecutableSchema } from 'graphql-tools';
 
 import Loader from '../loader';
-import { stringToEnum, listToEnums } from './helpers';
+import RequiresDirective from './directives/RequiresDirective';
+import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
 import { updateEmailSubscriptionTopics } from '../repositories/northstar';
+import {
+  stringToEnum,
+  listToEnums,
+  queriedFields,
+  zipUnlessEmpty,
+  markSensitiveFieldsInContext,
+} from './helpers';
 
 /**
  * GraphQL types.
@@ -19,6 +27,10 @@ const typeDefs = gql`
   scalar DateTime
 
   scalar AbsoluteUrl
+
+  directive @requires(fields: [String]!) on FIELD_DEFINITION
+
+  directive @sensitive on FIELD_DEFINITION
 
   "The user's role defines their abilities on any DoSomething.org site."
   enum Role {
@@ -65,19 +77,19 @@ const typeDefs = gql`
     "The user's first name."
     firstName: String
     "The user's last name."
-    lastName: String
+    lastName: String @sensitive
     "The user's last initial."
     lastInitial: String
     "The user's email address."
-    email: String
+    email: String @sensitive
     "The user's mobile number."
-    mobile: String
+    mobile: String @sensitive
     "The user's birthdate, formatted YYYY-MM-DD."
-    birthdate: Date
+    birthdate: Date @sensitive
     "The user's street address. Null if unauthorized."
-    addrStreet1: String
+    addrStreet1: String @sensitive
     "The user's extended street address (for example, apartment number). Null if unauthorized."
-    addrStreet2: String
+    addrStreet2: String @sensitive
     "The user's city. Null if unauthorized."
     addrCity: String
     "The user's state. Null if unauthorized."
@@ -123,7 +135,7 @@ const typeDefs = gql`
     "What time of day user plans to get the polls to vote in upcoming election."
     votingPlanTimeOfDay: String
     "Whether or not the user is opted-in to the given feature."
-    hasFeatureFlag(feature: String): Boolean
+    hasFeatureFlag(feature: String): Boolean @requires(fields: ["featureFlags"])
   }
 
   type Query {
@@ -158,7 +170,15 @@ const resolvers = {
       user.featureFlags[feature] !== false,
   },
   Query: {
-    user: (_, args, context) => Loader(context).users.load(args.id),
+    user: (_, { id }, context, info) => {
+      const fields = queriedFields(info);
+      markSensitiveFieldsInContext(info, context);
+
+      return Loader(context)
+        .users.load(id)
+        .then(user => user.loadMany(fields))
+        .then(values => zipUnlessEmpty(fields, values));
+    },
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
@@ -181,4 +201,8 @@ const resolvers = {
 export default makeExecutableSchema({
   typeDefs,
   resolvers,
+  schemaDirectives: {
+    requires: RequiresDirective,
+    sensitive: SensitiveFieldDirective,
+  },
 });
