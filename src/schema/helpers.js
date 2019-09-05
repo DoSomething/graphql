@@ -1,4 +1,4 @@
-import { isNil, flatMap, zipObject, values } from 'lodash';
+import { flatMap, get, isNil, values, zipObject } from 'lodash';
 
 /**
  * Transform a string constant into a GraphQL-style enum.
@@ -52,7 +52,7 @@ export const queriedFields = info => {
 
     // Optionally, the `@requires` directive can be used to
     // specify a custom mapping of GraphQL->REST fields:
-    return fields[name].requiredHttpIncludes || name;
+    return get(fields, `${name}.requiredHttpIncludes`, name);
   });
 };
 
