@@ -100,7 +100,7 @@ const typeDefs = gql`
     "The user's email subscription status."
     emailSubscriptionStatus: Boolean
     "The user's email subscription status."
-    emailSubscriptionTopics: [EmailSubscriptionTopic]
+    emailSubscriptionTopics: [EmailSubscriptionTopic]!
     "The user's SMS status."
     smsStatus: SubscriptionStatus
     "The user's conversation status will be paused if they are in a support conversation."
