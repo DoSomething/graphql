@@ -1,7 +1,7 @@
-import { get, set } from 'lodash';
 import logger from 'heroku-logger';
 import DataLoader from 'dataloader';
 
+import FieldDataLoader from './FieldDataLoader';
 import { getEmbed } from './repositories/embed';
 import {
   getActionById,
@@ -31,7 +31,7 @@ import {
 export default (context, preview = false) => {
   // Keep track of whether or not we're in "preview" mode:
   if (preview) {
-    set(context, 'preview', true);
+    context.preview = true;
   }
 
   // If this is a new GraphQL request, configure a loader.
@@ -39,7 +39,7 @@ export default (context, preview = false) => {
     logger.debug('Creating a new loader for this GraphQL request.');
     const options = authorizedRequest(context);
 
-    set(context, 'loader', {
+    context.loader = {
       actions: new DataLoader(ids =>
         Promise.all(ids.map(id => getActionById(id, options))),
       ),
@@ -82,34 +82,14 @@ export default (context, preview = false) => {
       gambitAssets: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulAssetById(id, context))),
       ),
-      // The 'users' loader is a little special. It batches up all the unique
-      // user IDs we've asked for, and returns a DataLoader for each one to
-      // batch up all the fields we're reading for each particular user.
-      //
-      // See also: usersResolver in resolvers/northstar.js.
-      users: new DataLoader(async ids =>
-        ids.map(
-          id =>
-            new DataLoader(async fields => {
-              // We run this once per user w/ all their queried fields,
-              // and then cache each resolved field in this user's loader.
-              const result = await getUserById(id, fields, context);
-
-              // If this resource 404'd, return an array of 'undefined' fields
-              // to signal to the resolver that this resource doesn't exist.
-              if (!result) {
-                return fields.map(() => undefined);
-              }
-
-              return fields.map(field => get(result, field, null));
-            }),
-        ),
+      users: new FieldDataLoader((id, fields) =>
+        getUserById(id, fields, context),
       ),
       signups: new DataLoader(ids => getSignupsById(ids, options)),
       topics: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulEntryById(id, options))),
       ),
-    });
+    };
   }
 
   return context.loader;

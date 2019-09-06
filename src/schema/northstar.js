@@ -7,14 +7,9 @@ import { makeExecutableSchema } from 'graphql-tools';
 import Loader from '../loader';
 import RequiresDirective from './directives/RequiresDirective';
 import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
+import HasSensitiveFieldsDirective from './directives/HasSensitiveFieldsDirective';
 import { updateEmailSubscriptionTopics } from '../repositories/northstar';
-import {
-  stringToEnum,
-  listToEnums,
-  queriedFields,
-  zipUnlessEmpty,
-  markSensitiveFieldsInContext,
-} from './helpers';
+import { stringToEnum, listToEnums, queriedFields } from './helpers';
 
 /**
  * GraphQL types.
@@ -29,6 +24,8 @@ const typeDefs = gql`
   scalar AbsoluteUrl
 
   directive @requires(fields: [String]!) on FIELD_DEFINITION
+
+  directive @hasSensitiveFields on FIELD_DEFINITION
 
   directive @sensitive on FIELD_DEFINITION
 
@@ -140,7 +137,7 @@ const typeDefs = gql`
 
   type Query {
     "Get a user by ID."
-    user(id: String!): User
+    user(id: String!): User @hasSensitiveFields
   }
 
   type Mutation {
@@ -170,15 +167,8 @@ const resolvers = {
       user.featureFlags[feature] !== false,
   },
   Query: {
-    user: (_, { id }, context, info) => {
-      const fields = queriedFields(info);
-      markSensitiveFieldsInContext(info, context);
-
-      return Loader(context)
-        .users.load(id)
-        .then(user => user.loadMany(fields))
-        .then(values => zipUnlessEmpty(fields, values));
-    },
+    user: (_, { id }, context, info) =>
+      Loader(context).users.load(id, queriedFields(info)),
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
@@ -204,5 +194,6 @@ export default makeExecutableSchema({
   schemaDirectives: {
     requires: RequiresDirective,
     sensitive: SensitiveFieldDirective,
+    hasSensitiveFields: HasSensitiveFieldsDirective,
   },
 });

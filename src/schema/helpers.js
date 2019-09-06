@@ -1,4 +1,4 @@
-import { flatMap, get, isUndefined, values, zipObject } from 'lodash';
+import { flatMap, get } from 'lodash';
 
 /**
  * Transform a string constant into a GraphQL-style enum.
@@ -55,37 +55,3 @@ export const queriedFields = info => {
     return get(fields, `${name}.requiredHttpIncludes`, name);
   });
 };
-
-/**
- * Keep track of any `@sensitive` fields that must be specifically
- * queried using the `?include=` query string on our REST APIs.
- *
- * @param {GraphQLResolveInfo} info
- * @return {string[]}
- */
-export const markSensitiveFieldsInContext = (info, context) => {
-  if (!context.optionalFields) {
-    context.optionalFields = {};
-  }
-
-  // If this is the first time we're resolving this type (e.g. User)
-  // mark any `@sensitive` fields in the context for later:
-  const type = info.schema.getType(info.returnType.name);
-  if (!context.optionalFields[type]) {
-    const fields = type.getFields();
-
-    context.optionalFields[type] = values(fields)
-      .filter(field => field.isSensitive)
-      .map(field => field.name);
-  }
-};
-
-/**
- * Zip the provided list of keys & entries, unless all the provided
- * values are `null` (in which case the item must have 404'd).
- *
- * @param {string[]} keys
- * @param {any[]} entries
- */
-export const zipUnlessEmpty = (keys, entries) =>
-  entries.every(isUndefined) ? null : zipObject(keys, entries);

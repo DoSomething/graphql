@@ -1,6 +1,3 @@
-/* Disabling this linting rule since we're conforming to an API. */
-/* eslint-disable class-methods-use-this */
-
 import { SchemaDirectiveVisitor } from 'graphql-tools';
 
 const HELP_TEXT =
