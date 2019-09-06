@@ -1,4 +1,4 @@
-import { flatMap, get, values } from 'lodash';
+import { flatMap, get } from 'lodash';
 
 /**
  * Transform a string constant into a GraphQL-style enum.
