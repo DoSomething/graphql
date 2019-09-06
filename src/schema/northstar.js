@@ -12,7 +12,6 @@ import {
   stringToEnum,
   listToEnums,
   queriedFields,
-  zipUnlessEmpty,
   markSensitiveFieldsInContext,
 } from './helpers';
 
@@ -174,10 +173,7 @@ const resolvers = {
       const fields = queriedFields(info);
       markSensitiveFieldsInContext(info, context);
 
-      return Loader(context)
-        .users.load(id)
-        .then(user => user.loadMany(fields))
-        .then(values => zipUnlessEmpty(fields, values));
+      return Loader(context).users.load(id, fields);
     },
   },
   Date: GraphQLDate,
