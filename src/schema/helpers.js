@@ -22,7 +22,7 @@ export const stringToEnum = string => {
  */
 export const listToEnums = list => {
   if (!list) {
-    return null;
+    return [];
   }
 
   return list.map(stringToEnum);
