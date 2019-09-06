@@ -1,4 +1,4 @@
-import { flatMap, get, isNil, values, zipObject } from 'lodash';
+import { flatMap, get, isUndefined, values, zipObject } from 'lodash';
 
 /**
  * Transform a string constant into a GraphQL-style enum.
@@ -88,4 +88,4 @@ export const markSensitiveFieldsInContext = (info, context) => {
  * @param {any[]} entries
  */
 export const zipUnlessEmpty = (keys, entries) =>
-  entries.every(isNil) ? null : zipObject(keys, entries);
+  entries.every(isUndefined) ? null : zipObject(keys, entries);

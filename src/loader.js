@@ -94,7 +94,14 @@ export default (context, preview = false) => {
               // We run this once per user w/ all their queried fields,
               // and then cache each resolved field in this user's loader.
               const result = await getUserById(id, fields, context);
-              return fields.map(field => get(result, field));
+
+              // If this resource 404'd, return an array of 'undefined' fields
+              // to signal to the resolver that this resource doesn't exist.
+              if (!result) {
+                return fields.map(() => undefined);
+              }
+
+              return fields.map(field => get(result, field, null));
             }),
         ),
       ),
