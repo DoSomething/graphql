@@ -170,10 +170,9 @@ const resolvers = {
   },
   Query: {
     user: (_, { id }, context, info) => {
-      const fields = queriedFields(info);
       markSensitiveFieldsInContext(info, context);
 
-      return Loader(context).users.load(id, fields);
+      return Loader(context).users.load(id, queriedFields(info));
     },
   },
   Date: GraphQLDate,
