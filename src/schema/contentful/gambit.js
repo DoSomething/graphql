@@ -6,7 +6,6 @@ import {
   getWebSignupConfirmations,
   linkResolver,
 } from '../../repositories/contentful/gambit';
-
 import Loader from '../../loader';
 
 // Start shared fields ---
