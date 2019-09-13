@@ -1,4 +1,4 @@
-import { flatMap, get } from 'lodash';
+import { get } from 'lodash';
 
 /**
  * Transform a string constant into a GraphQL-style enum.
@@ -35,7 +35,20 @@ export const listToEnums = list => {
  * @param {GraphQLResolveInfo} info
  * @return {string[]}
  */
-export const getSelection = info => info.fieldNodes[0].selectionSet.selections;
+export const getSelection = info =>
+  info.fieldNodes[0].selectionSet.selections.flatMap(field => {
+    const name = field.name.value;
+
+    // If this "field" is really a fragment, expand it to
+    // get the actual fields that are included in it:
+    if (field.kind === 'FragmentSpread') {
+      const selections = info.fragments[name].selectionSet.selections;
+      return selections.map(selection => selection.name.value);
+    }
+
+    // Otherwise, just return the name of the field:
+    return name;
+  });
 
 /**
  * Get a list of fields that we should query from the backend.
@@ -47,11 +60,9 @@ export const queriedFields = info => {
   const type = info.schema.getType(info.returnType.name);
   const fields = type.getFields();
 
-  return flatMap(getSelection(info), field => {
-    const name = field.name.value;
-
+  return getSelection(info).flatMap(field =>
     // Optionally, the `@requires` directive can be used to
     // specify a custom mapping of GraphQL->REST fields:
-    return get(fields, `${name}.requiredHttpIncludes`, name);
-  });
+    get(fields, `${field}.requiredHttpIncludes`, field),
+  );
 };
