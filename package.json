@@ -4,10 +4,12 @@
   "scripts": {
     "start": "nodemon --inspect -e js,html local.js",
     "start:production": "node local.js",
-    "test": "npm run lint && npm run format:ci",
+    "test": "LOG_LEVEL=warn jest --watch --setupFiles dotenv/config",
+    "test:ci": "LOG_LEVEL=warn jest --setupFiles dotenv/config",
     "lint": "eslint --ext .js src",
-    "format:ci": "prettier-check {src,config}/**/*.js",
+    "lint:ci": "npm run lint && npm run format:ci",
     "format": "prettier --write {src,config}/**/*.js",
+    "format:ci": "prettier-check {src,config}/**/*.js",
     "service:push": "apollo service:push",
     "compile": "babel src -d lib/src && babel config -d lib/config"
   },
@@ -69,7 +71,9 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.5.4",
     "@babel/plugin-transform-modules-commonjs": "^7.5.0",
     "@dosomething/eslint-config": "^5.0.1",
+    "@types/jest": "^24.0.18",
     "eslint": "^4.19.1",
+    "jest": "^24.9.0",
     "nodemon": "^1.19.1",
     "prettier": "1.8.2",
     "prettier-check": "^2.0.0"
