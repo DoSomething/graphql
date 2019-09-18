@@ -9,6 +9,12 @@ export const resetMocks = () => {
   fetch.resetBehavior();
 };
 
+/**
+ * Create test server & client, and run a query.
+ *
+ * @param {string} graphqlQuery - The query to run!
+ * @param {object} variables - Query variables.
+ */
 export const query = (graphqlQuery, variables = {}) => {
   const client = createTestClient(new ApolloServer({ schema }));
 
