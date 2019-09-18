@@ -1,27 +1,15 @@
 import { gql } from 'apollo-server';
 
-import { resetMocks, query, RogueMock, NorthstarMock } from './helpers';
+import { resetMocks, query, mock, NORTHSTAR_URL, ROGUE_URL } from './helpers';
+import factory from './factories';
 
 beforeEach(resetMocks);
 
 describe('Rogue', () => {
   it('can fetch posts', async () => {
-    RogueMock.get('/api/v3/posts/', {
-      data: [
-        {
-          id: 1,
-          type: 'photo',
-        },
-        {
-          id: 2,
-          type: 'photo',
-        },
-        {
-          id: 3,
-          type: 'photo',
-        },
-      ],
-    });
+    const posts = await factory('post', 3);
+
+    mock.get(`${ROGUE_URL}/api/v3/posts/`, { data: posts });
 
     const { data } = await query(gql`
       {
@@ -32,37 +20,15 @@ describe('Rogue', () => {
       }
     `);
 
-    expect(data).toEqual({
-      posts: [
-        {
-          id: 1,
-          type: 'photo',
-        },
-        {
-          id: 2,
-          type: 'photo',
-        },
-        {
-          id: 3,
-          type: 'photo',
-        },
-      ],
-    });
+    expect(data.posts).toHaveLength(3);
   });
 
   it('can fetch post with user', async () => {
-    RogueMock.get('/api/v3/posts/15', {
-      data: {
-        id: 15,
-        northstar_id: '5571f4f5a59dbf3c7a8b4569',
-      },
-    });
-    NorthstarMock.get('/v2/users/5571f4f5a59dbf3c7a8b4569', {
-      data: {
-        id: '5571f4f5a59dbf3c7a8b4569',
-        first_name: 'Puppet',
-      },
-    });
+    const post = await factory('post', { id: 15 });
+    const user = await factory('user', { id: post.northstar_id });
+
+    mock.get(`${ROGUE_URL}/api/v3/posts/${post.id}`, { data: post });
+    mock.get(`${NORTHSTAR_URL}/v2/users/${user.id}`, { data: user });
 
     const { data } = await query(gql`
       {
@@ -77,9 +43,9 @@ describe('Rogue', () => {
 
     expect(data).toEqual({
       post: {
-        id: 15,
+        id: post.id,
         user: {
-          firstName: 'Puppet',
+          firstName: user.first_name,
         },
       },
     });

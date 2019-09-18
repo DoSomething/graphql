@@ -5,8 +5,45 @@ import { createTestClient } from 'apollo-server-testing';
 
 import schema from '../schema';
 
+/**
+ * Service URLs for mocking.
+ */
+export const NORTHSTAR_URL = 'https://identity-dev.dosomething.org';
+export const ROGUE_URL = 'https://activity-dev.dosomething.org';
+
+/**
+ * Match a given path & hostname.
+ *
+ * @param {string} path
+ */
+const match = expectedUrl => actualUrl => {
+  const url = new URL(actualUrl);
+  const expected = new URL(expectedUrl);
+
+  if (url.host !== expected.host) {
+    return false;
+  }
+
+  if (url.pathname !== expected.pathname) {
+    return false;
+  }
+
+  return true;
+};
+
+/**
+ * Reset any mocks we've set during a test.
+ */
 export const resetMocks = () => {
   fetch.resetBehavior();
+};
+
+/**
+ * Mock a HTTP request.
+ */
+export const mock = {
+  get: (url, response) => fetch.mock(match(url), response, { method: 'get' }),
+  post: (url, response) => fetch.mock(match(url), response, { method: 'post' }),
 };
 
 /**
@@ -17,46 +54,5 @@ export const resetMocks = () => {
  */
 export const query = (graphqlQuery, variables = {}) => {
   const client = createTestClient(new ApolloServer({ schema }));
-
   return client.query({ query: graphqlQuery, variables });
 };
-
-/**
- * Match a given path & hostname.
- *
- * @param {string} path
- */
-const match = (host, path) => href => {
-  const url = new URL(href);
-  const expected = new URL(path, host);
-
-  if (url.host !== expected.host) {
-    return false;
-  }
-
-  if (url.pathname !== path) {
-    return false;
-  }
-
-  return true;
-};
-
-/**
- * Create mocked Northstar responses.
- */
-export class NorthstarMock {
-  static get(path, response) {
-    const NORTHSTAR_URL = 'https://identity-dev.dosomething.org';
-    return fetch.mock(match(NORTHSTAR_URL, path), response, { method: 'get' });
-  }
-}
-
-/**
- * Create mocked Northstar responses.
- */
-export class RogueMock {
-  static get(path, response) {
-    const ROGUE_URL = 'https://activity-dev.dosomething.org';
-    return fetch.mock(match(ROGUE_URL, path), response, { method: 'get' });
-  }
-}

@@ -1,22 +1,19 @@
 import { gql } from 'apollo-server';
 
-import { resetMocks, query, NorthstarMock } from './helpers';
+import { resetMocks, mock, query, NORTHSTAR_URL } from './helpers';
+import factory from './factories';
 
 beforeEach(resetMocks);
 
 describe('Northstar', () => {
   it('can fetch a user', async () => {
-    NorthstarMock.get('/v2/users/5571f4f5a59dbf3c7a8b4569', {
-      data: {
-        id: '5571f4f5a59dbf3c7a8b4569',
-        first_name: 'Puppet',
-        last_initial: 'S',
-      },
-    });
+    const user = await factory('user', { id: '5d82aae0d36430dfb1cf03dc' });
+
+    mock.get(`${NORTHSTAR_URL}/v2/users/${user.id}`, { data: user });
 
     const { data } = await query(gql`
       {
-        user(id: "5571f4f5a59dbf3c7a8b4569") {
+        user(id: "5d82aae0d36430dfb1cf03dc") {
           firstName
           lastInitial
         }
@@ -25,24 +22,20 @@ describe('Northstar', () => {
 
     expect(data).toEqual({
       user: {
-        firstName: 'Puppet',
-        lastInitial: 'S',
+        firstName: user.first_name,
+        lastInitial: user.last_initial,
       },
     });
   });
 
   it('can fetch a user with optional fields', async () => {
-    NorthstarMock.get('/v2/users/5571f4f5a59dbf3c7a8b4569', {
-      data: {
-        id: '5571f4f5a59dbf3c7a8b4569',
-        first_name: 'Puppet',
-        last_name: 'Sloth',
-      },
-    });
+    const user = await factory('user', { id: '5d82aae0d36430dfb1cf03dc' });
+
+    mock.get(`${NORTHSTAR_URL}/v2/users/${user.id}`, { data: user });
 
     const { data } = await query(gql`
       {
-        user(id: "5571f4f5a59dbf3c7a8b4569") {
+        user(id: "5d82aae0d36430dfb1cf03dc") {
           firstName
           lastName
         }
@@ -51,32 +44,28 @@ describe('Northstar', () => {
 
     expect(data).toEqual({
       user: {
-        firstName: 'Puppet',
-        lastName: 'Sloth',
+        firstName: user.first_name,
+        lastName: user.last_name,
       },
     });
   });
 
   it('can fetch a user with feature flag', async () => {
-    NorthstarMock.get('/v2/users/5571f4f5a59dbf3c7a8b4569', {
-      data: {
-        id: '5571f4f5a59dbf3c7a8b4569',
-        feature_flags: { badges: true },
-      },
+    const user = await factory('user', {
+      id: '5d82aae0d36430dfb1cf03dc',
+      feature_flags: { badges: true },
     });
+
+    mock.get(`${NORTHSTAR_URL}/v2/users/${user.id}`, { data: user });
 
     const { data } = await query(gql`
       {
-        user(id: "5571f4f5a59dbf3c7a8b4569") {
+        user(id: "5d82aae0d36430dfb1cf03dc") {
           hasBadges: hasFeatureFlag(feature: "badges")
         }
       }
     `);
 
-    expect(data).toEqual({
-      user: {
-        hasBadges: true,
-      },
-    });
+    expect(data).toEqual({ user: { hasBadges: true } });
   });
 });

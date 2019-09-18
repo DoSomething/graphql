@@ -9,5 +9,5 @@ module.exports = {
   testEnvironment: 'node',
 
   // Don't try to run helpers as tests:
-  testMatch: ['**/__tests__/**/*.js', '!**/__tests__/**/helpers.js'],
+  testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
 };
