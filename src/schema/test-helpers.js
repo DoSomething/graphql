@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import fetch from 'fetch-mock';
 import { ApolloServer } from 'apollo-server';
 import { createTestClient } from 'apollo-server-testing';
