@@ -3,7 +3,7 @@ import fetch from 'fetch-mock';
 import { ApolloServer } from 'apollo-server';
 import { createTestClient } from 'apollo-server-testing';
 
-import schema from './index';
+import schema from '../schema';
 
 export const resetMocks = () => {
   fetch.resetBehavior();

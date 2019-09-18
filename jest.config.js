@@ -7,4 +7,7 @@ module.exports = {
 
   // This is a Node.js application:
   testEnvironment: 'node',
+
+  // Don't try to run helpers as tests:
+  testMatch: ['**/__tests__/**/*.js', '!**/__tests__/**/helpers.js'],
 };

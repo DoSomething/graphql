@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server';
 
-import { resetMocks, query, NorthstarMock } from './test-helpers';
+import { resetMocks, query, NorthstarMock } from './helpers';
 
 beforeEach(resetMocks);
 
