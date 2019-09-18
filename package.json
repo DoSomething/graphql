@@ -47,7 +47,6 @@
     "catbox-memory": "^4.0.1",
     "catbox-redis": "^4.2.4",
     "chalk": "^2.4.2",
-    "chance": "^1.1.0",
     "contentful": "^7.8.1",
     "dataloader": "^1.4.0",
     "domino": "^2.1.3",

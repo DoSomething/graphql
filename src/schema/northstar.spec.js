@@ -6,9 +6,12 @@ beforeEach(resetMocks);
 
 describe('Northstar', () => {
   it('can fetch a user', async () => {
-    NorthstarMock.getUser('5571f4f5a59dbf3c7a8b4569', {
-      first_name: 'Puppet',
-      last_initial: 'S',
+    NorthstarMock.get('/v2/users/5571f4f5a59dbf3c7a8b4569', {
+      data: {
+        id: '5571f4f5a59dbf3c7a8b4569',
+        first_name: 'Puppet',
+        last_initial: 'S',
+      },
     });
 
     const { data } = await query(gql`
@@ -29,9 +32,12 @@ describe('Northstar', () => {
   });
 
   it('can fetch a user with optional fields', async () => {
-    NorthstarMock.getUser('5571f4f5a59dbf3c7a8b4569', {
-      first_name: 'Puppet',
-      last_name: 'Sloth',
+    NorthstarMock.get('/v2/users/5571f4f5a59dbf3c7a8b4569', {
+      data: {
+        id: '5571f4f5a59dbf3c7a8b4569',
+        first_name: 'Puppet',
+        last_name: 'Sloth',
+      },
     });
 
     const { data } = await query(gql`
@@ -52,8 +58,11 @@ describe('Northstar', () => {
   });
 
   it('can fetch a user with feature flag', async () => {
-    NorthstarMock.getUser('5571f4f5a59dbf3c7a8b4569', {
-      feature_flags: { badges: true },
+    NorthstarMock.get('/v2/users/5571f4f5a59dbf3c7a8b4569', {
+      data: {
+        id: '5571f4f5a59dbf3c7a8b4569',
+        feature_flags: { badges: true },
+      },
     });
 
     const { data } = await query(gql`

@@ -6,7 +6,22 @@ beforeEach(resetMocks);
 
 describe('Rogue', () => {
   it('can fetch posts', async () => {
-    RogueMock.getPosts();
+    RogueMock.get('/api/v3/posts/', {
+      data: [
+        {
+          id: 1,
+          type: 'photo',
+        },
+        {
+          id: 2,
+          type: 'photo',
+        },
+        {
+          id: 3,
+          type: 'photo',
+        },
+      ],
+    });
 
     const { data } = await query(gql`
       {
@@ -36,11 +51,17 @@ describe('Rogue', () => {
   });
 
   it('can fetch post with user', async () => {
-    RogueMock.getPost(15, {
-      northstar_id: '5571f4f5a59dbf3c7a8b4569',
+    RogueMock.get('/api/v3/posts/15', {
+      data: {
+        id: 15,
+        northstar_id: '5571f4f5a59dbf3c7a8b4569',
+      },
     });
-    NorthstarMock.getUser('5571f4f5a59dbf3c7a8b4569', {
-      first_name: 'Puppet',
+    NorthstarMock.get('/v2/users/5571f4f5a59dbf3c7a8b4569', {
+      data: {
+        id: '5571f4f5a59dbf3c7a8b4569',
+        first_name: 'Puppet',
+      },
     });
 
     const { data } = await query(gql`
