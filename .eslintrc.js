@@ -31,5 +31,13 @@ module.exports = {
 
     // We don't find this confusing in practice.
     'no-confusing-arrow': 'off',
+
+    // Don't warn about using devDependencies in test helpers.
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: ['**/*.test.js', '**/*.spec.js', '**/test-helpers.js'],
+      },
+    ],
   },
 };
