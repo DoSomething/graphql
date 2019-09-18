@@ -31,7 +31,9 @@ describe('Northstar', () => {
   it('can fetch a user with optional fields', async () => {
     const user = await factory('user', { id: '5d82aae0d36430dfb1cf03dc' });
 
-    mock.get(`${NORTHSTAR_URL}/v2/users/${user.id}`, { data: user });
+    mock.get(`${NORTHSTAR_URL}/v2/users/${user.id}?include=last_name`, {
+      data: user,
+    });
 
     const { data } = await query(gql`
       {

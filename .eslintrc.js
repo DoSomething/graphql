@@ -34,5 +34,8 @@ module.exports = {
 
     // Sometimes, using `else if` is nice?
     'no-else-return': ['error', { allowElseIf: true }],
+
+    // There's nothing wrong with using iterators, omg:
+    'no-restricted-syntax': 'off',
   },
 };

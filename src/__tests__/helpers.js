@@ -20,12 +20,23 @@ const match = expectedUrl => actualUrl => {
   const url = new URL(actualUrl);
   const expected = new URL(expectedUrl);
 
+  // Is the request on the same domain?
   if (url.host !== expected.host) {
     return false;
   }
 
+  // Is the request for the same path?
   if (url.pathname !== expected.pathname) {
     return false;
+  }
+
+  // If we're expecting any query parameters, check
+  // that they're included in the URL before matching:
+  // expected.searchParams.getAll().
+  for (const [key, value] of expected.searchParams) {
+    if (url.searchParams.get(key) !== value) {
+      return false;
+    }
   }
 
   return true;
