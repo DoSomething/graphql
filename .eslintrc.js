@@ -31,5 +31,11 @@ module.exports = {
 
     // We don't find this confusing in practice.
     'no-confusing-arrow': 'off',
+
+    // Sometimes, using `else if` is nice?
+    'no-else-return': ['error', { allowElseIf: true }],
+
+    // There's nothing wrong with using iterators, omg:
+    'no-restricted-syntax': 'off',
   },
 };
