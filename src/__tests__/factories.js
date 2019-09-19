@@ -1,6 +1,6 @@
-import { factory, ObjectAdapter } from 'factory-bot';
-import { ObjectID } from 'bson';
 import Chance from 'chance';
+import { ObjectID } from 'bson';
+import { factory, ObjectAdapter } from 'factory-bot';
 
 const chance = new Chance();
 
