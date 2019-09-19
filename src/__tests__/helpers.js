@@ -1,5 +1,5 @@
 import { URL } from 'url';
-import fetch from 'fetch-mock';
+import fetchMock from 'fetch-mock';
 import { ApolloServer } from 'apollo-server';
 import { createTestClient } from 'apollo-server-testing';
 
@@ -50,15 +50,15 @@ const match = expectedUrl => actualUrl => {
  * Reset any mocks we've set during a test.
  */
 export const resetMocks = () => {
-  fetch.resetBehavior();
+  fetchMock.resetBehavior();
 };
 
 /**
  * Mock a HTTP request.
  */
 export const mock = {
-  get: (url, response) => fetch.mock(match(url), response, { method: 'get' }),
-  post: (url, response) => fetch.mock(match(url), response, { method: 'post' }),
+  get: (url, response) => fetchMock.get(match(url), response),
+  post: (url, response) => fetchMock.post(match(url), response),
 };
 
 /**
