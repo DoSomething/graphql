@@ -3,8 +3,8 @@ import fetch from 'fetch-mock';
 import { ApolloServer } from 'apollo-server';
 import { createTestClient } from 'apollo-server-testing';
 
-import config from '../../config';
 import schema from '../schema';
+import config from '../../config';
 
 /**
  * Service URLs for mocking.
