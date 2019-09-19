@@ -3,13 +3,14 @@ import fetch from 'fetch-mock';
 import { ApolloServer } from 'apollo-server';
 import { createTestClient } from 'apollo-server-testing';
 
+import config from '../../config';
 import schema from '../schema';
 
 /**
  * Service URLs for mocking.
  */
-export const NORTHSTAR_URL = 'https://identity-dev.dosomething.org';
-export const ROGUE_URL = 'https://activity-dev.dosomething.org';
+export const NORTHSTAR_URL = config('services.northstar.url');
+export const ROGUE_URL = config('services.rogue.url');
 
 /**
  * Match a given path & hostname.
