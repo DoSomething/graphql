@@ -13,9 +13,12 @@ export const NORTHSTAR_URL = config('services.northstar.url');
 export const ROGUE_URL = config('services.rogue.url');
 
 /**
- * Match a given path & hostname.
+ * Create a matcher for the given URL. It will check whether
+ * the domain, path, and any expected query string parameters
+ * are included in the given URL.
  *
- * @param {string} path
+ * @param {string} expectedUrl
+ * @returns {(actualUrl: string) => boolean}
  */
 const match = expectedUrl => actualUrl => {
   const url = new URL(actualUrl);
