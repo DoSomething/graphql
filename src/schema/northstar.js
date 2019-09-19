@@ -1,5 +1,6 @@
 import { has } from 'lodash';
 import { gql } from 'apollo-server';
+import { getSelection } from 'fielddataloader';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
@@ -9,7 +10,7 @@ import RequiresDirective from './directives/RequiresDirective';
 import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
 import HasSensitiveFieldsDirective from './directives/HasSensitiveFieldsDirective';
 import { updateEmailSubscriptionTopics } from '../repositories/northstar';
-import { stringToEnum, listToEnums, queriedFields } from './helpers';
+import { stringToEnum, listToEnums } from './helpers';
 
 /**
  * GraphQL types.
@@ -23,7 +24,7 @@ const typeDefs = gql`
 
   scalar AbsoluteUrl
 
-  directive @requires(fields: [String]!) on FIELD_DEFINITION
+  directive @requires(fields: String!) on FIELD_DEFINITION
 
   directive @hasSensitiveFields on FIELD_DEFINITION
 
@@ -132,7 +133,7 @@ const typeDefs = gql`
     "What time of day user plans to get the polls to vote in upcoming election."
     votingPlanTimeOfDay: String
     "Whether or not the user is opted-in to the given feature."
-    hasFeatureFlag(feature: String): Boolean @requires(fields: ["featureFlags"])
+    hasFeatureFlag(feature: String): Boolean @requires(fields: "featureFlags")
   }
 
   type Query {
@@ -168,7 +169,7 @@ const resolvers = {
   },
   Query: {
     user: (_, { id }, context, info) =>
-      Loader(context).users.load(id, queriedFields(info)),
+      Loader(context).users.load(id, getSelection(info)),
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
