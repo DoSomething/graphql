@@ -53,6 +53,7 @@
     "dotenv": "^6.2.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
+    "fielddataloader": "0.0.5",
     "graphql": "~14.4.2",
     "graphql-iso-date": "^3.5.0",
     "graphql-tools": "^4.0.5",
