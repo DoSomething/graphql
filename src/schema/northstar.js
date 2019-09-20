@@ -6,7 +6,6 @@ import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
 
 import Loader from '../loader';
-import RequiresDirective from './directives/RequiresDirective';
 import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
 import HasSensitiveFieldsDirective from './directives/HasSensitiveFieldsDirective';
 import { updateEmailSubscriptionTopics } from '../repositories/northstar';
@@ -193,7 +192,6 @@ export default makeExecutableSchema({
   typeDefs,
   resolvers,
   schemaDirectives: {
-    requires: RequiresDirective,
     sensitive: SensitiveFieldDirective,
     hasSensitiveFields: HasSensitiveFieldsDirective,
   },
