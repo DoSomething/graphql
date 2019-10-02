@@ -8,8 +8,11 @@ import { makeExecutableSchema } from 'graphql-tools';
 import Loader from '../loader';
 import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
 import HasSensitiveFieldsDirective from './directives/HasSensitiveFieldsDirective';
-import { updateEmailSubscriptionTopics } from '../repositories/northstar';
 import { stringToEnum, listToEnums } from './helpers';
+import {
+  updateEmailSubscriptionTopics,
+  getPermalinkByUserId,
+} from '../repositories/northstar';
 
 /**
  * GraphQL types.
@@ -133,6 +136,8 @@ const typeDefs = gql`
     votingPlanTimeOfDay: String
     "Whether or not the user is opted-in to the given feature."
     hasFeatureFlag(feature: String): Boolean @requires(fields: "featureFlags")
+    "The permalink to this user's profile in Aurora."
+    permalink: String
   }
 
   type Query {
@@ -162,6 +167,7 @@ const resolvers = {
     smsStatus: user => stringToEnum(user.smsStatus),
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
     emailSubscriptionTopics: user => listToEnums(user.emailSubscriptionTopics),
+    permalink: user => getPermalinkByUserId(user.id),
     hasFeatureFlag: (user, { feature }) =>
       has(user, `featureFlags.${feature}`) &&
       user.featureFlags[feature] !== false,

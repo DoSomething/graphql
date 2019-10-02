@@ -10,6 +10,7 @@ import {
 } from './helpers';
 
 const NORTHSTAR_URL = config('services.northstar.url');
+const AURORA_URL = config('services.aurora.url');
 
 /**
  * Fetch a user from Northstar by ID.
@@ -84,4 +85,10 @@ export const updateEmailSubscriptionTopics = async (
   return null;
 };
 
-export default null;
+/**
+ * Get Aurora profile permalink by ID.
+ *
+ * @param {String} id
+ * @return {String}
+ */
+export const getPermalinkByUserId = id => `${AURORA_URL}/users/${id}`;
