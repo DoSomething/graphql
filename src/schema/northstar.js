@@ -143,7 +143,7 @@ const typeDefs = gql`
     "Whether or not the user is opted-in to the given feature."
     hasFeatureFlag(feature: String): Boolean @requires(fields: "featureFlags")
     "The permalink to this user's profile in Aurora."
-    permalink: String
+    permalink: String @requires(fields: "id")
   }
 
   type Query {
