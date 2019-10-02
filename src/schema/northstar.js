@@ -8,8 +8,11 @@ import { makeExecutableSchema } from 'graphql-tools';
 import Loader from '../loader';
 import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
 import HasSensitiveFieldsDirective from './directives/HasSensitiveFieldsDirective';
-import { updateEmailSubscriptionTopics } from '../repositories/northstar';
 import { stringToEnum, listToEnums } from './helpers';
+import {
+  updateEmailSubscriptionTopics,
+  getPermalinkByUserId,
+} from '../repositories/northstar';
 
 /**
  * GraphQL types.
@@ -71,6 +74,8 @@ const typeDefs = gql`
   type User {
     "The user's Northstar ID."
     id: String!
+    "The user's display name is their first name and (if set) last initial."
+    displayName: String
     "The user's first name."
     firstName: String
     "The user's last name."
@@ -79,8 +84,12 @@ const typeDefs = gql`
     lastInitial: String
     "The user's email address."
     email: String @sensitive
+    "A preview of the user's email address."
+    emailPreview: String
     "The user's mobile number."
     mobile: String @sensitive
+    "A preview of the user's mobile number."
+    mobilePreview: String
     "The user's birthdate, formatted YYYY-MM-DD."
     birthdate: Date @sensitive
     "The user's street address. Null if unauthorized."
@@ -133,6 +142,8 @@ const typeDefs = gql`
     votingPlanTimeOfDay: String
     "Whether or not the user is opted-in to the given feature."
     hasFeatureFlag(feature: String): Boolean @requires(fields: "featureFlags")
+    "The permalink to this user's profile in Aurora."
+    permalink: String
   }
 
   type Query {
@@ -162,6 +173,7 @@ const resolvers = {
     smsStatus: user => stringToEnum(user.smsStatus),
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
     emailSubscriptionTopics: user => listToEnums(user.emailSubscriptionTopics),
+    permalink: user => getPermalinkByUserId(user.id),
     hasFeatureFlag: (user, { feature }) =>
       has(user, `featureFlags.${feature}`) &&
       user.featureFlags[feature] !== false,

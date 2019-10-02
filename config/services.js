@@ -57,6 +57,11 @@ const environments = {
       url: process.env.LOCAL_NORTHSTAR_URL || 'http://northstar.test',
     },
 
+    // Aurora
+    aurora: {
+      url: process.env.LOCAL_AURORA_URL || 'http://aurora.test',
+    },
+
     // Rogue
     rogue: {
       url: process.env.LOCAL_ROGUE_URL || 'http://rogue.test',
@@ -86,6 +91,11 @@ const environments = {
     // Northstar
     northstar: {
       url: 'https://identity-dev.dosomething.org',
+    },
+
+    // Aurora
+    aurora: {
+      url: 'https://admin-dev.dosomething.org',
     },
 
     // Rogue
@@ -118,6 +128,11 @@ const environments = {
       url: 'https://identity-qa.dosomething.org',
     },
 
+    // Aurora
+    aurora: {
+      url: 'https://admin-qa.dosomething.org',
+    },
+
     // Rogue
     rogue: {
       url: 'https://activity-qa.dosomething.org',
@@ -146,6 +161,11 @@ const environments = {
     // Northstar
     northstar: {
       url: 'https://identity.dosomething.org',
+    },
+
+    // Aurora
+    aurora: {
+      url: 'https://admin.dosomething.org',
     },
 
     // Rogue
