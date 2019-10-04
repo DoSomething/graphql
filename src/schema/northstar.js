@@ -90,6 +90,8 @@ const typeDefs = gql`
     mobile: String @sensitive
     "A preview of the user's mobile number."
     mobilePreview: String
+    "The user's age."
+    age: Int
     "The user's birthdate, formatted YYYY-MM-DD."
     birthdate: Date @sensitive
     "The user's street address. Null if unauthorized."
