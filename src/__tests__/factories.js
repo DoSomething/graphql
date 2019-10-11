@@ -24,6 +24,13 @@ factory.define('post', Object, {
   type: 'photo',
   text: () => chance.sentence(),
   northstar_id: () => new ObjectID().toString(),
+  action_details: {
+    data: {
+      id: () => chance.integer({ min: 1, max: 4000 }),
+      noun: 'Things',
+      verb: 'Done',
+    },
+  },
   // and so on...
 });
 

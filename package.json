@@ -64,6 +64,7 @@
     "node-fetch": "^2.6.0",
     "oembetter": "^0.1.20",
     "page-metadata-parser": "^1.1.4",
+    "pluralize": "^8.0.0",
     "qs": "^6.7.0"
   },
   "devDependencies": {

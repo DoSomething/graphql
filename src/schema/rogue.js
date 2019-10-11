@@ -20,6 +20,7 @@ import {
   getSignupsCount,
   toggleReaction,
   getPostsCount,
+  makeImpactStatement,
 } from '../repositories/rogue';
 
 /**
@@ -143,6 +144,8 @@ const typeDefs = gql`
     source: String
     "The number of items added or removed in this post."
     quantity: Int
+    "The human-readable impact (quantity, noun, and verb)."
+    impact: String
     "The tags that have been applied to this post by DoSomething.org staffers."
     tags: [String]
     "The total number of reactions to this post."
@@ -348,6 +351,7 @@ const resolvers = {
           return null;
       }
     },
+    impact: post => makeImpactStatement(post),
     reacted: post => post.reactions.reacted,
     reactions: post => post.reactions.total,
     permalink: post => getPermalinkBySignupId(post.signupId),
