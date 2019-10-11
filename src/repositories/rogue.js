@@ -1,5 +1,6 @@
 import { find } from 'lodash';
 import { stringify } from 'qs';
+import pluralize from 'pluralize';
 import logger from 'heroku-logger';
 
 import config from '../../config';
@@ -211,6 +212,19 @@ export const toggleReaction = async (postId, context) => {
  * @return {String}
  */
 export const getPermalinkBySignupId = id => `${ROGUE_URL}/signups/${id}`;
+
+/**
+ * Create an impact statement from quantity, noun and verb
+ *
+ * @param {Object} post
+ * @return {String}
+ */
+export const makeImpactStatement = post => {
+  const { noun, verb } = post.actionDetails.data;
+  const statement = pluralize(noun, post.quantity, true);
+
+  return `${statement} ${verb}`;
+};
 
 /**
  * Fetch signups from Rogue.

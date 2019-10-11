@@ -50,4 +50,21 @@ describe('Rogue', () => {
       },
     });
   });
+
+  it('can fetch post with impact', async () => {
+    const post = await factory('post', { id: 321, quantity: 32 });
+
+    mock.get(`${ROGUE_URL}/api/v3/posts/321`, { data: post });
+
+    const { data } = await query(gql`
+      {
+        post(id: 321) {
+          type
+          impact
+        }
+      }
+    `);
+
+    expect(data.post.impact).toEqual('32 Things Done');
+  });
 });
