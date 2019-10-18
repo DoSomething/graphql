@@ -12,6 +12,7 @@ import { stringToEnum, listToEnums } from './helpers';
 import {
   updateEmailSubscriptionTopics,
   getPermalinkByUserId,
+  getUsers,
 } from '../repositories/northstar';
 
 /**
@@ -151,6 +152,7 @@ const typeDefs = gql`
   type Query {
     "Get a user by ID."
     user(id: String!): User @hasSensitiveFields
+    users(search: String!): [User] @hasSensitiveFields
   }
 
   type Mutation {
@@ -183,6 +185,8 @@ const resolvers = {
   Query: {
     user: (_, { id }, context, info) =>
       Loader(context).users.load(id, getSelection(info)),
+    users: (_, args, context, info) =>
+      getUsers(args, getSelection(info), context),
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
