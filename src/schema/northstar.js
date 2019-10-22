@@ -7,7 +7,8 @@ import { makeExecutableSchema } from 'graphql-tools';
 
 import Loader from '../loader';
 import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
-import HasSensitiveFieldsDirective from './directives/HasSensitiveFieldsDirective';
+import OptionalFieldDirective from './directives/OptionalFieldDirective';
+import HasOptionalFieldsDirective from './directives/HasOptionalFieldsDirective';
 import { stringToEnum, listToEnums } from './helpers';
 import {
   updateEmailSubscriptionTopics,
@@ -80,25 +81,25 @@ const typeDefs = gql`
     "The user's first name."
     firstName: String
     "The user's last name."
-    lastName: String @sensitive
+    lastName: String @sensitive @optional
     "The user's last initial."
     lastInitial: String
     "The user's email address."
-    email: String @sensitive
+    email: String @sensitive @optional
     "A preview of the user's email address."
     emailPreview: String
     "The user's mobile number."
-    mobile: String @sensitive
+    mobile: String @sensitive @optional
     "A preview of the user's mobile number."
     mobilePreview: String
     "The user's age."
     age: Int
     "The user's birthdate, formatted YYYY-MM-DD."
-    birthdate: Date @sensitive
+    birthdate: Date @sensitive @optional
     "The user's street address. Null if unauthorized."
-    addrStreet1: String @sensitive
+    addrStreet1: String @sensitive @optional
     "The user's extended street address (for example, apartment number). Null if unauthorized."
-    addrStreet2: String @sensitive
+    addrStreet2: String @sensitive @optional
     "The user's city. Null if unauthorized."
     addrCity: String
     "The user's state. Null if unauthorized."
@@ -151,8 +152,8 @@ const typeDefs = gql`
 
   type Query {
     "Get a user by ID."
-    user(id: String!): User @hasSensitiveFields
-    users(search: String!): [User] @hasSensitiveFields
+    user(id: String!): User @hasOptionalFields
+    users(search: String!): [User] @hasOptionalFields
   }
 
   type Mutation {
@@ -211,6 +212,7 @@ export default makeExecutableSchema({
   resolvers,
   schemaDirectives: {
     sensitive: SensitiveFieldDirective,
-    hasSensitiveFields: HasSensitiveFieldsDirective,
+    optional: OptionalFieldDirective,
+    hasOptionalFields: HasOptionalFieldsDirective,
   },
 });

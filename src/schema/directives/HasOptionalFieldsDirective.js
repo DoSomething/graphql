@@ -24,7 +24,7 @@ class SensitiveFieldDirective extends SchemaDirectiveVisitor {
       // mark any `@sensitive` fields in the context for later:
       if (!context.optionalFields[type]) {
         context.optionalFields[type] = values(type.getFields())
-          .filter(subfield => subfield.isSensitive)
+          .filter(subfield => subfield.isOptional)
           .map(subfield => subfield.name);
       }
 
