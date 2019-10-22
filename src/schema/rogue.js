@@ -205,6 +205,10 @@ const typeDefs = gql`
       internalTitle: String
       "The page of results to return."
       page: Int = 1
+      "Only return campaigns that are open or closed."
+      isOpen: Boolean
+      "How to order the results (e.g. 'id,desc')."
+      orderBy: String = "id,desc"
       "The number of results per page."
       count: Int = 20
     ): [Campaign]

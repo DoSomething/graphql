@@ -1,4 +1,4 @@
-import { find } from 'lodash';
+import { find, has } from 'lodash';
 import { stringify } from 'qs';
 import pluralize from 'pluralize';
 import logger from 'heroku-logger';
@@ -59,7 +59,11 @@ export const getCampaignById = async (id, context) => {
  * @return {Array}
  */
 export const getCampaigns = async (args, context) => {
+  const filter = has(args, 'isOpen') ? { is_open: args.isOpen } : undefined;
+
   const queryString = stringify({
+    filter,
+    orderBy: args.orderBy,
     page: args.page,
     limit: args.count,
     pagination: 'cursor',
