@@ -30,7 +30,9 @@ const typeDefs = gql`
 
   directive @requires(fields: String!) on FIELD_DEFINITION
 
-  directive @hasSensitiveFields on FIELD_DEFINITION
+  directive @hasOptionalFields on FIELD_DEFINITION
+
+  directive @optional on FIELD_DEFINITION
 
   directive @sensitive on FIELD_DEFINITION
 
