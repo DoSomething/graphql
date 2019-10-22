@@ -62,6 +62,8 @@ const typeDefs = gql`
     id: Int!
     "The internal name used to identify the campaign."
     internalTitle: String!
+    "Is this campaign open?"
+    isOpen: Boolean!
     "The time when this campaign starts."
     startDate: DateTime
     "The time when this campaign last modified."
