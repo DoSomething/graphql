@@ -1,7 +1,7 @@
-import { find, has } from 'lodash';
 import { stringify } from 'qs';
 import pluralize from 'pluralize';
 import logger from 'heroku-logger';
+import { find, has, intersection, snakeCase } from 'lodash';
 
 import config from '../../config';
 import {
@@ -58,8 +58,15 @@ export const getCampaignById = async (id, context) => {
  * @param {Number} count
  * @return {Array}
  */
-export const getCampaigns = async (args, context) => {
+export const getCampaigns = async (args, fields, context) => {
   const filter = has(args, 'isOpen') ? { is_open: args.isOpen } : undefined;
+
+  // Rogue expects a comma-separated list of snake_case fields.
+  // If not querying anything, use 'undefined' to omit query string.
+  const optionalFields = intersection(fields, context.optionalFields.Campaign);
+  const include = optionalFields.length
+    ? optionalFields.map(snakeCase).join()
+    : undefined;
 
   const queryString = stringify({
     filter,
@@ -67,6 +74,7 @@ export const getCampaigns = async (args, context) => {
     page: args.page,
     limit: args.count,
     pagination: 'cursor',
+    include,
   });
 
   const response = await fetch(
