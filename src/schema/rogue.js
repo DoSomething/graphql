@@ -4,10 +4,10 @@ import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
 
+import Loader from '../loader';
 import { urlWithQuery } from '../repositories/helpers';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
 import HasOptionalFieldsDirective from './directives/HasOptionalFieldsDirective';
-import Loader from '../loader';
 import {
   getActionById,
   getCampaignById,
