@@ -1,8 +1,8 @@
-import { makeExecutableSchema } from 'graphql-tools';
-import { GraphQLDateTime } from 'graphql-iso-date';
-import { GraphQLAbsoluteUrl } from 'graphql-url';
-import { getSelection } from 'fielddataloader';
 import { gql } from 'apollo-server';
+import { getSelection } from 'fielddataloader';
+import { GraphQLAbsoluteUrl } from 'graphql-url';
+import { GraphQLDateTime } from 'graphql-iso-date';
+import { makeExecutableSchema } from 'graphql-tools';
 
 import { urlWithQuery } from '../repositories/helpers';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
