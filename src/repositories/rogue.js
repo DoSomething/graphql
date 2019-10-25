@@ -24,7 +24,7 @@ const ROGUE_URL = config('services.rogue.url');
  */
 export const getActionById = async (id, context) => {
   logger.debug('Loading action from Rogue', {
-    id
+    id,
   });
 
   const response = await fetch(
@@ -48,8 +48,9 @@ export const getActions = async (campaignId, context) => {
     campaignId,
   });
 
+  console.log('are we getting here?', queryString);
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/actions/?filter[campaign_id]=${queryString}`,
+    `${ROGUE_URL}/api/v3/actions/?${queryString}`,
     authorizedRequest(context),
   );
 

@@ -29,6 +29,7 @@ import {
   getSignupsCount,
   toggleReaction,
   getPostsCount,
+  getActions,
 } from '../repositories/rogue';
 
 /**
@@ -205,6 +206,8 @@ const typeDefs = gql `
   type Query {
     "Get an Action by ID."
     action(id: Int!): Action
+    "Get collection of Actions."
+    actions(campaignId: Int!): [Action]
     "Get a campaign by ID."
     campaign(id: Int!): Campaign
     "Get a paginated collection of campaigns."
@@ -375,6 +378,7 @@ const resolvers = {
   },
   Query: {
     action: (_, args, context) => getActionById(args.id, context),
+    actions: (_, args, context) => getActions(args.campaignId, context),
     campaign: (_, args, context) => getCampaignById(args.id, context),
     campaigns: (_, args, context) => getCampaigns(args, context),
     post: (_, args, context) => getPostById(args.id, context),
