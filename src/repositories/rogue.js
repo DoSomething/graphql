@@ -1,9 +1,5 @@
-import {
-  find
-} from 'lodash';
-import {
-  stringify
-} from 'qs';
+import { find } from 'lodash';
+import { stringify } from 'qs';
 import logger from 'heroku-logger';
 
 import config from '../../config';

@@ -1,18 +1,8 @@
-import {
-  makeExecutableSchema
-} from 'graphql-tools';
-import {
-  GraphQLDateTime
-} from 'graphql-iso-date';
-import {
-  GraphQLAbsoluteUrl
-} from 'graphql-url';
-import {
-  gql
-} from 'apollo-server';
-import {
-  urlWithQuery
-} from '../repositories/helpers';
+import { makeExecutableSchema } from 'graphql-tools';
+import { GraphQLDateTime } from 'graphql-iso-date';
+import { GraphQLAbsoluteUrl } from 'graphql-url';
+import { gql } from 'apollo-server';
+import { urlWithQuery } from '../repositories/helpers';
 import Loader from '../loader';
 import {
   getActionById,
@@ -37,7 +27,7 @@ import {
  *
  * @var {String}
  */
-const typeDefs = gql `
+const typeDefs = gql`
   scalar DateTime
 
   scalar AbsoluteUrl
@@ -354,9 +344,7 @@ const resolvers = {
     text: post => post.media.text,
     status: post => post.status.toUpperCase().replace('-', '_'),
     actionDetails: post => post.actionDetails.data,
-    location: (post, {
-      format
-    }) => {
+    location: (post, { format }) => {
       switch (format) {
         case 'HUMAN_FORMAT':
           return post.locationName;
