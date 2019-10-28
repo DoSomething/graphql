@@ -8,7 +8,6 @@ import { makeExecutableSchema } from 'graphql-tools';
 import Loader from '../loader';
 import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
-import HasOptionalFieldsDirective from './directives/HasOptionalFieldsDirective';
 import { stringToEnum, listToEnums } from './helpers';
 import {
   updateEmailSubscriptionTopics,
@@ -29,8 +28,6 @@ const typeDefs = gql`
   scalar AbsoluteUrl
 
   directive @requires(fields: String!) on FIELD_DEFINITION
-
-  directive @hasOptionalFields on FIELD_DEFINITION
 
   directive @optional on FIELD_DEFINITION
 
@@ -154,8 +151,8 @@ const typeDefs = gql`
 
   type Query {
     "Get a user by ID."
-    user(id: String!): User @hasOptionalFields
-    users(search: String!): [User] @hasOptionalFields
+    user(id: String!): User
+    users(search: String!): [User]
   }
 
   type Mutation {
@@ -215,6 +212,5 @@ export default makeExecutableSchema({
   schemaDirectives: {
     sensitive: SensitiveFieldDirective,
     optional: OptionalFieldDirective,
-    hasOptionalFields: HasOptionalFieldsDirective,
   },
 });

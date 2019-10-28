@@ -3,8 +3,10 @@ import pluralize from 'pluralize';
 import logger from 'heroku-logger';
 import { find, has, intersection, snakeCase } from 'lodash';
 
+import schema from '../schema';
 import config from '../../config';
 import {
+  getOptional,
   transformItem,
   transformCollection,
   authorizedRequest,
@@ -38,11 +40,20 @@ export const getActionById = async (id, context) => {
  * @param {Number} id
  * @return {Object}
  */
-export const getCampaignById = async (id, context) => {
+export const getCampaignById = async (id, fields, context) => {
   logger.debug('Loading campaign from Rogue', { id });
 
+  // Rogue expects a comma-separated list of snake_case fields.
+  // If not querying anything, use 'undefined' to omit query string.
+  const optionalFields = intersection(fields, getOptional(schema, 'Campaign'));
+  const include = optionalFields.length
+    ? optionalFields.map(snakeCase).join()
+    : undefined;
+
+  const queryString = { include };
+
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/campaigns/${id}`,
+    `${ROGUE_URL}/api/v3/campaigns/${id}?${queryString}`,
     authorizedRequest(context),
   );
 
@@ -63,7 +74,7 @@ export const getCampaigns = async (args, fields, context) => {
 
   // Rogue expects a comma-separated list of snake_case fields.
   // If not querying anything, use 'undefined' to omit query string.
-  const optionalFields = intersection(fields, context.optionalFields.Campaign);
+  const optionalFields = intersection(fields, getOptional(schema, 'Campaign'));
   const include = optionalFields.length
     ? optionalFields.map(snakeCase).join()
     : undefined;

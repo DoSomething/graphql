@@ -1,9 +1,11 @@
 import { stringify } from 'qs';
 import logger from 'heroku-logger';
-import { intersection, snakeCase } from 'lodash';
+import { intersection, snakeCase, values } from 'lodash';
 
+import schema from '../schema';
 import config from '../../config';
 import {
+  getOptional,
   transformItem,
   authorizedRequest,
   requireAuthorizedRequest,
@@ -19,7 +21,7 @@ const AURORA_URL = config('services.aurora.url');
  * @return {Object}
  */
 export const getUserById = async (id, fields, context) => {
-  const optionalFields = intersection(fields, context.optionalFields.User);
+  const optionalFields = intersection(fields, getOptional(schema, 'User'));
 
   // Northstar expects a comma-separated list of snake_case fields.
   // If not querying anything, use 'undefined' to omit query string.
@@ -50,7 +52,7 @@ export const getUserById = async (id, fields, context) => {
  * @return {Object}
  */
 export const getUsers = async (args, fields, context) => {
-  const optionalFields = intersection(fields, context.optionalFields.User);
+  const optionalFields = intersection(fields, getOptional(schema, 'User'));
 
   // Northstar expects a comma-separated list of snake_case fields.
   // If not querying anything, use 'undefined' to omit query string.

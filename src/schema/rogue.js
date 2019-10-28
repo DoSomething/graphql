@@ -7,10 +7,8 @@ import { makeExecutableSchema } from 'graphql-tools';
 import Loader from '../loader';
 import { urlWithQuery } from '../repositories/helpers';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
-import HasOptionalFieldsDirective from './directives/HasOptionalFieldsDirective';
 import {
   getActionById,
-  getCampaignById,
   getCampaigns,
   getPermalinkBySignupId,
   getPosts,
@@ -35,8 +33,6 @@ const typeDefs = gql`
   scalar DateTime
 
   scalar AbsoluteUrl
-
-  directive @hasOptionalFields on FIELD_DEFINITION
 
   directive @optional on FIELD_DEFINITION
 
@@ -207,7 +203,7 @@ const typeDefs = gql`
     "Get an Action by ID."
     action(id: Int!): Action
     "Get a campaign by ID."
-    campaign(id: Int!): Campaign @hasOptionalFields
+    campaign(id: Int!): Campaign
     "Get a paginated collection of campaigns."
     campaigns(
       "The internal title to load campaigns for."
@@ -220,7 +216,7 @@ const typeDefs = gql`
       orderBy: String = "id,desc"
       "The number of results per page."
       count: Int = 20
-    ): [Campaign] @hasOptionalFields
+    ): [Campaign]
     "Get a post by ID."
     post(
       "The desired post ID."
@@ -410,6 +406,5 @@ export default makeExecutableSchema({
   resolvers,
   schemaDirectives: {
     optional: OptionalFieldDirective,
-    hasOptionalFields: HasOptionalFieldsDirective,
   },
 });
