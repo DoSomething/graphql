@@ -4,7 +4,7 @@ import { FieldDataLoader } from 'fielddataloader';
 
 import { getEmbed } from './repositories/embed';
 import {
-  getActions,
+  getActionsByCampaignId,
   getActionById,
   getCampaignById,
   getSignupsById,
@@ -41,8 +41,8 @@ export default (context, preview = false) => {
     const options = authorizedRequest(context);
 
     context.loader = {
-      actionsByCampaignId: new DataLoader(ids =>
-        Promise.all(ids.map(id => getActions(id, context))),
+      actionsByCampaignId: new DataLoader(campaignIds =>
+        Promise.all(campaignIds.map(id => getActionsByCampaignId(id, context))),
       ),
       actions: new DataLoader(ids =>
         Promise.all(ids.map(id => getActionById(id, options))),

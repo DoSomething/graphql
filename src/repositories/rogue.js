@@ -40,13 +40,13 @@ export const getActionById = async (id, context) => {
  * @return {Array}
  */
 
-export const getActions = async (args, context) => {
+export const getActionsByCampaignId = async (campaignId, context) => {
   logger.debug('Loading actions from Rogue', {
-    campaignId: args,
+    campaignId,
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/actions/?filter[campaign_id]=${args}`,
+    `${ROGUE_URL}/api/v3/actions/?filter[campaign_id]=${campaignId}`,
     authorizedRequest(context),
   );
 
