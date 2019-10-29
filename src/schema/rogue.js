@@ -23,7 +23,6 @@ import {
   getSignupsCount,
   toggleReaction,
   getPostsCount,
-  getActionsByCampaignId,
   makeImpactStatement,
 } from '../repositories/rogue';
 
