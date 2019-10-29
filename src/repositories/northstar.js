@@ -7,9 +7,11 @@ import {
   transformItem,
   authorizedRequest,
   requireAuthorizedRequest,
+  transformCollection,
 } from './helpers';
 
 const NORTHSTAR_URL = config('services.northstar.url');
+const AURORA_URL = config('services.aurora.url');
 
 /**
  * Fetch a user from Northstar by ID.
@@ -37,6 +39,43 @@ export const getUserById = async (id, fields, context) => {
   } catch (exception) {
     const error = exception.message;
     logger.warn('Unable to load user.', { id, error });
+  }
+
+  return null;
+};
+
+/**
+ * Fetch users from Northstar.
+ *
+ * @return {Object}
+ */
+export const getUsers = async (args, fields, context) => {
+  const optionalFields = intersection(fields, context.optionalFields.User);
+
+  // Northstar expects a comma-separated list of snake_case fields.
+  // If not querying anything, use 'undefined' to omit query string.
+  const include = optionalFields.length
+    ? optionalFields.map(snakeCase).join()
+    : undefined;
+
+  const search = args.search;
+
+  logger.debug('Loading users from Northstar', { search, include });
+
+  try {
+    const url = `${NORTHSTAR_URL}/v2/users?${stringify({
+      pagination: 'cursor',
+      include,
+      search,
+    })}`;
+
+    const response = await fetch(url, authorizedRequest(context));
+    const json = await response.json();
+
+    return transformCollection(json);
+  } catch (exception) {
+    const error = exception.message;
+    logger.warn('Unable to search users.', { search, error });
   }
 
   return null;
@@ -84,4 +123,10 @@ export const updateEmailSubscriptionTopics = async (
   return null;
 };
 
-export default null;
+/**
+ * Get Aurora profile permalink by ID.
+ *
+ * @param {String} id
+ * @return {String}
+ */
+export const getPermalinkByUserId = id => `${AURORA_URL}/users/${id}`;

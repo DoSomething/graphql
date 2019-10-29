@@ -1,6 +1,7 @@
-import { find } from 'lodash';
 import { stringify } from 'qs';
+import pluralize from 'pluralize';
 import logger from 'heroku-logger';
+import { find, has, intersection, snakeCase } from 'lodash';
 
 import config from '../../config';
 import {
@@ -82,11 +83,23 @@ export const getCampaignById = async (id, context) => {
  * @param {Number} count
  * @return {Array}
  */
-export const getCampaigns = async (args, context) => {
+export const getCampaigns = async (args, fields, context) => {
+  const filter = has(args, 'isOpen') ? { is_open: args.isOpen } : undefined;
+
+  // Rogue expects a comma-separated list of snake_case fields.
+  // If not querying anything, use 'undefined' to omit query string.
+  const optionalFields = intersection(fields, context.optionalFields.Campaign);
+  const include = optionalFields.length
+    ? optionalFields.map(snakeCase).join()
+    : undefined;
+
   const queryString = stringify({
+    filter,
+    orderBy: args.orderBy,
     page: args.page,
     limit: args.count,
     pagination: 'cursor',
+    include,
   });
 
   const response = await fetch(
@@ -239,6 +252,19 @@ export const toggleReaction = async (postId, context) => {
  * @return {String}
  */
 export const getPermalinkBySignupId = id => `${ROGUE_URL}/signups/${id}`;
+
+/**
+ * Create an impact statement from quantity, noun and verb
+ *
+ * @param {Object} post
+ * @return {String}
+ */
+export const makeImpactStatement = post => {
+  const { noun, verb } = post.actionDetails.data;
+  const statement = pluralize(noun, post.quantity, true);
+
+  return `${statement} ${verb}`;
+};
 
 /**
  * Fetch signups from Rogue.

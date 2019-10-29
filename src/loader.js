@@ -1,7 +1,7 @@
 import logger from 'heroku-logger';
 import DataLoader from 'dataloader';
+import { FieldDataLoader } from 'fielddataloader';
 
-import FieldDataLoader from './FieldDataLoader';
 import { getEmbed } from './repositories/embed';
 import {
   getActions,

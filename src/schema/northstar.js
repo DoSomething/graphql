@@ -1,15 +1,20 @@
 import { has } from 'lodash';
 import { gql } from 'apollo-server';
+import { getSelection } from 'fielddataloader';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
 
 import Loader from '../loader';
-import RequiresDirective from './directives/RequiresDirective';
 import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
-import HasSensitiveFieldsDirective from './directives/HasSensitiveFieldsDirective';
-import { updateEmailSubscriptionTopics } from '../repositories/northstar';
-import { stringToEnum, listToEnums, queriedFields } from './helpers';
+import OptionalFieldDirective from './directives/OptionalFieldDirective';
+import HasOptionalFieldsDirective from './directives/HasOptionalFieldsDirective';
+import { stringToEnum, listToEnums } from './helpers';
+import {
+  updateEmailSubscriptionTopics,
+  getPermalinkByUserId,
+  getUsers,
+} from '../repositories/northstar';
 
 /**
  * GraphQL types.
@@ -23,9 +28,11 @@ const typeDefs = gql`
 
   scalar AbsoluteUrl
 
-  directive @requires(fields: [String]!) on FIELD_DEFINITION
+  directive @requires(fields: String!) on FIELD_DEFINITION
 
-  directive @hasSensitiveFields on FIELD_DEFINITION
+  directive @hasOptionalFields on FIELD_DEFINITION
+
+  directive @optional on FIELD_DEFINITION
 
   directive @sensitive on FIELD_DEFINITION
 
@@ -71,22 +78,30 @@ const typeDefs = gql`
   type User {
     "The user's Northstar ID."
     id: String!
+    "The user's display name is their first name and (if set) last initial."
+    displayName: String
     "The user's first name."
     firstName: String
     "The user's last name."
-    lastName: String @sensitive
+    lastName: String @sensitive @optional
     "The user's last initial."
     lastInitial: String
     "The user's email address."
-    email: String @sensitive
+    email: String @sensitive @optional
+    "A preview of the user's email address."
+    emailPreview: String
     "The user's mobile number."
-    mobile: String @sensitive
+    mobile: String @sensitive @optional
+    "A preview of the user's mobile number."
+    mobilePreview: String
+    "The user's age."
+    age: Int
     "The user's birthdate, formatted YYYY-MM-DD."
-    birthdate: Date @sensitive
+    birthdate: Date @sensitive @optional
     "The user's street address. Null if unauthorized."
-    addrStreet1: String @sensitive
+    addrStreet1: String @sensitive @optional
     "The user's extended street address (for example, apartment number). Null if unauthorized."
-    addrStreet2: String @sensitive
+    addrStreet2: String @sensitive @optional
     "The user's city. Null if unauthorized."
     addrCity: String
     "The user's state. Null if unauthorized."
@@ -132,12 +147,15 @@ const typeDefs = gql`
     "What time of day user plans to get the polls to vote in upcoming election."
     votingPlanTimeOfDay: String
     "Whether or not the user is opted-in to the given feature."
-    hasFeatureFlag(feature: String): Boolean @requires(fields: ["featureFlags"])
+    hasFeatureFlag(feature: String): Boolean @requires(fields: "featureFlags")
+    "The permalink to this user's profile in Aurora."
+    permalink: String @requires(fields: "id")
   }
 
   type Query {
     "Get a user by ID."
-    user(id: String!): User @hasSensitiveFields
+    user(id: String!): User @hasOptionalFields
+    users(search: String!): [User] @hasOptionalFields
   }
 
   type Mutation {
@@ -162,13 +180,16 @@ const resolvers = {
     smsStatus: user => stringToEnum(user.smsStatus),
     voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
     emailSubscriptionTopics: user => listToEnums(user.emailSubscriptionTopics),
+    permalink: user => getPermalinkByUserId(user.id),
     hasFeatureFlag: (user, { feature }) =>
       has(user, `featureFlags.${feature}`) &&
       user.featureFlags[feature] !== false,
   },
   Query: {
     user: (_, { id }, context, info) =>
-      Loader(context).users.load(id, queriedFields(info)),
+      Loader(context).users.load(id, getSelection(info)),
+    users: (_, args, context, info) =>
+      getUsers(args, getSelection(info), context),
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
@@ -192,8 +213,8 @@ export default makeExecutableSchema({
   typeDefs,
   resolvers,
   schemaDirectives: {
-    requires: RequiresDirective,
     sensitive: SensitiveFieldDirective,
-    hasSensitiveFields: HasSensitiveFieldsDirective,
+    optional: OptionalFieldDirective,
+    hasOptionalFields: HasOptionalFieldsDirective,
   },
 });

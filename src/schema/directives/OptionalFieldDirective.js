@@ -1,11 +1,8 @@
 import { SchemaDirectiveVisitor } from 'graphql-tools';
 
-const HELP_TEXT =
-  '**This field contains personally-identifiable information, and access will be logged.**';
-
 class SensitiveFieldDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition(field) {
-    field.description = `${field.description} ${HELP_TEXT}`;
+    field.isOptional = true;
   }
 }
 

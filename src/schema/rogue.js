@@ -1,9 +1,13 @@
-import { makeExecutableSchema } from 'graphql-tools';
-import { GraphQLDateTime } from 'graphql-iso-date';
-import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { gql } from 'apollo-server';
-import { urlWithQuery } from '../repositories/helpers';
+import { getSelection } from 'fielddataloader';
+import { GraphQLAbsoluteUrl } from 'graphql-url';
+import { GraphQLDateTime } from 'graphql-iso-date';
+import { makeExecutableSchema } from 'graphql-tools';
+
 import Loader from '../loader';
+import { urlWithQuery } from '../repositories/helpers';
+import OptionalFieldDirective from './directives/OptionalFieldDirective';
+import HasOptionalFieldsDirective from './directives/HasOptionalFieldsDirective';
 import {
   getActionById,
   getCampaignById,
@@ -20,6 +24,7 @@ import {
   toggleReaction,
   getPostsCount,
   getActions,
+  makeImpactStatement,
 } from '../repositories/rogue';
 
 /**
@@ -31,6 +36,10 @@ const typeDefs = gql`
   scalar DateTime
 
   scalar AbsoluteUrl
+
+  directive @hasOptionalFields on FIELD_DEFINITION
+
+  directive @optional on FIELD_DEFINITION
 
   "Posts are reviewed by DoSomething.org staff for content."
   enum ReviewStatus {
@@ -63,6 +72,10 @@ const typeDefs = gql`
     internalTitle: String!
     "Collection of Actions associated to the Campaign."
     actions: [Action]
+    "Is this campaign open?"
+    isOpen: Boolean!
+    "The number of posts pending review. Only visible by staff/admins."
+    pendingCount: Int @optional
     "The time when this campaign starts."
     startDate: DateTime
     "The time when this campaign last modified."
@@ -149,6 +162,8 @@ const typeDefs = gql`
     source: String
     "The number of items added or removed in this post."
     quantity: Int
+    "The human-readable impact (quantity, noun, and verb)."
+    impact: String
     "The tags that have been applied to this post by DoSomething.org staffers."
     tags: [String]
     "The total number of reactions to this post."
@@ -201,16 +216,20 @@ const typeDefs = gql`
     "Get collection of Actions."
     actions(campaignId: Int!): [Action]
     "Get a campaign by ID."
-    campaign(id: Int!): Campaign
+    campaign(id: Int!): Campaign @hasOptionalFields
     "Get a paginated collection of campaigns."
     campaigns(
       "The internal title to load campaigns for."
       internalTitle: String
       "The page of results to return."
       page: Int = 1
+      "Only return campaigns that are open or closed."
+      isOpen: Boolean
+      "How to order the results (e.g. 'id,desc')."
+      orderBy: String = "id,desc"
       "The number of results per page."
       count: Int = 20
-    ): [Campaign]
+    ): [Campaign] @hasOptionalFields
     "Get a post by ID."
     post(
       "The desired post ID."
@@ -356,6 +375,7 @@ const resolvers = {
           return null;
       }
     },
+    impact: post => makeImpactStatement(post),
     reacted: post => post.reactions.reacted,
     reactions: post => post.reactions.total,
     permalink: post => getPermalinkBySignupId(post.signupId),
@@ -369,8 +389,10 @@ const resolvers = {
   Query: {
     action: (_, args, context) => getActionById(args.id, context),
     actions: (_, args, context) => getActions(args.campaignId, context),
-    campaign: (_, args, context) => getCampaignById(args.id, context),
-    campaigns: (_, args, context) => getCampaigns(args, context),
+    campaign: (_, args, context, info) =>
+      getCampaignById(args.id, getSelection(info), context),
+    campaigns: (_, args, context, info) =>
+      getCampaigns(args, getSelection(info), context),
     post: (_, args, context) => getPostById(args.id, context),
     posts: (_, args, context) => getPosts(args, context),
     postsByCampaignId: (_, args, context) =>
@@ -400,4 +422,8 @@ const resolvers = {
 export default makeExecutableSchema({
   typeDefs,
   resolvers,
+  schemaDirectives: {
+    optional: OptionalFieldDirective,
+    hasOptionalFields: HasOptionalFieldsDirective,
+  },
 });
