@@ -61,6 +61,8 @@ const typeDefs = gql`
     id: Int!
     "The internal name used to identify the campaign."
     internalTitle: String!
+    "Collection of Actions associated to the Campaign."
+    actions: [Action]
     "The time when this campaign starts."
     startDate: DateTime
     "The time when this campaign last modified."
@@ -383,6 +385,10 @@ const resolvers = {
   },
   Mutation: {
     toggleReaction: (_, args, context) => toggleReaction(args.postId, context),
+  },
+  Campaign: {
+    actions: (campaign, args, context) =>
+      Loader(context).actionsByCampaignId.load(campaign.id),
   },
 };
 
