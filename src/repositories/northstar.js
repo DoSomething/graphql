@@ -1,6 +1,6 @@
 import { stringify } from 'qs';
 import logger from 'heroku-logger';
-import { intersection, snakeCase, values } from 'lodash';
+import { intersection, snakeCase } from 'lodash';
 
 import schema from '../schema';
 import config from '../../config';
