@@ -376,7 +376,7 @@ const resolvers = {
   Query: {
     action: (_, args, context) => getActionById(args.id, context),
     campaign: (_, args, context, info) =>
-      getCampaignById(args.id, getSelection(info), context),
+      Loader(context).campaigns.load(args.id, getSelection(info)),
     campaigns: (_, args, context, info) =>
       getCampaigns(args, getSelection(info), context),
     post: (_, args, context) => getPostById(args.id, context),
