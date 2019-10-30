@@ -39,7 +39,9 @@ export default (context, preview = false) => {
   if (!context.loader) {
     logger.debug('Creating a new loader for this GraphQL request.');
     const options = authorizedRequest(context);
-
+    // to keep our naming consistent for loaders, our convention will base plurality on the relationship between the data being queried
+    // i.e. actionsByCampaignId follows the convention of one campaign having many actions
+    // @TODO update some loader names to follow this established pattern
     context.loader = {
       actionsByCampaignId: new DataLoader(campaignIds =>
         Promise.all(campaignIds.map(id => getActionsByCampaignId(id, context))),
