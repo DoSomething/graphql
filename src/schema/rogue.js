@@ -376,8 +376,8 @@ const resolvers = {
     permalink: post => getPermalinkBySignupId(post.signupId),
   },
   Signup: {
-    campaign: (signup, args, context) =>
-      Loader(context).campaigns.load(signup.campaignId),
+    campaign: (signup, args, context, info) =>
+      Loader(context).campaigns.load(signup.campaignId, getSelection(info)),
     permalink: signup => getPermalinkBySignupId(signup.id),
     posts: (signup, args, context) => getPostsBySignupId(signup.id, context),
   },
