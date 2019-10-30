@@ -63,8 +63,8 @@ export default (context, preview = false) => {
       broadcasts: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulEntryById(id, options))),
       ),
-      campaigns: new DataLoader(ids =>
-        Promise.all(ids.map(id => getCampaignById(id, options))),
+      campaigns: new FieldDataLoader((id, fields) =>
+        getCampaignById(id, fields, options),
       ),
       campaignWebsites: new DataLoader(ids =>
         Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),

@@ -7,10 +7,8 @@ import { makeExecutableSchema } from 'graphql-tools';
 import Loader from '../loader';
 import { urlWithQuery } from '../repositories/helpers';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
-import HasOptionalFieldsDirective from './directives/HasOptionalFieldsDirective';
 import {
   getActionById,
-  getCampaignById,
   getCampaigns,
   getPermalinkBySignupId,
   getPosts,
@@ -35,8 +33,6 @@ const typeDefs = gql`
   scalar DateTime
 
   scalar AbsoluteUrl
-
-  directive @hasOptionalFields on FIELD_DEFINITION
 
   directive @optional on FIELD_DEFINITION
 
@@ -215,7 +211,7 @@ const typeDefs = gql`
     "Get collection of Actions by Campaign ID."
     actions(campaignId: Int!): [Action]
     "Get a campaign by ID."
-    campaign(id: Int!): Campaign @hasOptionalFields
+    campaign(id: Int!): Campaign
     "Get a paginated collection of campaigns."
     campaigns(
       "The internal title to load campaigns for."
@@ -228,7 +224,7 @@ const typeDefs = gql`
       orderBy: String = "id,desc"
       "The number of results per page."
       count: Int = 20
-    ): [Campaign] @hasOptionalFields
+    ): [Campaign]
     "Get a post by ID."
     post(
       "The desired post ID."
@@ -390,7 +386,7 @@ const resolvers = {
     actions: (_, args, context) =>
       Loader(context).actionsByCampaignId.load(args.campaignId),
     campaign: (_, args, context, info) =>
-      getCampaignById(args.id, getSelection(info), context),
+      Loader(context).campaigns.load(args.id, getSelection(info)),
     campaigns: (_, args, context, info) =>
       getCampaigns(args, getSelection(info), context),
     post: (_, args, context) => getPostById(args.id, context),
@@ -424,6 +420,5 @@ export default makeExecutableSchema({
   resolvers,
   schemaDirectives: {
     optional: OptionalFieldDirective,
-    hasOptionalFields: HasOptionalFieldsDirective,
   },
 });

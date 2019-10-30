@@ -1,5 +1,13 @@
 import { URL, URLSearchParams } from 'url';
-import { map, mapKeys, has, camelCase, omit, isUndefined } from 'lodash';
+import {
+  map,
+  mapKeys,
+  has,
+  camelCase,
+  omit,
+  isUndefined,
+  values,
+} from 'lodash';
 
 /**
  * Attach the user's authorization token to a request.
@@ -97,4 +105,25 @@ export const urlWithQuery = (path, args) => {
     // If we get mangled 'default' as URL, return null.
     return null;
   }
+};
+
+/**
+ * Does this GraphQL AST node have the given directive?
+ * @param {*} node
+ * @param {String} name
+ */
+const hasDirective = (node, name) =>
+  node.directives.some(directive => directive.name.value === name);
+
+/**
+ * Get the list of fields marked as '@optional' for the given type.
+ *
+ * @param {String} type
+ * @return {String[]}
+ */
+export const getOptional = (schema, type) => {
+  return values(schema.getType(type).getFields())
+    .map(subfield => subfield.astNode)
+    .filter(astNode => hasDirective(astNode, 'optional'))
+    .map(astNode => astNode.name.value);
 };
