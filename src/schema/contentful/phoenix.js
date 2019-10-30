@@ -441,7 +441,7 @@ const resolvers = {
     campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
       Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
     causePageBySlug: (_, { slug, preview }, context) =>
-      Loader(context, preview).causePageBySlugs.load(slug),
+      Loader(context, preview).causePagesBySlug.load(slug),
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
