@@ -65,6 +65,8 @@ const typeDefs = gql`
     id: Int!
     "The internal name used to identify the campaign."
     internalTitle: String!
+    "Collection of Actions associated to the Campaign."
+    actions: [Action]
     "Is this campaign open?"
     isOpen: Boolean!
     "The number of posts pending review. Only visible by staff/admins."
@@ -98,6 +100,10 @@ const typeDefs = gql`
     createdAt: DateTime
     "The time when this action was last modified."
     updatedAt: DateTime
+    "How long will this action take to complete?"
+    timeCommitmentLabel: String
+    "What type of action is this?"
+    actionLabel: String
   }
 
   "A media resource on a post."
@@ -202,6 +208,8 @@ const typeDefs = gql`
   type Query {
     "Get an Action by ID."
     action(id: Int!): Action
+    "Get collection of Actions by Campaign ID."
+    actions(campaignId: Int!): [Action]
     "Get a campaign by ID."
     campaign(id: Int!): Campaign
     "Get a paginated collection of campaigns."
@@ -375,6 +383,8 @@ const resolvers = {
   },
   Query: {
     action: (_, args, context) => getActionById(args.id, context),
+    actions: (_, args, context) =>
+      Loader(context).actionsByCampaignId.load(args.campaignId),
     campaign: (_, args, context, info) =>
       Loader(context).campaigns.load(args.id, getSelection(info)),
     campaigns: (_, args, context, info) =>
@@ -393,6 +403,10 @@ const resolvers = {
   },
   Mutation: {
     toggleReaction: (_, args, context) => toggleReaction(args.postId, context),
+  },
+  Campaign: {
+    actions: (campaign, args, context) =>
+      Loader(context).actionsByCampaignId.load(campaign.id),
   },
 };
 

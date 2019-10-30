@@ -22,7 +22,9 @@ const ROGUE_URL = config('services.rogue.url');
  * @return {Object}
  */
 export const getActionById = async (id, context) => {
-  logger.debug('Loading action from Rogue', { id });
+  logger.debug('Loading action from Rogue', {
+    id,
+  });
 
   const response = await fetch(
     `${ROGUE_URL}/api/v3/actions/${id}`,
@@ -32,6 +34,27 @@ export const getActionById = async (id, context) => {
   const json = await response.json();
 
   return transformItem(json);
+};
+
+/**
+ * Fetch actions from Rogue
+ * @param {Number} campaign_id
+ * @return {Array}
+ */
+
+export const getActionsByCampaignId = async (campaignId, context) => {
+  logger.debug('Loading actions from Rogue', {
+    campaignId,
+  });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/actions/?filter[campaign_id]=${campaignId}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
 };
 
 /**
@@ -130,7 +153,10 @@ export const getPosts = async (args, context) => {
     pagination: 'cursor',
   });
 
-  logger.debug('Loading posts from Rogue.', { args, queryString });
+  logger.debug('Loading posts from Rogue.', {
+    args,
+    queryString,
+  });
 
   const response = await fetch(
     `${ROGUE_URL}/api/v3/posts/?${queryString}`,
@@ -289,7 +315,9 @@ export const getSignups = async (args, context) => {
  * @return {Object}
  */
 export const getSignupById = async (id, context) => {
-  logger.debug('Loading signup from Rogue', { id });
+  logger.debug('Loading signup from Rogue', {
+    id,
+  });
 
   const response = await fetch(
     `${ROGUE_URL}/api/v3/signups/${id}`,
@@ -308,7 +336,9 @@ export const getSignupById = async (id, context) => {
  * @return {Array}
  */
 export const getSignupsById = async (ids, options) => {
-  logger.debug('Loading signups from Rogue', { ids });
+  logger.debug('Loading signups from Rogue', {
+    ids,
+  });
 
   const idQuery = ids.join(',');
   const response = await fetch(
@@ -345,7 +375,10 @@ export const getSignupsByUserId = async (args, context) => {
     pagination: 'cursor',
   });
 
-  logger.debug('Loading signups from Rogue.', { args, queryString });
+  logger.debug('Loading signups from Rogue.', {
+    args,
+    queryString,
+  });
 
   const response = await fetch(
     `${ROGUE_URL}/api/v3/signups/?${queryString}`,
@@ -378,7 +411,10 @@ export const getSignupsCount = async (args, context) => {
     limit: args.limit,
   });
 
-  logger.debug('Loading signups count from Rogue.', { args, queryString });
+  logger.debug('Loading signups count from Rogue.', {
+    args,
+    queryString,
+  });
 
   const response = await fetch(
     `${ROGUE_URL}/api/v3/signups/?${queryString}`,
@@ -423,7 +459,10 @@ export const getPostsCount = async (args, context) => {
     limit: args.limit,
   });
 
-  logger.debug('Loading posts count from Rogue.', { args, queryString });
+  logger.debug('Loading posts count from Rogue.', {
+    args,
+    queryString,
+  });
 
   const response = await fetch(
     `${ROGUE_URL}/api/v3/posts/?${queryString}`,
