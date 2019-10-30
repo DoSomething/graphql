@@ -122,6 +122,15 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type CausePage {
+    slug: String!
+    coverImage: Asset!
+    superTitle: String!
+    title: String!
+    description: JSON!
+    content: JSON!
+  }
+
   type ImagesBlock implements Block {
     "The images to be included in this block."
     images: [Asset]
@@ -383,6 +392,7 @@ const typeDefs = gql`
     campaignWebsite(id: String!, preview: Boolean = false): CampaignWebsite
     page(id: String!, preview: Boolean = false): Page
     campaignWebsiteByCampaignId(campaignId: String!, preview: Boolean = false): CampaignWebsite
+    causePageBySlug(slug: String!, preview: Boolean = false): CausePage
   }
 `;
 
@@ -407,6 +417,7 @@ const contentTypeMappings = {
   shareAction: 'ShareBlock',
   textSubmissionAction: 'TextSubmissionBlock',
   voterRegistrationAction: 'VoterRegistrationBlock',
+  causePage: 'CausePage',
 };
 
 /**
@@ -429,6 +440,8 @@ const resolvers = {
       Loader(context, preview).campaignWebsites.load(id),
     campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
       Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
+    causePageBySlug: (_, { slug, preview }, context) =>
+      Loader(context, preview).causePageBySlugs.load(slug),
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
@@ -455,6 +468,9 @@ const resolvers = {
     showcaseDescription: campaign => campaign.callToAction,
     showcaseImage: (person, _, context, info) =>
       linkResolver(person, _, context, info, 'coverImage'),
+  },
+  CausePage: {
+    coverImage: linkResolver,
   },
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
