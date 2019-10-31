@@ -1,5 +1,5 @@
 import { gql } from 'apollo-server';
-import { getSelection } from 'fielddataloader';
+import { getFields } from 'fielddataloader';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
@@ -377,7 +377,7 @@ const resolvers = {
   },
   Signup: {
     campaign: (signup, args, context, info) =>
-      Loader(context).campaigns.load(signup.campaignId, getSelection(info)),
+      Loader(context).campaigns.load(signup.campaignId, getFields(info)),
     permalink: signup => getPermalinkBySignupId(signup.id),
     posts: (signup, args, context) => getPostsBySignupId(signup.id, context),
   },
@@ -386,9 +386,9 @@ const resolvers = {
     actions: (_, args, context) =>
       Loader(context).actionsByCampaignId.load(args.campaignId),
     campaign: (_, args, context, info) =>
-      Loader(context).campaigns.load(args.id, getSelection(info)),
+      Loader(context).campaigns.load(args.id, getFields(info)),
     campaigns: (_, args, context, info) =>
-      getCampaigns(args, getSelection(info), context),
+      getCampaigns(args, getFields(info), context),
     post: (_, args, context) => getPostById(args.id, context),
     posts: (_, args, context) => getPosts(args, context),
     postsByCampaignId: (_, args, context) =>

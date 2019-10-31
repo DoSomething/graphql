@@ -1,6 +1,6 @@
 import { has } from 'lodash';
 import { gql } from 'apollo-server';
-import { getSelection } from 'fielddataloader';
+import { getFields } from 'fielddataloader';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
@@ -184,9 +184,8 @@ const resolvers = {
   },
   Query: {
     user: (_, { id }, context, info) =>
-      Loader(context).users.load(id, getSelection(info)),
-    users: (_, args, context, info) =>
-      getUsers(args, getSelection(info), context),
+      Loader(context).users.load(id, getFields(info)),
+    users: (_, args, context, info) => getUsers(args, getFields(info), context),
   },
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
