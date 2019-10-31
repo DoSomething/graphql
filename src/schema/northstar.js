@@ -123,6 +123,8 @@ const typeDefs = gql`
     country: String
     "The user's role."
     role: Role
+    "The user's current School ID"
+    schoolId: String @sensitive @optional
     "The user's voter registration status, either self-reported or by registering with TurboVote."
     voterRegistrationStatus: VoterRegistrationStatus
     "The time this user was created. See the 'source' and 'source_detail' field for details."
