@@ -1,10 +1,12 @@
 import { stringify } from 'qs';
 import pluralize from 'pluralize';
 import logger from 'heroku-logger';
+import { getFields } from 'fielddataloader';
 import { find, has, intersection, snakeCase } from 'lodash';
 
 import schema from '../schema';
 import config from '../../config';
+import Collection from './Collection';
 import {
   getOptional,
   transformItem,
@@ -92,11 +94,17 @@ export const getCampaignById = async (id, fields, context) => {
  * @param {Number} count
  * @return {Array}
  */
-export const getCampaigns = async (args, fields, context) => {
+export const fetchCampaigns = async (
+  args,
+  context,
+  info,
+  additionalQuery = {},
+) => {
   const filter = has(args, 'isOpen') ? { is_open: args.isOpen } : undefined;
 
   // Rogue expects a comma-separated list of snake_case fields.
   // If not querying anything, use 'undefined' to omit query string.
+  const fields = getFields(info, 'Campaign', 'edges.node');
   const optionalFields = intersection(fields, getOptional(schema, 'Campaign'));
   const include = optionalFields.length
     ? optionalFields.map(snakeCase).join()
@@ -105,20 +113,49 @@ export const getCampaigns = async (args, fields, context) => {
   const queryString = stringify({
     filter,
     orderBy: args.orderBy,
-    page: args.page,
-    limit: args.count,
     pagination: 'cursor',
     include,
+    ...additionalQuery,
   });
+
+  logger.info('Loading campaigns from Rogue', { queryString });
 
   const response = await fetch(
     `${ROGUE_URL}/api/v3/campaigns/?${queryString}`,
     authorizedRequest(context),
   );
 
-  const json = await response.json();
+  return response.json();
+};
+
+/**
+ * Get a simple list of campaigns.
+ *
+ * @param {Number} page
+ * @param {Number} count
+ * @return {Array}
+ */
+export const getCampaigns = async (args, context, info) => {
+  const json = await fetchCampaigns(args, context, info, {
+    limit: args.count,
+    page: args.page,
+  });
 
   return transformCollection(json);
+};
+
+/**
+ * Fetch a paginated campaign connection.
+ *
+ * @return {Array}
+ */
+export const getPaginatedCampaigns = async (args, context, info) => {
+  const json = await fetchCampaigns(args, context, info, {
+    limit: args.first,
+    after: args.after,
+  });
+
+  return new Collection(json);
 };
 
 /**
@@ -149,7 +186,6 @@ export const getPosts = async (args, context) => {
       type: args.type,
     },
     page: args.page,
-    limit: args.count,
     pagination: 'cursor',
   });
 
