@@ -78,7 +78,7 @@ const typeDefs = gql`
     updatedAt: DateTime
   }
 
-  "Experimental: A paginated list of campaigns."
+  "Experimental: A paginated list of campaigns. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
   type CampaignCollection {
     edges: [CampaignEdge]
     pageInfo: PageInfo!
