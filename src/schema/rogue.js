@@ -23,6 +23,7 @@ import {
   toggleReaction,
   getPostsCount,
   makeImpactStatement,
+  parseCampaignCauses,
 } from '../repositories/rogue';
 
 /**
@@ -34,6 +35,8 @@ const typeDefs = gql`
   scalar DateTime
 
   scalar AbsoluteUrl
+
+  directive @requires(fields: String!) on FIELD_DEFINITION
 
   directive @optional on FIELD_DEFINITION
 
@@ -56,6 +59,12 @@ const typeDefs = gql`
     HUMAN_FORMAT
   }
 
+  "A cause space."
+  type Cause {
+    id: String!
+    name: String!
+  }
+
   "A campaign."
   type Campaign {
     "The time when this campaign was originally created."
@@ -68,6 +77,8 @@ const typeDefs = gql`
     internalTitle: String!
     "Collection of Actions associated to the Campaign."
     actions: [Action]
+    "The cause-spaces for this campaign."
+    causes: [Cause] @requires(fields: "cause causeNames")
     "Is this campaign open?"
     isOpen: Boolean!
     "The number of posts pending review. Only visible by staff/admins."
@@ -440,6 +451,7 @@ const resolvers = {
   Campaign: {
     actions: (campaign, args, context) =>
       Loader(context).actionsByCampaignId.load(campaign.id),
+    causes: campaign => parseCampaignCauses(campaign),
   },
 };
 

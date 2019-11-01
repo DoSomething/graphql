@@ -2,7 +2,7 @@ import { stringify } from 'qs';
 import pluralize from 'pluralize';
 import logger from 'heroku-logger';
 import { getFields } from 'fielddataloader';
-import { find, has, intersection, snakeCase } from 'lodash';
+import { find, has, intersection, snakeCase, zipWith } from 'lodash';
 
 import schema from '../schema';
 import config from '../../config';
@@ -512,4 +512,17 @@ export const getPostsCount = async (args, context) => {
   const result = transformCollection(json);
 
   return result.length;
+};
+
+/**
+ * Parse `Cause` type from a given campaign.
+ *
+ * @param {Object} campaign
+ */
+export const parseCampaignCauses = campaign => {
+  // These are provided as two separate ordered arrays
+  // from Rogue's Campaigns API. We'll zip them together.
+  const { cause, causeNames } = campaign;
+
+  return zipWith(cause, causeNames, (id, name) => ({ id, name }));
 };
