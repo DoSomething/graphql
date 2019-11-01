@@ -1,5 +1,5 @@
 import { gql } from 'apollo-server';
-import { getSelection } from 'fielddataloader';
+import { getFields } from 'fielddataloader';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
@@ -10,6 +10,7 @@ import OptionalFieldDirective from './directives/OptionalFieldDirective';
 import {
   getActionById,
   getCampaigns,
+  getPaginatedCampaigns,
   getPermalinkBySignupId,
   getPosts,
   getPostsByUserId,
@@ -75,6 +76,25 @@ const typeDefs = gql`
     startDate: DateTime
     "The time when this campaign last modified."
     updatedAt: DateTime
+  }
+
+  "Experimental: A paginated list of campaigns. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
+  type CampaignCollection {
+    edges: [CampaignEdge]
+    pageInfo: PageInfo!
+  }
+
+  "Experimental: Campaign in a paginated list."
+  type CampaignEdge {
+    cursor: String!
+    node: Campaign!
+  }
+
+  "Experimental: Information about a paginated list."
+  type PageInfo {
+    endCursor: String,
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
   }
 
   type Action {
@@ -212,7 +232,7 @@ const typeDefs = gql`
     actions(campaignId: Int!): [Action]
     "Get a campaign by ID."
     campaign(id: Int!): Campaign
-    "Get a paginated collection of campaigns."
+    "Get a list of campaigns."
     campaigns(
       "The internal title to load campaigns for."
       internalTitle: String
@@ -225,6 +245,17 @@ const typeDefs = gql`
       "The number of results per page."
       count: Int = 20
     ): [Campaign]
+    "Experimental: Get a Relay-style paginated collection of campaigns."
+    paginatedCampaigns(
+      "Get the first N results."
+      first: Int = 20
+      "The cursor to return results after."
+      after: String,
+      "Only return campaigns that are open or closed."
+      isOpen: Boolean
+      "How to order the results (e.g. 'id,desc')."
+      orderBy: String = "id,desc"
+      ): CampaignCollection
     "Get a post by ID."
     post(
       "The desired post ID."
@@ -377,7 +408,7 @@ const resolvers = {
   },
   Signup: {
     campaign: (signup, args, context, info) =>
-      Loader(context).campaigns.load(signup.campaignId, getSelection(info)),
+      Loader(context).campaigns.load(signup.campaignId, getFields(info)),
     permalink: signup => getPermalinkBySignupId(signup.id),
     posts: (signup, args, context) => getPostsBySignupId(signup.id, context),
   },
@@ -386,9 +417,11 @@ const resolvers = {
     actions: (_, args, context) =>
       Loader(context).actionsByCampaignId.load(args.campaignId),
     campaign: (_, args, context, info) =>
-      Loader(context).campaigns.load(args.id, getSelection(info)),
+      Loader(context).campaigns.load(args.id, getFields(info)),
     campaigns: (_, args, context, info) =>
-      getCampaigns(args, getSelection(info), context),
+      getCampaigns(args, getFields(info), context),
+    paginatedCampaigns: (_, args, context, info) =>
+      getPaginatedCampaigns(args, context, info),
     post: (_, args, context) => getPostById(args.id, context),
     posts: (_, args, context) => getPosts(args, context),
     postsByCampaignId: (_, args, context) =>
