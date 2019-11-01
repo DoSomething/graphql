@@ -524,5 +524,16 @@ export const parseCampaignCauses = campaign => {
   // from Rogue's Campaigns API. We'll zip them together.
   const { cause, causeNames } = campaign;
 
+  // Some campaigns have badly-formatted data...
+  if (cause.length !== causeNames.length) {
+    logger.warn('Misformated campaign causes', {
+      id: campaign.id,
+      cause,
+      causeNames,
+    });
+
+    return [];
+  }
+
   return zipWith(cause, causeNames, (id, name) => ({ id, name }));
 };

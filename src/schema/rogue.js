@@ -61,8 +61,8 @@ const typeDefs = gql`
 
   "A cause space."
   type Cause {
-    id: String!
-    name: String!
+    id: String
+    name: String
   }
 
   "A campaign."
