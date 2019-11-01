@@ -152,7 +152,9 @@ export const getCampaigns = async (args, context, info) => {
 export const getPaginatedCampaigns = async (args, context, info) => {
   const json = await fetchCampaigns(args, context, info, {
     limit: args.first,
-    after: args.after,
+    cursor: {
+      after: args.after,
+    },
   });
 
   return new Collection(json);
