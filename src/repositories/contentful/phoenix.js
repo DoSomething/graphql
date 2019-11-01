@@ -171,6 +171,15 @@ export const getCampaignWebsiteByCampaignId = async (campaignId, context) =>
   );
 
 /**
+ * Search for a Phoenix Contentful Cause Page entry by slug.
+ *
+ * @param {String} slug
+ * @return {Object}
+ */
+export const getCausePageBySlug = async (slug, context) =>
+  getPhoenixContentfulEntryByField('causePage', 'slug', slug, context);
+
+/**
  * Search for a Phoenix Contentful affiliate entry by utmLabel.
  *
  * @param {String} id

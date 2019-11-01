@@ -21,6 +21,7 @@ import {
   getPhoenixContentfulEntryById,
   getAffiliateByUtmLabel,
   getCampaignWebsiteByCampaignId,
+  getCausePageBySlug,
 } from './repositories/contentful/phoenix';
 
 /**
@@ -75,6 +76,9 @@ export default (context, preview = false) => {
             getCampaignWebsiteByCampaignId(campaignId, context),
           ),
         ),
+      ),
+      causePagesBySlug: new DataLoader(slugs =>
+        Promise.all(slugs.map(slug => getCausePageBySlug(slug, context))),
       ),
       pages: new DataLoader(ids =>
         Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
