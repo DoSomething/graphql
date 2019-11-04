@@ -139,6 +139,41 @@ export const updateEmailSubscriptionTopics = async (
 };
 
 /**
+ * Update a user's school_id in Northstar.
+ *
+ * @param {String} id
+ * @param {String} schoolId
+ * @param {Object} options
+ *
+ * @return {Object}
+ */
+export const updateSchoolId = async (
+  id,
+  schoolId,
+  options,
+) => {
+  logger.debug('Updating school_id for user in Northstar', {
+    id,
+  });
+
+  try {
+     const response = await updateUser(id, ({
+       school_id: schoolId,
+     }), options);
+
+    const json = await response.json();
+
+    return transformItem(json);
+  } catch (exception) {
+    const error = exception.message;
+    logger.warn('Unable to update email subscription topics.', { id, error });
+  }
+
+  return null;
+};
+
+
+/**
  * Get Aurora profile permalink by ID.
  *
  * @param {String} id

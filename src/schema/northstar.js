@@ -12,6 +12,7 @@ import { stringToEnum, listToEnums } from './helpers';
 import {
   updateEmailSubscriptionTopics,
   getPermalinkByUserId,
+  updateSchoolId,
   getUsers,
 } from '../repositories/northstar';
 
@@ -165,6 +166,13 @@ const typeDefs = gql`
       "The newsletters the user should be subscribed to."
       emailSubscriptionTopics: [EmailSubscriptionTopic]!
     ): User!
+    "Update the user school id."
+    updateSchoolId(
+      "The user to update."
+      id: String!
+      "The school_id to save to the user."
+      schoolId: String
+    ): User!
   }
 `;
 
@@ -193,12 +201,20 @@ const resolvers = {
   DateTime: GraphQLDateTime,
   AbsoluteUrl: GraphQLAbsoluteUrl,
   Mutation: {
-    updateEmailSubscriptionTopics: (_, args, context) =>
-      updateEmailSubscriptionTopics(
+    updateEmailSubscriptionTopics: (_, args, context) => {
+      return updateEmailSubscriptionTopics(
         args.id,
         args.emailSubscriptionTopics,
         context,
-      ),
+      );
+    },
+    updateSchoolId: (_, args, context) => {
+      return updateSchoolId(
+        args.id,
+        args.schoolId,
+        context,
+      );
+    },
   },
 };
 
