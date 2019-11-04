@@ -90,7 +90,7 @@ export const getUsers = async (args, fields, context) => {
  * @param {Object} params
  * @param {Object} options
  *
- * @return {Object}
+ * @return {Promise}
  */
 const updateUser = (id, params, options) => {
   return fetch(`${NORTHSTAR_URL}/v2/users/${id}`, {
@@ -98,7 +98,7 @@ const updateUser = (id, params, options) => {
     method: 'PUT',
     body: JSON.stringify(params),
   });
-}
+};
 
 /**
  * Update a user's email_subscription_topics in Northstar.
@@ -118,14 +118,16 @@ export const updateEmailSubscriptionTopics = async (
     id,
   });
 
-  const formattedTopics = emailSubscriptionTopics.map(value =>
-    value.toLowerCase(),
-  );
-
   try {
-     const response = await updateUser(id, ({
-       email_subscription_topics: formattedTopics,
-     }), options);
+    const response = await updateUser(
+      id,
+      {
+        email_subscription_topics: emailSubscriptionTopics.map(value =>
+          value.toLowerCase(),
+        ),
+      },
+      options,
+    );
 
     const json = await response.json();
 
@@ -147,19 +149,19 @@ export const updateEmailSubscriptionTopics = async (
  *
  * @return {Object}
  */
-export const updateSchoolId = async (
-  id,
-  schoolId,
-  options,
-) => {
+export const updateSchoolId = async (id, schoolId, options) => {
   logger.debug('Updating school_id for user in Northstar', {
     id,
   });
 
   try {
-     const response = await updateUser(id, ({
-       school_id: schoolId,
-     }), options);
+    const response = await updateUser(
+      id,
+      {
+        school_id: schoolId,
+      },
+      options,
+    );
 
     const json = await response.json();
 
@@ -171,7 +173,6 @@ export const updateSchoolId = async (
 
   return null;
 };
-
 
 /**
  * Get Aurora profile permalink by ID.

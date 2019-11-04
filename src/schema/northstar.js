@@ -201,20 +201,14 @@ const resolvers = {
   DateTime: GraphQLDateTime,
   AbsoluteUrl: GraphQLAbsoluteUrl,
   Mutation: {
-    updateEmailSubscriptionTopics: (_, args, context) => {
-      return updateEmailSubscriptionTopics(
+    updateEmailSubscriptionTopics: (_, args, context) =>
+      updateEmailSubscriptionTopics(
         args.id,
         args.emailSubscriptionTopics,
         context,
-      );
-    },
-    updateSchoolId: (_, args, context) => {
-      return updateSchoolId(
-        args.id,
-        args.schoolId,
-        context,
-      );
-    },
+      ),
+    updateSchoolId: (_, args, context) =>
+      updateSchoolId(args.id, args.schoolId, context),
   },
 };
 
