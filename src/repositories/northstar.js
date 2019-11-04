@@ -168,7 +168,7 @@ export const updateSchoolId = async (id, schoolId, options) => {
     return transformItem(json);
   } catch (exception) {
     const error = exception.message;
-    logger.warn('Unable to update email subscription topics.', { id, error });
+    logger.warn('Unable to update school id.', { id, error });
   }
 
   return null;
