@@ -293,6 +293,23 @@ export const toggleReaction = async (postId, context) => {
 };
 
 /**
+ * Create a review for a post.
+ *
+ * @param {Number} postId
+ * @param {String} status
+ * @return {Object}
+ */
+export const reviewPost = async (postId, status, context) => {
+  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}/reviews`, {
+    method: 'POST',
+    body: JSON.stringify({ status: status.toLowerCase() }),
+    ...requireAuthorizedRequest(context),
+  });
+
+  return transformItem(await response.json());
+};
+
+/**
  * Get Rogue signup permalink by ID.
  *
  * @param {Number} id

@@ -24,6 +24,7 @@ import {
   getPostsCount,
   makeImpactStatement,
   parseCampaignCauses,
+  reviewPost,
 } from '../repositories/rogue';
 
 /**
@@ -383,6 +384,13 @@ const typeDefs = gql`
       "The post ID to react to."
       postId: Int!
     ): Post
+    "Review a post. Requires staff/admin role."
+    reviewPost(
+      "The post ID to review."
+      id: Int!
+      "The status to give this post."
+      status: ReviewStatus!
+    ): Post
   }
 `;
 
@@ -451,6 +459,7 @@ const resolvers = {
   },
   Mutation: {
     toggleReaction: (_, args, context) => toggleReaction(args.postId, context),
+    reviewPost: (_, args, context) => reviewPost(args.id, args.status, context),
   },
   Campaign: {
     actions: (campaign, args, context) =>
