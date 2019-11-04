@@ -39,6 +39,10 @@ const contentful = {
   },
 };
 
+const schools = {
+  url: process.env.SCHOOLS_DB_URL,
+};
+
 const environments = {
   /**
    * Querying against local development instances.
@@ -66,6 +70,9 @@ const environments = {
     rogue: {
       url: process.env.LOCAL_ROGUE_URL || 'http://rogue.test',
     },
+
+    // Schools API
+    schools,
   },
 
   /**
