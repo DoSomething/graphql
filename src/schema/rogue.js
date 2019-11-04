@@ -164,6 +164,8 @@ const typeDefs = gql`
     userId: String
     "The Rogue campaign ID this post was made for."
     campaignId: String
+    "The Rogue campaign this post was made for."
+    campaign: Campaign
     "The location this post was submitted from. This is provided by Fastly geo-location headers on the web."
     location(format: LocationFormat = ISO_FORMAT): String
     "The attached media for this post."
@@ -396,6 +398,8 @@ const resolvers = {
     url: (media, args) => urlWithQuery(media.url, args),
   },
   Post: {
+    campaign: (post, args, context, info) =>
+      Loader(context).campaigns.load(post.campaignId, getFields(info)),
     signup: (post, args, context) =>
       Loader(context).signups.load(post.signupId),
     url: (post, args) => urlWithQuery(post.media.url, args),
