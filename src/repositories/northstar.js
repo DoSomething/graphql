@@ -84,6 +84,23 @@ export const getUsers = async (args, fields, context) => {
 };
 
 /**
+ * Update a Northstar user.
+ *
+ * @param {String} id
+ * @param {Object} params
+ * @param {Object} options
+ *
+ * @return {Object}
+ */
+const updateUser = (id, params, options) => {
+  return fetch(`${NORTHSTAR_URL}/v2/users/${id}`, {
+    ...requireAuthorizedRequest(options),
+    method: 'PUT',
+    body: JSON.stringify(params),
+  });
+}
+
+/**
  * Update a user's email_subscription_topics in Northstar.
  *
  * @param {String} id
@@ -105,14 +122,10 @@ export const updateEmailSubscriptionTopics = async (
     value.toLowerCase(),
   );
 
-  const body = { email_subscription_topics: formattedTopics };
-
   try {
-    const response = await fetch(`${NORTHSTAR_URL}/v2/users/${id}`, {
-      ...requireAuthorizedRequest(options),
-      method: 'PUT',
-      body: JSON.stringify(body),
-    });
+     const response = await updateUser(id, ({
+       email_subscription_topics: formattedTopics,
+     }), options);
 
     const json = await response.json();
 
