@@ -4,14 +4,9 @@ import config from '../../config';
 
 mongoose.Promise = global.Promise;
 
-mongoose
-  .connect(config('services.schools.url'), {
-    autoIndex: false,
-  })
-  .then(() => {
-    console.log('Successful connection to Schools DB.');
-  })
-  .catch(err => console.error(err));
+mongoose.connect(config('services.schools.url'), {
+  autoIndex: false,
+});
 
 const schoolSchema = new mongoose.Schema({
   _id: String,
@@ -28,6 +23,18 @@ const School = mongoose.model('School', schoolSchema, 'merged_schools');
  *
  * @return {Object}
  */
-export const getSchoolById = async id => {
-  return School.findOne({ gsid: id });
-};
+export const getSchoolById = async id => School.findOne({ gsid: id });
+
+/**
+ * Fetch schools by name per given state.
+ *
+ * @return {Object}
+ */
+export const searchSchools = async (state, searchString) =>
+  School.find({
+    state,
+    name: {
+      $regex: searchString,
+      $options: 'i',
+    },
+  });
