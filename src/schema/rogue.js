@@ -25,6 +25,7 @@ import {
   makeImpactStatement,
   parseCampaignCauses,
   reviewPost,
+  tagPost,
 } from '../repositories/rogue';
 
 /**
@@ -391,6 +392,13 @@ const typeDefs = gql`
       "The status to give this post."
       status: ReviewStatus!
     ): Post
+    "Add or remove a tag on a post. Requires staff/admin role."
+    tagPost(
+      "The post ID to review."
+      id: Int!
+      "The tag to add or remove on this post."
+      tag: String!
+    ): Post
   }
 `;
 
@@ -460,6 +468,7 @@ const resolvers = {
   Mutation: {
     toggleReaction: (_, args, context) => toggleReaction(args.postId, context),
     reviewPost: (_, args, context) => reviewPost(args.id, args.status, context),
+    tagPost: (_, args, context) => tagPost(args.id, args.tag, context),
   },
   Campaign: {
     actions: (campaign, args, context) =>

@@ -310,6 +310,23 @@ export const reviewPost = async (postId, status, context) => {
 };
 
 /**
+ * Add or remove a tag to a post.
+ *
+ * @param {Number} postId
+ * @param {String} tag
+ * @return {Object}
+ */
+export const tagPost = async (postId, tag, context) => {
+  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}/tags`, {
+    method: 'POST',
+    body: JSON.stringify({ tag_name: tag.toLowerCase() }),
+    ...requireAuthorizedRequest(context),
+  });
+
+  return transformItem(await response.json());
+};
+
+/**
  * Get Rogue signup permalink by ID.
  *
  * @param {Number} id
