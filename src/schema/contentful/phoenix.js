@@ -403,7 +403,7 @@ const typeDefs = gql`
  */
 const contentTypeMappings = {
   affiliates: 'AffiliateBlock',
-  campaignWebsite: 'CampaignWebsite',
+  campaign: 'CampaignWebsite',
   page: 'Page',
   embed: 'EmbedBlock',
   contentBlock: 'ContentBlock',
