@@ -66,6 +66,10 @@ export const transformResponse = (data, idField = 'id') => {
     delete result.northstarId;
   }
 
+  // Add a "deleted" field. Since this response didn't
+  // 404, we can assume it hasn't been deleted:
+  result.deleted = false;
+
   return result;
 };
 

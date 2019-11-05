@@ -361,6 +361,25 @@ export const rotatePost = async (postId, degrees, context) => {
 };
 
 /**
+ * Delete a post.
+ *
+ * @param {Number} postId
+ * @return {Object}
+ */
+export const deletePost = async (postId, context) => {
+  const post = await getPostById(postId, context);
+
+  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}`, {
+    method: 'DELETE',
+    ...requireAuthorizedRequest(context),
+  });
+
+  return response.status === 200
+    ? { ...post, deleted: true }
+    : { ...post, deleted: false };
+};
+
+/**
  * Get Rogue signup permalink by ID.
  *
  * @param {Number} id
