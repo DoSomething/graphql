@@ -146,6 +146,10 @@ const typeDefs = gql`
     active: Boolean!
     "Job title of the person."
     jobTitle: String
+    "The perons's email address."
+    email: String
+    "The person's Twitter handle."
+    twitterId: String
     "Photo of the person."
     photo: Asset
     "Alternate Photo of the person."
