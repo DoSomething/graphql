@@ -129,6 +129,7 @@ const typeDefs = gql`
     title: String!
     description: JSON!
     content: JSON!
+    ${entryFields}
   }
 
   type ImagesBlock implements Block {
