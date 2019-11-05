@@ -293,6 +293,23 @@ export const toggleReaction = async (postId, context) => {
 };
 
 /**
+ * Update a post's quantity.
+ *
+ * @param {Number} postId
+ * @param {Number} quantity
+ * @return {Object}
+ */
+export const updatePostQuantity = async (postId, quantity, context) => {
+  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ quantity }),
+    ...requireAuthorizedRequest(context),
+  });
+
+  return transformItem(await response.json());
+};
+
+/**
  * Create a review for a post.
  *
  * @param {Number} postId
