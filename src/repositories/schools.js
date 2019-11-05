@@ -3,14 +3,11 @@ import logger from 'heroku-logger';
 
 import config from '../../config';
 
-mongoose.Promise = global.Promise;
-
 const DB_URL = config('services.schools.url' || null);
 
 if (DB_URL) {
   mongoose
     .connect(DB_URL, {
-      autoIndex: false,
       dbName: config('services.schools.name' || 'greatschools'),
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -51,7 +48,7 @@ export const transformItem = item => {
 };
 
 /**
- * Fetch a school by its ID.
+ * Fetch a school by its universal ID.
  *
  * @param {String} id
  * @return {Object}
