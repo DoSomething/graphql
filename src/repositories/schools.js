@@ -29,6 +29,13 @@ const schema = new mongoose.Schema({
 const Directory = mongoose.model('Directory', schema, 'directory');
 
 /**
+ * @return {Boolean}
+ */
+function isDatabaseConnected() {
+  return mongoose.connection.readyState === 1;
+}
+
+/**
  * @param {Object} item
  * @return {Object}
  */
@@ -50,6 +57,10 @@ export const transformItem = item => {
  * @return {Object}
  */
 export const getSchoolById = async id => {
+  if (!isDatabaseConnected()) {
+    throw new Error('No connection to Schools DB.');
+  }
+
   logger.debug('Finding school', { id });
 
   const result = await Directory.findOne({ 'universal-id': Number(id) });
@@ -65,6 +76,10 @@ export const getSchoolById = async id => {
  * @return {Object}
  */
 export const searchSchools = async (state, searchString) => {
+  if (!isDatabaseConnected()) {
+    throw new Error('No connection to Schools DB.');
+  }
+
   logger.debug('Searching schools', { state, searchString });
 
   const res = await Directory.find({
