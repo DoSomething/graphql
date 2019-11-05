@@ -27,6 +27,7 @@ import {
   updatePostQuantity,
   reviewPost,
   tagPost,
+  rotatePost,
 } from '../repositories/rogue';
 
 /**
@@ -407,6 +408,13 @@ const typeDefs = gql`
       "The tag to add or remove on this post."
       tag: String!
     ): Post
+    "Rotate a post's image. Requires staff/admin role."
+    rotatePost(
+      "The post ID to rotate."
+      id: Int!
+      "The number of degrees to rotate (clockwise)."
+      degrees: Int! = 90
+    ): Post
   }
 `;
 
@@ -479,6 +487,8 @@ const resolvers = {
       updatePostQuantity(args.id, args.quantity, context),
     reviewPost: (_, args, context) => reviewPost(args.id, args.status, context),
     tagPost: (_, args, context) => tagPost(args.id, args.tag, context),
+    rotatePost: (_, args, context) =>
+      rotatePost(args.id, args.degrees, context),
   },
   Campaign: {
     actions: (campaign, args, context) =>

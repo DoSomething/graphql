@@ -344,6 +344,23 @@ export const tagPost = async (postId, tag, context) => {
 };
 
 /**
+ * Rotate a post's image.
+ *
+ * @param {Number} postId
+ * @param {Number} degrees
+ * @return {Object}
+ */
+export const rotatePost = async (postId, degrees, context) => {
+  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}/rotate`, {
+    method: 'POST',
+    body: JSON.stringify({ degrees }),
+    ...requireAuthorizedRequest(context),
+  });
+
+  return transformItem(await response.json());
+};
+
+/**
  * Get Rogue signup permalink by ID.
  *
  * @param {Number} id
