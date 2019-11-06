@@ -8,6 +8,7 @@ import northstarSchema from './northstar';
 import phoenixContentfulSchema from './contentful/phoenix';
 import gambitContentfulSchema from './contentful/gambit';
 import gambitSchema from './gambit';
+import schoolsSchema from './schools';
 
 /**
  * The schema used to link services together.
@@ -426,6 +427,7 @@ const schema = mergeSchemas({
     gambitContentfulSchema,
     gambitSchema,
     linkSchema,
+    schoolsSchema,
   ],
   resolvers: linkResolvers,
 });

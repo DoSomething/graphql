@@ -61,6 +61,7 @@
     "graphql-url": "^2.0.4",
     "heroku-logger": "^0.3.3",
     "lodash": "^4.17.15",
+    "mongoose": "^5.7.7",
     "node-fetch": "^2.6.0",
     "oembetter": "^0.1.20",
     "page-metadata-parser": "^1.1.4",

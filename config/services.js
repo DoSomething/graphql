@@ -39,6 +39,13 @@ const contentful = {
   },
 };
 
+const schools = {
+  db: {
+    url: process.env.SCHOOLS_DB_URL,
+    name: 'greatschools',
+  },
+};
+
 const environments = {
   /**
    * Querying against local development instances.
@@ -66,6 +73,9 @@ const environments = {
     rogue: {
       url: process.env.LOCAL_ROGUE_URL || 'http://rogue.test',
     },
+
+    // Schools
+    schools,
   },
 
   /**
@@ -102,6 +112,9 @@ const environments = {
     rogue: {
       url: 'https://activity-dev.dosomething.org',
     },
+
+    // Schools
+    schools,
   },
 
   /**
@@ -137,6 +150,9 @@ const environments = {
     rogue: {
       url: 'https://activity-qa.dosomething.org',
     },
+
+    // Schools
+    schools,
   },
 
   /**
@@ -172,6 +188,9 @@ const environments = {
     rogue: {
       url: 'https://activity.dosomething.org',
     },
+
+    // Schools
+    schools,
   },
 };
 
