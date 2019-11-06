@@ -12,6 +12,7 @@ import { stringToEnum, listToEnums } from './helpers';
 import {
   updateEmailSubscriptionTopics,
   getPermalinkByUserId,
+  updateSchoolId,
   getUsers,
 } from '../repositories/northstar';
 
@@ -123,6 +124,8 @@ const typeDefs = gql`
     country: String
     "The user's role."
     role: Role
+    "The user's current School ID"
+    schoolId: String @sensitive @optional
     "The user's voter registration status, either self-reported or by registering with TurboVote."
     voterRegistrationStatus: VoterRegistrationStatus
     "The time this user was created. See the 'source' and 'source_detail' field for details."
@@ -163,6 +166,13 @@ const typeDefs = gql`
       "The newsletters the user should be subscribed to."
       emailSubscriptionTopics: [EmailSubscriptionTopic]!
     ): User!
+    "Update the user school id."
+    updateSchoolId(
+      "The user to update."
+      id: String!
+      "The school_id to save to the user."
+      schoolId: String
+    ): User!
   }
 `;
 
@@ -197,6 +207,8 @@ const resolvers = {
         args.emailSubscriptionTopics,
         context,
       ),
+    updateSchoolId: (_, args, context) =>
+      updateSchoolId(args.id, args.schoolId, context),
   },
 };
 

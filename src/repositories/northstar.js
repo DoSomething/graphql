@@ -84,6 +84,23 @@ export const getUsers = async (args, fields, context) => {
 };
 
 /**
+ * Update a Northstar user.
+ *
+ * @param {String} id
+ * @param {Object} params
+ * @param {Object} options
+ *
+ * @return {Promise}
+ */
+const updateUser = (id, params, options) => {
+  return fetch(`${NORTHSTAR_URL}/v2/users/${id}`, {
+    ...requireAuthorizedRequest(options),
+    method: 'PUT',
+    body: JSON.stringify(params),
+  });
+};
+
+/**
  * Update a user's email_subscription_topics in Northstar.
  *
  * @param {String} id
@@ -101,18 +118,16 @@ export const updateEmailSubscriptionTopics = async (
     id,
   });
 
-  const formattedTopics = emailSubscriptionTopics.map(value =>
-    value.toLowerCase(),
-  );
-
-  const body = { email_subscription_topics: formattedTopics };
-
   try {
-    const response = await fetch(`${NORTHSTAR_URL}/v2/users/${id}`, {
-      ...requireAuthorizedRequest(options),
-      method: 'PUT',
-      body: JSON.stringify(body),
-    });
+    const response = await updateUser(
+      id,
+      {
+        email_subscription_topics: emailSubscriptionTopics.map(value =>
+          value.toLowerCase(),
+        ),
+      },
+      options,
+    );
 
     const json = await response.json();
 
@@ -120,6 +135,40 @@ export const updateEmailSubscriptionTopics = async (
   } catch (exception) {
     const error = exception.message;
     logger.warn('Unable to update email subscription topics.', { id, error });
+  }
+
+  return null;
+};
+
+/**
+ * Update a user's school_id in Northstar.
+ *
+ * @param {String} id
+ * @param {String} schoolId
+ * @param {Object} options
+ *
+ * @return {Object}
+ */
+export const updateSchoolId = async (id, schoolId, options) => {
+  logger.debug('Updating school_id for user in Northstar', {
+    id,
+  });
+
+  try {
+    const response = await updateUser(
+      id,
+      {
+        school_id: schoolId,
+      },
+      options,
+    );
+
+    const json = await response.json();
+
+    return transformItem(json);
+  } catch (exception) {
+    const error = exception.message;
+    logger.warn('Unable to update school id.', { id, error });
   }
 
   return null;
