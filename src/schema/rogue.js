@@ -24,8 +24,11 @@ import {
   getPostsCount,
   makeImpactStatement,
   parseCampaignCauses,
+  updatePostQuantity,
   reviewPost,
   tagPost,
+  rotatePost,
+  deletePost,
 } from '../repositories/rogue';
 
 /**
@@ -208,6 +211,8 @@ const typeDefs = gql`
     createdAt: DateTime
     "Permalink to Admin view."
     permalink: String
+    "This flag is set when a post has been deleted. On subsequent queries, this post will be null."
+    deleted: Boolean
   }
 
   "A user's signup for a campaign."
@@ -385,6 +390,13 @@ const typeDefs = gql`
       "The post ID to react to."
       postId: Int!
     ): Post
+    "Update quantity on a post. Requires staff/admin role."
+    updatePostQuantity(
+      "The post ID to update."
+      id: Int!
+      "The new quantity."
+      quantity: Int!
+    ): Post
     "Review a post. Requires staff/admin role."
     reviewPost(
       "The post ID to review."
@@ -398,6 +410,18 @@ const typeDefs = gql`
       id: Int!
       "The tag to add or remove on this post."
       tag: String!
+    ): Post
+    "Rotate a post's image. Requires staff/admin role."
+    rotatePost(
+      "The post ID to rotate."
+      id: Int!
+      "The number of degrees to rotate (clockwise)."
+      degrees: Int! = 90
+    ): Post
+    "Delete a post. Requires staff/admin role."
+    deletePost(
+      "The post ID to delete."
+      id: Int!
     ): Post
   }
 `;
@@ -467,8 +491,13 @@ const resolvers = {
   },
   Mutation: {
     toggleReaction: (_, args, context) => toggleReaction(args.postId, context),
+    updatePostQuantity: (_, args, context) =>
+      updatePostQuantity(args.id, args.quantity, context),
     reviewPost: (_, args, context) => reviewPost(args.id, args.status, context),
     tagPost: (_, args, context) => tagPost(args.id, args.tag, context),
+    rotatePost: (_, args, context) =>
+      rotatePost(args.id, args.degrees, context),
+    deletePost: (_, args, context) => deletePost(args.id, context),
   },
   Campaign: {
     actions: (campaign, args, context) =>

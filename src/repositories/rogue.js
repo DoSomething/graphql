@@ -293,6 +293,23 @@ export const toggleReaction = async (postId, context) => {
 };
 
 /**
+ * Update a post's quantity.
+ *
+ * @param {Number} postId
+ * @param {Number} quantity
+ * @return {Object}
+ */
+export const updatePostQuantity = async (postId, quantity, context) => {
+  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ quantity }),
+    ...requireAuthorizedRequest(context),
+  });
+
+  return transformItem(await response.json());
+};
+
+/**
  * Create a review for a post.
  *
  * @param {Number} postId
@@ -324,6 +341,42 @@ export const tagPost = async (postId, tag, context) => {
   });
 
   return transformItem(await response.json());
+};
+
+/**
+ * Rotate a post's image.
+ *
+ * @param {Number} postId
+ * @param {Number} degrees
+ * @return {Object}
+ */
+export const rotatePost = async (postId, degrees, context) => {
+  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}/rotate`, {
+    method: 'POST',
+    body: JSON.stringify({ degrees }),
+    ...requireAuthorizedRequest(context),
+  });
+
+  return transformItem(await response.json());
+};
+
+/**
+ * Delete a post.
+ *
+ * @param {Number} postId
+ * @return {Object}
+ */
+export const deletePost = async (postId, context) => {
+  const post = await getPostById(postId, context);
+
+  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}`, {
+    method: 'DELETE',
+    ...requireAuthorizedRequest(context),
+  });
+
+  return response.status === 200
+    ? { ...post, deleted: true }
+    : { ...post, deleted: false };
 };
 
 /**
