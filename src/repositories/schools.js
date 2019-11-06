@@ -3,12 +3,12 @@ import logger from 'heroku-logger';
 
 import config from '../../config';
 
-const DB_URL = config('services.schools.url' || null);
+const DB_URL = config('services.schools.db.url');
 
 if (DB_URL) {
   mongoose
     .connect(DB_URL, {
-      dbName: config('services.schools.name' || 'greatschools'),
+      dbName: config('services.schools.db.name'),
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
