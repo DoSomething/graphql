@@ -113,7 +113,7 @@ const environments = {
       url: 'https://activity-dev.dosomething.org',
     },
 
-     // Schools
+    // Schools
     schools,
   },
 
@@ -151,7 +151,7 @@ const environments = {
       url: 'https://activity-qa.dosomething.org',
     },
 
-     // Schools
+    // Schools
     schools,
   },
 
