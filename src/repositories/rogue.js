@@ -301,7 +301,7 @@ export const toggleReaction = async (postId, context) => {
  */
 export const updatePostQuantity = async (postId, quantity, context) => {
   const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}`, {
-    method: 'PUT',
+    method: 'PATCH',
     body: JSON.stringify({ quantity }),
     ...requireAuthorizedRequest(context),
   });
