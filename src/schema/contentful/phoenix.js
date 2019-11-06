@@ -129,6 +129,7 @@ const typeDefs = gql`
     title: String!
     description: JSON!
     content: JSON!
+    ${entryFields}
   }
 
   type ImagesBlock implements Block {
@@ -146,6 +147,10 @@ const typeDefs = gql`
     active: Boolean!
     "Job title of the person."
     jobTitle: String
+    "The perons's email address."
+    email: String
+    "The person's Twitter handle."
+    twitterId: String
     "Photo of the person."
     photo: Asset
     "Alternate Photo of the person."
@@ -175,7 +180,7 @@ const typeDefs = gql`
     "The list of Action IDs to show in this gallery."
     actionIds: [Int]!
     "The maximum number of items in a single row when viewing the gallery in a large display."
-    itemsPerRow: Int
+    itemsPerRow: Int!
     "A filter type which users can select to filter the gallery."
     filterType: String
     "Hide the post reactions for this gallery."
