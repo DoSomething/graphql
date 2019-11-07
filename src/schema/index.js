@@ -23,6 +23,8 @@ const linkSchema = gql`
     signups: [Signup]
     "The conversations created by this user."
     conversations: [Conversation]
+    "The user's current school. Note -- only works if user.schoolId is also returned"
+    school: School
   }
 
   extend type Post {
@@ -231,6 +233,25 @@ const linkResolvers = {
           context,
           info,
         );
+      },
+    },
+    school: {
+      fragment: 'fragment SchoolFragment on User { id }',
+      resolve(user, args, context, info) {
+        if (!user.schoolId) {
+          return null;
+        }
+
+        return info.mergeInfo.delegateToSchema({
+          schema: schoolsSchema,
+          operation: 'query',
+          fieldName: 'school',
+          args: {
+            id: user.schoolId,
+          },
+          context,
+          info,
+        });
       },
     },
   },
