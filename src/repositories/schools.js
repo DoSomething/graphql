@@ -1,35 +1,46 @@
-import mongoose from 'mongoose';
 import logger from 'heroku-logger';
+import { MongoClient } from 'mongodb';
 
 import config from '../../config';
 
-const DB_URL = config('services.schools.db.url');
+/**
+ * Schools are sourced from a Mongo database, in a collection called 'directory'.
+ * We use the following fields to source our list of schools.
+ *
+ * universal-id: This is the unique identifier for a school.
+ * entity: We only want documents with entity 'school'. Other values include 'district', etc.
+ * name: The name of the school.
+ * city: The city that school is located in (e.g. 'Hoboken')
+ * state: The state that school is located in (e.g. NJ)
+ */
 
-if (DB_URL) {
-  mongoose
+// Cache our connection to the Mongo database.
+// @see https://docs.atlas.mongodb.com/best-practices-connecting-to-aws-lambda/#example
+let cachedDb = null;
+
+function connectToDatabase() {
+  const DB_URL = config('services.schools.db.url');
+
+  if (!DB_URL) {
+    throw new Error('Schools DB configuration is not set');
+  }
+
+  if (cachedDb) {
+    logger.debug('Using cached Schools DB instance');
+    return Promise.resolve(cachedDb);
+  }
+
+  return MongoClient
     .connect(DB_URL, {
-      dbName: config('services.schools.db.name'),
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
-    .catch(err => logger.error(err.message, err));
-}
+    .then((client) => {
+      logger.debug('Created new Schools DB instance');
+      cachedDb = client.db('greatschools').collection('directory');
 
-const schema = new mongoose.Schema({
-  city: String,
-  entity: String,
-  name: String,
-  state: String,
-  'universal-id': Number,
-});
-
-const Directory = mongoose.model('Directory', schema, 'directory');
-
-/**
- * @return {Boolean}
- */
-function isDatabaseConnected() {
-  return mongoose.connection.readyState === 1;
+      return cachedDb;
+    });
 }
 
 /**
@@ -54,13 +65,11 @@ export const transformItem = item => {
  * @return {Object}
  */
 export const getSchoolById = async id => {
-  if (!isDatabaseConnected()) {
-    throw new Error('No connection to Schools DB.');
-  }
-
   logger.debug('Finding school', { id });
 
-  const result = await Directory.findOne({ 'universal-id': Number(id) });
+  const db = await connectToDatabase();
+  
+  const result = await db.findOne({ 'universal-id': Number(id) });
 
   return transformItem(result);
 };
@@ -73,20 +82,18 @@ export const getSchoolById = async id => {
  * @return {Object}
  */
 export const searchSchools = async (state, searchString) => {
-  if (!isDatabaseConnected()) {
-    throw new Error('No connection to Schools DB.');
-  }
-
   logger.debug('Searching schools', { state, searchString });
 
-  const res = await Directory.find({
+  const db = await connectToDatabase();
+
+  const res = await db.find({
     entity: 'school',
     state,
     name: {
       $regex: searchString,
       $options: 'i',
     },
-  }).limit(20);
+  }).limit(20).toArray();
 
   return res.map(transformItem);
 };
