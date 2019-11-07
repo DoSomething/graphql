@@ -30,17 +30,15 @@ function connectToDatabase() {
     return Promise.resolve(cachedDb);
   }
 
-  return MongoClient
-    .connect(DB_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then((client) => {
-      logger.debug('Created new Schools DB instance');
-      cachedDb = client.db('greatschools').collection('directory');
+  return MongoClient.connect(DB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(client => {
+    logger.debug('Created new Schools DB instance');
+    cachedDb = client.db('greatschools').collection('directory');
 
-      return cachedDb;
-    });
+    return cachedDb;
+  });
 }
 
 /**
@@ -68,7 +66,7 @@ export const getSchoolById = async id => {
   logger.debug('Finding school', { id });
 
   const db = await connectToDatabase();
-  
+
   const result = await db.findOne({ 'universal-id': Number(id) });
 
   return transformItem(result);
@@ -86,14 +84,17 @@ export const searchSchools = async (state, searchString) => {
 
   const db = await connectToDatabase();
 
-  const res = await db.find({
-    entity: 'school',
-    state,
-    name: {
-      $regex: searchString,
-      $options: 'i',
-    },
-  }).limit(20).toArray();
+  const res = await db
+    .find({
+      entity: 'school',
+      state,
+      name: {
+        $regex: searchString,
+        $options: 'i',
+      },
+    })
+    .limit(20)
+    .toArray();
 
   return res.map(transformItem);
 };
