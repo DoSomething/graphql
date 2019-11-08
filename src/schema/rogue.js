@@ -13,6 +13,7 @@ import {
   getPaginatedCampaigns,
   getPermalinkBySignupId,
   getPosts,
+  getPaginatedPosts,
   getPostsByUserId,
   getPostsByCampaignId,
   getPostsBySignupId,
@@ -215,6 +216,18 @@ const typeDefs = gql`
     deleted: Boolean
   }
 
+  "Experimental: A paginated list of posts. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
+  type PostCollection {
+    edges: [PostEdge]
+    pageInfo: PageInfo!
+  }
+
+  "Experimental: Post in a paginated list."
+  type PostEdge {
+    cursor: String!
+    node: Post!
+  }
+
   "A user's signup for a campaign."
   type Signup {
     "The unique ID for this signup."
@@ -281,29 +294,56 @@ const typeDefs = gql`
       "The desired post ID."
       id: Int!
     ): Post
-    "Get a paginated collection of posts."
+    "Get a list of posts."
     posts(
       "The action name to load posts for."
       action: String
       "The action IDs to load posts for."
       actionIds: [Int]
-      "# The campaign ID to load posts for."
+      "The campaign ID to load posts for."
       campaignId: String
       "The location to load posts for."
       location: String
-      "# The post source to load posts for."
+      "The post status to load posts for."
+      status: String
+      "The post source to load posts for."
       source: String
-      "# The tags to load posts for."
+      "The tags to load posts for."
       tags: [String]
-      "# The type name to load posts for."
+      "The type name to load posts for."
       type: String
-      "# The user ID to load posts for."
+      "The user ID to load posts for."
       userId: String
-      "# The page of results to return."
+      "The page of results to return."
       page: Int = 1
-      "# The number of results per page."
+      "The number of results per page."
       count: Int = 20
     ): [Post]
+    "Get a paginated collection of posts."
+    paginatedPosts(
+      "The action name to load posts for."
+      action: String
+      "The action IDs to load posts for."
+      actionIds: [Int]
+      "The campaign ID to load posts for."
+      campaignId: String
+      "The location to load posts for."
+      location: String
+      "The post status to load posts for."
+      status: String
+      "The post source to load posts for."
+      source: String
+      "The tags to load posts for."
+      tags: [String]
+      "The type name to load posts for."
+      type: String
+      "The user ID to load posts for."
+      userId: String
+      "Get the first N results."
+      first: Int = 20
+      "The cursor to return results after."
+      after: String,
+    ): PostCollection
     " Get a paginated collection of posts by campaign ID."
     postsByCampaignId(
       "The campaign ID to load."
@@ -477,6 +517,8 @@ const resolvers = {
       getCampaigns(args, getFields(info), context),
     paginatedCampaigns: (_, args, context, info) =>
       getPaginatedCampaigns(args, context, info),
+    paginatedPosts: (_, args, context, info) =>
+      getPaginatedPosts(args, context, info),
     post: (_, args, context) => getPostById(args.id, context),
     posts: (_, args, context) => getPosts(args, context),
     postsByCampaignId: (_, args, context) =>

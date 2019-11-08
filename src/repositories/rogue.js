@@ -147,7 +147,7 @@ export const getCampaigns = async (args, context, info) => {
 /**
  * Fetch a paginated campaign connection.
  *
- * @return {Array}
+ * @return {Collection}
  */
 export const getPaginatedCampaigns = async (args, context, info) => {
   const json = await fetchCampaigns(args, context, info, {
@@ -163,20 +163,11 @@ export const getPaginatedCampaigns = async (args, context, info) => {
 /**
  * Fetch posts from Rogue.
  *
- * @param {String} action
- * @param {String} actionIds
- * @param {String} campaignId
- * @param {Number} count
- * @param {String} location
- * @param {Number} page
- * @param {String} source
- * @param {String} tags
- * @param {String} type
- * @param {String} userId
- * @return {Array}
+ * @return {Promise}
  */
-export const getPosts = async (args, context) => {
+export const fetchPosts = async (args, context, additionalQuery) => {
   const queryString = stringify({
+    pagination: 'cursor',
     filter: {
       action: args.action,
       action_id: args.actionIds ? args.actionIds.join(',') : undefined,
@@ -184,11 +175,11 @@ export const getPosts = async (args, context) => {
       location: args.location,
       northstar_id: args.userId,
       source: args.source,
+      status: args.status,
       tag: args.tags ? args.tags.join(',') : undefined,
       type: args.type,
     },
-    page: args.page,
-    pagination: 'cursor',
+    ...additionalQuery,
   });
 
   logger.debug('Loading posts from Rogue.', {
@@ -201,7 +192,35 @@ export const getPosts = async (args, context) => {
     authorizedRequest(context),
   );
 
-  const json = await response.json();
+  return response.json();
+};
+
+/**
+ * Fetch a paginated post connection.
+ *
+ * @return {Collection}
+ */
+export const getPaginatedPosts = async (args, context) => {
+  const json = await fetchPosts(args, context, {
+    limit: args.first,
+    cursor: {
+      after: args.after,
+    },
+  });
+
+  return new Collection(json);
+};
+
+/**
+ * Fetch a list of posts.
+ *
+ * @return {Array}
+ */
+export const getPosts = async (args, context) => {
+  const json = await fetchPosts(args, context, {
+    limit: args.count,
+    page: args.page,
+  });
 
   return transformCollection(json);
 };
