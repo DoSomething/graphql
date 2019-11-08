@@ -6,6 +6,7 @@ import { gql } from 'apollo-server';
 import { get } from 'lodash';
 
 import Loader from '../../loader';
+import { stringToEnum } from '../helpers';
 import {
   createImageUrl,
   linkResolver,
@@ -188,6 +189,16 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  enum GalleryImageFitOption {
+    FILL
+    PAD
+  }
+
+  enum GalleryImageAlignmentOption {
+    TOP
+    LEFT
+  }
+
   type GalleryBlock implements Block {
     "The internal-facing title for this gallery."
     internalTitle: String!
@@ -196,11 +207,11 @@ const typeDefs = gql`
     "The maximum number of items in a single row when viewing the gallery in a large display."
     itemsPerRow: Int!
     "The alignment of the gallery images relative to their text content."
-    imageAlignment: String!
+    imageAlignment: GalleryImageAlignmentOption!
     "Blocks to display or preview in the Gallery."
     blocks: [Showcasable]!
     "Controls the cropping method of the gallery images."
-    imageFit: String
+    imageFit: GalleryImageFitOption
     ${entryFields}
   }
 
@@ -224,6 +235,11 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  enum ContentImageAlignmentOption {
+    LEFT
+    RIGHT
+  }
+
   type ContentBlock implements Block & Showcasable {
     "The internal-facing title for this link block."
     internalTitle: String!
@@ -238,7 +254,7 @@ const typeDefs = gql`
     "An optional Image to display next to the content."
     image: Asset
     "The alignment of the image."
-    imageAlignment: String
+    imageAlignment: ContentImageAlignmentOption
     "The Showcase title (the title field.)"
     showcaseTitle: String
     "The Showcase description (the content field.)"
@@ -462,6 +478,7 @@ const resolvers = {
   },
   ContentBlock: {
     image: linkResolver,
+    imageAlignment: block => stringToEnum(block.imageAlignment),
     showcaseTitle: content => content.title,
     showcaseDescription: content => content.content,
     showcaseImage: (person, _, context, info) =>
@@ -491,6 +508,8 @@ const resolvers = {
   },
   GalleryBlock: {
     blocks: linkResolver,
+    imageAlignment: block => stringToEnum(block.imageAlignment),
+    imageFit: block => stringToEnum(block.imageFit),
   },
   ImagesBlock: {
     images: linkResolver,
