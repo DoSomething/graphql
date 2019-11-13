@@ -302,6 +302,8 @@ const typeDefs = gql`
       actionIds: [Int]
       "The campaign ID to load posts for."
       campaignId: String
+      "The signup ID to load posts for."
+      signupId: String
       "The location to load posts for."
       location: String
       "The post status to load posts for."
@@ -327,6 +329,8 @@ const typeDefs = gql`
       actionIds: [Int]
       "The campaign ID to load posts for."
       campaignId: String
+      "The signup ID to load posts for."
+      signupId: String
       "The location to load posts for."
       location: String
       "The post status to load posts for."

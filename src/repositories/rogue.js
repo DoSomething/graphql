@@ -172,6 +172,7 @@ export const fetchPosts = async (args, context, additionalQuery) => {
       action: args.action,
       action_id: args.actionIds ? args.actionIds.join(',') : undefined,
       campaign_id: args.campaignId,
+      signup_id: args.signupId,
       location: args.location,
       northstar_id: args.userId,
       source: args.source,
@@ -250,9 +251,7 @@ export const getPostById = async (id, context) => {
  */
 export const getPostsByUserId = async (id, page, count, context) => {
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/?filter[northstar_id]=${
-      id
-    }&filter[type]=photo,text&page=${page}&limit=${count}&pagination=cursor`,
+    `${ROGUE_URL}/api/v3/posts/?filter[northstar_id]=${id}&filter[type]=photo,text&page=${page}&limit=${count}&pagination=cursor`,
     authorizedRequest(context),
   );
 
@@ -269,9 +268,7 @@ export const getPostsByUserId = async (id, page, count, context) => {
  */
 export const getPostsByCampaignId = async (id, page, count, context) => {
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/?filter[campaign_id]=${
-      id
-    }&filter[type]=photo,text&page=${page}&limit=${count}&pagination=cursor`,
+    `${ROGUE_URL}/api/v3/posts/?filter[campaign_id]=${id}&filter[type]=photo,text&page=${page}&limit=${count}&pagination=cursor`,
     authorizedRequest(context),
   );
 
@@ -486,9 +483,7 @@ export const getSignupsById = async (ids, options) => {
 
   const idQuery = ids.join(',');
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups/?filter[id]=${
-      idQuery
-    }&limit=100&pagination=cursor`,
+    `${ROGUE_URL}/api/v3/signups/?filter[id]=${idQuery}&limit=100&pagination=cursor`,
     options,
   );
   const json = await response.json();
