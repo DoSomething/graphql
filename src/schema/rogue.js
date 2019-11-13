@@ -12,6 +12,7 @@ import {
   getCampaigns,
   getPaginatedCampaigns,
   getPermalinkBySignupId,
+  getPermalinkByPostId,
   getPosts,
   getPaginatedPosts,
   getPostsByUserId,
@@ -503,7 +504,7 @@ const resolvers = {
     impact: post => makeImpactStatement(post),
     reacted: post => post.reactions.reacted,
     reactions: post => post.reactions.total,
-    permalink: post => getPermalinkBySignupId(post.signupId),
+    permalink: post => getPermalinkByPostId(post.id),
   },
   Signup: {
     campaign: (signup, args, context, info) =>

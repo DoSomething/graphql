@@ -404,6 +404,14 @@ export const deletePost = async (postId, context) => {
 export const getPermalinkBySignupId = id => `${ROGUE_URL}/signups/${id}`;
 
 /**
+ * Get Rogue post permalink by ID.
+ *
+ * @param {Number} id
+ * @return {String}
+ */
+export const getPermalinkByPostId = id => `${ROGUE_URL}/posts/${id}`;
+
+/**
  * Create an impact statement from quantity, noun and verb
  *
  * @param {Object} post
