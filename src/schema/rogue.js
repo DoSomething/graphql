@@ -30,6 +30,7 @@ import {
   tagPost,
   rotatePost,
   deletePost,
+  deleteSignup,
 } from '../repositories/rogue';
 
 /**
@@ -260,6 +261,8 @@ const typeDefs = gql`
     createdAt: DateTime
     "Permalink to Admin view."
     permalink: String
+    "This flag is set when a signup has been deleted. On subsequent queries, this signup will be null."
+    deleted: Boolean
   }
 
   type Query {
@@ -462,6 +465,8 @@ const typeDefs = gql`
     ): Post
     "Delete a post. Requires staff/admin role."
     deletePost("The post ID to delete." id: Int!): Post
+    "Delete a signup. Requires staff/admin role."
+    deleteSignup("The signup ID to delete." id: Int!): Signup
   }
 `;
 
@@ -539,6 +544,7 @@ const resolvers = {
     rotatePost: (_, args, context) =>
       rotatePost(args.id, args.degrees, context),
     deletePost: (_, args, context) => deletePost(args.id, context),
+    deleteSignup: (_, args, context) => deleteSignup(args.id, context),
   },
   Campaign: {
     actions: (campaign, args, context) =>

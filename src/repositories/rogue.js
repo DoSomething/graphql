@@ -530,6 +530,25 @@ export const getSignupsByUserId = async (args, context) => {
 };
 
 /**
+ * Delete a signup.
+ *
+ * @param {Number} signupId
+ * @return {Object}
+ */
+export const deleteSignup = async (signupId, context) => {
+  const signup = await getSignupById(signupId, context);
+
+  const response = await fetch(`${ROGUE_URL}/api/v3/signups/${signupId}`, {
+    method: 'DELETE',
+    ...requireAuthorizedRequest(context),
+  });
+
+  return response.status === 200
+    ? { ...signup, deleted: true }
+    : { ...signup, deleted: false };
+};
+
+/**
  * Fetch number of signups from Rogue based on the given filters.
  * NOTE: This will only find the number of signups up to the "limit" provided.
  * The limit defaults to 20.
