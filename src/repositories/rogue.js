@@ -404,6 +404,14 @@ export const deletePost = async (postId, context) => {
 export const getPermalinkBySignupId = id => `${ROGUE_URL}/signups/${id}`;
 
 /**
+ * Get Rogue post permalink by ID.
+ *
+ * @param {Number} id
+ * @return {String}
+ */
+export const getPermalinkByPostId = id => `${ROGUE_URL}/posts/${id}`;
+
+/**
  * Create an impact statement from quantity, noun and verb
  *
  * @param {Object} post
@@ -527,6 +535,25 @@ export const getSignupsByUserId = async (args, context) => {
   const json = await response.json();
 
   return transformCollection(json);
+};
+
+/**
+ * Delete a signup.
+ *
+ * @param {Number} signupId
+ * @return {Object}
+ */
+export const deleteSignup = async (signupId, context) => {
+  const signup = await getSignupById(signupId, context);
+
+  const response = await fetch(`${ROGUE_URL}/api/v3/signups/${signupId}`, {
+    method: 'DELETE',
+    ...requireAuthorizedRequest(context),
+  });
+
+  return response.status === 200
+    ? { ...signup, deleted: true }
+    : { ...signup, deleted: false };
 };
 
 /**
