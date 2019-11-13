@@ -109,7 +109,7 @@ const typeDefs = gql`
 
   "Experimental: Information about a paginated list."
   type PageInfo {
-    endCursor: String,
+    endCursor: String
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
   }
@@ -163,7 +163,8 @@ const typeDefs = gql`
     "The type of action (e.g. 'photo', 'voterReg', or 'text')."
     type: String!
     "The specific action being performed (or 'default' on a single-action campaign)."
-    action: String! @deprecated(reason: "Use 'actionDetails' relationship instead.")
+    action: String!
+      @deprecated(reason: "Use 'actionDetails' relationship instead.")
     "The specific action being performed."
     actionDetails: Action
     "The Northstar user ID of the user who created this post."
@@ -239,15 +240,18 @@ const typeDefs = gql`
     "The Rogue campaign ID this post was made for."
     campaignId: String
     "The Drupal campaign run ID this signup was made for."
-    campaignRunId: String @deprecated(reason: "We no longer stored campaign run IDs.")
+    campaignRunId: String
+      @deprecated(reason: "We no longer stored campaign run IDs.")
     "The Northstar ID of the user who created this signup."
     userId: String
     "The total number of items on all posts attached to this signup."
     quantity: Int
     "The user's self-reported reason for doing this campaign."
     whyParticipated: String
-    "The source of this signup (e.g. sms, phoenix-next)"
+    "The source application of this signup (e.g. sms, phoenix-next)"
     source: String
+    "Additional source details (e.g. page or broadcast ID)"
+    sourceDetails: String
     "More information about the signup (for example, third-party messaging opt-ins)."
     details: String
     "The time this signup was last modified."
@@ -283,17 +287,14 @@ const typeDefs = gql`
       "Get the first N results."
       first: Int = 20
       "The cursor to return results after."
-      after: String,
+      after: String
       "Only return campaigns that are open or closed."
       isOpen: Boolean
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
-      ): CampaignCollection
+    ): CampaignCollection
     "Get a post by ID."
-    post(
-      "The desired post ID."
-      id: Int!
-    ): Post
+    post("The desired post ID." id: Int!): Post
     "Get a list of posts."
     posts(
       "The action name to load posts for."
@@ -346,7 +347,7 @@ const typeDefs = gql`
       "Get the first N results."
       first: Int = 20
       "The cursor to return results after."
-      after: String,
+      after: String
     ): PostCollection
     " Get a paginated collection of posts by campaign ID."
     postsByCampaignId(
@@ -430,10 +431,7 @@ const typeDefs = gql`
 
   type Mutation {
     "Add or remove a reaction to a post. Requires an access token."
-    toggleReaction(
-      "The post ID to react to."
-      postId: Int!
-    ): Post
+    toggleReaction("The post ID to react to." postId: Int!): Post
     "Update quantity on a post. Requires staff/admin role."
     updatePostQuantity(
       "The post ID to update."
@@ -463,10 +461,7 @@ const typeDefs = gql`
       degrees: Int! = 90
     ): Post
     "Delete a post. Requires staff/admin role."
-    deletePost(
-      "The post ID to delete."
-      id: Int!
-    ): Post
+    deletePost("The post ID to delete." id: Int!): Post
   }
 `;
 
