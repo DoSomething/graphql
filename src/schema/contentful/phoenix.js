@@ -3,10 +3,10 @@ import { GraphQLDateTime } from 'graphql-iso-date';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import GraphQLJSON from 'graphql-type-json';
 import { gql } from 'apollo-server';
-import { get } from 'lodash';
+import { get, first } from 'lodash';
 
 import Loader from '../../loader';
-import { stringToEnum } from '../helpers';
+import { stringToEnum, listToEnums } from '../helpers';
 import {
   createImageUrl,
   linkResolver,
@@ -88,6 +88,30 @@ const typeDefs = gql`
     showcaseDescription: String!
     "The showcase image (the coverImage field.)"
     showcaseImage: Asset
+    ${entryFields}
+  }
+
+  enum CallToActionStyle {
+    LIGHT
+    DARK
+    TRANSPARENT
+  }
+
+  type CallToActionBlock implements Block {
+    "The visual treatment to apply to this block."
+    visualStyle: CallToActionStyle
+    "Use the campaign tagline as the first line of the CTA (if on a campaign page)."
+    useCampaignTagline: Boolean
+    "The content of the call to action."
+    content: String
+    "The content to display before the impact value."
+    impactPrefix: String
+    "The emphasized 'impact' value."
+    impactValue: String
+    "The content to display after the impact value."
+    impactSuffix: String
+    "The button text."
+    actionText: String
     ${entryFields}
   }
 
@@ -425,6 +449,7 @@ const typeDefs = gql`
 const contentTypeMappings = {
   affiliates: 'AffiliateBlock',
   campaign: 'CampaignWebsite',
+  callToAction: 'CallToActionBlock',
   page: 'Page',
   embed: 'EmbedBlock',
   contentBlock: 'ContentBlock',
@@ -475,6 +500,9 @@ const resolvers = {
   Showcasable: {
     __resolveType: showcasable =>
       get(contentTypeMappings, showcasable.contentType),
+  },
+  CallToActionBlock: {
+    visualStyle: block => first(listToEnums(block.visualStyle)) || 'DARK',
   },
   ContentBlock: {
     image: linkResolver,
