@@ -3,6 +3,8 @@ import { MongoClient } from 'mongodb';
 
 import config from '../../config';
 
+const SCHOOL_NOT_AVAILABLE_SCHOOL_ID = 'school-not-available';
+
 /**
  * Schools are sourced from a Mongo database, in a collection called 'directory'.
  * We use the following fields to source our list of schools.
@@ -63,6 +65,12 @@ export const transformItem = item => {
  * @return {Object}
  */
 export const getSchoolById = async id => {
+  if (id === SCHOOL_NOT_AVAILABLE_SCHOOL_ID) {
+    return {
+      id: SCHOOL_NOT_AVAILABLE_SCHOOL_ID,
+    };
+  }
+
   logger.debug('Finding school', { id });
 
   const db = await connectToDatabase();
