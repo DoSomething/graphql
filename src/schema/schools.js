@@ -14,11 +14,11 @@ const typeDefs = gql`
     "The school ID."
     id: String!
     "The school name."
-    name: String!
+    name: String
     "The school city."
-    city: String!
+    city: String
     "The school state."
-    state: String!
+    state: String
   }
 
   type Query {
