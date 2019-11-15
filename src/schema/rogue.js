@@ -90,7 +90,9 @@ const typeDefs = gql`
     "Is this campaign open?"
     isOpen: Boolean!
     "The number of posts pending review. Only visible by staff/admins."
-    pendingCount: Int @optional
+    pendingCount: Int
+    "The number of accepted posts."
+    acceptedCount: Int
     "The time when this campaign starts."
     startDate: DateTime
     "The time when this campaign last modified."
