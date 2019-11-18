@@ -306,7 +306,7 @@ export const createImageUrl = (asset, args) => {
 
   // If this isn't using the Images API, don't try to transform:
   if (url.hostname !== 'images.ctfassets.net') {
-    return url;
+    return url.toString();
   }
 
   // If using a supported resize behavior, focus on any
