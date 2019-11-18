@@ -30,6 +30,8 @@ const linkSchema = gql`
   extend type Post {
     "The user who created this post."
     user: User
+    "The school associated with the post. Note -- only works if post.schoolId is also returned"
+    school: School
   }
 
   extend type Signup {
@@ -269,6 +271,25 @@ const linkResolvers = {
           fieldName: 'user',
           args: {
             id: post.userId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+    school: {
+      fragment: 'fragment SchoolFragment on Post { id }',
+      resolve(post, args, context, info) {
+        if (!post.schoolId) {
+          return null;
+        }
+
+        return info.mergeInfo.delegateToSchema({
+          schema: schoolsSchema,
+          operation: 'query',
+          fieldName: 'school',
+          args: {
+            id: post.schoolId,
           },
           context,
           info,
