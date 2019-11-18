@@ -180,6 +180,15 @@ export const getCausePageBySlug = async (slug, context) =>
   getPhoenixContentfulEntryByField('causePage', 'slug', slug, context);
 
 /**
+ * Search for a Phoenix Contentful Collection Page entry by slug.
+ *
+ * @param {String} slug
+ * @return {Object}
+ */
+export const getCollectionPageBySlug = async (slug, context) =>
+  getPhoenixContentfulEntryByField('collectionPage', 'slug', slug, context);
+
+/**
  * Search for a Phoenix Contentful affiliate entry by utmLabel.
  *
  * @param {String} id
