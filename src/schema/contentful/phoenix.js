@@ -139,6 +139,25 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type CollectionPage {
+    "The slug for this collection page."
+    slug: String!
+    "The cover image for this collection page."
+    coverImage: Asset!
+    "The supertitle (or title prefix)."
+    superTitle: String!
+    "The title."
+    title: String!
+    "The description, in Rich Text."
+    description: JSON!
+    "The prefix intro for the displayed affiliates."
+    affiliatePrefix: String
+    "The list of affiliates for this collection page."
+    affiliates: [AffiliateBlock]
+    "The content, in Rich Text."
+    content: JSON!
+  }
+
   type ImagesBlock implements Block {
     "The images to be included in this block."
     images: [Asset]
@@ -445,6 +464,7 @@ const contentTypeMappings = {
   textSubmissionAction: 'TextSubmissionBlock',
   voterRegistrationAction: 'VoterRegistrationBlock',
   causePage: 'CausePage',
+  collectionPage: 'CollectionPage',
 };
 
 /**
@@ -499,6 +519,10 @@ const resolvers = {
   },
   CausePage: {
     coverImage: linkResolver,
+  },
+  CollectionPage: {
+    coverImage: linkResolver,
+    affiliates: linkResolver,
   },
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
