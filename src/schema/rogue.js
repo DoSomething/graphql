@@ -209,6 +209,8 @@ const typeDefs = gql`
     reactions: Int
     "Has the current user reacted to this post?"
     reacted: Boolean
+    "The ID of the associated school for this post."
+    schoolId: String
     "The IP address this post was created from."
     remoteAddr: String @deprecated(reason: "This field is no longer stored.")
     "The time this post was last modified."
