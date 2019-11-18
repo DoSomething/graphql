@@ -53,6 +53,7 @@ exports.handler = async event => {
     affiliates: ['utmLabel'],
     campaign: ['legacyCampaignId'],
     causePage: ['slug'],
+    collectionPage: ['slug'],
   };
 
   // Clear secondary cache key results from the Contentful cache if applicable.
