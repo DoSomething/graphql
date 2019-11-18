@@ -297,6 +297,13 @@ export const createImageUrl = (asset, args) => {
   const absoluteUrl = path.startsWith('//') ? `https:${path}` : path;
   const url = new URL(absoluteUrl);
 
+  // If the hostname indicates that this asset exceeds 20MB, return null
+  // since transforms won't apply.
+  // https://www.contentful.com/developers/docs/concepts/images
+  if (url.hostname === 'downloads.ctfassets.net') {
+    return null;
+  }
+
   // If this isn't using the Images API, don't try to transform:
   if (url.hostname !== 'images.ctfassets.net') {
     return url;
