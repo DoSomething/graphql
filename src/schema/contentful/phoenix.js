@@ -124,11 +124,17 @@ const typeDefs = gql`
   }
 
   type CausePage {
+    "The slug for this cause page."
     slug: String!
+    "The cover image for this cause page."
     coverImage: Asset!
+    "The supertitle (or title prefix)."
     superTitle: String!
+    "The title."
     title: String!
+    "The description, in Rich Text."
     description: JSON!
+    "The content, in Rich Text."
     content: JSON!
     ${entryFields}
   }
