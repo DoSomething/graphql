@@ -148,13 +148,38 @@ const typeDefs = gql`
   }
 
   type CausePage {
+    "The slug for this cause page."
     slug: String!
+    "The cover image for this cause page."
     coverImage: Asset!
+    "The supertitle (or title prefix)."
     superTitle: String!
+    "The title."
     title: String!
+    "The description, in Rich Text."
     description: JSON!
+    "The content, in Rich Text."
     content: JSON!
     ${entryFields}
+  }
+
+  type CollectionPage {
+    "The slug for this collection page."
+    slug: String!
+    "The cover image for this collection page."
+    coverImage: Asset!
+    "The supertitle (or title prefix)."
+    superTitle: String!
+    "The title."
+    title: String!
+    "The description, in Rich Text."
+    description: JSON!
+    "The prefix intro for the displayed affiliates."
+    affiliatePrefix: String
+    "The list of affiliates for this collection page."
+    affiliates: [AffiliateBlock]
+    "The content, in Rich Text."
+    content: JSON!
   }
 
   type ImagesBlock implements Block {
@@ -438,6 +463,7 @@ const typeDefs = gql`
     page(id: String!, preview: Boolean = false): Page
     campaignWebsiteByCampaignId(campaignId: String!, preview: Boolean = false): CampaignWebsite
     causePageBySlug(slug: String!, preview: Boolean = false): CausePage
+    collectionPageBySlug(slug: String!, preview: Boolean = false): CollectionPage
   }
 `;
 
@@ -464,6 +490,7 @@ const contentTypeMappings = {
   textSubmissionAction: 'TextSubmissionBlock',
   voterRegistrationAction: 'VoterRegistrationBlock',
   causePage: 'CausePage',
+  collectionPage: 'CollectionPage',
 };
 
 /**
@@ -488,6 +515,8 @@ const resolvers = {
       Loader(context, preview).campaignWebsiteByCampaignIds.load(campaignId),
     causePageBySlug: (_, { slug, preview }, context) =>
       Loader(context, preview).causePagesBySlug.load(slug),
+    collectionPageBySlug: (_, { slug, preview }, context) =>
+      Loader(context, preview).collectionPagesBySlug.load(slug),
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
@@ -521,6 +550,10 @@ const resolvers = {
   },
   CausePage: {
     coverImage: linkResolver,
+  },
+  CollectionPage: {
+    coverImage: linkResolver,
+    affiliates: linkResolver,
   },
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,

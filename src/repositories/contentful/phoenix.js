@@ -180,6 +180,15 @@ export const getCausePageBySlug = async (slug, context) =>
   getPhoenixContentfulEntryByField('causePage', 'slug', slug, context);
 
 /**
+ * Search for a Phoenix Contentful Collection Page entry by slug.
+ *
+ * @param {String} slug
+ * @return {Object}
+ */
+export const getCollectionPageBySlug = async (slug, context) =>
+  getPhoenixContentfulEntryByField('collectionPage', 'slug', slug, context);
+
+/**
  * Search for a Phoenix Contentful affiliate entry by utmLabel.
  *
  * @param {String} id
@@ -288,9 +297,16 @@ export const createImageUrl = (asset, args) => {
   const absoluteUrl = path.startsWith('//') ? `https:${path}` : path;
   const url = new URL(absoluteUrl);
 
+  // If the hostname indicates that this asset exceeds 20MB, return null
+  // since transforms won't apply.
+  // https://www.contentful.com/developers/docs/concepts/images
+  if (url.hostname === 'downloads.ctfassets.net') {
+    return null;
+  }
+
   // If this isn't using the Images API, don't try to transform:
   if (url.hostname !== 'images.ctfassets.net') {
-    return url;
+    return url.toString();
   }
 
   // If using a supported resize behavior, focus on any
