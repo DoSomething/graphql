@@ -180,6 +180,7 @@ const typeDefs = gql`
     affiliates: [AffiliateBlock]
     "The content, in Rich Text."
     content: JSON!
+    ${entryFields}
   }
 
   type ImagesBlock implements Block {
