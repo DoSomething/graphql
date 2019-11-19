@@ -131,6 +131,8 @@ const typeDefs = gql`
     civicAction: Boolean
     "Does this action count as a scholarship entry?"
     scholarshipEntry: Boolean
+    "Does this action associate user posts with their school?"
+    collectSchoolId: Boolean
     "Anonymous actions will not be attributed to a particular user in public galleries."
     anonymous: Boolean
     "The noun for this action, e.g. 'cards' or 'jeans'."
