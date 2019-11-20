@@ -5,9 +5,11 @@ import { URL } from 'url';
 import { urlWithQuery } from '../helpers';
 import config from '../../../config';
 import Loader from '../../loader';
-import Cache from '../../cache';
+import Cache, { ONE_MONTH } from '../../cache';
 
-const cache = new Cache('contentful');
+const contentCache = new Cache('contentful', ONE_MONTH);
+const previewCache = new Cache('preview.contentful', ONE_MONTH);
+
 const spaceId = config('services.contentful.phoenix.spaceId');
 
 const contentfulSpaceConfig = {
@@ -59,60 +61,31 @@ const transformAsset = json => ({
 export const getPhoenixContentfulEntryById = async (id, context) => {
   const { preview } = context;
 
-  logger.debug('Loading Phoenix Contentful entry', {
+  logger.debug('Loading Contentful entry', {
     id,
+    spaceId,
     preview,
   });
 
-  // If we're previewing, use Contentful's Preview API and
-  // don't bother trying to cache content on our end:
-  if (preview) {
-    const json = await previewApi.getEntry(id);
-    return transformItem(json);
-  }
+  // Choose the right cache and API for this request:
+  const cache = preview ? previewCache : contentCache;
+  const api = preview ? previewApi : contentApi;
 
-  // Otherwise, read from cache or Contentful's Content API:
   return cache.remember(`Entry:${spaceId}:${id}`, async () => {
     try {
-      const json = await contentApi.getEntry(id);
+      const json = await api.getEntry(id);
       return transformItem(json);
     } catch (exception) {
-      logger.warn('Unable to load Phoenix Contentful entry.', {
+      logger.warn('Unable to load Contentful entry.', {
         id,
+        spaceId,
+        preview,
         error: exception.message,
       });
     }
 
     return null;
   });
-};
-
-/**
- * Load a Phoenix Contentful Entry by query.
- *
- * @param  {Object} api
- * @param  {Object} query
- * @return {Object}
- */
-const loadEntryByQuery = async (api, query) => {
-  try {
-    const json = await api.getEntries(query);
-
-    const item = json.items[0];
-
-    if (!item) {
-      return null;
-    }
-
-    return transformItem(item);
-  } catch (exception) {
-    logger.warn('Unable to load Phoenix Contentful entry.', {
-      query,
-      error: exception.message,
-    });
-  }
-
-  return null;
 };
 
 /**
@@ -139,21 +112,38 @@ export const getPhoenixContentfulEntryByField = async (
     limit: 1,
   };
 
-  logger.debug('Loading Phoenix Contentful entry', {
+  logger.debug('Loading Contentful entry', {
     query,
     preview,
   });
 
-  // If we're previewing, use Contentful's Preview API and
-  // don't bother trying to cache content on our end:
-  if (preview) {
-    return loadEntryByQuery(previewApi, query);
-  }
+  // Choose the right cache and API for this request:
+  const cache = preview ? previewCache : contentCache;
+  const api = preview ? previewApi : contentApi;
 
   // Otherwise, read from cache or Contentful's Content API:
-  return cache.remember(`${contentType}:${spaceId}:${fieldValue}`, async () =>
-    loadEntryByQuery(contentApi, query),
-  );
+  return cache.remember(`${contentType}:${spaceId}:${fieldValue}`, async () => {
+    try {
+      const json = await api.getEntries(query);
+
+      const item = json.items[0];
+
+      if (!item) {
+        return null;
+      }
+
+      return transformItem(item);
+    } catch (exception) {
+      logger.warn('Unable to load Contentful entry.', {
+        query,
+        spaceId,
+        preview,
+        error: exception.message,
+      });
+    }
+
+    return null;
+  });
 };
 
 /**
@@ -162,13 +152,8 @@ export const getPhoenixContentfulEntryByField = async (
  * @param {String} id
  * @return {Object}
  */
-export const getCampaignWebsiteByCampaignId = async (campaignId, context) =>
-  getPhoenixContentfulEntryByField(
-    'campaign',
-    'legacyCampaignId',
-    campaignId,
-    context,
-  );
+export const getCampaignWebsiteByCampaignId = async (id, context) =>
+  getPhoenixContentfulEntryByField('campaign', 'legacyCampaignId', id, context);
 
 /**
  * Search for a Phoenix Contentful Cause Page entry by slug.
@@ -206,26 +191,26 @@ export const getAffiliateByUtmLabel = async (utmLabel, context) =>
 export const getPhoenixContentfulAssetById = async (id, context) => {
   const { preview } = context;
 
-  logger.debug('Loading Phoenix Contentful asset', {
+  logger.debug('Loading Contentful asset', {
     id,
+    spaceId,
     preview,
   });
 
-  // If we're previewing, use Contentful's Preview API and
-  // don't bother trying to cache content on our end:
-  if (preview) {
-    const json = await previewApi.getAsset(id);
-    return transformAsset(json);
-  }
+  // Choose the right cache and API for this request:
+  const cache = preview ? previewCache : contentCache;
+  const api = preview ? previewApi : contentApi;
 
   // Otherwise, read from cache or Contentful's Content API:
   return cache.remember(`Asset:${spaceId}:${id}`, async () => {
     try {
-      const json = await contentApi.getAsset(id);
+      const json = await api.getAsset(id);
       return transformAsset(json);
     } catch (exception) {
-      logger.warn('Unable to load Phoenix Contentful asset.', {
+      logger.warn('Unable to load Contentful asset.', {
         id,
+        spaceId,
+        preview,
         error: exception.message,
       });
     }

@@ -3,12 +3,11 @@ import { assign, map } from 'lodash';
 import logger from 'heroku-logger';
 
 import config from '../../../config';
-import Cache from '../../cache';
 import Loader from '../../loader';
+import Cache, { ONE_MONTH } from '../../cache';
 
-// const inspect = require('util').inspect;
+const cache = new Cache('contentful', ONE_MONTH);
 
-const cache = new Cache('contentful');
 const spaceId = config('services.contentful.gambit.spaceId');
 
 const contentfulClient = createClient({
