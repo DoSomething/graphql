@@ -4,12 +4,14 @@ import logger from 'heroku-logger';
 import { createWindow } from 'domino';
 import { getMetadata } from 'page-metadata-parser';
 
-import Cache from '../cache';
 import config from '../../config';
+import Cache, { ONE_HOUR } from '../cache';
 import { transformResponse } from './helpers';
 
 const embedClient = OEmbetter();
-const cache = new Cache(config('embed.cache'));
+
+// Configure embed cache (for one hour).
+const cache = new Cache('embed', ONE_HOUR);
 
 // Configure custom endpoint mappings. <https://git.io/fjeXT>
 embedClient.endpoints(embedClient.suggestedEndpoints);

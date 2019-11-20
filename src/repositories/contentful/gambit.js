@@ -8,7 +8,7 @@ import Loader from '../../loader';
 
 // const inspect = require('util').inspect;
 
-const cache = new Cache(config('services.contentful.cache'));
+const cache = new Cache('contentful');
 const spaceId = config('services.contentful.gambit.spaceId');
 
 const contentfulClient = createClient({

@@ -10,13 +10,6 @@ const environmentMapping = {
 };
 
 const contentful = {
-  // Global Contentful cache. This should be used for any spaces
-  // that have a webhook enabled for cache clearing.
-  cache: {
-    name: 'contentful',
-    expiresIn: 24 * 3600 * 1000, // 24 hours (3600 seconds per hour).
-  },
-
   phoenix: {
     spaceId: process.env.PHOENIX_CONTENTFUL_SPACE_ID,
     accessToken: process.env.PHOENIX_CONTENTFUL_ACCESS_TOKEN,

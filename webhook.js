@@ -36,7 +36,7 @@ exports.handler = async event => {
   }
 
   // Clear cache for the specified entry from the Contentful cache.
-  const cache = new Cache(config('services.contentful.cache'));
+  const cache = new Cache('contentful');
 
   const id = body.sys.id;
   const type = body.sys.type;
@@ -75,7 +75,7 @@ exports.handler = async event => {
           [cacheKey]: fieldValue,
         });
       }
-    };
+    }
   }
 
   return response('Success.', 200);

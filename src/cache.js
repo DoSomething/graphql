@@ -6,6 +6,10 @@ import logger from 'heroku-logger';
 
 import config from '../config';
 
+// Some common expiration values:
+export const ONE_HOUR = 3600 * 1000;
+export const ONE_MONTH = 31 * 24 * 3600 * 1000;
+
 /**
  * Get the cache driver.
  *
@@ -30,7 +34,7 @@ const getClient = driver => {
 };
 
 export default class {
-  constructor({ name, expiresIn }) {
+  constructor(name, expiresIn = ONE_MONTH) {
     this.name = name;
     this.client = getClient(config('cache.driver'));
     this.policy = new Policy({ expiresIn }, this.client, 'segment');

@@ -7,7 +7,7 @@ import config from '../../../config';
 import Loader from '../../loader';
 import Cache from '../../cache';
 
-const cache = new Cache(config('services.contentful.cache'));
+const cache = new Cache('contentful');
 const spaceId = config('services.contentful.phoenix.spaceId');
 
 const contentfulSpaceConfig = {
