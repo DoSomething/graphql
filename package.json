@@ -57,7 +57,7 @@
     "graphql": "~14.5.8",
     "graphql-iso-date": "^3.5.0",
     "graphql-tools": "^4.0.6",
-    "graphql-type-json": "^0.2.4",
+    "graphql-type-json": "^0.3.1",
     "graphql-url": "^2.0.4",
     "heroku-logger": "^0.3.3",
     "lodash": "^4.17.15",
