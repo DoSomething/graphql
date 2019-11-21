@@ -10,6 +10,8 @@ import { stringToEnum, listToEnums } from '../helpers';
 import {
   createImageUrl,
   linkResolver,
+  parseQuizResults,
+  parseQuizQuestions,
 } from '../../repositories/contentful/phoenix';
 
 const entryFields = `
@@ -715,6 +717,10 @@ const resolvers = {
       linkResolver(page, _, context, info, 'coverImage'),
     blocks: linkResolver,
     sidebar: linkResolver,
+  },
+  QuizBlock: {
+    questions: parseQuizQuestions,
+    results: parseQuizResults,
   },
   AffiliateBlock: {
     logo: linkResolver,
