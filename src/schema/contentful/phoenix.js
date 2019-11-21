@@ -444,6 +444,8 @@ const typeDefs = gql`
     internalTitle: String!
     "The link for this social drive, with dynamic string tokens."
     link: AbsoluteUrl
+    "Toggles the display of the page views info card adjacent to the block"
+    hidePageViews: Boolean
     ${entryFields}
   }
 
