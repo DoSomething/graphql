@@ -58,6 +58,11 @@ const linkSchema = gql`
     campaign: Campaign
   }
 
+  extend type PetitionSubmissionBlock {
+    "The Action that posts will be submitted for. Note -- only works if actionId is also returned."
+    action: Action
+  }
+
   extend type PhotoPostTopic {
     "The campaign that this topic should create signups and photo posts for."
     campaign: Campaign
@@ -162,6 +167,27 @@ const linkResolvers = {
           fieldName: 'action',
           args: {
             id: actionId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
+  PetitionSubmissionBlock: {
+    action: {
+      fragment: 'fragment ActionFragment on PetitionSubmissionBlock { block }',
+      resolve(block, args, context, info) {
+        if (!block.actionId) {
+          return null;
+        }
+
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'action',
+          args: {
+            id: block.actionId,
           },
           context,
           info,
