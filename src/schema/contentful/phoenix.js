@@ -637,6 +637,9 @@ const resolvers = {
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
+  AffirmationBlock: {
+    author: linkResolver,
+  },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
   },
@@ -657,6 +660,10 @@ const resolvers = {
     showcaseDescription: content => content.content,
     showcaseImage: (person, _, context, info) =>
       linkResolver(person, _, context, info, 'image'),
+  },
+  CampaignUpdateBlock: {
+    author: linkResolver,
+    affiliateLogo: linkResolver,
   },
   CampaignWebsite: {
     coverImage: linkResolver,
@@ -719,6 +726,8 @@ const resolvers = {
     sidebar: linkResolver,
   },
   QuizBlock: {
+    resultBlocks: linkResolver,
+    defaultResultBlock: linkResolver,
     questions: parseQuizQuestions,
     results: parseQuizResults,
   },
