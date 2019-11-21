@@ -36,7 +36,8 @@ exports.handler = async event => {
   }
 
   // Clear cache for the specified entry from the Contentful cache.
-  const cache = new Cache(config('services.contentful.cache'));
+  const cache = new Cache('contentful');
+  const previewCache = new Cache('preview.contentful');
 
   const id = body.sys.id;
   const type = body.sys.type;
@@ -44,7 +45,10 @@ exports.handler = async event => {
   const contentType = body.sys.contentType && body.sys.contentType.sys.id;
 
   // Clear from DynamoDB (and await to make sure this completes).
+  // @TODO: We should clear production cache on 'publish' events, and
+  // preview cache on 'save' events (rather than always clearing both).
   await cache.forget(`${type}:${spaceId}:${id}`);
+  await previewCache.forget(`${type}:${spaceId}:${id}`);
 
   logger.info('Cleared cache via Contentful webhook.', { spaceId, id });
 
@@ -67,7 +71,10 @@ exports.handler = async event => {
 
       if (fieldValue) {
         // Clear from DynamoDB (and await to make sure this completes).
+        // @TODO: We should clear production cache on 'publish' events, and
+        // preview cache on 'save' events (rather than always clearing both).
         await cache.forget(`${contentType}:${spaceId}:${fieldValue}`);
+        await previewCache.forget(`${contentType}:${spaceId}:${fieldValue}`);
 
         logger.info(`Cleared ${contentType} cache via Contentful webhook`, {
           spaceId,
@@ -75,7 +82,7 @@ exports.handler = async event => {
           [cacheKey]: fieldValue,
         });
       }
-    };
+    }
   }
 
   return response('Success.', 200);

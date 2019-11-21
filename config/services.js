@@ -10,32 +10,17 @@ const environmentMapping = {
 };
 
 const contentful = {
-  // Global Contentful cache. This should be used for any spaces
-  // that have a webhook enabled for cache clearing.
-  cache: {
-    name: 'contentful',
-    expiresIn: 24 * 3600 * 1000, // 24 hours (3600 seconds per hour).
-  },
-
   phoenix: {
     spaceId: process.env.PHOENIX_CONTENTFUL_SPACE_ID,
     accessToken: process.env.PHOENIX_CONTENTFUL_ACCESS_TOKEN,
     previewToken: process.env.PHOENIX_CONTENTFUL_PREVIEW_TOKEN,
     environment: get(environmentMapping, process.env.QUERY_ENV),
-    cache: {
-      name: 'phoenixContent',
-      expiresIn: 3600 * 1000, // 1 hour (3600 seconds).
-    },
   },
 
   // Gambit uses a single space/environment used across all GraphQL environments.
   gambit: {
     spaceId: process.env.GAMBIT_CONTENTFUL_SPACE_ID,
     accessToken: process.env.GAMBIT_CONTENTFUL_ACCESS_TOKEN,
-    cache: {
-      name: 'gambitContent',
-      expiresIn: 3600 * 1000, // 1 hour (3600 seconds).
-    },
   },
 };
 
