@@ -304,4 +304,45 @@ export const createImageUrl = (asset, args) => {
   return urlWithQuery(url, { ...args, f: focus }); // eslint-disable-line id-length
 };
 
-export default null;
+/**
+ * Format choices for the QuizBlock component.
+ *
+ * @param {*} question
+ */
+const parseQuestionChoices = question => {
+  const choices = question.choices || [];
+
+  return choices.map((choice, index) => ({
+    id: index,
+    ...choice,
+  }));
+};
+
+/**
+ * Format questions for the QuizBlock component.
+ *
+ * @param {*} question
+ */
+export const parseQuizQuestions = quiz => {
+  const questions = quiz.questions || [];
+
+  return questions.map((question, index) => ({
+    id: index,
+    choices: parseQuestionChoices(question),
+    ...question,
+  }));
+};
+
+/**
+ * Format results for the QuizBlock component.
+ *
+ * @param {*} question
+ */
+export const parseQuizResults = quiz => {
+  const results = quiz.results || [];
+
+  return results.map((result, index) => ({
+    id: String.fromCharCode(index + 65), // A, B, C...
+    ...result,
+  }));
+};

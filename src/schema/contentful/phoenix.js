@@ -10,6 +10,8 @@ import { stringToEnum, listToEnums } from '../helpers';
 import {
   createImageUrl,
   linkResolver,
+  parseQuizResults,
+  parseQuizQuestions,
 } from '../../repositories/contentful/phoenix';
 
 const entryFields = `
@@ -97,6 +99,22 @@ const typeDefs = gql`
     TRANSPARENT
   }
 
+  type AffirmationBlock implements Block {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The title displayed on this card."
+    header: String
+    "The quote displayed in the block."
+    quote: String
+    "The author to attribute the quote to."
+    author: PersonBlock
+    "The heading for the share action on this block."
+    callToActionHeader: String
+    "The description for the share action on this block."
+    callToActionDescription: String
+    ${entryFields}
+  }
+
   type CallToActionBlock implements Block {
     "The visual treatment to apply to this block."
     visualStyle: CallToActionStyle
@@ -112,6 +130,20 @@ const typeDefs = gql`
     impactSuffix: String
     "The button text."
     actionText: String
+    ${entryFields}
+  }
+
+  type CampaignUpdateBlock implements Block {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The content of the campaign update."
+    content: String
+    "Optionally, a link to embed within the campaign update."
+    link: AbsoluteUrl
+    "The author to attribute the campaign update to."
+    author: PersonBlock
+    "The logo of the partner or sponsor that should be highlighted for this update."
+    affiliateLogo: Asset
     ${entryFields}
   }
 
@@ -350,6 +382,83 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type QuizBlock implements Block {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The user-facing title for this quiz."
+    title: String
+    "The URL slug for this quiz."
+    slug: String!
+    autoSubmit: Boolean!
+    "Hide pre-titles (i.e. 'Question One') from all questions."
+    hideQuestionNumber: Boolean
+    "The quiz structure."
+    results: JSON
+    "Blocks to display for different quiz results."
+    resultBlocks: [Block]
+    "The default quiz result block."
+    defaultResultBlock: Block
+    "The quiz questions."
+    questions: JSON
+    "Any custom overrides for this block."
+    additionalContent: JSON
+    ${entryFields}
+  }
+
+  type SectionBlock implements Block {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The hexadecimal background color for this section."
+    backgroundColor: String
+    "The hexadecimal text color for this section."
+    textColor: String
+    "The content, in Rich Text."
+    content: JSON!
+    ${entryFields}
+  }
+
+  type SelectionSubmissionBlock implements Block {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The Rogue action ID for this submission block."
+    actionId: Int!
+    "The user-facing title for this share block."
+    title: String
+    "The content, in Rich Text."
+    content: JSON!
+    "The label displayed above the selection field."
+    selectionFieldLabel: String
+    "The selection options for the selection block."
+    selectionOptions: [String]
+    "The placeholder selection value."
+    selectionPlaceholderOption: String
+    "Text to display on the submission button."
+    buttonText: String
+    "The text displayed under the user selection, post submission."
+    postSubmissionLabel: String!
+    ${entryFields}
+  }
+
+  type SocialDriveBlock implements Block {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The link for this social drive, with dynamic string tokens."
+    link: AbsoluteUrl
+    ${entryFields}
+  }
+
+  type SoftEdgeBlock implements Block {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The user-facing title for this block."
+    title: String
+    "The Rogue action ID for this submission block."
+    actionId: Int!
+    "The SoftEdge campaign ID for this submission block."
+    softEdgeId: Int!
+    ${entryFields}
+  }
+
   type ShareBlock implements Block {
     "The internal-facing title for this share block."
     internalTitle: String!
@@ -474,9 +583,11 @@ const typeDefs = gql`
  * @var {Object}
  */
 const contentTypeMappings = {
+  affirmation: 'AffirmationBlock',
   affiliates: 'AffiliateBlock',
   campaign: 'CampaignWebsite',
   callToAction: 'CallToActionBlock',
+  campaignUpdate: 'CampaignUpdateBlock',
   page: 'Page',
   embed: 'EmbedBlock',
   contentBlock: 'ContentBlock',
@@ -487,7 +598,12 @@ const contentTypeMappings = {
   petitionSubmissionAction: 'PetitionSubmissionBlock',
   photoSubmissionAction: 'PhotoSubmissionBlock',
   postGallery: 'PostGalleryBlock',
+  quiz: 'QuizBlock',
+  sectionBlock: 'SectionBlock',
+  selectionSubmissionAction: 'SelectionSubmissionBlock',
+  socialDriveAction: 'SocialDriveBlock',
   shareAction: 'ShareBlock',
+  softEdgeWidgetAction: 'SoftEdgeBlock',
   textSubmissionAction: 'TextSubmissionBlock',
   voterRegistrationAction: 'VoterRegistrationBlock',
   causePage: 'CausePage',
@@ -521,6 +637,9 @@ const resolvers = {
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
+  AffirmationBlock: {
+    author: linkResolver,
+  },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
   },
@@ -541,6 +660,10 @@ const resolvers = {
     showcaseDescription: content => content.content,
     showcaseImage: (person, _, context, info) =>
       linkResolver(person, _, context, info, 'image'),
+  },
+  CampaignUpdateBlock: {
+    author: linkResolver,
+    affiliateLogo: linkResolver,
   },
   CampaignWebsite: {
     coverImage: linkResolver,
@@ -601,6 +724,12 @@ const resolvers = {
       linkResolver(page, _, context, info, 'coverImage'),
     blocks: linkResolver,
     sidebar: linkResolver,
+  },
+  QuizBlock: {
+    resultBlocks: linkResolver,
+    defaultResultBlock: linkResolver,
+    questions: parseQuizQuestions,
+    results: parseQuizResults,
   },
   AffiliateBlock: {
     logo: linkResolver,
