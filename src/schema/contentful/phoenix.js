@@ -80,7 +80,9 @@ const typeDefs = gql`
     title: String!
     "The slug for this campaign."
     slug: String!
-     "The call to action tagline for this campaign."
+    "The block to display after a user signs up for a campaign."
+    affirmation: Block
+    "The call to action tagline for this campaign."
     callToAction: String!
     "The cover image for this campaign."
     coverImage: Asset
@@ -669,6 +671,7 @@ const resolvers = {
     affiliateLogo: linkResolver,
   },
   CampaignWebsite: {
+    affirmation: linkResolver,
     coverImage: linkResolver,
     showcaseTitle: campaign => campaign.title,
     showcaseDescription: campaign => campaign.callToAction,
