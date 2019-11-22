@@ -640,7 +640,8 @@ const resolvers = {
       Loader(context, preview).pages.load(id),
   },
   AffirmationBlock: {
-    author: linkResolver,
+    author: (person, _, context, info) =>
+      linkResolver(person, _, context, info, 'newAuthor'),
   },
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
