@@ -428,6 +428,8 @@ const typeDefs = gql`
     title: String
     "The content, in Rich Text."
     content: JSON!
+    "The content, in Rich Text. This is an alias for 'content'."
+    richText: JSON!
     "The label displayed above the selection field."
     selectionFieldLabel: String
     "The selection options for the selection block."
@@ -690,6 +692,9 @@ const resolvers = {
   },
   PetitionSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
+  },
+  SelectionSubmissionBlock: {
+    richText: block => block.content,
   },
   ShareBlock: {
     affirmationBlock: linkResolver,
