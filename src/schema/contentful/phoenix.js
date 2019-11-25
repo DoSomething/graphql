@@ -423,7 +423,7 @@ const typeDefs = gql`
     "This title is used internally to help find this content."
     internalTitle: String!
     "The Rogue action ID for this submission block."
-    actionId: Int!
+    actionId: Int
     "The user-facing title for this share block."
     title: String
     "The content, in Rich Text."
@@ -457,7 +457,7 @@ const typeDefs = gql`
     "The user-facing title for this block."
     title: String
     "The Rogue action ID for this submission block."
-    actionId: Int!
+    actionId: Int
     "The SoftEdge campaign ID for this submission block."
     softEdgeId: Int!
     ${entryFields}
