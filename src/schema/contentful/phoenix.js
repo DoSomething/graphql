@@ -423,11 +423,13 @@ const typeDefs = gql`
     "This title is used internally to help find this content."
     internalTitle: String!
     "The Rogue action ID for this submission block."
-    actionId: Int!
+    actionId: Int
     "The user-facing title for this share block."
     title: String
     "The content, in Rich Text."
     content: JSON!
+    "The content, in Rich Text. This is an alias for 'content'."
+    richText: JSON!
     "The label displayed above the selection field."
     selectionFieldLabel: String
     "The selection options for the selection block."
@@ -457,7 +459,7 @@ const typeDefs = gql`
     "The user-facing title for this block."
     title: String
     "The Rogue action ID for this submission block."
-    actionId: Int!
+    actionId: Int
     "The SoftEdge campaign ID for this submission block."
     softEdgeId: Int!
     ${entryFields}
@@ -690,6 +692,9 @@ const resolvers = {
   },
   PetitionSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
+  },
+  SelectionSubmissionBlock: {
+    richText: block => block.content,
   },
   ShareBlock: {
     affirmationBlock: linkResolver,
