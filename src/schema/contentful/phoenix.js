@@ -716,6 +716,9 @@ const resolvers = {
   PetitionSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
+  SixpackExperimentBlock: {
+    convertableActions: block => listToEnums(block.convertableActions),
+  },
   SelectionSubmissionBlock: {
     richText: block => block.content,
   },
