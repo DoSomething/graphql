@@ -419,6 +419,28 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  "Types of events that can count as conversions for Sixpack Experiment blocks."
+  enum SixpackConversionEvent {
+    SIGNUP
+    REPORTBACK_POST
+  }
+
+  type SixpackExperimentBlock implements Block {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "This (optional) block should be used as the control in the experiment."
+    control: Block
+    "The test alternatives for this experiment."
+    alternatives: [Block]!
+    "The actions that will count as a conversion for this experiment."
+    convertableActions: [SixpackConversionEvent]
+    "The percent of traffic to run the experiment on, from 1 - 100."
+    trafficFraction: Int
+    "The KPI to associate with this experiment."
+    kpi: String
+    ${entryFields}
+  }
+
   type SelectionSubmissionBlock implements Block {
     "This title is used internally to help find this content."
     internalTitle: String!
@@ -607,6 +629,7 @@ const contentTypeMappings = {
   quiz: 'QuizBlock',
   sectionBlock: 'SectionBlock',
   selectionSubmissionAction: 'SelectionSubmissionBlock',
+  sixpackExperiment: 'SixpackExperimentBlock',
   socialDriveAction: 'SocialDriveBlock',
   shareAction: 'ShareBlock',
   softEdgeWidgetAction: 'SoftEdgeBlock',
