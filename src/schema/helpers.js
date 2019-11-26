@@ -1,3 +1,5 @@
+import { snakeCase } from 'lodash';
+
 /**
  * Transform a string constant into a GraphQL-style enum.
  *
@@ -9,7 +11,7 @@ export const stringToEnum = string => {
     return null;
   }
 
-  return string.toUpperCase().replace('-', '_');
+  return snakeCase(string).toUpperCase();
 };
 
 /**
