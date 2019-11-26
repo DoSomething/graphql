@@ -114,6 +114,28 @@ const linkSchema = gql`
   }
 `;
 
+function blockActionResolver(blockTypeName) {
+  return {
+    fragment: `fragment ActionFragment on ${blockTypeName} { block }`,
+      resolve(block, args, context, info) {
+        if (!block.actionId) {
+          return null;
+        }
+
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'action',
+          args: {
+            id: block.actionId,
+          },
+          context,
+          info,
+        });
+    }
+  };
+}
+
 /**
  * Resolvers between resources in different schemas.
  *
@@ -180,25 +202,7 @@ const linkResolvers = {
     },
   },
   PetitionSubmissionBlock: {
-    action: {
-      fragment: 'fragment ActionFragment on PetitionSubmissionBlock { block }',
-      resolve(block, args, context, info) {
-        if (!block.actionId) {
-          return null;
-        }
-
-        return info.mergeInfo.delegateToSchema({
-          schema: rogueSchema,
-          operation: 'query',
-          fieldName: 'action',
-          args: {
-            id: block.actionId,
-          },
-          context,
-          info,
-        });
-      },
-    },
+    action: blockActionResolver('PetitionSubmissionBlock'),
   },
   PhotoPostBroadcast: {
     action: {
@@ -218,46 +222,10 @@ const linkResolvers = {
     },
   },
   PhotoSubmissionBlock: {
-    action: {
-      fragment: 'fragment ActionFragment on PhotoSubmissionBlock { block }',
-      resolve(block, args, context, info) {
-        if (!block.actionId) {
-          return null;
-        }
-
-        return info.mergeInfo.delegateToSchema({
-          schema: rogueSchema,
-          operation: 'query',
-          fieldName: 'action',
-          args: {
-            id: block.actionId,
-          },
-          context,
-          info,
-        });
-      },
-    },
+    action: blockActionResolver('PhotoSubmissionBlock'),
   },
   ShareBlock: {
-    action: {
-      fragment: 'fragment ActionFragment on ShareBlock { block }',
-      resolve(block, args, context, info) {
-        if (!block.actionId) {
-          return null;
-        }
-
-        return info.mergeInfo.delegateToSchema({
-          schema: rogueSchema,
-          operation: 'query',
-          fieldName: 'action',
-          args: {
-            id: block.actionId,
-          },
-          context,
-          info,
-        });
-      },
-    },
+    action: blockActionResolver('ShareBlock'),
   },
   TextPostBroadcast: {
     action: {
@@ -277,25 +245,7 @@ const linkResolvers = {
     },
   },
   TextSubmissionBlock: {
-    action: {
-      fragment: 'fragment ActionFragment on TextSubmissionBlock { block }',
-      resolve(block, args, context, info) {
-        if (!block.actionId) {
-          return null;
-        }
-
-        return info.mergeInfo.delegateToSchema({
-          schema: rogueSchema,
-          operation: 'query',
-          fieldName: 'action',
-          args: {
-            id: block.actionId,
-          },
-          context,
-          info,
-        });
-      },
-    },
+    action: blockActionResolver('TextSubmissionBlock'),
   },
   User: {
     conversations: {
