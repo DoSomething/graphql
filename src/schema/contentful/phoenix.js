@@ -717,6 +717,8 @@ const resolvers = {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
   SixpackExperimentBlock: {
+    control: linkResolver,
+    alernatives: linkResolver,
     convertableActions: block => listToEnums(block.convertableActions),
   },
   SelectionSubmissionBlock: {
