@@ -98,10 +98,9 @@ export const getConversationsByUserId = async (args, context) => {
   logger.debug('Loading user conversations from Gambit', { id: userId });
 
   const response = await fetch(
-    `${GAMBIT_URL}/api/v1/conversations?query={"userId":"${userId}"}&${getPaginationQueryString(
-      args.page,
-      args.count,
-    )}`,
+    `${GAMBIT_URL}/api/v1/conversations?query={"userId":"${
+      userId
+    }"}&${getPaginationQueryString(args.page, args.count)}`,
     authorizedRequest(context),
   );
 
@@ -167,10 +166,9 @@ export const getMessagesByConversationId = async (id, page, count, context) => {
   logger.debug('Loading messages from Gambit for Conversation', { id });
 
   const response = await fetch(
-    `${GAMBIT_URL}/api/v1/messages?query={"conversationId":"${id}"}&${getPaginationQueryString(
-      page,
-      count,
-    )}`,
+    `${GAMBIT_URL}/api/v1/messages?query={"conversationId":"${
+      id
+    }"}&${getPaginationQueryString(page, count)}`,
     authorizedRequest(context),
   );
 

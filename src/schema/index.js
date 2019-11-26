@@ -117,22 +117,22 @@ const linkSchema = gql`
 function blockActionResolver(blockTypeName) {
   return {
     fragment: `fragment ActionFragment on ${blockTypeName} { block }`,
-      resolve(block, args, context, info) {
-        if (!block.actionId) {
-          return null;
-        }
+    resolve(block, args, context, info) {
+      if (!block.actionId) {
+        return null;
+      }
 
-        return info.mergeInfo.delegateToSchema({
-          schema: rogueSchema,
-          operation: 'query',
-          fieldName: 'action',
-          args: {
-            id: block.actionId,
-          },
-          context,
-          info,
-        });
-    }
+      return info.mergeInfo.delegateToSchema({
+        schema: rogueSchema,
+        operation: 'query',
+        fieldName: 'action',
+        args: {
+          id: block.actionId,
+        },
+        context,
+        info,
+      });
+    },
   };
 }
 
