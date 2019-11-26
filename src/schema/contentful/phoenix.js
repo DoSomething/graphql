@@ -718,7 +718,7 @@ const resolvers = {
   },
   SixpackExperimentBlock: {
     control: linkResolver,
-    alernatives: linkResolver,
+    alternatives: linkResolver,
     convertableActions: block => listToEnums(block.convertableActions),
   },
   SelectionSubmissionBlock: {
