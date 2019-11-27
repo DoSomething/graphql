@@ -127,6 +127,8 @@ const typeDefs = gql`
     reportback: Boolean
     "Campaign ID this action belongs to"
     campaignId: Int!
+    "Campaign this action belongs to"
+    campaign: Campaign
     "Does this action count as a civic action?"
     civicAction: Boolean
     "Does this action count as a scholarship entry?"
@@ -485,6 +487,10 @@ const typeDefs = gql`
 const resolvers = {
   DateTime: GraphQLDateTime,
   AbsoluteUrl: GraphQLAbsoluteUrl,
+  Action: {
+    campaign: (action, args, context, info) =>
+      Loader(context).campaigns.load(action.campaignId, getFields(info)),
+  },
   Media: {
     url: (media, args) => urlWithQuery(media.url, args),
   },
