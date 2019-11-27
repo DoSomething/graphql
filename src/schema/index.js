@@ -58,14 +58,34 @@ const linkSchema = gql`
     campaign: Campaign
   }
 
+  extend type PetitionSubmissionBlock {
+    "The Action that posts will be submitted for. Note -- only works if actionId is also returned."
+    action: Action
+  }
+
   extend type PhotoPostTopic {
     "The campaign that this topic should create signups and photo posts for."
     campaign: Campaign
   }
 
+  extend type PhotoSubmissionBlock {
+    "The Action that posts will be submitted for. Note -- only works if actionId is also returned."
+    action: Action
+  }
+
+  extend type ShareBlock {
+    "The Action that posts will be submitted for. Note -- only works if actionId is also returned."
+    action: Action
+  }
+
   extend type TextPostTopic {
     "The campaign that this topic should create signups and text posts for."
     campaign: Campaign
+  }
+
+  extend type TextSubmissionBlock {
+    "The Action that posts will be submitted for. Note -- only works if actionId is also returned."
+    action: Action
   }
 
   extend type WebSignupConfirmation {
@@ -93,6 +113,28 @@ const linkSchema = gql`
     action: Action
   }
 `;
+
+function blockActionResolver(blockTypeName) {
+  return {
+    fragment: `fragment ActionFragment on ${blockTypeName} { block }`,
+    resolve(block, args, context, info) {
+      if (!block.actionId) {
+        return null;
+      }
+
+      return info.mergeInfo.delegateToSchema({
+        schema: rogueSchema,
+        operation: 'query',
+        fieldName: 'action',
+        args: {
+          id: block.actionId,
+        },
+        context,
+        info,
+      });
+    },
+  };
+}
 
 /**
  * Resolvers between resources in different schemas.
@@ -159,6 +201,9 @@ const linkResolvers = {
       },
     },
   },
+  PetitionSubmissionBlock: {
+    action: blockActionResolver('PetitionSubmissionBlock'),
+  },
   PhotoPostBroadcast: {
     action: {
       fragment: 'fragment ActionFragment on PhotoPostBroadcast { topic }',
@@ -176,6 +221,12 @@ const linkResolvers = {
       },
     },
   },
+  PhotoSubmissionBlock: {
+    action: blockActionResolver('PhotoSubmissionBlock'),
+  },
+  ShareBlock: {
+    action: blockActionResolver('ShareBlock'),
+  },
   TextPostBroadcast: {
     action: {
       fragment: 'fragment ActionFragment on TextPostBroadcast { topic }',
@@ -192,6 +243,9 @@ const linkResolvers = {
         });
       },
     },
+  },
+  TextSubmissionBlock: {
+    action: blockActionResolver('TextSubmissionBlock'),
   },
   User: {
     conversations: {
