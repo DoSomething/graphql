@@ -87,6 +87,8 @@ const typeDefs = gql`
     actions: [Action]
     "The cause-spaces for this campaign."
     causes: [Cause] @requires(fields: "cause causeNames")
+    "The internal documentation used for campaign proof of impact."
+    impactDoc: String
     "Is this campaign open?"
     isOpen: Boolean!
     "The number of posts pending review. Only visible by staff/admins."
@@ -123,6 +125,10 @@ const typeDefs = gql`
     id: Int!
     "The internal name for this action."
     name: String
+    "The readable name of this action's type."
+    actionLabel: String
+    "The machine name of this action's type."
+    actionType: String
     "Does this action count as a reportback?"
     reportback: Boolean
     "Campaign ID this action belongs to"
@@ -131,6 +137,14 @@ const typeDefs = gql`
     campaign: Campaign
     "Does this action count as a civic action?"
     civicAction: Boolean
+     "Is this an online action?"
+    online: Boolean
+    "The readable name of post type this action should create."
+    postLabel: String
+    "The machine name of the post type this action should create."
+    postType: String
+    "Is this action a quiz?"
+    quiz: Boolean
     "Does this action count as a scholarship entry?"
     scholarshipEntry: Boolean
     "Does this action associate user posts with their school?"
@@ -147,8 +161,6 @@ const typeDefs = gql`
     updatedAt: DateTime
     "How long will this action take to complete?"
     timeCommitmentLabel: String
-    "What type of action is this?"
-    actionLabel: String
   }
 
   "A media resource on a post."
