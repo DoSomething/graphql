@@ -132,7 +132,7 @@ const typeDefs = gql`
     "Does this action count as a reportback?"
     reportback: Boolean
      "Callpower Campaign ID this action belongs to"
-    callpowerCampaignId: Int!
+    callpowerCampaignId: Int
     "Campaign ID this action belongs to"
     campaignId: Int!
     "Campaign this action belongs to"
