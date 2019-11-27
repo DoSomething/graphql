@@ -131,7 +131,7 @@ const typeDefs = gql`
     actionType: String
     "Does this action count as a reportback?"
     reportback: Boolean
-     "Callpower Campaign ID this action belongs to"
+    "Callpower Campaign ID this action belongs to"
     callpowerCampaignId: Int
     "Campaign ID this action belongs to"
     campaignId: Int!
@@ -139,7 +139,7 @@ const typeDefs = gql`
     campaign: Campaign
     "Does this action count as a civic action?"
     civicAction: Boolean
-     "Is this an online action?"
+    "Is this an online action?"
     online: Boolean
     "The readable name of post type this action should create."
     postLabel: String
