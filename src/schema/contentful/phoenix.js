@@ -5,6 +5,7 @@ import GraphQLJSON from 'graphql-type-json';
 import { gql } from 'apollo-server';
 import { get, first } from 'lodash';
 
+import config from '../../../config';
 import Loader from '../../loader';
 import { stringToEnum, listToEnums } from '../helpers';
 import {
@@ -80,6 +81,8 @@ const typeDefs = gql`
     title: String!
     "The slug for this campaign."
     slug: String!
+    "The URL for this campaign."
+    url: String!
     "The block to display after a user signs up for a campaign."
     affirmation: Block
     "The call to action tagline for this campaign."
@@ -702,6 +705,7 @@ const resolvers = {
     showcaseDescription: campaign => campaign.callToAction,
     showcaseImage: (person, _, context, info) =>
       linkResolver(person, _, context, info, 'coverImage'),
+    url: campaign => `${config('services.phoenix.url')}/us/campaigns/${campaign.slug}`,
   },
   CausePage: {
     coverImage: linkResolver,
