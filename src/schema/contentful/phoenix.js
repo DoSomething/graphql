@@ -705,7 +705,8 @@ const resolvers = {
     showcaseDescription: campaign => campaign.callToAction,
     showcaseImage: (person, _, context, info) =>
       linkResolver(person, _, context, info, 'coverImage'),
-    url: campaign => `${config('services.phoenix.url')}/us/campaigns/${campaign.slug}`,
+    url: campaign =>
+      `${config('services.phoenix.url')}/us/campaigns/${campaign.slug}`,
   },
   CausePage: {
     coverImage: linkResolver,
