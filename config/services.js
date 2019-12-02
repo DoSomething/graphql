@@ -54,6 +54,11 @@ const environments = {
       url: process.env.LOCAL_AURORA_URL || 'http://aurora.test',
     },
 
+    // Phoenix
+    phoenix: {
+      url: process.env.LOCAL_PHOENIX_URL || 'http://phoenix.test',
+    },
+
     // Rogue
     rogue: {
       url: process.env.LOCAL_ROGUE_URL || 'http://rogue.test',
@@ -91,6 +96,11 @@ const environments = {
     // Aurora
     aurora: {
       url: 'https://admin-dev.dosomething.org',
+    },
+
+    // Phoenix
+    phoenix: {
+      url: 'https://dev.dosomething.org',
     },
 
     // Rogue
@@ -131,6 +141,11 @@ const environments = {
       url: 'https://admin-qa.dosomething.org',
     },
 
+    // Phoenix
+    phoenix: {
+      url: 'https://qa.dosomething.org',
+    },
+
     // Rogue
     rogue: {
       url: 'https://activity-qa.dosomething.org',
@@ -167,6 +182,11 @@ const environments = {
     // Aurora
     aurora: {
       url: 'https://admin.dosomething.org',
+    },
+
+    // Phoenix
+    phoenix: {
+      url: 'https://www.dosomething.org',
     },
 
     // Rogue
