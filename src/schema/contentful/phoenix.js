@@ -138,6 +138,24 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type CampaignDashboard implements Block {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "Heading for the share section of the dashboard."
+    shareHeader: String
+    "Copy for the share section of the dashboard."
+    shareCopy: String
+    "The first dashboard value presented, likely a number."
+    firstValue: String
+    "A short description of the first value."
+    firstDescription: String
+    "The second dashboard value presented, likely a number."
+    secondValue: String
+    "A short description of the second value."
+    secondDescription: String
+    ${entryFields}
+  }
+
   type CampaignUpdateBlock implements Block {
     "This title is used internally to help find this content."
     internalTitle: String!
@@ -618,6 +636,7 @@ const contentTypeMappings = {
   affiliates: 'AffiliateBlock',
   campaign: 'CampaignWebsite',
   callToAction: 'CallToActionBlock',
+  campaignDashboard: 'CampaignDashboard',
   campaignUpdate: 'CampaignUpdateBlock',
   page: 'Page',
   embed: 'EmbedBlock',
