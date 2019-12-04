@@ -48,6 +48,10 @@ function connectToDatabase() {
  * @return {Object}
  */
 export const transformItem = item => {
+  if (!item) {
+    return null;
+  }
+
   const { name, city, state } = item;
 
   return {
