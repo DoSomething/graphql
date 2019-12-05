@@ -93,7 +93,6 @@ export const getActionStats = async (args, context) => {
   );
 
   const json = await response.json();
-  console.log(json);
 
   return transformCollection(json);
 };

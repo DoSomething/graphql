@@ -412,6 +412,10 @@ const typeDefs = gql`
       "The number of results per page."
       count: Int = 20
     ): [Post]
+    schoolActionStatsBySchoolId(
+      "The School ID to filter school action stats by."
+      id: String!
+    ): [SchoolActionStat]
     "Get a signup by ID."
     signup(id: Int!): Signup
     "Get a paginated collection of signups."
@@ -576,6 +580,7 @@ const resolvers = {
       getPostsByCampaignId(args.id, args.page, args.count, context),
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
+    schoolActionStatsBySchoolId: (_, args, context) => getActionStats({ schoolId: args.id }, context),
     signup: (_, args, context) => Loader(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args, context),
     signupsByUserId: (_, args, context) => getSignupsByUserId(args, context),

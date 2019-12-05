@@ -112,6 +112,11 @@ const linkSchema = gql`
     "The action that this broadcast is associated to."
     action: Action
   }
+
+  extend type School {
+    "Aggregate post information for this school by action."
+    schoolActionStats: [SchoolActionStat]
+  }
 `;
 
 function blockActionResolver(blockTypeName) {
@@ -344,6 +349,23 @@ const linkResolvers = {
           fieldName: 'school',
           args: {
             id: post.schoolId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
+  School: {
+    schoolActionStats: {
+      fragment: 'fragment SchoolActionStatsFragment on School { schoolId }',
+      resolve(school, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'schoolActionStatsBySchoolId',
+          args: {
+            id: school.id,
           },
           context,
           info,
