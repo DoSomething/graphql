@@ -59,18 +59,16 @@ export const getActionsByCampaignId = async (campaignId, context) => {
 };
 
 /**
- * Get a simple list of action stats.
+ * Get a simple list of action stats by school and or action ID.
  *
- * @param {Number} action_id
  * @param {String} school_id
+ * @param {Number} action_id
  * @return {Array}
  */
-export const getActionStats = async (args, context) => {
-  const { actionId, schoolId } = args;
-
+export const getActionStats = async (schoolId, actionId, orderBy = 'accepted_quantity,desc', context) => {
   logger.debug('Loading action-stats from Rogue', {
-    actionId,
     schoolId,
+    actionId,
   });
 
   const filter = {};
@@ -84,7 +82,7 @@ export const getActionStats = async (args, context) => {
 
   const queryString = stringify({
     filter,
-    orderBy: args.orderBy,
+    orderBy,
     pagination: 'cursor',
   });
 

@@ -165,7 +165,10 @@ const typeDefs = gql`
     "How long will this action take to complete?"
     timeCommitmentLabel: String
     "Aggregate post information for this action by school."
-    schoolActionStats: [SchoolActionStat]
+    schoolActionStats(
+      "The school ID to display an action stat for."
+      schoolId: String
+    ): [SchoolActionStat]
   }
 
   "A media resource on a post."
@@ -293,6 +296,8 @@ const typeDefs = gql`
 
   "A set of aggregate post information for a school and action."
   type SchoolActionStat {
+    "The unique ID for this school action stat."
+    id: Int!
     "The school ID this stat belongs to"
     schoolId: String!
     "The action ID this stat belongs to."
@@ -412,9 +417,11 @@ const typeDefs = gql`
       "The number of results per page."
       count: Int = 20
     ): [Post]
-    schoolActionStatsBySchoolId(
+    schoolActionStats(
       "The School ID to filter school action stats by."
-      id: String!
+      schoolId: String
+      "The Action ID to filter school action stats by."
+      actionId: Int
     ): [SchoolActionStat]
     "Get a signup by ID."
     signup(id: Int!): Signup
@@ -528,7 +535,7 @@ const resolvers = {
     campaign: (action, args, context, info) =>
       Loader(context).campaigns.load(action.campaignId, getFields(info)),
     schoolActionStats: (action, args, context) =>
-      getActionStats({ actionId: action.id }, context),
+      getActionStats(args.schoolId, action.id, args.orderBy, context),
   },
   Media: {
     url: (media, args) => urlWithQuery(media.url, args),
@@ -585,8 +592,8 @@ const resolvers = {
       getPostsByCampaignId(args.id, args.page, args.count, context),
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
-    schoolActionStatsBySchoolId: (_, args, context) =>
-      getActionStats({ schoolId: args.id }, context),
+    schoolActionStats: (_, args, context) =>
+      getActionStats(args.schoolId, args.actionId, args.orderBy, context),
     signup: (_, args, context) => Loader(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args, context),
     signupsByUserId: (_, args, context) => getSignupsByUserId(args, context),

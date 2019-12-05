@@ -115,7 +115,10 @@ const linkSchema = gql`
 
   extend type School {
     "Aggregate post information for this school by action."
-    schoolActionStats: [SchoolActionStat]
+    schoolActionStats(
+      "The action ID to show a school action stat for."
+      actionId: Int
+    ): [SchoolActionStat]
   }
 
   extend type SchoolActionStat {
@@ -368,9 +371,10 @@ const linkResolvers = {
         return info.mergeInfo.delegateToSchema({
           schema: rogueSchema,
           operation: 'query',
-          fieldName: 'schoolActionStatsBySchoolId',
+          fieldName: 'schoolActionStats',
           args: {
-            id: school.id,
+            schoolId: school.id,
+            actionId: args.actionId,
           },
           context,
           info,
