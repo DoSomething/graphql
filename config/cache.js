@@ -1,10 +1,10 @@
 export default {
   /**
-   * The cache driver. Either 'redis' or 'dynamodb'.
+   * The cache driver. Either 'dynamodb', 'redis', or 'memory'.
    *
    * @type {String}
    */
-  driver: process.env.CACHE_DRIVER || 'redis',
+  driver: process.env.CACHE_DRIVER || 'memory',
 
   /**
    * The Redis server URL, for example

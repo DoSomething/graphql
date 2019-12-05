@@ -215,6 +215,8 @@ const typeDefs = gql`
     description: JSON!
     "The content, in Rich Text."
     content: JSON!
+    "Any custom overrides for this cause page."
+    additionalContent: JSON
     ${entryFields}
   }
 
