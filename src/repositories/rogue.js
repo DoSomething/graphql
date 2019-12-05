@@ -63,12 +63,13 @@ export const getActionsByCampaignId = async (campaignId, context) => {
  *
  * @param {String} school_id
  * @param {Number} action_id
+ * @param {String} orderBy
  * @return {Array}
  */
 export const getActionStatsBySchoolIdAndActionId = async (
   schoolId,
   actionId,
-  orderBy = 'accepted_quantity,desc',
+  orderBy,
   context,
 ) => {
   logger.debug('Loading action-stats from Rogue', {

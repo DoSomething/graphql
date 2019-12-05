@@ -168,6 +168,8 @@ const typeDefs = gql`
     schoolActionStats(
       "The school ID to display an action stat for."
       schoolId: String
+      "How to order the results (e.g. 'accepted_quantity,desc')."
+      orderBy: String = "accepted_quantity,desc"
     ): [SchoolActionStat]
   }
 
@@ -422,6 +424,8 @@ const typeDefs = gql`
       schoolId: String
       "The Action ID to filter school action stats by."
       actionId: Int
+      "How to order the results (e.g. 'id,desc')."
+      orderBy: String = "id,desc"
     ): [SchoolActionStat]
     "Get a signup by ID."
     signup(id: Int!): Signup
@@ -535,7 +539,12 @@ const resolvers = {
     campaign: (action, args, context, info) =>
       Loader(context).campaigns.load(action.campaignId, getFields(info)),
     schoolActionStats: (action, args, context) =>
-      getActionStatsBySchoolIdAndActionId(args.schoolId, action.id, args.orderBy, context),
+      getActionStatsBySchoolIdAndActionId(
+        args.schoolId,
+        action.id,
+        args.orderBy,
+        context,
+      ),
   },
   Media: {
     url: (media, args) => urlWithQuery(media.url, args),
@@ -593,7 +602,12 @@ const resolvers = {
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
     schoolActionStats: (_, args, context) =>
-      getActionStatsBySchoolIdAndActionId(args.schoolId, args.actionId, args.orderBy, context),
+      getActionStatsBySchoolIdAndActionId(
+        args.schoolId,
+        args.actionId,
+        args.orderBy,
+        context,
+      ),
     signup: (_, args, context) => Loader(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args, context),
     signupsByUserId: (_, args, context) => getSignupsByUserId(args, context),
