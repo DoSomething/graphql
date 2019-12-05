@@ -65,7 +65,7 @@ export const getActionsByCampaignId = async (campaignId, context) => {
  * @param {Number} action_id
  * @return {Array}
  */
-export const getActionStats = async (
+export const getActionStatsBySchoolIdAndActionId = async (
   schoolId,
   actionId,
   orderBy = 'accepted_quantity,desc',
