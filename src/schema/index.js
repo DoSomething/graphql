@@ -118,6 +118,8 @@ const linkSchema = gql`
     schoolActionStats(
       "The action ID to show a school action stat for."
       actionId: Int
+      "How to order the results (e.g. 'accepted_quantity,desc')."
+      orderBy: String = "accepted_quantity,desc"
     ): [SchoolActionStat]
   }
 
@@ -375,6 +377,7 @@ const linkResolvers = {
           args: {
             schoolId: school.id,
             actionId: args.actionId,
+            orderBy: args.orderBy,
           },
           context,
           info,
