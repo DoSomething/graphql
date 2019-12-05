@@ -118,8 +118,8 @@ const linkSchema = gql`
     schoolActionStats(
       "The action ID to show a school action stat for."
       actionId: Int
-      "How to order the results (e.g. 'accepted_quantity,desc')."
-      orderBy: String = "accepted_quantity,desc"
+      "How to order the results (e.g. 'id,desc')."
+      orderBy: String = "id,desc"
     ): [SchoolActionStat]
   }
 
