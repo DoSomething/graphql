@@ -69,7 +69,8 @@ export const getActionStats = async (args, context) => {
   const { actionId, schoolId } = args;
 
   logger.debug('Loading action-stats from Rogue', {
-    actionId, schoolId,
+    actionId,
+    schoolId,
   });
 
   const filter = {};
