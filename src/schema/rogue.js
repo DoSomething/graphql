@@ -9,7 +9,7 @@ import { urlWithQuery } from '../repositories/helpers';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
 import {
   getActionById,
-  getActionStatsBySchoolIdAndActionId,
+  getActionStats,
   getCampaigns,
   getPaginatedCampaigns,
   getPermalinkBySignupId,
@@ -539,7 +539,7 @@ const resolvers = {
     campaign: (action, args, context, info) =>
       Loader(context).campaigns.load(action.campaignId, getFields(info)),
     schoolActionStats: (action, args, context) =>
-      getActionStatsBySchoolIdAndActionId(
+      getActionStats(
         args.schoolId,
         action.id,
         args.orderBy,
@@ -602,7 +602,7 @@ const resolvers = {
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
     schoolActionStats: (_, args, context) =>
-      getActionStatsBySchoolIdAndActionId(
+      getActionStats(
         args.schoolId,
         args.actionId,
         args.orderBy,
