@@ -43,7 +43,6 @@ export const getActionById = async (id, context) => {
  * @param {Number} campaign_id
  * @return {Array}
  */
-
 export const getActionsByCampaignId = async (campaignId, context) => {
   logger.debug('Loading actions from Rogue', {
     campaignId,
@@ -55,6 +54,46 @@ export const getActionsByCampaignId = async (campaignId, context) => {
   );
 
   const json = await response.json();
+
+  return transformCollection(json);
+};
+
+/**
+ * Get a simple list of action stats.
+ *
+ * @param {Number} action_id
+ * @param {String} school_id
+ * @return {Array}
+ */
+export const getActionStats = async (args, context) => {
+  const { actionId, schoolId } = args;
+
+  logger.debug('Loading action-stats from Rogue', {
+    actionId, schoolId,
+  });
+
+  const filter = {};
+
+  if (actionId) {
+    filter.action_id = actionId;
+  }
+  if (schoolId) {
+    filter.school_id = schoolId;
+  }
+
+  const queryString = stringify({
+    filter,
+    orderBy: args.orderBy,
+    pagination: 'cursor',
+  });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/action-stats/?${queryString}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+  console.log(json);
 
   return transformCollection(json);
 };

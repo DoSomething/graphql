@@ -9,6 +9,7 @@ import { urlWithQuery } from '../repositories/helpers';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
 import {
   getActionById,
+  getActionStats,
   getCampaigns,
   getPaginatedCampaigns,
   getPermalinkBySignupId,
@@ -163,6 +164,8 @@ const typeDefs = gql`
     updatedAt: DateTime
     "How long will this action take to complete?"
     timeCommitmentLabel: String
+    "Aggregate post information for this action by school."
+    schoolActionStats: [SchoolActionStat]
   }
 
   "A media resource on a post."
@@ -286,6 +289,22 @@ const typeDefs = gql`
     permalink: String
     "This flag is set when a signup has been deleted. On subsequent queries, this signup will be null."
     deleted: Boolean
+  }
+
+  "A set of aggregate post information for a school and action."
+  type SchoolActionStat {
+    "The school ID this stat belongs to"
+    schoolId: String!
+    "The action ID this stat belongs to."
+    actionId: Int!
+    "The action this stat belongs to."
+    action: Action!
+    "The sum quantity of all accepted posts with school and action."
+    acceptedQuantity: Int!
+    "The first time a post for school and action was reviewed."
+    createdAt: DateTime
+    "The last time a post for school and action was reviewed."
+    updatedAt: DateTime
   }
 
   type Query {
@@ -504,6 +523,7 @@ const resolvers = {
   Action: {
     campaign: (action, args, context, info) =>
       Loader(context).campaigns.load(action.campaignId, getFields(info)),
+    schoolActionStats: (action, args, context) => getActionStats({ actionId: action.id }, context),
   },
   Media: {
     url: (media, args) => urlWithQuery(media.url, args),
