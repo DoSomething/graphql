@@ -556,6 +556,10 @@ const resolvers = {
     reactions: post => post.reactions.total,
     permalink: post => getPermalinkByPostId(post.id),
   },
+  SchoolActionStat: {
+    action: (schoolActionStat, args, context, info) =>
+      Loader(context).actions.load(schoolActionStat.actionId, getFields(info)),
+  },
   Signup: {
     campaign: (signup, args, context, info) =>
       Loader(context).campaigns.load(signup.campaignId, getFields(info)),
