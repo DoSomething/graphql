@@ -60,6 +60,7 @@ export const getActionsByCampaignId = async (campaignId, context) => {
 
 /**
  * Get a simple list of action stats by school and or action ID.
+ * @TODO: We'll eventually need to support pagination as more action collect school ID's.
  *
  * @param {String} school_id
  * @param {Number} action_id
