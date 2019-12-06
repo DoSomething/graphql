@@ -539,12 +539,7 @@ const resolvers = {
     campaign: (action, args, context, info) =>
       Loader(context).campaigns.load(action.campaignId, getFields(info)),
     schoolActionStats: (action, args, context) =>
-      getActionStats(
-        args.schoolId,
-        action.id,
-        args.orderBy,
-        context,
-      ),
+      getActionStats(args.schoolId, action.id, args.orderBy, context),
   },
   Media: {
     url: (media, args) => urlWithQuery(media.url, args),
@@ -602,12 +597,7 @@ const resolvers = {
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
     schoolActionStats: (_, args, context) =>
-      getActionStats(
-        args.schoolId,
-        args.actionId,
-        args.orderBy,
-        context,
-      ),
+      getActionStats(args.schoolId, args.actionId, args.orderBy, context),
     signup: (_, args, context) => Loader(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args, context),
     signupsByUserId: (_, args, context) => getSignupsByUserId(args, context),

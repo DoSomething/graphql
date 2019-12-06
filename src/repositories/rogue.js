@@ -67,12 +67,7 @@ export const getActionsByCampaignId = async (campaignId, context) => {
  * @param {String} orderBy
  * @return {Array}
  */
-export const getActionStats = async (
-  schoolId,
-  actionId,
-  orderBy,
-  context,
-) => {
+export const getActionStats = async (schoolId, actionId, orderBy, context) => {
   logger.debug('Loading action-stats from Rogue', {
     schoolId,
     actionId,
