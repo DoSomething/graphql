@@ -112,6 +112,21 @@ const linkSchema = gql`
     "The action that this broadcast is associated to."
     action: Action
   }
+
+  extend type School {
+    "Aggregate post information for this school by action."
+    schoolActionStats(
+      "The action ID to show a school action stat for."
+      actionId: Int
+      "How to order the results (e.g. 'id,desc')."
+      orderBy: String = "id,desc"
+    ): [SchoolActionStat]
+  }
+
+  extend type SchoolActionStat {
+    "The school that this school action stat is for."
+    school: School
+  }
 `;
 
 function blockActionResolver(blockTypeName) {
@@ -344,6 +359,42 @@ const linkResolvers = {
           fieldName: 'school',
           args: {
             id: post.schoolId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
+  School: {
+    schoolActionStats: {
+      fragment: 'fragment SchoolActionStatsFragment on School { schoolId }',
+      resolve(school, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'schoolActionStats',
+          args: {
+            schoolId: school.id,
+            actionId: args.actionId,
+            orderBy: args.orderBy,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
+  SchoolActionStat: {
+    school: {
+      fragment: 'fragment SchoolFragment on SchoolActionStat { id }',
+      resolve(schoolActionStat, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: schoolsSchema,
+          operation: 'query',
+          fieldName: 'school',
+          args: {
+            id: schoolActionStat.schoolId,
           },
           context,
           info,

@@ -43,7 +43,6 @@ export const getActionById = async (id, context) => {
  * @param {Number} campaign_id
  * @return {Array}
  */
-
 export const getActionsByCampaignId = async (campaignId, context) => {
   logger.debug('Loading actions from Rogue', {
     campaignId,
@@ -51,6 +50,46 @@ export const getActionsByCampaignId = async (campaignId, context) => {
 
   const response = await fetch(
     `${ROGUE_URL}/api/v3/actions/?filter[campaign_id]=${campaignId}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
+};
+
+/**
+ * Get a simple list of action stats by school and or action ID.
+ * @TODO: We'll eventually need to support pagination as more action collect school ID's.
+ *
+ * @param {String} school_id
+ * @param {Number} action_id
+ * @param {String} orderBy
+ * @return {Array}
+ */
+export const getActionStats = async (schoolId, actionId, orderBy, context) => {
+  logger.debug('Loading action-stats from Rogue', {
+    schoolId,
+    actionId,
+  });
+
+  const filter = {};
+
+  if (actionId) {
+    filter.action_id = actionId;
+  }
+  if (schoolId) {
+    filter.school_id = schoolId;
+  }
+
+  const queryString = stringify({
+    filter,
+    orderBy,
+    pagination: 'cursor',
+  });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/action-stats/?${queryString}`,
     authorizedRequest(context),
   );
 

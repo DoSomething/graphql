@@ -9,6 +9,7 @@ import { urlWithQuery } from '../repositories/helpers';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
 import {
   getActionById,
+  getActionStats,
   getCampaigns,
   getPaginatedCampaigns,
   getPermalinkBySignupId,
@@ -163,6 +164,13 @@ const typeDefs = gql`
     updatedAt: DateTime
     "How long will this action take to complete?"
     timeCommitmentLabel: String
+    "Aggregate post information for this action by school."
+    schoolActionStats(
+      "The school ID to display an action stat for."
+      schoolId: String
+      "How to order the results (e.g. 'accepted_quantity,desc')."
+      orderBy: String = "accepted_quantity,desc"
+    ): [SchoolActionStat]
   }
 
   "A media resource on a post."
@@ -288,6 +296,24 @@ const typeDefs = gql`
     deleted: Boolean
   }
 
+  "A set of aggregate post information for a school and action."
+  type SchoolActionStat {
+    "The unique ID for this school action stat."
+    id: Int!
+    "The school ID this stat belongs to"
+    schoolId: String!
+    "The action ID this stat belongs to."
+    actionId: Int!
+    "The action this stat belongs to."
+    action: Action!
+    "The sum quantity of all accepted posts with school and action."
+    acceptedQuantity: Int!
+    "The first time a post for school and action was reviewed."
+    createdAt: DateTime
+    "The last time a post for school and action was reviewed."
+    updatedAt: DateTime
+  }
+
   type Query {
     "Get an Action by ID."
     action(id: Int!): Action
@@ -393,6 +419,14 @@ const typeDefs = gql`
       "The number of results per page."
       count: Int = 20
     ): [Post]
+    schoolActionStats(
+      "The School ID to filter school action stats by."
+      schoolId: String
+      "The Action ID to filter school action stats by."
+      actionId: Int
+      "How to order the results (e.g. 'id,desc')."
+      orderBy: String = "id,desc"
+    ): [SchoolActionStat]
     "Get a signup by ID."
     signup(id: Int!): Signup
     "Get a paginated collection of signups."
@@ -504,6 +538,8 @@ const resolvers = {
   Action: {
     campaign: (action, args, context, info) =>
       Loader(context).campaigns.load(action.campaignId, getFields(info)),
+    schoolActionStats: (action, args, context) =>
+      getActionStats(args.schoolId, action.id, args.orderBy, context),
   },
   Media: {
     url: (media, args) => urlWithQuery(media.url, args),
@@ -532,6 +568,10 @@ const resolvers = {
     reactions: post => post.reactions.total,
     permalink: post => getPermalinkByPostId(post.id),
   },
+  SchoolActionStat: {
+    action: (schoolActionStat, args, context, info) =>
+      Loader(context).actions.load(schoolActionStat.actionId, getFields(info)),
+  },
   Signup: {
     campaign: (signup, args, context, info) =>
       Loader(context).campaigns.load(signup.campaignId, getFields(info)),
@@ -556,6 +596,8 @@ const resolvers = {
       getPostsByCampaignId(args.id, args.page, args.count, context),
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
+    schoolActionStats: (_, args, context) =>
+      getActionStats(args.schoolId, args.actionId, args.orderBy, context),
     signup: (_, args, context) => Loader(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args, context),
     signupsByUserId: (_, args, context) => getSignupsByUserId(args, context),
