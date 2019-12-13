@@ -15,13 +15,18 @@ import {
   parseQuizQuestions,
 } from '../../repositories/contentful/phoenix';
 
+const blockFields = `
+  "The internal-facing title for this block."
+  internalTitle: String!
+`;
+
 const entryFields = `
-    "The Contentful ID for this block."
-    id: String!
-    "The time this entry was last modified."
-    updatedAt: DateTime
-    "The time when this entry was originally created."
-    createdAt: DateTime
+  "The Contentful ID for this entry."
+  id: String!
+  "The time this entry was last modified."
+  updatedAt: DateTime
+  "The time when this entry was originally created."
+  createdAt: DateTime
 `;
 
 /**
@@ -48,6 +53,7 @@ const typeDefs = gql`
   }
 
   interface Block {
+    ${blockFields}
     ${entryFields}
   }
 
@@ -105,8 +111,6 @@ const typeDefs = gql`
   }
 
   type AffirmationBlock implements Block {
-    "This title is used internally to help find this content."
-    internalTitle: String!
     "The title displayed on this card."
     header: String
     "The quote displayed in the block."
@@ -117,6 +121,7 @@ const typeDefs = gql`
     callToActionHeader: String
     "The description for the share action on this block."
     callToActionDescription: String
+    ${blockFields}
     ${entryFields}
   }
 
@@ -135,12 +140,11 @@ const typeDefs = gql`
     impactSuffix: String
     "The button text."
     actionText: String
+    ${blockFields}
     ${entryFields}
   }
 
   type CampaignDashboard implements Block {
-    "This title is used internally to help find this content."
-    internalTitle: String!
     "Heading for the share section of the dashboard."
     shareHeader: String
     "Copy for the share section of the dashboard."
@@ -153,12 +157,11 @@ const typeDefs = gql`
     secondValue: String
     "A short description of the second value."
     secondDescription: String
+    ${blockFields}
     ${entryFields}
   }
 
   type CampaignUpdateBlock implements Block {
-    "This title is used internally to help find this content."
-    internalTitle: String!
     "The content of the campaign update."
     content: String
     "Optionally, a link to embed within the campaign update."
@@ -167,6 +170,7 @@ const typeDefs = gql`
     author: PersonBlock
     "The logo of the partner or sponsor that should be highlighted for this update."
     affiliateLogo: Asset
+    ${blockFields}
     ${entryFields}
   }
 
@@ -243,6 +247,7 @@ const typeDefs = gql`
   type ImagesBlock implements Block {
     "The images to be included in this block."
     images: [Asset]
+    ${blockFields}
     ${entryFields}
   }
 
@@ -271,6 +276,7 @@ const typeDefs = gql`
     showcaseDescription: String
     "The Showcase image ('photo' if the person is an advisory board member 'alternatePhoto' by default.)"
     showcaseImage: Asset
+    ${blockFields}
     ${entryFields}
   }
 
@@ -279,12 +285,11 @@ const typeDefs = gql`
     url: String!
     "A preview image of the embed content. If set, replaces the embed on smaller screens."
     previewImage: Asset
+    ${blockFields}
     ${entryFields}
   }
 
   type PostGalleryBlock implements Block {
-    "The internal-facing title for this gallery."
-    internalTitle: String!
     "The list of Action IDs to show in this gallery."
     actionIds: [Int]!
     "The maximum number of items in a single row when viewing the gallery in a large display."
@@ -293,6 +298,7 @@ const typeDefs = gql`
     filterType: String
     "Hide the post reactions for this gallery."
     hideReactions: Boolean
+    ${blockFields}
     ${entryFields}
   }
 
@@ -307,8 +313,6 @@ const typeDefs = gql`
   }
 
   type GalleryBlock implements Block {
-    "The internal-facing title for this gallery."
-    internalTitle: String!
     "Title of the gallery."
     title: String
     "The maximum number of items in a single row when viewing the gallery in a large display."
@@ -319,12 +323,11 @@ const typeDefs = gql`
     blocks: [Showcasable]!
     "Controls the cropping method of the gallery images."
     imageFit: GalleryImageFitOption
+    ${blockFields}
     ${entryFields}
   }
 
   type LinkBlock implements Block {
-    "The internal-facing title for this link block."
-    internalTitle: String!
     "The user-facing title for this link block."
     title: String
     "Optional description of the link."
@@ -339,6 +342,7 @@ const typeDefs = gql`
     template: String
     "Any custom overrides for this block."
     additionalContent: JSON
+    ${blockFields}
     ${entryFields}
   }
 
@@ -348,8 +352,6 @@ const typeDefs = gql`
   }
 
   type ContentBlock implements Block & Showcasable {
-    "The internal-facing title for this link block."
-    internalTitle: String!
     "An optional supporting super-title."
     superTitle: String
     "The user-facing title of the block."
@@ -370,12 +372,11 @@ const typeDefs = gql`
     showcaseImage: Asset
     "Any custom overrides for this block."
     additionalContent: JSON
+    ${blockFields}
     ${entryFields}
   }
 
   type PhotoSubmissionBlock implements Block {
-    "The internal-facing title for this photo submission action."
-    internalTitle: String!
     "The Action ID that posts will be submitted for."
     actionId: Int
     "Optional custom title of the text submission block."
@@ -404,12 +405,11 @@ const typeDefs = gql`
     affirmationContent: String
     "Any custom overrides for this block."
     additionalContent: JSON
+    ${blockFields}
     ${entryFields}
   }
 
   type QuizBlock implements Block {
-    "This title is used internally to help find this content."
-    internalTitle: String!
     "The user-facing title for this quiz."
     title: String
     "The URL slug for this quiz."
@@ -427,18 +427,18 @@ const typeDefs = gql`
     questions: JSON
     "Any custom overrides for this block."
     additionalContent: JSON
+    ${blockFields}
     ${entryFields}
   }
 
   type SectionBlock implements Block {
-    "This title is used internally to help find this content."
-    internalTitle: String!
     "The hexadecimal background color for this section."
     backgroundColor: String
     "The hexadecimal text color for this section."
     textColor: String
     "The content, in Rich Text."
     content: JSON!
+    ${blockFields}
     ${entryFields}
   }
 
@@ -449,8 +449,6 @@ const typeDefs = gql`
   }
 
   type SixpackExperimentBlock implements Block {
-    "This title is used internally to help find this content."
-    internalTitle: String!
     "This (optional) block should be used as the control in the experiment."
     control: Block
     "The test alternatives for this experiment."
@@ -461,12 +459,11 @@ const typeDefs = gql`
     trafficFraction: Int
     "The KPI to associate with this experiment."
     kpi: String
+    ${blockFields}
     ${entryFields}
   }
 
   type SelectionSubmissionBlock implements Block {
-    "This title is used internally to help find this content."
-    internalTitle: String!
     "The Rogue action ID for this submission block."
     actionId: Int
     "The user-facing title for this share block."
@@ -485,34 +482,31 @@ const typeDefs = gql`
     buttonText: String
     "The text displayed under the user selection, post submission."
     postSubmissionLabel: String!
+    ${blockFields}
     ${entryFields}
   }
 
   type SocialDriveBlock implements Block {
-    "This title is used internally to help find this content."
-    internalTitle: String!
     "The link for this social drive, with dynamic string tokens."
     link: AbsoluteUrl
     "Toggles the display of the page views info card adjacent to the block"
     hidePageViews: Boolean
+    ${blockFields}
     ${entryFields}
   }
 
   type SoftEdgeBlock implements Block {
-    "This title is used internally to help find this content."
-    internalTitle: String!
     "The user-facing title for this block."
     title: String
     "The Rogue action ID for this submission block."
     actionId: Int
     "The SoftEdge campaign ID for this submission block."
     softEdgeId: Int!
+    ${blockFields}
     ${entryFields}
   }
 
   type ShareBlock implements Block {
-    "The internal-facing title for this share block."
-    internalTitle: String!
     "The Action ID that 'share' posts will be submitted for."
     actionId: Int
     "The user-facing title for this share block."
@@ -531,12 +525,11 @@ const typeDefs = gql`
     affirmation: String
     "Any custom overrides for this block."
     additionalContent: JSON
+    ${blockFields}
     ${entryFields}
   }
 
   type TextSubmissionBlock implements Block {
-    "The internal-facing title for this text submission action."
-    internalTitle: String!
     "The Action ID that posts will be submitted for."
     actionId: Int
     "Optional custom title of the text submission block."
@@ -557,12 +550,11 @@ const typeDefs = gql`
     affirmationContent: String
     "Any custom overrides for this block."
     additionalContent: JSON
+    ${blockFields}
     ${entryFields}
   }
 
   type PetitionSubmissionBlock implements Block {
-    "The internal-facing title for this petition submission block."
-    internalTitle: String!
     "The Action ID that posts will be submitted for."
     actionId: Int
     "Optional custom title of the petition block."
@@ -583,12 +575,11 @@ const typeDefs = gql`
     affirmationContent: String
     "Any custom overrides for this block."
     additionalContent: JSON
+    ${blockFields}
     ${entryFields}
   }
 
   type VoterRegistrationBlock implements Block {
-    "The internal-facing title for this voter registration block."
-    internalTitle: String!
     "The user-facing title for this voter registration block."
     title: String
     "The voter registration block's text content."
@@ -597,12 +588,11 @@ const typeDefs = gql`
     link: AbsoluteUrl
     "Any custom overrides for this block."
     additionalContent: JSON
+    ${blockFields}
     ${entryFields}
   }
 
   type AffiliateBlock implements Block {
-    "The internal-facing title for this affiliate block."
-    internalTitle: String!
     "The title for this affiliate."
     title: String!
     "The link to the affiliate's website."
@@ -611,6 +601,7 @@ const typeDefs = gql`
     logo: Asset
     "The affiliate's UTM label."
     utmLabel: String
+    ${blockFields}
     ${entryFields}
   }
 
@@ -767,6 +758,7 @@ const resolvers = {
   PersonBlock: {
     photo: linkResolver,
     alternatePhoto: linkResolver,
+    internalTitle: person => person.email,
     showcaseTitle: person => person.name,
     showcaseDescription: person =>
       person.type.includes('board member')
