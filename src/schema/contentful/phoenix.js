@@ -758,7 +758,7 @@ const resolvers = {
   PersonBlock: {
     photo: linkResolver,
     alternatePhoto: linkResolver,
-    internalTitle: person => person.name,
+    internalTitle: person => person.email,
     showcaseTitle: person => person.name,
     showcaseDescription: person =>
       person.type.includes('board member')
