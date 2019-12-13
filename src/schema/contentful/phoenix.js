@@ -16,12 +16,12 @@ import {
 } from '../../repositories/contentful/phoenix';
 
 const blockFields = `
-  "The internal-facing title for this campaign."
+  "The internal-facing title for this block."
   internalTitle: String!
 `;
 
 const entryFields = `
-  "The Contentful ID for this block."
+  "The Contentful ID for this entry."
   id: String!
   "The time this entry was last modified."
   updatedAt: DateTime
