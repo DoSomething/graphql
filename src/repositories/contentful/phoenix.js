@@ -313,8 +313,8 @@ const parseQuestionChoices = question => {
   const choices = question.choices || [];
 
   return choices.map((choice, index) => ({
-    id: index,
     ...choice,
+    id: index.toString(),
   }));
 };
 
@@ -327,9 +327,9 @@ export const parseQuizQuestions = quiz => {
   const questions = quiz.questions || [];
 
   return questions.map((question, index) => ({
-    id: index,
-    choices: parseQuestionChoices(question),
     ...question,
+    id: index.toString(),
+    choices: parseQuestionChoices(question),
   }));
 };
 
