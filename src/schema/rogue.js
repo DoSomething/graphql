@@ -41,6 +41,8 @@ import {
  * @var {String}
  */
 const typeDefs = gql`
+  scalar Date
+
   scalar DateTime
 
   scalar AbsoluteUrl
@@ -79,7 +81,7 @@ const typeDefs = gql`
     "The time when this campaign was originally created."
     createdAt: DateTime
     "The time when this campaign ends."
-    endDate: DateTime
+    endDate: Date
     "The unique ID for this campaign."
     id: Int!
     "The internal name used to identify the campaign."
