@@ -623,7 +623,10 @@ const resolvers = {
       Loader(context).actionsByCampaignId.load(campaign.id),
     causes: campaign => parseCampaignCauses(campaign),
     // formatting to drop the time stamp in order to correctly display the endDate in Campaign Info
-    endDate: campaign => campaign.endDate ? dateFormat(parseISO(campaign.endDate), 'MM/dd/yyyy') : null,
+    endDate: campaign =>
+      campaign.endDate
+        ? dateFormat(parseISO(campaign.endDate), 'MM/dd/yyyy')
+        : null,
   },
 };
 
