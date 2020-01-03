@@ -3,6 +3,7 @@ import { getFields } from 'fielddataloader';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
+// import { parse } from 'date-fns';
 
 import Loader from '../loader';
 import { urlWithQuery } from '../repositories/helpers';
@@ -621,6 +622,7 @@ const resolvers = {
     actions: (campaign, args, context) =>
       Loader(context).actionsByCampaignId.load(campaign.id),
     causes: campaign => parseCampaignCauses(campaign),
+    // endDate: campaign => parse(campaign.endDate, 'MM/DD/YYYY', new Date()),
   },
 };
 
