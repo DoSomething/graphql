@@ -21,6 +21,7 @@ import {
   getPostsBySignupId,
   getPostById,
   getSignups,
+  getPaginatedSignups,
   getSignupsByUserId,
   getSignupsCount,
   toggleReaction,
@@ -296,6 +297,18 @@ const typeDefs = gql`
     deleted: Boolean
   }
 
+  "Experimental: A paginated list of signups. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
+  type SignupCollection {
+    edges: [SignupEdge]
+    pageInfo: PageInfo!
+  }
+
+  "Experimental: Signup in a paginated list."
+  type SignupEdge {
+    cursor: String!
+    node: Signup!
+  }
+
   "A set of aggregate post information for a school and action."
   type SchoolActionStat {
     "The unique ID for this school action stat."
@@ -444,6 +457,20 @@ const typeDefs = gql`
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
     ): [Signup]
+    paginatedSignups(
+      "The Campaign ID load signups for."
+      campaignId: String
+      "The signup source to load signups for."
+      source: String
+      "The user ID to load signups for."
+      userId: String
+      "How to order the results (e.g. 'id,desc')."
+      orderBy: String = "id,desc"
+      "Get the first N results."
+      first: Int = 20
+      "The cursor to return results after."
+      after: String
+    ): SignupCollection
     "Get a paginated collection of signups by user ID."
     signupsByUserId(
       "The Northstar user ID to filter signups by."
@@ -600,6 +627,7 @@ const resolvers = {
       getActionStats(args.schoolId, args.actionId, args.orderBy, context),
     signup: (_, args, context) => Loader(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args, context),
+    paginatedSignups: (_, args, context) => getPaginatedSignups(args, context),
     signupsByUserId: (_, args, context) => getSignupsByUserId(args, context),
     signupsCount: (_, args, context) => getSignupsCount(args, context),
     postsCount: (_, args, context) => getPostsCount(args, context),
