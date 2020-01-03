@@ -3,7 +3,7 @@ import { getFields } from 'fielddataloader';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
-import { format as dataFormat, parseISO } from 'date-fns';
+import { format as dateFormat, parseISO } from 'date-fns';
 
 import Loader from '../loader';
 import { urlWithQuery } from '../repositories/helpers';
@@ -623,7 +623,7 @@ const resolvers = {
       Loader(context).actionsByCampaignId.load(campaign.id),
     causes: campaign => parseCampaignCauses(campaign),
     // formatting to drop the time stamp in order to correctly display the endDate in Campaign Info
-    endDate: campaign => dataFormat(parseISO(campaign.endDate), 'MM/dd/yyyy'),
+    endDate: campaign => campaign.endDate ? dateFormat(parseISO(campaign.endDate), 'MM/dd/yyyy') : null,
   },
 };
 
