@@ -3,6 +3,7 @@ import { getFields } from 'fielddataloader';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
+import { format as dateFormat, parseISO } from 'date-fns';
 
 import Loader from '../loader';
 import { urlWithQuery } from '../repositories/helpers';
@@ -41,6 +42,8 @@ import {
  * @var {String}
  */
 const typeDefs = gql`
+  scalar Date
+
   scalar DateTime
 
   scalar AbsoluteUrl
@@ -79,7 +82,7 @@ const typeDefs = gql`
     "The time when this campaign was originally created."
     createdAt: DateTime
     "The time when this campaign ends."
-    endDate: DateTime
+    endDate: Date
     "The unique ID for this campaign."
     id: Int!
     "The internal name used to identify the campaign."
@@ -619,6 +622,11 @@ const resolvers = {
     actions: (campaign, args, context) =>
       Loader(context).actionsByCampaignId.load(campaign.id),
     causes: campaign => parseCampaignCauses(campaign),
+    // formatting to drop the time stamp in order to correctly display the endDate in Campaign Info
+    endDate: campaign =>
+      campaign.endDate
+        ? dateFormat(parseISO(campaign.endDate), 'MM/dd/yyyy')
+        : null,
   },
 };
 
