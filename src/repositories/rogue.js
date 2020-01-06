@@ -474,7 +474,7 @@ export const makeImpactStatement = post => {
  * @param {String} userId
  * @return {Array}
  */
-export const getSignups = async (args, context) => {
+export const fetchSignups = async (args, context, additionalQuery) => {
   const queryString = stringify({
     filter: {
       campaign_id: args.campaignId,
@@ -482,16 +482,49 @@ export const getSignups = async (args, context) => {
       source: args.source,
     },
     orderBy: args.orderBy,
-    page: args.page,
-    limit: args.count,
     pagination: 'cursor',
+    ...additionalQuery,
+  });
+
+  logger.debug('Loading posts from Rogue.', {
+    args,
+    queryString,
   });
 
   const response = await fetch(
     `${ROGUE_URL}/api/v3/signups/?${queryString}`,
     authorizedRequest(context),
   );
-  const json = await response.json();
+
+  return response.json();
+};
+
+/**
+ * Fetch a paginated signup connection.
+ *
+ * @return {Collection}
+ */
+export const getPaginatedSignups = async (args, context) => {
+  const json = await fetchSignups(args, context, {
+    limit: args.first,
+    cursor: {
+      after: args.after,
+    },
+  });
+
+  return new Collection(json);
+};
+
+/**
+ * Fetch a list of signups.
+ *
+ * @return {Array}
+ */
+export const getSignups = async (args, context) => {
+  const json = await fetchSignups(args, context, {
+    limit: args.count,
+    page: args.page,
+  });
 
   return transformCollection(json);
 };
