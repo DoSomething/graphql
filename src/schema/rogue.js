@@ -1,4 +1,5 @@
 import { gql } from 'apollo-server';
+import GraphQLJSON from 'graphql-type-json';
 import { getFields } from 'fielddataloader';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDateTime } from 'graphql-iso-date';
@@ -33,6 +34,7 @@ import {
   tagPost,
   rotatePost,
   deletePost,
+  createSignup,
   deleteSignup,
 } from '../repositories/rogue';
 
@@ -42,6 +44,8 @@ import {
  * @var {String}
  */
 const typeDefs = gql`
+  scalar JSON
+
   scalar DateTime
 
   scalar AbsoluteUrl
@@ -549,6 +553,8 @@ const typeDefs = gql`
     ): Post
     "Delete a post. Requires staff/admin role."
     deletePost("The post ID to delete." id: Int!): Post
+    "Create a signup."
+    createSignup(campaignId: Int!, detail: JSON): Signup
     "Delete a signup. Requires staff/admin role."
     deleteSignup("The signup ID to delete." id: Int!): Signup
   }
@@ -560,6 +566,7 @@ const typeDefs = gql`
  * @var {Object}
  */
 const resolvers = {
+  JSON: GraphQLJSON,
   DateTime: GraphQLDateTime,
   AbsoluteUrl: GraphQLAbsoluteUrl,
   Action: {
@@ -641,6 +648,7 @@ const resolvers = {
     rotatePost: (_, args, context) =>
       rotatePost(args.id, args.degrees, context),
     deletePost: (_, args, context) => deletePost(args.id, context),
+    createSignup: (_, args, context) => createSignup(args, context),
     deleteSignup: (_, args, context) => deleteSignup(args.id, context),
   },
   Campaign: {

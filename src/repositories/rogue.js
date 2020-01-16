@@ -610,6 +610,33 @@ export const getSignupsByUserId = async (args, context) => {
 };
 
 /**
+ * Create a signup.
+ *
+ * @param {Number} signupId
+ * @return {Object}
+ */
+export const createSignup = async (args, context) => {
+  if (!args.campaignId) {
+    throw new Error(`Cannot create a signup without 'campaignId'.`);
+  }
+
+  logger.debug('Creating a signup', { args });
+
+  const response = await fetch(`${ROGUE_URL}/api/v3/signups`, {
+    method: 'POST',
+    ...requireAuthorizedRequest(context),
+    body: JSON.stringify({
+      campaign_id: args.campaignId,
+      details: args.details,
+    }),
+  });
+
+  const json = await response.json();
+
+  return transformItem(json);
+};
+
+/**
  * Delete a signup.
  *
  * @param {Number} signupId
