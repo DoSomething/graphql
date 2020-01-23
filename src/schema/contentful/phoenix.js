@@ -104,6 +104,22 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type CompanyPage {
+    "The internal-facing title for this company page."
+    internalTitle: String!
+    "The slug for this company page."
+    slug: String!
+    "The user-facing title for this company page."
+    title: String!
+    "The subtitle for this page."
+    subTitle: String
+    "The cover image for this company page."
+    coverImage: Asset
+    "The content, in Rich Text, for this company page."
+    content: JSON!
+    ${entryFields}
+  }
+
   enum CallToActionStyle {
     LIGHT
     DARK
@@ -652,6 +668,7 @@ const contentTypeMappings = {
   voterRegistrationAction: 'VoterRegistrationBlock',
   causePage: 'CausePage',
   collectionPage: 'CollectionPage',
+  companyPage: 'CompanyPage',
 };
 
 /**
@@ -726,6 +743,9 @@ const resolvers = {
   CollectionPage: {
     coverImage: linkResolver,
     affiliates: linkResolver,
+  },
+  CompanyPage: {
+    coverImage: linkResolver,
   },
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
