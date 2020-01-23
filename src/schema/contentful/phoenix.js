@@ -632,6 +632,7 @@ const typeDefs = gql`
     campaignWebsiteByCampaignId(campaignId: String!, preview: Boolean = false): CampaignWebsite
     causePageBySlug(slug: String!, preview: Boolean = false): CausePage
     collectionPageBySlug(slug: String!, preview: Boolean = false): CollectionPage
+    companyPageBySlug(slug: String!, preview: Boolean = false): CompanyPage
   }
 `;
 
@@ -695,6 +696,8 @@ const resolvers = {
       Loader(context, preview).causePagesBySlug.load(slug),
     collectionPageBySlug: (_, { slug, preview }, context) =>
       Loader(context, preview).collectionPagesBySlug.load(slug),
+    companyPageBySlug: (_, { slug, preview }, context) =>
+      Loader(context, preview).companyPagesBySlug.load(slug),
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
