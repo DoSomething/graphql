@@ -104,6 +104,22 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type CompanyPage {
+    "The internal-facing title for this company page."
+    internalTitle: String!
+    "The slug for this company page."
+    slug: String!
+    "The user-facing title for this company page."
+    title: String!
+    "The subtitle for this page."
+    subTitle: String
+    "The cover image for this company page."
+    coverImage: Asset
+    "The Rich Text content for this company page."
+    content: JSON!
+    ${entryFields}
+  }
+
   enum CallToActionStyle {
     LIGHT
     DARK
@@ -215,9 +231,9 @@ const typeDefs = gql`
     superTitle: String!
     "The title."
     title: String!
-    "The description, in Rich Text."
+    "The Rich Text description."
     description: JSON!
-    "The content, in Rich Text."
+    "The Rich Text content."
     content: JSON!
     "Any custom overrides for this cause page."
     additionalContent: JSON
@@ -233,13 +249,13 @@ const typeDefs = gql`
     superTitle: String!
     "The title."
     title: String!
-    "The description, in Rich Text."
+    "The Rich Text description."
     description: JSON!
     "The prefix intro for the displayed affiliates."
     affiliatePrefix: String
     "The list of affiliates for this collection page."
     affiliates: [AffiliateBlock]
-    "The content, in Rich Text."
+    "The Rich Text content."
     content: JSON!
     ${entryFields}
   }
@@ -616,6 +632,7 @@ const typeDefs = gql`
     campaignWebsiteByCampaignId(campaignId: String!, preview: Boolean = false): CampaignWebsite
     causePageBySlug(slug: String!, preview: Boolean = false): CausePage
     collectionPageBySlug(slug: String!, preview: Boolean = false): CollectionPage
+    companyPageBySlug(slug: String!, preview: Boolean = false): CompanyPage
   }
 `;
 
@@ -652,6 +669,7 @@ const contentTypeMappings = {
   voterRegistrationAction: 'VoterRegistrationBlock',
   causePage: 'CausePage',
   collectionPage: 'CollectionPage',
+  companyPage: 'CompanyPage',
 };
 
 /**
@@ -678,6 +696,8 @@ const resolvers = {
       Loader(context, preview).causePagesBySlug.load(slug),
     collectionPageBySlug: (_, { slug, preview }, context) =>
       Loader(context, preview).collectionPagesBySlug.load(slug),
+    companyPageBySlug: (_, { slug, preview }, context) =>
+      Loader(context, preview).companyPagesBySlug.load(slug),
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
@@ -726,6 +746,9 @@ const resolvers = {
   CollectionPage: {
     coverImage: linkResolver,
     affiliates: linkResolver,
+  },
+  CompanyPage: {
+    coverImage: linkResolver,
   },
   TextSubmissionBlock: {
     textFieldPlaceholderMessage: block => block.textFieldPlaceholder,

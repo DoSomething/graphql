@@ -174,6 +174,15 @@ export const getCollectionPageBySlug = async (slug, context) =>
   getPhoenixContentfulEntryByField('collectionPage', 'slug', slug, context);
 
 /**
+ * Search for a Phoenix Contentful Company Page entry by slug.
+ *
+ * @param {String} slug
+ * @return {Object}
+ */
+export const getCompanyPageBySlug = async (slug, context) =>
+  getPhoenixContentfulEntryByField('companyPage', 'slug', slug, context);
+
+/**
  * Search for a Phoenix Contentful affiliate entry by utmLabel.
  *
  * @param {String} id
