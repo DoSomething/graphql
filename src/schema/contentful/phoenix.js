@@ -115,7 +115,7 @@ const typeDefs = gql`
     subTitle: String
     "The cover image for this company page."
     coverImage: Asset
-    "The content, in Rich Text, for this company page."
+    "The Rich Text content for this company page."
     content: JSON!
     ${entryFields}
   }
@@ -231,9 +231,9 @@ const typeDefs = gql`
     superTitle: String!
     "The title."
     title: String!
-    "The description, in Rich Text."
+    "The Rich Text description."
     description: JSON!
-    "The content, in Rich Text."
+    "The Rich Text content."
     content: JSON!
     "Any custom overrides for this cause page."
     additionalContent: JSON
@@ -249,13 +249,13 @@ const typeDefs = gql`
     superTitle: String!
     "The title."
     title: String!
-    "The description, in Rich Text."
+    "The Rich Text description."
     description: JSON!
     "The prefix intro for the displayed affiliates."
     affiliatePrefix: String
     "The list of affiliates for this collection page."
     affiliates: [AffiliateBlock]
-    "The content, in Rich Text."
+    "The Rich Text content."
     content: JSON!
     ${entryFields}
   }
