@@ -392,6 +392,24 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type CurrentSchoolBlock implements Block {
+    "The Action ID to display aggregate school impact for."
+    actionId: Int
+    "The title to show for the school selection form."
+    selectSchoolTitle: String
+    "The instructions to show for the school selection form."
+    selectSchoolDescription: String
+    "The title to show for the school impact block."
+    currentSchoolTitle: String
+    "The text text to show for the school impact block."
+    currentSchoolDescription: String
+    "The text to show if a user's school is not available."
+    schoolNotAvailableDescription: String
+    ${blockFields}
+    ${entryFields}
+  }
+
+
   type PhotoSubmissionBlock implements Block {
     "The Action ID that posts will be submitted for."
     actionId: Int
@@ -651,6 +669,7 @@ const contentTypeMappings = {
   page: 'Page',
   embed: 'EmbedBlock',
   contentBlock: 'ContentBlock',
+  currentSchoolBlock: 'CurrentSchoolBlock',
   galleryBlock: 'GalleryBlock',
   imagesBlock: 'ImagesBlock',
   linkAction: 'LinkBlock',
