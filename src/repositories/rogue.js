@@ -4,7 +4,6 @@ import logger from 'heroku-logger';
 import { getFields } from 'fielddataloader';
 import {
   find,
-  has,
   intersection,
   isUndefined,
   omit,
