@@ -150,6 +150,7 @@ export const fetchCampaigns = async (
     {
       is_open: args.isOpen,
       causes: args.causes ? args.causes.join(',') : undefined,
+      has_website: args.hasWebsite,
     },
     isUndefined,
   );

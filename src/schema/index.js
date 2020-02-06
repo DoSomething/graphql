@@ -127,6 +127,11 @@ const linkSchema = gql`
     "The school that this school action stat is for."
     school: School
   }
+
+  extend type Campaign {
+    "The contentful campaign that is associated with the rogue campaign."
+    campaignWebsite: CampaignWebsite
+  }
 `;
 
 function blockActionResolver(blockTypeName) {
@@ -401,6 +406,24 @@ const linkResolvers = {
         });
       },
     },
+  },
+
+  Campaign: {
+    campaignWebsite: {
+      fragment: 'fragment CampaignWebsiteFragment on Campaign { contentfulCampaignId }',
+      resolve(campaign, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: phoenixContentfulSchema,
+          operation: 'query',
+          fieldName: 'campaignWebsite',
+          args: {
+            id: campaign.contentfulCampaignId,
+          },
+          context,
+          info,
+        })
+      }
+    }
   },
   Signup: {
     user: {
