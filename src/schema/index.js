@@ -410,7 +410,8 @@ const linkResolvers = {
 
   Campaign: {
     campaignWebsite: {
-      fragment: 'fragment CampaignWebsiteFragment on Campaign { contentfulCampaignId }',
+      fragment:
+        'fragment CampaignWebsiteFragment on Campaign { contentfulCampaignId }',
       resolve(campaign, args, context, info) {
         return info.mergeInfo.delegateToSchema({
           schema: phoenixContentfulSchema,
@@ -421,9 +422,9 @@ const linkResolvers = {
           },
           context,
           info,
-        })
-      }
-    }
+        });
+      },
+    },
   },
   Signup: {
     user: {
