@@ -87,6 +87,8 @@ const typeDefs = gql`
     endDate: DateTime
     "The unique ID for this campaign."
     id: Int!
+    "The contentful campaign id where this campaign is being used."
+    contentfulCampaignId: String
     "The internal name used to identify the campaign."
     internalTitle: String!
     "Collection of Actions associated to the Campaign."
@@ -363,6 +365,8 @@ const typeDefs = gql`
       isOpen: Boolean
       "Only return campaigns containing these causes."
       causes: [String]
+      "Only return campaigns that have a contentful campaign associated."
+      hasWebsite: Boolean
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
     ): CampaignCollection
