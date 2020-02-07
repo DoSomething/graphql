@@ -346,6 +346,8 @@ const typeDefs = gql`
       page: Int = 1
       "Only return campaigns that are open or closed."
       isOpen: Boolean
+      "Only return campaigns containing these causes."
+      cause: [String]
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
       "The number of results per page."
@@ -359,6 +361,8 @@ const typeDefs = gql`
       after: String
       "Only return campaigns that are open or closed."
       isOpen: Boolean
+      "Only return campaigns containing these causes."
+      cause: [String]
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
     ): CampaignCollection

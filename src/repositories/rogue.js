@@ -2,7 +2,14 @@ import { stringify } from 'qs';
 import pluralize from 'pluralize';
 import logger from 'heroku-logger';
 import { getFields } from 'fielddataloader';
-import { find, has, intersection, snakeCase, zipWith } from 'lodash';
+import {
+  find,
+  intersection,
+  isUndefined,
+  omit,
+  snakeCase,
+  zipWith,
+} from 'lodash';
 
 import schema from '../schema';
 import config from '../../config';
@@ -139,7 +146,13 @@ export const fetchCampaigns = async (
   info,
   additionalQuery = {},
 ) => {
-  const filter = has(args, 'isOpen') ? { is_open: args.isOpen } : undefined;
+  const filter = omit(
+    {
+      is_open: args.isOpen,
+      cause: args.cause ? args.cause.join(',') : undefined,
+    },
+    isUndefined,
+  );
 
   // Rogue expects a comma-separated list of snake_case fields.
   // If not querying anything, use 'undefined' to omit query string.
