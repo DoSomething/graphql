@@ -425,6 +425,8 @@ const typeDefs = gql`
     quantityFieldLabel: String
     "Optional placeholder for the quantity field."
     quantityFieldPlaceholder: String
+    "Optional label for the 'number_of_participants' field. If empty, this field will be omitted."
+    numberOfParticipantsFieldLabel: String
     "Optional label for the 'why participated' field."
     whyParticipatedFieldLabel: String
     "Optional placeholder for the 'why participated' field."
