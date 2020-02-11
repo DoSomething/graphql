@@ -149,7 +149,7 @@ export const fetchCampaigns = async (
   const filter = omit(
     {
       is_open: args.isOpen,
-      causes: args.causes ? args.causes.join(',') : undefined,
+      cause: args.causes ? args.causes.join(',') : undefined,
       has_website: args.hasWebsite,
     },
     isUndefined,
