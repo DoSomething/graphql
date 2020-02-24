@@ -222,6 +222,22 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type HomePage {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The title for this page."
+    title: String!
+    "The subtitle for this page."
+    subTitle: String
+    "Campaigns (campaign and story page entries) rendered as a list on the homepage."
+    campaigns: [CampaignWebsite]
+    "Articles (page entries) rendered as a list on the homepage."
+    articles: [Page]
+    "Any custom overrides for this entry."
+    additionalContent: JSON
+    ${entryFields}
+  }
+
   type CausePage {
     "The slug for this cause page."
     slug: String!
@@ -662,19 +678,22 @@ const typeDefs = gql`
  * @var {Object}
  */
 const contentTypeMappings = {
-  affirmation: 'AffirmationBlock',
   affiliates: 'AffiliateBlock',
-  campaign: 'CampaignWebsite',
+  affirmation: 'AffirmationBlock',
   callToAction: 'CallToActionBlock',
+  campaign: 'CampaignWebsite',
   campaignDashboard: 'CampaignDashboard',
   campaignUpdate: 'CampaignUpdateBlock',
-  page: 'Page',
-  embed: 'EmbedBlock',
+  causePage: 'CausePage',
+  collectionPage: 'CollectionPage',
+  companyPage: 'CompanyPage',
   contentBlock: 'ContentBlock',
   currentSchoolBlock: 'CurrentSchoolBlock',
+  embed: 'EmbedBlock',
   galleryBlock: 'GalleryBlock',
   imagesBlock: 'ImagesBlock',
   linkAction: 'LinkBlock',
+  page: 'Page',
   person: 'PersonBlock',
   petitionSubmissionAction: 'PetitionSubmissionBlock',
   photoSubmissionAction: 'PhotoSubmissionBlock',
@@ -682,15 +701,12 @@ const contentTypeMappings = {
   quiz: 'QuizBlock',
   sectionBlock: 'SectionBlock',
   selectionSubmissionAction: 'SelectionSubmissionBlock',
+  shareAction: 'ShareBlock',
   sixpackExperiment: 'SixpackExperimentBlock',
   socialDriveAction: 'SocialDriveBlock',
-  shareAction: 'ShareBlock',
   softEdgeWidgetAction: 'SoftEdgeBlock',
   textSubmissionAction: 'TextSubmissionBlock',
   voterRegistrationAction: 'VoterRegistrationBlock',
-  causePage: 'CausePage',
-  collectionPage: 'CollectionPage',
-  companyPage: 'CompanyPage',
 };
 
 /**
