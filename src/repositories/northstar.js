@@ -175,6 +175,58 @@ export const updateSchoolId = async (id, schoolId, options) => {
 };
 
 /**
+ * Create a new "deletion request" for the given user.
+ *
+ * @param {String} id
+ * @param {Object} options
+ */
+export const requestDeletion = async (id, options) => {
+  logger.debug('Requesting deletion for user', { id });
+
+  try {
+    const response = await fetch(`${NORTHSTAR_URL}/v2/users/${id}/deletion`, {
+      method: 'POST',
+      ...requireAuthorizedRequest(options),
+    });
+
+    const json = await response.json();
+
+    return transformItem(json);
+  } catch (exception) {
+    const error = exception.message;
+    logger.warn('Unable to delete user.', { id, error });
+  }
+
+  return null;
+};
+
+/**
+ * Undo a "deletion request" for the given user.
+ *
+ * @param {String} id
+ * @param {Object} options
+ */
+export const undoDeletionRequest = async (id, options) => {
+  logger.debug('Undoing deletion request for user', { id });
+
+  try {
+    const response = await fetch(`${NORTHSTAR_URL}/v2/users/${id}/deletion`, {
+      method: 'DELETE',
+      ...requireAuthorizedRequest(options),
+    });
+
+    const json = await response.json();
+
+    return transformItem(json);
+  } catch (exception) {
+    const error = exception.message;
+    logger.warn('Unable to undo deletetion request for user.', { id, error });
+  }
+
+  return null;
+};
+
+/**
  * Get Aurora profile permalink by ID.
  *
  * @param {String} id
