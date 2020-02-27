@@ -9,8 +9,8 @@ import config from '../../../config';
 import Loader from '../../loader';
 import { stringToEnum, listToEnums } from '../helpers';
 import {
-  createImageUrl,
   linkResolver,
+  createImageUrl,
   parseQuizResults,
   parseQuizQuestions,
 } from '../../repositories/contentful/phoenix';
@@ -737,7 +737,7 @@ const resolvers = {
       Loader(context, preview).collectionPagesBySlug.load(slug),
     companyPageBySlug: (_, { slug, preview }, context) =>
       Loader(context, preview).companyPagesBySlug.load(slug),
-    homePage: (_, { preview }) => Loader(preview).homePage.load(),
+    homePage: (_, { preview }, context) => Loader(context, preview).homePages,
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
