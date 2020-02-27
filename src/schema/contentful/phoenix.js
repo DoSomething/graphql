@@ -222,22 +222,6 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type HomePage {
-    "This title is used internally to help find this content."
-    internalTitle: String!
-    "The title for this page."
-    title: String!
-    "The subtitle for this page."
-    subTitle: String
-    "Campaigns (campaign and story page entries) rendered as a list on the homepage."
-    campaigns: [CampaignWebsite]
-    "Articles (page entries) rendered as a list on the homepage."
-    articles: [Page]
-    "Any custom overrides for this entry."
-    additionalContent: JSON
-    ${entryFields}
-  }
-
   type CausePage {
     "The slug for this cause page."
     slug: String!
@@ -273,6 +257,22 @@ const typeDefs = gql`
     affiliates: [AffiliateBlock]
     "The Rich Text content."
     content: JSON!
+    ${entryFields}
+  }
+
+  type HomePage {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The title for this page."
+    title: String!
+    "The subtitle for this page."
+    subTitle: String
+    "Campaigns (campaign and story page entries) rendered as a list on the homepage."
+    campaigns: [CampaignWebsite]
+    "Articles (page entries) rendered as a list on the homepage."
+    articles: [Page]
+    "Any custom overrides for this entry."
+    additionalContent: JSON
     ${entryFields}
   }
 
@@ -669,6 +669,7 @@ const typeDefs = gql`
     causePageBySlug(slug: String!, preview: Boolean = false): CausePage
     collectionPageBySlug(slug: String!, preview: Boolean = false): CollectionPage
     companyPageBySlug(slug: String!, preview: Boolean = false): CompanyPage
+    homePage(preview: Boolean = false): HomePage
   }
 `;
 
@@ -691,6 +692,7 @@ const contentTypeMappings = {
   currentSchoolBlock: 'CurrentSchoolBlock',
   embed: 'EmbedBlock',
   galleryBlock: 'GalleryBlock',
+  homePage: 'HomePage',
   imagesBlock: 'ImagesBlock',
   linkAction: 'LinkBlock',
   page: 'Page',
@@ -735,6 +737,7 @@ const resolvers = {
       Loader(context, preview).collectionPagesBySlug.load(slug),
     companyPageBySlug: (_, { slug, preview }, context) =>
       Loader(context, preview).companyPagesBySlug.load(slug),
+    homePage: (_, { preview }) => Loader(preview).homePage.load(),
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
@@ -811,6 +814,10 @@ const resolvers = {
     blocks: linkResolver,
     imageAlignment: block => stringToEnum(block.imageAlignment),
     imageFit: block => stringToEnum(block.imageFit),
+  },
+  HomePage: {
+    articles: linkResolver,
+    campaigns: linkResolver,
   },
   ImagesBlock: {
     images: linkResolver,

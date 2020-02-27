@@ -146,6 +146,26 @@ export const getPhoenixContentfulEntryByField = async (
   });
 };
 
+export const getHomePage = async () => {
+  console.log('💅');
+
+  const query = {
+    content_type: homePage,
+    order: '-sys.updatedAt',
+    limit: 1,
+  };
+
+  // Choose the right cache and API for this request:
+  const cache = preview ? previewCache : contentCache;
+  const api = preview ? previewApi : contentApi;
+
+  const json = await api.getEntries(query);
+
+  console.log(json);
+
+  return null;
+};
+
 /**
  * Search for a Phoenix Contentful Campaign entry by campaignId.
  *

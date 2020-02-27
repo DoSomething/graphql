@@ -24,6 +24,7 @@ import {
   getCausePageBySlug,
   getCollectionPageBySlug,
   getCompanyPageBySlug,
+  getHomePage,
 } from './repositories/contentful/phoenix';
 
 /**
@@ -88,6 +89,7 @@ export default (context, preview = false) => {
       companyPagesBySlug: new DataLoader(slugs =>
         Promise.all(slugs.map(slug => getCompanyPageBySlug(slug, context))),
       ),
+      homePage: new DataLoader(entries => Promise.all(entries.shift())),
       pages: new DataLoader(ids =>
         Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
       ),
