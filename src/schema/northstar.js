@@ -12,6 +12,8 @@ import { stringToEnum, listToEnums } from './helpers';
 import {
   updateEmailSubscriptionTopics,
   getPermalinkByUserId,
+  undoDeletionRequest,
+  requestDeletion,
   updateSchoolId,
   getUsers,
 } from '../repositories/northstar';
@@ -128,6 +130,8 @@ const typeDefs = gql`
     schoolId: String @sensitive @optional
     "The user's voter registration status, either self-reported or by registering with TurboVote."
     voterRegistrationStatus: VoterRegistrationStatus
+    "If the user has requested their account to be deleted, this is the time that request occurred."
+    deletionRequestedAt: DateTime
     "The time this user was created. See the 'source' and 'source_detail' field for details."
     createdAt: DateTime
     "The last modified time for this user account."
@@ -159,6 +163,13 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    "Request deletion for the given user account."
+    requestDeletion("The user ID to request deletion for." id: String!): User!
+    "Request deletion for the given user account."
+    undoDeletionRequest(
+      "The user ID whose request we're undoing."
+      id: String!
+    ): User!
     "Update the list of newsletters a user is subscribed to."
     updateEmailSubscriptionTopics(
       "The user to update."
@@ -201,6 +212,9 @@ const resolvers = {
   DateTime: GraphQLDateTime,
   AbsoluteUrl: GraphQLAbsoluteUrl,
   Mutation: {
+    requestDeletion: (_, args, context) => requestDeletion(args.id, context),
+    undoDeletionRequest: (_, args, context) =>
+      undoDeletionRequest(args.id, context),
     updateEmailSubscriptionTopics: (_, args, context) =>
       updateEmailSubscriptionTopics(
         args.id,
