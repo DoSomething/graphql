@@ -89,7 +89,7 @@ export default (context, preview = false) => {
       companyPagesBySlug: new DataLoader(slugs =>
         Promise.all(slugs.map(slug => getCompanyPageBySlug(slug, context))),
       ),
-      homePages: getHomePage(context),
+      homePage: getHomePage(context),
       pages: new DataLoader(ids =>
         Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
       ),

@@ -737,7 +737,7 @@ const resolvers = {
       Loader(context, preview).collectionPagesBySlug.load(slug),
     companyPageBySlug: (_, { slug, preview }, context) =>
       Loader(context, preview).companyPagesBySlug.load(slug),
-    homePage: (_, { preview }, context) => Loader(context, preview).homePages,
+    homePage: (_, { preview }, context) => Loader(context, preview).homePage,
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
