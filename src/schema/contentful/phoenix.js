@@ -9,8 +9,8 @@ import config from '../../../config';
 import Loader from '../../loader';
 import { stringToEnum, listToEnums } from '../helpers';
 import {
-  createImageUrl,
   linkResolver,
+  createImageUrl,
   parseQuizResults,
   parseQuizQuestions,
 } from '../../repositories/contentful/phoenix';
@@ -257,6 +257,22 @@ const typeDefs = gql`
     affiliates: [AffiliateBlock]
     "The Rich Text content."
     content: JSON!
+    ${entryFields}
+  }
+
+  type HomePage {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The title for this page."
+    title: String!
+    "The subtitle for this page."
+    subTitle: String
+    "Campaigns (campaign and story page entries) rendered as a list on the homepage."
+    campaigns: [CampaignWebsite]
+    "Articles (page entries) rendered as a list on the homepage."
+    articles: [Page]
+    "Any custom overrides for this entry."
+    additionalContent: JSON
     ${entryFields}
   }
 
@@ -653,6 +669,7 @@ const typeDefs = gql`
     causePageBySlug(slug: String!, preview: Boolean = false): CausePage
     collectionPageBySlug(slug: String!, preview: Boolean = false): CollectionPage
     companyPageBySlug(slug: String!, preview: Boolean = false): CompanyPage
+    homePage(preview: Boolean = false): HomePage
   }
 `;
 
@@ -662,19 +679,23 @@ const typeDefs = gql`
  * @var {Object}
  */
 const contentTypeMappings = {
-  affirmation: 'AffirmationBlock',
   affiliates: 'AffiliateBlock',
-  campaign: 'CampaignWebsite',
+  affirmation: 'AffirmationBlock',
   callToAction: 'CallToActionBlock',
+  campaign: 'CampaignWebsite',
   campaignDashboard: 'CampaignDashboard',
   campaignUpdate: 'CampaignUpdateBlock',
-  page: 'Page',
-  embed: 'EmbedBlock',
+  causePage: 'CausePage',
+  collectionPage: 'CollectionPage',
+  companyPage: 'CompanyPage',
   contentBlock: 'ContentBlock',
   currentSchoolBlock: 'CurrentSchoolBlock',
+  embed: 'EmbedBlock',
   galleryBlock: 'GalleryBlock',
+  homePage: 'HomePage',
   imagesBlock: 'ImagesBlock',
   linkAction: 'LinkBlock',
+  page: 'Page',
   person: 'PersonBlock',
   petitionSubmissionAction: 'PetitionSubmissionBlock',
   photoSubmissionAction: 'PhotoSubmissionBlock',
@@ -682,15 +703,12 @@ const contentTypeMappings = {
   quiz: 'QuizBlock',
   sectionBlock: 'SectionBlock',
   selectionSubmissionAction: 'SelectionSubmissionBlock',
+  shareAction: 'ShareBlock',
   sixpackExperiment: 'SixpackExperimentBlock',
   socialDriveAction: 'SocialDriveBlock',
-  shareAction: 'ShareBlock',
   softEdgeWidgetAction: 'SoftEdgeBlock',
   textSubmissionAction: 'TextSubmissionBlock',
   voterRegistrationAction: 'VoterRegistrationBlock',
-  causePage: 'CausePage',
-  collectionPage: 'CollectionPage',
-  companyPage: 'CompanyPage',
 };
 
 /**
@@ -719,6 +737,7 @@ const resolvers = {
       Loader(context, preview).collectionPagesBySlug.load(slug),
     companyPageBySlug: (_, { slug, preview }, context) =>
       Loader(context, preview).companyPagesBySlug.load(slug),
+    homePage: (_, { preview }, context) => Loader(context, preview).homePage,
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
   },
@@ -795,6 +814,10 @@ const resolvers = {
     blocks: linkResolver,
     imageAlignment: block => stringToEnum(block.imageAlignment),
     imageFit: block => stringToEnum(block.imageFit),
+  },
+  HomePage: {
+    articles: linkResolver,
+    campaigns: linkResolver,
   },
   ImagesBlock: {
     images: linkResolver,
