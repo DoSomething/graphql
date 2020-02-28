@@ -175,7 +175,6 @@ export const getHomePage = async context => {
       const json = await api.getEntries(query);
 
       const item = json.items[0];
-      console.log(item);
 
       if (!item) {
         return null;
