@@ -89,10 +89,6 @@ export default (context, preview = false) => {
       companyPagesBySlug: new DataLoader(slugs =>
         Promise.all(slugs.map(slug => getCompanyPageBySlug(slug, context))),
       ),
-      homePage: getHomePage(context),
-      pages: new DataLoader(ids =>
-        Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
-      ),
       conversations: new DataLoader(ids =>
         Promise.all(ids.map(id => getConversationById(id, options))),
       ),
@@ -102,12 +98,19 @@ export default (context, preview = false) => {
       gambitAssets: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulAssetById(id, context))),
       ),
-      users: new FieldDataLoader((id, fields) =>
-        getUserById(id, fields, context),
+      homePage: getHomePage(context),
+      pages: new DataLoader(ids =>
+        Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
       ),
       signups: new DataLoader(ids => getSignupsById(ids, options)),
+      storyPageWebsites: new DataLoader(ids =>
+        Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
+      ),
       topics: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulEntryById(id, options))),
+      ),
+      users: new FieldDataLoader((id, fields) =>
+        getUserById(id, fields, context),
       ),
     };
   }
