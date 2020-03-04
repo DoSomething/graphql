@@ -1,12 +1,12 @@
-import { makeExecutableSchema } from 'graphql-tools';
-import { GraphQLDateTime } from 'graphql-iso-date';
-import { GraphQLAbsoluteUrl } from 'graphql-url';
-import GraphQLJSON from 'graphql-type-json';
-import { gql } from 'apollo-server';
 import { get, first } from 'lodash';
+import { gql } from 'apollo-server';
+import GraphQLJSON from 'graphql-type-json';
+import { GraphQLAbsoluteUrl } from 'graphql-url';
+import { GraphQLDateTime } from 'graphql-iso-date';
+import { makeExecutableSchema } from 'graphql-tools';
 
-import config from '../../../config';
 import Loader from '../../loader';
+import config from '../../../config';
 import { stringToEnum, listToEnums } from '../helpers';
 import {
   linkResolver,
@@ -117,6 +117,30 @@ const typeDefs = gql`
     coverImage: Asset
     "The Rich Text content for this company page."
     content: JSON!
+    ${entryFields}
+  }
+
+  type StoryPageWebsite implements Showcasable {
+    "The internal-facing title for this story campaign."
+    internalTitle: String!
+    "The slug for this story campaign."
+    slug: String!
+    "The URL for this story campaign."
+    url: String!
+    "The user-facing title for this story campaign."
+    title: String!
+    "The user-facing subtitle for this story campaign."
+    subTitle: String
+    "The cover image for this story campaign."
+    coverImage: Asset
+    "Blocks rendered following the initial content on the story campaign."
+    blocks: [Block]
+    "The showcase title (the title field.)"
+    showcaseTitle: String!
+    "The showcase description (the subTitle field.)"
+    showcaseDescription: String!
+    "The showcase image (the coverImage field.)"
+    showcaseImage: Asset
     ${entryFields}
   }
 
@@ -268,7 +292,7 @@ const typeDefs = gql`
     "The subtitle for this page."
     subTitle: String
     "Campaigns (campaign and story page entries) rendered as a list on the homepage."
-    campaigns: [CampaignWebsite]
+    campaigns: [ResourceWebsite]
     "Articles (page entries) rendered as a list on the homepage."
     articles: [Page]
     "Any custom overrides for this entry."
@@ -657,6 +681,9 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  "A web-based campaign interface, such as the traditional campaign template or story page."
+  union ResourceWebsite = CampaignWebsite | StoryPageWebsite
+
   type Query {
     "Get a block by ID."
     block(id: String!, preview: Boolean = false): Block
@@ -670,6 +697,7 @@ const typeDefs = gql`
     collectionPageBySlug(slug: String!, preview: Boolean = false): CollectionPage
     companyPageBySlug(slug: String!, preview: Boolean = false): CompanyPage
     homePage(preview: Boolean = false): HomePage
+    storyPageWebsite(id: String!, preview: Boolean = false): StoryPageWebsite
   }
 `;
 
@@ -707,6 +735,7 @@ const contentTypeMappings = {
   sixpackExperiment: 'SixpackExperimentBlock',
   socialDriveAction: 'SocialDriveBlock',
   softEdgeWidgetAction: 'SoftEdgeBlock',
+  storyPage: 'StoryPageWebsite',
   textSubmissionAction: 'TextSubmissionBlock',
   voterRegistrationAction: 'VoterRegistrationBlock',
 };
@@ -740,6 +769,11 @@ const resolvers = {
     homePage: (_, { preview }, context) => Loader(context, preview).homePage,
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
+    storyPageWebsite: (_, { id, preview }, context) =>
+      Loader(context, preview).storyPageWebsites.load(id),
+  },
+  AffiliateBlock: {
+    logo: linkResolver,
   },
   AffirmationBlock: {
     author: (person, _, context, info) =>
@@ -751,20 +785,8 @@ const resolvers = {
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
   },
-  Showcasable: {
-    __resolveType: showcasable =>
-      get(contentTypeMappings, showcasable.contentType),
-  },
   CallToActionBlock: {
     visualStyle: block => first(listToEnums(block.visualStyle)) || 'DARK',
-  },
-  ContentBlock: {
-    image: linkResolver,
-    imageAlignment: block => stringToEnum(block.imageAlignment),
-    showcaseTitle: content => content.title,
-    showcaseDescription: content => content.content,
-    showcaseImage: (person, _, context, info) =>
-      linkResolver(person, _, context, info, 'image'),
   },
   CampaignUpdateBlock: {
     author: linkResolver,
@@ -775,8 +797,8 @@ const resolvers = {
     coverImage: linkResolver,
     showcaseTitle: campaign => campaign.title,
     showcaseDescription: campaign => campaign.callToAction,
-    showcaseImage: (person, _, context, info) =>
-      linkResolver(person, _, context, info, 'coverImage'),
+    showcaseImage: (campaign, _, context, info) =>
+      linkResolver(campaign, _, context, info, 'coverImage'),
     url: campaign =>
       `${config('services.phoenix.url')}/us/campaigns/${campaign.slug}`,
   },
@@ -790,25 +812,16 @@ const resolvers = {
   CompanyPage: {
     coverImage: linkResolver,
   },
-  TextSubmissionBlock: {
-    textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
+  ContentBlock: {
+    image: linkResolver,
+    imageAlignment: block => stringToEnum(block.imageAlignment),
+    showcaseTitle: content => content.title,
+    showcaseDescription: content => content.content,
+    showcaseImage: (person, _, context, info) =>
+      linkResolver(person, _, context, info, 'image'),
   },
-  PetitionSubmissionBlock: {
-    textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
-  },
-  SixpackExperimentBlock: {
-    control: linkResolver,
-    alternatives: linkResolver,
-    convertableActions: block => listToEnums(block.convertableActions),
-  },
-  SelectionSubmissionBlock: {
-    richText: block => block.content,
-  },
-  ShareBlock: {
-    affirmationBlock: linkResolver,
-  },
-  LinkBlock: {
-    affiliateLogo: linkResolver,
+  EmbedBlock: {
+    previewImage: linkResolver,
   },
   GalleryBlock: {
     blocks: linkResolver,
@@ -821,6 +834,18 @@ const resolvers = {
   },
   ImagesBlock: {
     images: linkResolver,
+  },
+  LinkBlock: {
+    affiliateLogo: linkResolver,
+  },
+  Page: {
+    coverImage: linkResolver,
+    showcaseTitle: page => page.title,
+    showcaseDescription: page => page.subTitle,
+    showcaseImage: (page, _, context, info) =>
+      linkResolver(page, _, context, info, 'coverImage'),
+    blocks: linkResolver,
+    sidebar: linkResolver,
   },
   PersonBlock: {
     photo: linkResolver,
@@ -837,26 +862,44 @@ const resolvers = {
       return linkResolver(person, _, context, info, fieldName);
     },
   },
-  EmbedBlock: {
-    previewImage: linkResolver,
+  PetitionSubmissionBlock: {
+    textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
-  Page: {
+  ResourceWebsite: {
+    __resolveType: block => get(contentTypeMappings, block.contentType),
+  },
+  SelectionSubmissionBlock: {
+    richText: block => block.content,
+  },
+  ShareBlock: {
+    affirmationBlock: linkResolver,
+  },
+  Showcasable: {
+    __resolveType: showcasable =>
+      get(contentTypeMappings, showcasable.contentType),
+  },
+  SixpackExperimentBlock: {
+    control: linkResolver,
+    alternatives: linkResolver,
+    convertableActions: block => listToEnums(block.convertableActions),
+  },
+  StoryPageWebsite: {
     coverImage: linkResolver,
-    showcaseTitle: page => page.title,
-    showcaseDescription: page => page.subTitle,
-    showcaseImage: (page, _, context, info) =>
-      linkResolver(page, _, context, info, 'coverImage'),
     blocks: linkResolver,
-    sidebar: linkResolver,
+    showcaseTitle: storyPage => storyPage.title,
+    showcaseDescription: storyPage => storyPage.subtitle,
+    showcaseImage: (storyPage, _, context, info) =>
+      linkResolver(storyPage, _, context, info, 'coverImage'),
+    url: storyPage => `${config('services.phoenix.url')}/us/${storyPage.slug}`,
+  },
+  TextSubmissionBlock: {
+    textFieldPlaceholderMessage: block => block.textFieldPlaceholder,
   },
   QuizBlock: {
     resultBlocks: linkResolver,
     defaultResultBlock: linkResolver,
     questions: parseQuizQuestions,
     results: parseQuizResults,
-  },
-  AffiliateBlock: {
-    logo: linkResolver,
   },
 };
 
