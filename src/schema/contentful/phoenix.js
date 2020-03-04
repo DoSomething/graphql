@@ -681,6 +681,7 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  "A web-based campaign interface, such as the traditional campaign template or story page."
   union ResourceWebsite = CampaignWebsite | StoryPageWebsite
 
   type Query {
