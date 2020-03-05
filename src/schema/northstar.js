@@ -232,7 +232,12 @@ const resolvers = {
         context,
       ),
     updateEmailSubscriptionTopic: (_, args, context) =>
-      updateEmailSubscriptionTopic(args.id, args.topic, context),
+      updateEmailSubscriptionTopic(
+        args.id,
+        args.topic,
+        args.subscribed,
+        context,
+      ),
     updateSchoolId: (_, args, context) =>
       updateSchoolId(args.id, args.schoolId, context),
   },
