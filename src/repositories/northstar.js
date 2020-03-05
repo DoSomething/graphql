@@ -157,6 +157,8 @@ export const updateEmailSubscriptionTopic = async (
 ) => {
   logger.debug('Updating email subscription topic for user in Northstar', {
     id,
+    topic,
+    subscribed,
   });
 
   try {
