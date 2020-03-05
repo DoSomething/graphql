@@ -11,6 +11,7 @@ import OptionalFieldDirective from './directives/OptionalFieldDirective';
 import { stringToEnum, listToEnums } from './helpers';
 import {
   updateEmailSubscriptionTopics,
+  updateEmailSubscriptionTopic,
   getPermalinkByUserId,
   undoDeletionRequest,
   requestDeletion,
@@ -177,6 +178,15 @@ const typeDefs = gql`
       "The newsletters the user should be subscribed to."
       emailSubscriptionTopics: [EmailSubscriptionTopic]!
     ): User!
+    "Update the user's subscription for a given newsletter."
+    updateEmailSubscriptionTopic(
+      "The user to update."
+      id: String!
+      "The newsletter the user should be subscribed to."
+      topic: EmailSubscriptionTopic!
+      "The new subscription status."
+      subscribed: Boolean!
+    ): User!
     "Update the user school id."
     updateSchoolId(
       "The user to update."
@@ -221,6 +231,8 @@ const resolvers = {
         args.emailSubscriptionTopics,
         context,
       ),
+    updateEmailSubscriptionTopic: (_, args, context) =>
+      updateEmailSubscriptionTopic(args.id, args.topic, context),
     updateSchoolId: (_, args, context) =>
       updateSchoolId(args.id, args.schoolId, context),
   },

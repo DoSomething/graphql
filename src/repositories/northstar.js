@@ -141,6 +141,49 @@ export const updateEmailSubscriptionTopics = async (
 };
 
 /**
+ * Update a user's subscription status to a specific email newsletter.
+ *
+ * @param {String} id
+ * @param {EmailSubscriptionTopic} topic
+ * @param {Boolean} subscribed
+ *
+ * @param {Object} options
+ */
+export const updateEmailSubscriptionTopic = async (
+  id,
+  topic,
+  subscribed,
+  options,
+) => {
+  logger.debug('Updating email subscription topic for user in Northstar', {
+    id,
+  });
+
+  try {
+    const response = await fetch(
+      `${NORTHSTAR_URL}/v2/users/${id}/subscriptions/${topic}`,
+      {
+        method: subscribed ? 'POST' : 'DELETE',
+        ...requireAuthorizedRequest(options),
+      },
+    );
+
+    const json = await response.json();
+    console.log(json);
+
+    return transformItem(json);
+  } catch (exception) {
+    const error = exception.message;
+    logger.warn('Unable to update subscription status for topic.', {
+      id,
+      error,
+    });
+  }
+
+  return null;
+};
+
+/**
  * Update a user's school_id in Northstar.
  *
  * @param {String} id
