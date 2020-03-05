@@ -163,7 +163,7 @@ export const updateEmailSubscriptionTopic = async (
 
   try {
     const response = await fetch(
-      `${NORTHSTAR_URL}/v2/users/${id}/subscriptions/${topic}`,
+      `${NORTHSTAR_URL}/v2/users/${id}/subscriptions/${topic.toLowerCase()}`,
       {
         method: subscribed ? 'POST' : 'DELETE',
         ...requireAuthorizedRequest(options),
