@@ -146,7 +146,6 @@ export const updateEmailSubscriptionTopics = async (
  * @param {String} id
  * @param {EmailSubscriptionTopic} topic
  * @param {Boolean} subscribed
- *
  * @param {Object} options
  */
 export const updateEmailSubscriptionTopic = async (

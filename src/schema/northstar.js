@@ -182,7 +182,7 @@ const typeDefs = gql`
     updateEmailSubscriptionTopic(
       "The user to update."
       id: String!
-      "The newsletter the user should be subscribed to."
+      "The newsletter the to update the subscription status of."
       topic: EmailSubscriptionTopic!
       "The new subscription status."
       subscribed: Boolean!
