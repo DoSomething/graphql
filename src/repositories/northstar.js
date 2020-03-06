@@ -171,7 +171,6 @@ export const updateEmailSubscriptionTopic = async (
     );
 
     const json = await response.json();
-    console.log(json);
 
     return transformItem(json);
   } catch (exception) {
