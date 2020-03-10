@@ -157,6 +157,8 @@ const typeDefs = gql`
     quiz: Boolean
     "Does this action count as a scholarship entry?"
     scholarshipEntry: Boolean
+    "Does this action qualify for volunteer credit?"
+    volunteerCredit: Boolean
     "Does this action associate user posts with their school?"
     collectSchoolId: Boolean
     "Anonymous actions will not be attributed to a particular user in public galleries."
