@@ -32,6 +32,7 @@ exports.handler = async event => {
 
   if (!expectedFormat) {
     logger.error('Got unexpected webhook payload', { body });
+
     return response('Invalid format.', 422);
   }
 
@@ -51,6 +52,17 @@ exports.handler = async event => {
   await previewCache.forget(`${type}:${spaceId}:${id}`);
 
   logger.info('Cleared cache via Contentful webhook.', { spaceId, id });
+
+  // Clear Contentful cache for homePage content type entry.
+  if (contentType === 'homePage') {
+    await cache.forget(`${contentType}:${spaceId}`);
+    await previewCache.forget(`${contentType}:${spaceId}`);
+
+    logger.info('Cleared homePage cache via Contentful webhook.', {
+      spaceId,
+      id,
+    });
+  }
 
   // List of content types with secondary cache keys (cached by a field other than cannonical ID).
   const secondaryKeys = {
