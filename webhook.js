@@ -59,8 +59,13 @@ exports.handler = async event => {
     causePage: ['slug'],
     collectionPage: ['slug'],
     companyPage: ['slug'],
-    homePage: [`homePage:${spaceId}`],
   };
+
+  // Clear Contentful cache for homePage content type.
+  if (contentType === 'homePage') {
+    await cache.forget(`${contentType}:${spaceId}`);
+    await previewCache.forget(`${contentType}:${spaceId}`);
+  }
 
   // Clear secondary cache key results from the Contentful cache if applicable.
   if (secondaryKeys[contentType]) {
