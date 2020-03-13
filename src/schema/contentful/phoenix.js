@@ -887,7 +887,7 @@ const resolvers = {
     coverImage: linkResolver,
     blocks: linkResolver,
     showcaseTitle: storyPage => storyPage.title,
-    showcaseDescription: storyPage => storyPage.subtitle,
+    showcaseDescription: storyPage => storyPage.subTitle,
     showcaseImage: (storyPage, _, context, info) =>
       linkResolver(storyPage, _, context, info, 'coverImage'),
     url: storyPage => `${config('services.phoenix.url')}/us/${storyPage.slug}`,
