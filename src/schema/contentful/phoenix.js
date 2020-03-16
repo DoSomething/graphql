@@ -225,6 +225,8 @@ const typeDefs = gql`
     slug: String!
     "Cover image for this page."
     coverImage: Asset
+    "The authors for this page."
+    authors: [PersonBlock]
     "The content of the page."
     content: String
     "Sidebar blocks rendered alongside the content on the page."
@@ -692,6 +694,7 @@ const typeDefs = gql`
     affiliate(utmLabel: String!, preview: Boolean = false): AffiliateBlock
     campaignWebsite(id: String!, preview: Boolean = false): CampaignWebsite
     page(id: String!, preview: Boolean = false): Page
+    pageBySlug(slug: String!, preview: Boolean = false): Page
     campaignWebsiteByCampaignId(campaignId: String!, preview: Boolean = false): CampaignWebsite
     causePageBySlug(slug: String!, preview: Boolean = false): CausePage
     collectionPageBySlug(slug: String!, preview: Boolean = false): CollectionPage
@@ -769,6 +772,8 @@ const resolvers = {
     homePage: (_, { preview }, context) => Loader(context, preview).homePage,
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
+    pageBySlug: (_, { slug, preview }, context) =>
+      Loader(context, preview).pagesBySlug.load(slug),
     storyPageWebsite: (_, { id, preview }, context) =>
       Loader(context, preview).storyPageWebsites.load(id),
   },
@@ -839,6 +844,7 @@ const resolvers = {
     affiliateLogo: linkResolver,
   },
   Page: {
+    authors: linkResolver,
     coverImage: linkResolver,
     showcaseTitle: page => page.title,
     showcaseDescription: page => page.subTitle,

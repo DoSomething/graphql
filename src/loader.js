@@ -18,6 +18,7 @@ import {
 import { authorizedRequest } from './repositories/helpers';
 import {
   getHomePage,
+  getPageBySlug,
   getCausePageBySlug,
   getCompanyPageBySlug,
   getAffiliateByUtmLabel,
@@ -101,6 +102,9 @@ export default (context, preview = false) => {
       homePage: getHomePage(context),
       pages: new DataLoader(ids =>
         Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
+      ),
+      pagesBySlug: new DataLoader(slugs =>
+        Promise.all(slugs.map(slug => getPageBySlug(slug, context))),
       ),
       signups: new DataLoader(ids => getSignupsById(ids, options)),
       storyPageWebsites: new DataLoader(ids =>
