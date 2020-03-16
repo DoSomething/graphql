@@ -200,6 +200,7 @@ export const updateCausePreferences = async (
   logger.debug('Updating cause for user in Northstar', {
     id,
     cause,
+    interested,
   });
 
   try {
