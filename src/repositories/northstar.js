@@ -204,7 +204,7 @@ export const updateCausePreferences = async (
 
   try {
     const response = await fetch(
-      `${NORTHSTAR_URL}/v2/users/${id}/subscriptions/${cause.toLowerCase()}`,
+      `${NORTHSTAR_URL}/v2/users/${id}/causes/${cause.toLowerCase()}`,
       {
         method: interested ? 'POST' : 'DELETE',
         ...requireAuthorizedRequest(options),
@@ -212,7 +212,7 @@ export const updateCausePreferences = async (
     );
 
     const json = await response.json();
-
+    
     return transformItem(json);
   } catch (exception) {
     const error = exception.message;

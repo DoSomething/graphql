@@ -77,7 +77,7 @@ const typeDefs = gql`
   }
 
   "The user's choices of cause area preference."
-  enum Cause {
+  enum CauseIdentifier {
     ANIMAL_WELFARE
     BULLYING
     EDUCATION
@@ -173,7 +173,7 @@ const typeDefs = gql`
     "The permalink to this user's profile in Aurora."
     permalink: String @requires(fields: "id")
     "The causes areas this user is interested in."
-    causes: [Cause]
+    causes: [CauseIdentifier]
   }
 
   type Query {
@@ -218,7 +218,8 @@ const typeDefs = gql`
       "The user to update."
       id: String!
       "The cause area to update the preference of."
-      cause: Cause!
+      cause: CauseIdentifier!
+      interested: Boolean!
     ): User!
   }
 `;
