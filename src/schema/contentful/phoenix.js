@@ -225,6 +225,8 @@ const typeDefs = gql`
     slug: String!
     "Cover image for this page."
     coverImage: Asset
+    "The authors for this page."
+    authors: [PersonBlock]
     "The content of the page."
     content: String
     "Sidebar blocks rendered alongside the content on the page."
@@ -842,6 +844,7 @@ const resolvers = {
     affiliateLogo: linkResolver,
   },
   Page: {
+    authors: linkResolver,
     coverImage: linkResolver,
     showcaseTitle: page => page.title,
     showcaseDescription: page => page.subTitle,
