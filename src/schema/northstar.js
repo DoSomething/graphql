@@ -10,6 +10,7 @@ import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
 import { stringToEnum, listToEnums } from './helpers';
 import {
+  updateCausePreferences,
   updateEmailSubscriptionTopics,
   updateEmailSubscriptionTopic,
   getPermalinkByUserId,
@@ -73,6 +74,22 @@ const typeDefs = gql`
     COMMUNITY
     SCHOLARSHIPS
     LIFESTYLE
+  }
+
+  "The user's choices of cause area preference."
+  enum CauseIdentifier {
+    ANIMAL_WELFARE
+    BULLYING
+    EDUCATION
+    ENVIRONMENT
+    GENDER_RIGHTS_EQUALITY
+    HOMELESSNESS_POVERTY
+    IMMIGRATION_REFUGEES
+    LGBTQ_RIGHTS_EQUALITY
+    MENTAL_HEALTH
+    PHYSICAL_HEALTH
+    RACIAL_JUSTICE_EQUITY
+    SEXUAL_HARASSMENT_ASSAULT
   }
 
   "A DoSomething.org user profile."
@@ -155,6 +172,8 @@ const typeDefs = gql`
     hasFeatureFlag(feature: String): Boolean @requires(fields: "featureFlags")
     "The permalink to this user's profile in Aurora."
     permalink: String @requires(fields: "id")
+    "The causes areas this user is interested in."
+    causes: [CauseIdentifier]
   }
 
   type Query {
@@ -194,6 +213,14 @@ const typeDefs = gql`
       "The school_id to save to the user."
       schoolId: String
     ): User!
+    "Update the user's cause interest preferences."
+    updateCausePreferences(
+      "The user to update."
+      id: String!
+      "The cause area to update the preference of."
+      cause: CauseIdentifier!
+      interested: Boolean!
+    ): User!
   }
 `;
 
@@ -212,6 +239,7 @@ const resolvers = {
     hasFeatureFlag: (user, { feature }) =>
       has(user, `featureFlags.${feature}`) &&
       user.featureFlags[feature] !== false,
+    causes: user => listToEnums(user.causes),
   },
   Query: {
     user: (_, { id }, context, info) =>
@@ -238,6 +266,8 @@ const resolvers = {
         args.subscribed,
         context,
       ),
+    updateCausePreferences: (_, args, context) =>
+      updateCausePreferences(args.id, args.cause, args.interested, context),
     updateSchoolId: (_, args, context) =>
       updateSchoolId(args.id, args.schoolId, context),
   },

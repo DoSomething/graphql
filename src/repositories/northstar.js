@@ -184,6 +184,49 @@ export const updateEmailSubscriptionTopic = async (
 };
 
 /**
+ * Update a user's list of causes they are interested in.
+ *
+ * @param {String} id
+ * @param {Cause} cause
+ * @param {Boolean} interested
+ * @param {Object} options
+ */
+export const updateCausePreferences = async (
+  id,
+  cause,
+  interested,
+  options,
+) => {
+  logger.debug('Updating cause for user in Northstar', {
+    id,
+    cause,
+    interested,
+  });
+
+  try {
+    const response = await fetch(
+      `${NORTHSTAR_URL}/v2/users/${id}/causes/${cause.toLowerCase()}`,
+      {
+        method: interested ? 'POST' : 'DELETE',
+        ...requireAuthorizedRequest(options),
+      },
+    );
+
+    const json = await response.json();
+
+    return transformItem(json);
+  } catch (exception) {
+    const error = exception.message;
+    logger.warn('Unable to update causes preferences for this cause.', {
+      id,
+      error,
+    });
+  }
+
+  return null;
+};
+
+/**
  * Update a user's school_id in Northstar.
  *
  * @param {String} id
