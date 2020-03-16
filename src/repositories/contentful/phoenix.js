@@ -204,6 +204,15 @@ export const getCampaignWebsiteByCampaignId = async (id, context) =>
   getPhoenixContentfulEntryByField('campaign', 'legacyCampaignId', id, context);
 
 /**
+ * Search for a Phoenix Contentful Page entry by slug.
+ *
+ * @param {String} slug
+ * @return {Object}
+ */
+export const getPageBySlug = async (slug, context) =>
+  getPhoenixContentfulEntryByField('page', 'slug', slug, context);
+
+/**
  * Search for a Phoenix Contentful Cause Page entry by slug.
  *
  * @param {String} slug
