@@ -267,12 +267,7 @@ const resolvers = {
         context,
       ),
     updateCausePreferences: (_, args, context) =>
-        updateCausePreferences(
-          args.id,
-          args.cause,
-          args.interested,
-          context
-        ),
+      updateCausePreferences(args.id, args.cause, args.interested, context),
     updateSchoolId: (_, args, context) =>
       updateSchoolId(args.id, args.schoolId, context),
   },

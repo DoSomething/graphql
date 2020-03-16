@@ -199,7 +199,7 @@ export const updateCausePreferences = async (
 ) => {
   logger.debug('Updating cause for user in Northstar', {
     id,
-    cause
+    cause,
   });
 
   try {
@@ -212,7 +212,7 @@ export const updateCausePreferences = async (
     );
 
     const json = await response.json();
-    
+
     return transformItem(json);
   } catch (exception) {
     const error = exception.message;
