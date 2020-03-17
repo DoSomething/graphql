@@ -387,12 +387,12 @@ const typeDefs = gql`
 
   type LinkBlock implements Block {
     "The user-facing title for this link block."
-    title: String
+    title: String!
     "Optional description of the link."
     content: String
     "The URL (or tel: number) being linked to."
     # @TODO: use a custom scalar to validate the link as an AbsoluteUrl or 'tel:' String.
-    link: String
+    link: String!
     "Optional custom text to display on the submission button."
     buttonText: String
     "The logo of the partner or sponsor for this link action."
