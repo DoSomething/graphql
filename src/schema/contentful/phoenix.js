@@ -391,7 +391,7 @@ const typeDefs = gql`
     "Optional description of the link."
     content: String
     "The URL (or tel: number) being linked to."
-    # @TODO: use a custom scalar to validate the link as an AbsoluteUrl or 'tel:' String.
+    # @TODO: Update this value to be some combination of AbsoluteUrl and valid 'tel:' String.
     link: String!
     "Optional custom text to display on the submission button."
     buttonText: String
