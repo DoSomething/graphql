@@ -14,6 +14,7 @@ import {
 import schema from '../schema';
 import config from '../../config';
 import Collection from './Collection';
+import { enumToString } from '../schema/helpers';
 import {
   getOptional,
   transformItem,
@@ -229,7 +230,7 @@ export const fetchPosts = async (args, context, additionalQuery) => {
       location: args.location,
       northstar_id: args.userId,
       source: args.source,
-      status: args.status,
+      status: args.status ? args.status.map(enumToString).join(',') : undefined,
       tag: args.tags ? args.tags.join(',') : undefined,
       type: args.type,
     },

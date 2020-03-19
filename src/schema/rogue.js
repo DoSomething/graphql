@@ -386,8 +386,8 @@ const typeDefs = gql`
       signupId: String
       "The location to load posts for."
       location: String
-      "The post status to load posts for."
-      status: String
+      "The post statuses to load posts for."
+      status: [ReviewStatus]
       "The post source to load posts for."
       source: String
       "The tags to load posts for."
@@ -413,8 +413,8 @@ const typeDefs = gql`
       signupId: String
       "The location to load posts for."
       location: String
-      "The post status to load posts for."
-      status: String
+      "The post statuses to load posts for."
+      status: [ReviewStatus]
       "The post source to load posts for."
       source: String
       "The tags to load posts for."
