@@ -29,7 +29,7 @@ export const listToEnums = list => {
 };
 
 /**
- * Transform a GraphQL-style enum into a hyphen-separated, lower-case string.
+ * Transform a GraphQL-style enum into a kebab-case string.
  *
  * @param  {String} enumArg
  * @return {String}
@@ -39,5 +39,5 @@ export const enumToString = enumArg => {
     return null;
   }
 
-  return kebabCase(enumArg).toLowerCase();
+  return kebabCase(enumArg);
 };
