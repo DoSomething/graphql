@@ -232,6 +232,7 @@ export const fetchPosts = async (args, context, additionalQuery) => {
       status: args.status,
       tag: args.tags ? args.tags.join(',') : undefined,
       type: args.type,
+      volunteer_credit: args.volunteerCredit,
     },
     ...additionalQuery,
   });

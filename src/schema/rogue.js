@@ -396,6 +396,8 @@ const typeDefs = gql`
       type: String
       "The user ID to load posts for."
       userId: String
+      "Filter by the corresponding Action's volunteer credit status"
+      volunteerCredit: Boolean
       "The page of results to return."
       page: Int = 1
       "The number of results per page."
@@ -423,6 +425,8 @@ const typeDefs = gql`
       type: String
       "The user ID to load posts for."
       userId: String
+      "Filter by the corresponding Action's volunteer credit status"
+      volunteerCredit: Boolean
       "Get the first N results."
       first: Int = 20
       "The cursor to return results after."
