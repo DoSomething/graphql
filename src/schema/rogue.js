@@ -6,8 +6,8 @@ import { GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
 
 import Loader from '../loader';
-import { urlWithQuery } from '../repositories/helpers';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
+import { urlWithQuery, transformItem } from '../repositories/helpers';
 import {
   getActionById,
   getActionStats,
@@ -600,7 +600,7 @@ const resolvers = {
     url: (post, args) => urlWithQuery(post.media.url, args),
     text: post => post.media.text,
     status: post => post.status.toUpperCase().replace('-', '_'),
-    actionDetails: post => post.actionDetails.data,
+    actionDetails: post => transformItem(post.actionDetails),
     location: (post, { format }) => {
       switch (format) {
         case 'HUMAN_FORMAT':
