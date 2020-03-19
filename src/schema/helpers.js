@@ -1,4 +1,4 @@
-import { snakeCase } from 'lodash';
+import { snakeCase, kebabCase } from 'lodash';
 
 /**
  * Transform a string constant into a GraphQL-style enum.
@@ -26,4 +26,18 @@ export const listToEnums = list => {
   }
 
   return list.map(stringToEnum);
+};
+
+/**
+ * Transform a GraphQL-style enum into a hyphen-separated, lower-case string.
+ *
+ * @param  {String} enumArg
+ * @return {String}
+ */
+export const enumToString = enumArg => {
+  if (!enumArg) {
+    return null;
+  }
+
+  return kebabCase(enumArg).toLowerCase();
 };
