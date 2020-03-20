@@ -6,8 +6,8 @@ import { GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
 
 import Loader from '../loader';
-import { urlWithQuery } from '../repositories/helpers';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
+import { urlWithQuery, transformItem } from '../repositories/helpers';
 import {
   getActionById,
   getActionStats,
@@ -396,6 +396,8 @@ const typeDefs = gql`
       type: String
       "The user ID to load posts for."
       userId: String
+      "Filter by the corresponding Action's volunteer credit status"
+      volunteerCredit: Boolean
       "The page of results to return."
       page: Int = 1
       "The number of results per page."
@@ -423,6 +425,8 @@ const typeDefs = gql`
       type: String
       "The user ID to load posts for."
       userId: String
+      "Filter by the corresponding Action's volunteer credit status"
+      volunteerCredit: Boolean
       "Get the first N results."
       first: Int = 20
       "The cursor to return results after."
@@ -596,7 +600,7 @@ const resolvers = {
     url: (post, args) => urlWithQuery(post.media.url, args),
     text: post => post.media.text,
     status: post => post.status.toUpperCase().replace('-', '_'),
-    actionDetails: post => post.actionDetails.data,
+    actionDetails: post => transformItem(post.actionDetails),
     location: (post, { format }) => {
       switch (format) {
         case 'HUMAN_FORMAT':
