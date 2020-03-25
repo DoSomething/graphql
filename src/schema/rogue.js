@@ -234,6 +234,8 @@ const typeDefs = gql`
     status: ReviewStatus
     "The source of this post. This is often a Northstar OAuth client."
     source: String
+    "The user who referred the post user to create this post."
+    referrerUserId: String
     "The number of items added or removed in this post."
     quantity: Int
     "The human-readable impact (quantity, noun, and verb)."
@@ -295,6 +297,8 @@ const typeDefs = gql`
     sourceDetails: String
     "More information about the signup (for example, third-party messaging opt-ins)."
     details: String
+    "The user who referred the signup user to create this signup."
+    referrerUserId: String
     "The time this signup was last modified."
     updatedAt: DateTime
     "The time when this signup was originally created."
@@ -521,6 +525,8 @@ const typeDefs = gql`
       campaignId: String
       "The location to count posts for."
       location: String
+      "# The referring User ID to count posts for."
+      referrerUserId: String
       "# The post source to count posts for."
       source: String
       "# The type name to count posts for."
