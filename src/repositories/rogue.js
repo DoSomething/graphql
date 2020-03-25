@@ -732,6 +732,7 @@ export const getPostsCount = async (args, context) => {
       campaign_id: args.campaignId,
       location: args.location,
       northstar_id: args.userId,
+      referrer_user_id: args.referrerUserId,
       source: args.source,
       type: args.type,
       tag: args.tags,

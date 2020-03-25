@@ -525,6 +525,8 @@ const typeDefs = gql`
       campaignId: String
       "The location to count posts for."
       location: String
+      "# The referring User ID to count posts for."
+      referrerUserId: String
       "# The post source to count posts for."
       source: String
       "# The type name to count posts for."
