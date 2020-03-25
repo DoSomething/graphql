@@ -146,8 +146,10 @@ const typeDefs = gql`
     role: Role
     "The user's current School ID"
     schoolId: String @sensitive @optional
-    "The user's voter registration status, either self-reported or by registering with TurboVote."
+    "The user's voter registration status, either self-reported or by registering with third-party."
     voterRegistrationStatus: VoterRegistrationStatus
+    "The user who referred this user to create an account."
+    referrerUserId: String
     "If the user has requested their account to be deleted, this is the time that request occurred."
     deletionRequestedAt: DateTime
     "The time this user was created. See the 'source' and 'source_detail' field for details."
