@@ -15,6 +15,18 @@ export const stringToEnum = string => {
 };
 
 /**
+ * Transform an obj into an array of values.
+ *
+ * @param  {Object} obj
+ * @return {Array}
+ */
+export const objToArray = list => {
+  return Object.keys(list).map(item => {
+    return list[item]
+  })
+};
+
+/**
  * Transform a list into a list of GraphQL-style enums.
  *
  * @param  {String} string
@@ -23,6 +35,9 @@ export const stringToEnum = string => {
 export const listToEnums = list => {
   if (!list) {
     return [];
+  }
+  if (!Array.isArray(list)) {
+    list = objToArray(list)
   }
 
   return list.map(stringToEnum);
