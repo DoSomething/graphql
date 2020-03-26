@@ -529,6 +529,8 @@ const typeDefs = gql`
       referrerUserId: String
       "# The post source to count posts for."
       source: String
+      "The post statuses to count posts for."
+      status: [ReviewStatus]
       "# The type name to count posts for."
       type: String
       "# The user ID to count posts for."
