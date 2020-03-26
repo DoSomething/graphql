@@ -16,7 +16,8 @@ export const stringToEnum = string => {
 
 /**
  * Transform an obj into an array of values.
- *
+ * This is a temporary fix for NS data
+ * 
  * @param  {Object} obj
  * @return {Array}
  */
