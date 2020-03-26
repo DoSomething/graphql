@@ -521,23 +521,23 @@ const typeDefs = gql`
       action: String
       "The action IDs to count posts for."
       actionIds: [Int]
-      "# The campaign ID to count posts for."
+      "The campaign ID to count posts for."
       campaignId: String
       "The location to count posts for."
       location: String
-      "# The referring User ID to count posts for."
+      "The referring User ID to count posts for."
       referrerUserId: String
-      "# The post source to count posts for."
+      "The post source to count posts for."
       source: String
       "The post statuses to count posts for."
       status: [ReviewStatus]
-      "# The type name to count posts for."
+      "The type name to count posts for."
       type: String
-      "# The user ID to count posts for."
+      "The user ID to count posts for."
       userId: String
       "A comma-separated list of tags to filter by."
       tags: String
-      "# The maximum count to report."
+      "The maximum count to report."
       limit: Int = 20
     ): Int
   }
