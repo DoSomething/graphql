@@ -17,14 +17,14 @@ export const stringToEnum = string => {
 /**
  * Transform an obj into an array of values.
  * This is a temporary fix for NS data
- * 
+ *
  * @param  {Object} obj
  * @return {Array}
  */
 export const objToArray = list => {
   return Object.keys(list).map(item => {
-    return list[item]
-  })
+    return list[item];
+  });
 };
 
 /**
@@ -38,7 +38,7 @@ export const listToEnums = list => {
     return [];
   }
   if (!Array.isArray(list)) {
-    list = objToArray(list)
+    list = objToArray(list);
   }
 
   return list.map(stringToEnum);
