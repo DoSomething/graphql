@@ -735,6 +735,7 @@ export const getPostsCount = async (args, context) => {
       northstar_id: args.userId,
       referrer_user_id: args.referrerUserId,
       source: args.source,
+      status: args.status ? args.status.map(enumToString).join(',') : undefined,
       type: args.type,
       tag: args.tags,
     },
