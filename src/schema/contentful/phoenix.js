@@ -96,6 +96,8 @@ const typeDefs = gql`
     "The cover image for this campaign."
     coverImage: Asset
     "The showcase title (the title field.)"
+    staffPick: Boolean
+    "Designates if this is a staff pick campaign."
     showcaseTitle: String!
     "The showcase description (the callToAction field.)"
     showcaseDescription: String!
@@ -289,15 +291,17 @@ const typeDefs = gql`
   type HomePage {
     "This title is used internally to help find this content."
     internalTitle: String!
-    "The title for this page."
+    "The title for the home page."
     title: String!
-    "The subtitle for this page."
+    "The subtitle for the home page."
     subTitle: String
-    "Campaigns (campaign and story page entries) rendered as a list on the homepage."
+    "Cover image for the home page."
+    coverImage: Asset
+    "Campaigns (campaign and story page entries) rendered as a list on the home page."
     campaigns: [ResourceWebsite]
-    "Articles (page entries) rendered as a list on the homepage."
+    "Articles (page entries) rendered as a list on the home page."
     articles: [Page]
-    "Any custom overrides for this entry."
+    "Any custom overrides for the home page."
     additionalContent: JSON
     ${entryFields}
   }
@@ -835,6 +839,7 @@ const resolvers = {
     imageFit: block => stringToEnum(block.imageFit),
   },
   HomePage: {
+    coverImage: linkResolver,
     articles: linkResolver,
     campaigns: linkResolver,
   },
