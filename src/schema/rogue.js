@@ -390,6 +390,8 @@ const typeDefs = gql`
       signupId: String
       "The location to load posts for."
       location: String
+      "The referring User ID to load posts for."
+      referrerUserId: String
       "The post statuses to load posts for."
       status: [ReviewStatus]
       "The post source to load posts for."
@@ -419,6 +421,8 @@ const typeDefs = gql`
       signupId: String
       "The location to load posts for."
       location: String
+      "The referring User ID to load posts for."
+      referrerUserId: String
       "The post statuses to load posts for."
       status: [ReviewStatus]
       "The post source to load posts for."
