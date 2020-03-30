@@ -229,6 +229,7 @@ export const fetchPosts = async (args, context, additionalQuery) => {
       signup_id: args.signupId,
       location: args.location,
       northstar_id: args.userId,
+      referrer_user_id: args.referrerUserId,
       source: args.source,
       status: args.status ? args.status.map(enumToString).join(',') : undefined,
       tag: args.tags ? args.tags.join(',') : undefined,
