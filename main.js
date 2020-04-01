@@ -42,7 +42,12 @@ exports.handler = (event, context, callback) => {
     cors: {
       origin: '*',
       credentials: true,
-      allowedHeaders: ['content-type', 'authorization'],
+      allowedHeaders: [
+        'content-type',
+        'authorization',
+        'apollographql-client-name',
+        'apollographql-client-version',
+      ],
     },
   };
 
