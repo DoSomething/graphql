@@ -16,6 +16,12 @@ const server = new ApolloServer({
   context: ({ event }) => ({
     authorization: event.headers.Authorization || event.headers.authorization,
   }),
+  engine: {
+    apiKey: process.env.ENGINE_API_KEY,
+
+    // Record some common non-sensitive variables for debugging in Apollo Engine:
+    sendVariableValues: { onlyNames: ['id', 'preview', 'campaignId', 'slug'] },
+  },
 });
 
 exports.handler = (event, context, callback) => {
