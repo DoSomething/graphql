@@ -234,6 +234,8 @@ const typeDefs = gql`
     status: ReviewStatus
     "The source of this post. This is often a Northstar OAuth client."
     source: String
+    "Extra information about this post."
+    details: String
     "The user who referred the post user to create this post."
     referrerUserId: String
     "The number of items added or removed in this post."
