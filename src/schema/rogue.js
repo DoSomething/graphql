@@ -57,13 +57,18 @@ const typeDefs = gql`
   "Posts are reviewed by DoSomething.org staff for content."
   enum ReviewStatus {
     ACCEPTED
-    REJECTED
+    CONFIRMED
+    INELIGIBLE
     PENDING
     REGISTER_FORM
     REGISTER_OVR
-    CONFIRMED
-    INELIGIBLE
+    REJECTED
+    STEP_1
+    STEP_2
+    STEP_3
+    STEP_4
     UNCERTAIN
+    UNDER_18
   }
 
   enum LocationFormat {

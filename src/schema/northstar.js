@@ -62,10 +62,16 @@ const typeDefs = gql`
   }
 
   enum VoterRegistrationStatus {
-    REGISTRATION_COMPLETE
     CONFIRMED
     INELIGIBLE
+    REJECTED
+    REGISTRATION_COMPLETE
+    STEP_1
+    STEP_2
+    STEP_3
+    STEP_4
     UNCERTAIN
+    UNDER_18
     UNREGISTERED
   }
 
