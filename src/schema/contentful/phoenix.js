@@ -167,21 +167,42 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  enum CallToActionTemplate {
+    PURPLE
+    YELLOW
+    VOTER_REGISTRATION
+  }
+
+  enum CallToActionAlignment {
+    LEFT
+    CENTER
+  }
+
   type CallToActionBlock implements Block {
-    "The visual treatment to apply to this block."
-    visualStyle: CallToActionStyle
-    "Use the campaign tagline as the first line of the CTA (if on a campaign page)."
-    useCampaignTagline: Boolean
+    "The small title above the main CTA title"
+    superTitle: String
+    title: String
     "The content of the call to action."
     content: String
+    linkText: String
+    link: String
+    template: CallToActionTemplate
+    alignment: CallToActionAlignment
+
+
+
+    "The visual treatment to apply to this block."
+    visualStyle: CallToActionStyle @deprecated(reason: "Outdated component pieces")
+    "Use the campaign tagline as the first line of the CTA (if on a campaign page)."
+    useCampaignTagline: Boolean @deprecated(reason: "Outdated component pieces")
     "The content to display before the impact value."
-    impactPrefix: String
+    impactPrefix: String @deprecated(reason: "Outdated component pieces")
     "The emphasized 'impact' value."
-    impactValue: String
+    impactValue: String @deprecated(reason: "Outdated component pieces")
     "The content to display after the impact value."
-    impactSuffix: String
+    impactSuffix: String @deprecated(reason: "Outdated component pieces")
     "The button text."
-    actionText: String
+    actionText: String @deprecated(reason: "Outdated component pieces")
     ${blockFields}
     ${entryFields}
   }
@@ -797,6 +818,8 @@ const resolvers = {
   },
   CallToActionBlock: {
     visualStyle: block => first(listToEnums(block.visualStyle)) || 'DARK',
+    template: block => stringToEnum(block.template),
+    alignment: block => stringToEnum(block.alignment),
   },
   CampaignUpdateBlock: {
     author: linkResolver,
