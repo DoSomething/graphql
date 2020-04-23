@@ -181,16 +181,18 @@ const typeDefs = gql`
   type CallToActionBlock implements Block {
     "The small title above the main CTA title"
     superTitle: String
+    "The main, large title of the CTA"
     title: String
-    "The content of the call to action."
+    "The paragraph that follows the title."
     content: String
+    "The text label of the CTA button"
     linkText: String
+    "The destination of the CTA link"
     link: String
+    "The visual style of the CTA block"
     template: CallToActionTemplate
+    "The alignment of all the text in the CTA block"
     alignment: CallToActionAlignment
-
-
-
     "The visual treatment to apply to this block."
     visualStyle: CallToActionStyle @deprecated(reason: "Outdated component pieces")
     "Use the campaign tagline as the first line of the CTA (if on a campaign page)."
