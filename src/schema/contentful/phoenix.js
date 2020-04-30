@@ -109,6 +109,8 @@ const typeDefs = gql`
     showcaseDescription: String!
     "The showcase image (the coverImage field.)"
     showcaseImage: Asset
+    "The affiliate sponsors for this campaign."
+    affiliateSponsors: [AffiliateBlock]
     ${entryFields}
   }
 
@@ -834,6 +836,7 @@ const resolvers = {
     affiliateLogo: linkResolver,
   },
   CampaignWebsite: {
+    affiliateSponsors: linkResolver,
     affirmation: linkResolver,
     campaignId: campaign => campaign.legacyCampaignId,
     coverImage: linkResolver,
