@@ -151,6 +151,8 @@ const typeDefs = gql`
     showcaseDescription: String!
     "The showcase image (the coverImage field.)"
     showcaseImage: Asset
+    "Any custom overrides for this cause page."
+    additionalContent: JSON
     ${entryFields}
   }
 
