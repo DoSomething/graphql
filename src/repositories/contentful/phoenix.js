@@ -1,6 +1,7 @@
-import { createClient } from 'contentful';
-import logger from 'heroku-logger';
 import { URL } from 'url';
+import { mapKeys } from 'lodash';
+import logger from 'heroku-logger';
+import { createClient } from 'contentful';
 
 import { urlWithQuery } from '../helpers';
 import config from '../../../config';
@@ -33,13 +34,21 @@ const previewApi = createClient({
  * @param {Object} json
  * @return {Object}
  */
-const transformItem = json => ({
-  id: json.sys.id,
-  contentType: json.sys.contentType.sys.id,
-  createdAt: json.sys.createdAt,
-  updatedAt: json.sys.updatedAt,
-  ...json.fields,
-});
+const transformItem = json => {
+  const fields = json.fields;
+
+  if (fields.legacyCampaignId) {
+    fields.campaignId = fields.legacyCampaignId;
+  }
+
+  return {
+    id: json.sys.id,
+    contentType: json.sys.contentType.sys.id,
+    createdAt: json.sys.createdAt,
+    updatedAt: json.sys.updatedAt,
+    ...fields,
+  };
+}
 
 /**
  * @param {Object} json
