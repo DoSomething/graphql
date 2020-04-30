@@ -94,11 +94,13 @@ const typeDefs = gql`
     "The call to action tagline for this campaign."
     callToAction: String!
      "The campaign ID associated with this campaign website."
-    campaignId: Int
+    campaignId: Int!
     "The cover image for this campaign."
     coverImage: Asset
      "The scholarship amount associated with this campaign."
     scholarshipAmount: Int
+     "The scholarship deadline datetime string associated with this campaign."
+    scholarshipDeadline: String
     "The showcase title (the title field.)"
     staffPick: Boolean
     "Designates if this is a staff pick campaign."
