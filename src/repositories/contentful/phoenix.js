@@ -1,5 +1,4 @@
 import { URL } from 'url';
-import { mapKeys } from 'lodash';
 import logger from 'heroku-logger';
 import { createClient } from 'contentful';
 
