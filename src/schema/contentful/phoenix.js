@@ -111,6 +111,8 @@ const typeDefs = gql`
     showcaseImage: Asset
     "The affiliate sponsors for this campaign."
     affiliateSponsors: [AffiliateBlock]
+    "Any custom overrides for this campaign page."
+    additionalContent: JSON
     ${entryFields}
   }
 
