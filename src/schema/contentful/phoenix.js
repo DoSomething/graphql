@@ -833,6 +833,7 @@ const resolvers = {
   },
   CampaignWebsite: {
     affirmation: linkResolver,
+    campaignId: campaign => campaign.legacyCampaignId,
     coverImage: linkResolver,
     showcaseTitle: campaign => campaign.title,
     showcaseDescription: campaign => campaign.callToAction,
