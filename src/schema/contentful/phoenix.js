@@ -93,8 +93,12 @@ const typeDefs = gql`
     affirmation: Block
     "The call to action tagline for this campaign."
     callToAction: String!
+     "The totally NOT legacy / actual Rogue campaign ID associated with this campaign website."
+    legacyCampaignId: Int
     "The cover image for this campaign."
     coverImage: Asset
+     "The scholarship amount associated with this campaign."
+    scholarshipAmount: Int
     "The showcase title (the title field.)"
     staffPick: Boolean
     "Designates if this is a staff pick campaign."
