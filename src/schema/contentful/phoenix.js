@@ -81,20 +81,24 @@ const typeDefs = gql`
   }
 
   type CampaignWebsite implements Showcasable {
-    "The internal-facing title for this campaign."
+    "The internal-facing title for this campaign website."
     internalTitle: String!
-    "The user-facing title for this campaign."
+    "The user-facing title for this campaign website."
     title: String!
-    "The slug for this campaign."
+    "The slug for this campaign website."
     slug: String!
-    "The URL for this campaign."
+    "The URL for this campaign website."
     url: String!
     "The block to display after a user signs up for a campaign."
     affirmation: Block
     "The call to action tagline for this campaign."
     callToAction: String!
+     "The campaign ID associated with this campaign website."
+    campaignId: Int
     "The cover image for this campaign."
     coverImage: Asset
+     "The scholarship amount associated with this campaign."
+    scholarshipAmount: Int
     "The showcase title (the title field.)"
     staffPick: Boolean
     "Designates if this is a staff pick campaign."
@@ -829,6 +833,7 @@ const resolvers = {
   },
   CampaignWebsite: {
     affirmation: linkResolver,
+    campaignId: campaign => campaign.legacyCampaignId,
     coverImage: linkResolver,
     showcaseTitle: campaign => campaign.title,
     showcaseDescription: campaign => campaign.callToAction,
