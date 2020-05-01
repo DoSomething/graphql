@@ -473,7 +473,11 @@ export const getPermalinkByPostId = id => `${ROGUE_URL}/posts/${id}`;
  * @param {Object} post
  * @return {String}
  */
-export const makeImpactStatement = post => {
+export const makeImpactStatement = (post) => {
+  if (!post.quantity) {
+    return null;
+  }
+
   const { noun, verb } = post.actionDetails.data;
   const statement = pluralize(noun, post.quantity, true);
 
