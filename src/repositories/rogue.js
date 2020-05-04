@@ -457,7 +457,7 @@ export const deletePost = async (postId, context) => {
  * @param {Number} id
  * @return {String}
  */
-export const getPermalinkBySignupId = id => `${ROGUE_URL}/signups/${id}`;
+export const getPermalinkBySignupId = (id) => `${ROGUE_URL}/signups/${id}`;
 
 /**
  * Get Rogue post permalink by ID.
@@ -465,7 +465,7 @@ export const getPermalinkBySignupId = id => `${ROGUE_URL}/signups/${id}`;
  * @param {Number} id
  * @return {String}
  */
-export const getPermalinkByPostId = id => `${ROGUE_URL}/posts/${id}`;
+export const getPermalinkByPostId = (id) => `${ROGUE_URL}/posts/${id}`;
 
 /**
  * Create an impact statement from quantity, noun and verb
@@ -591,7 +591,7 @@ export const getSignupsById = async (ids, options) => {
   const signups = transformCollection(json);
 
   // Return signups in the same format requested. <https://git.io/fjLrM>
-  return ids.map(id => find(signups, ['id', id], null));
+  return ids.map((id) => find(signups, ['id', id], null));
 };
 
 /**
@@ -769,7 +769,7 @@ export const getPostsCount = async (args, context) => {
  *
  * @param {Object} campaign
  */
-export const parseCampaignCauses = campaign => {
+export const parseCampaignCauses = (campaign) => {
   // These are provided as two separate ordered arrays
   // from Rogue's Campaigns API. We'll zip them together.
   const { cause, causeNames } = campaign;
