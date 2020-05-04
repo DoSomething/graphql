@@ -27,6 +27,17 @@ $ cp .env.example .env && vi .env
 $ npm start
 ```
 
+You're all set to make anonymous GraphQL queries against Northstar or Rogue's development environment. To use a different environment, swap your `QUERY_ENV` environment variable in `.env` to `local`, `qa`, or `production`.
+
+If you're querying Gambit, you'll need to set the `GAMBIT_BASIC_AUTH_USER` or `GAMBIT_BASIC_AUTH_PASS` for each environment. You can find these values in LastPass. If you're querying Contentful, you'll need to fill Gambit or Phoenix's `CONTENTFUL_SPACE_ID`, `CONTENTFUL_ACCESS_TOKEN` and `CONTENTFUL_PREVIEW_TOKEN` environment variables (found by visiting the "Settings → API Keys → Local Development" page in [Contentful](https://app.contentful.com)).
+
+#### Authenticated Requests
+
+To run queries or mutations on behalf of a user from your GraphQL Playground, you'll need to set the `Authorization` header. You can do this by copying a valid access token (either from your [Paw](https://paw.cloud), [Postman](https://www.getpostman.com), or `window.AUTH` object in an authenticated page, like your local [`phoenix.test`](http://phoenix.test/us)):
+
+![authorization-header](https://user-images.githubusercontent.com/583202/80999500-caba8b80-8e12-11ea-99fc-0672ece5be95.png)
+
+
 ### Security Vulnerabilities
 
 We take security very seriously. Any vulnerabilities in this service should be
