@@ -14,7 +14,7 @@
     "compile": "babel src -d lib/src && babel config -d lib/config"
   },
   "engines": {
-    "node": "8.x",
+    "node": "12.x",
     "npm": "5.3.x"
   },
   "babel": {
@@ -25,7 +25,8 @@
   },
   "prettier": {
     "singleQuote": true,
-    "trailingComma": "all"
+    "trailingComma": "all",
+    "arrowParens": "avoid"
   },
   "repository": {
     "type": "git",
@@ -83,7 +84,7 @@
     "fetch-mock": "^8.0.0",
     "jest": "^24.9.0",
     "nodemon": "^2.0.0",
-    "prettier": "1.19.1",
+    "prettier": "2.0.5",
     "prettier-check": "^2.0.0"
   }
 }
