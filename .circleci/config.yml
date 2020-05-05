@@ -11,13 +11,13 @@ jobs:
   # Install dependencies, run tests, and compile for Lambda.
   build:
     docker:
-      - image: circleci/node:8.10
+      - image: circleci/node:lts
     steps:
       - checkout
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
       - run: npm install
       - save_cache:
           paths:
@@ -45,8 +45,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
       - run: npm install
       - run:
           name: publish schema to apollo engine
