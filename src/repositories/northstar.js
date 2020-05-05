@@ -141,6 +141,30 @@ export const updateEmailSubscriptionTopics = async (
 };
 
 /**
+ * 
+ * @param {String} id 
+ * @param {[EmailSubscriptionStatus]} emailSubscriptionStatus
+ * @param {Boolean} subscribed 
+ * @param {Object} options 
+ */
+export const updateEmailSubscriptionStatus = async (
+  id,
+  emailSubscriptionStatus,
+  options,
+) => {
+  logger.debug('Updating email subscription status for user in Northstar', {
+    id,
+    emailSubscriptionStatus,
+  });
+  try {
+    const response = await updateUser(
+      id, {
+        email_Subscription_Status: emailSubscriptionStatus.map
+      }
+    )
+  }
+}
+/**
  * Update a user's subscription status to a specific email newsletter.
  *
  * @param {String} id
