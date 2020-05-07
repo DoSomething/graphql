@@ -13,6 +13,7 @@ import {
   updateCausePreferences,
   updateEmailSubscriptionTopics,
   updateEmailSubscriptionTopic,
+  updateEmailSubscriptionStatus,
   getPermalinkByUserId,
   undoDeletionRequest,
   requestDeletion,
