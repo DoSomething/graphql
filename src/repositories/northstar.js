@@ -159,7 +159,7 @@ export const updateEmailSubscriptionStatus = async (
   try {
     const response = await updateUser(
       id, {
-        email_Subscription_Status: emailSubscriptionStatus
+        email_subscription_status: emailSubscriptionStatus
       },
       options,
     );
@@ -170,7 +170,7 @@ export const updateEmailSubscriptionStatus = async (
     const error = exception.message;
     logger.warn('Unable to update email subscription status.', { id, error });
   }
-
+  return null;
 };
 /**
  * Update a user's subscription status to a specific email newsletter.
