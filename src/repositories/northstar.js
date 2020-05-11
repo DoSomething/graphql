@@ -141,11 +141,11 @@ export const updateEmailSubscriptionTopics = async (
 };
 
 /**
- * 
- * @param {String} id 
+ *
+ * @param {String} id
  * @param {[EmailSubscriptionStatus]} emailSubscriptionStatus
- * @param {Boolean} subscribed 
- * @param {Object} options 
+ * @param {Boolean} subscribed
+ * @param {Object} options
  */
 export const updateEmailSubscriptionStatus = async (
   id,
@@ -158,8 +158,9 @@ export const updateEmailSubscriptionStatus = async (
   });
   try {
     const response = await updateUser(
-      id, {
-        email_subscription_status: emailSubscriptionStatus
+      id,
+      {
+        email_subscription_status: emailSubscriptionStatus,
       },
       options,
     );
