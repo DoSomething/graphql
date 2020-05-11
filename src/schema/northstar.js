@@ -13,6 +13,7 @@ import {
   updateCausePreferences,
   updateEmailSubscriptionTopics,
   updateEmailSubscriptionTopic,
+  updateEmailSubscriptionStatus,
   getPermalinkByUserId,
   undoDeletionRequest,
   requestDeletion,
@@ -214,6 +215,13 @@ const typeDefs = gql`
       "The new subscription status."
       subscribed: Boolean!
     ): User!
+    "Update the user's email subscription status."
+    updateEmailSubscriptionStatus(
+      "The user to update."
+      id: String!
+      "The new email subscription status."
+      emailSubscriptionStatus: Boolean!
+    ): User!
     "Update the user school id."
     updateSchoolId(
       "The user to update."
@@ -261,6 +269,12 @@ const resolvers = {
     requestDeletion: (_, args, context) => requestDeletion(args.id, context),
     undoDeletionRequest: (_, args, context) =>
       undoDeletionRequest(args.id, context),
+    updateEmailSubscriptionStatus: (_, args, context) =>
+      updateEmailSubscriptionStatus(
+        args.id,
+        args.emailSubscriptionStatus,
+        context,
+      ),
     updateEmailSubscriptionTopics: (_, args, context) =>
       updateEmailSubscriptionTopics(
         args.id,
