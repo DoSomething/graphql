@@ -100,6 +100,15 @@ export const getEmbed = async url => {
 
     // Validate and cache the embed for future queries:
     const embed = transformResponse(response, 'version');
+
+    // Avoid caching faulty Youtube embed responses so we can try again in the next request.
+    if (
+      new URL(url).hostname.match(/^((www\.)?youtube.com|youtu.be)$/) &&
+      !embed.html
+    ) {
+      return embed;
+    }
+
     cache.set(url, embed);
 
     return embed;
