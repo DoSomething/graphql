@@ -102,6 +102,7 @@ export const getEmbed = async url => {
     const embed = transformResponse(response, 'version');
 
     // Avoid caching faulty Youtube embed responses so we can try again in the next request.
+    // (https://www.pivotaltracker.com/story/show/171091273/comments/214274074).
     if (
       new URL(url).hostname.match(/^((www\.)?youtube.com|youtu.be)$/) &&
       !embed.html
