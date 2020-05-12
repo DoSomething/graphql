@@ -39,6 +39,7 @@ const fetchOEmbed = url =>
 
     embedClient.fetch(url, (err, result) => {
       if (err) {
+        logger.warn(`Unable to load OEmbed.`, { url, error: err });
         resolve(null);
       }
 
@@ -99,6 +100,16 @@ export const getEmbed = async url => {
 
     // Validate and cache the embed for future queries:
     const embed = transformResponse(response, 'version');
+
+    // Avoid caching faulty Youtube embed responses so we can try again in the next request.
+    // (https://www.pivotaltracker.com/story/show/171091273/comments/214274074).
+    if (
+      new URL(url).hostname.match(/^((www\.)?youtube\.com|youtu\.be)$/) &&
+      !embed.html
+    ) {
+      return embed;
+    }
+
     cache.set(url, embed);
 
     return embed;
