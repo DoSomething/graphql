@@ -37,7 +37,7 @@ const fetchOEmbed = url =>
       return resolve(null);
     }
 
-    embedClient.fetch(url, (err, result) => {
+    return embedClient.fetch(url, (err, result) => {
       if (err) {
         logger.warn(`Unable to load OEmbed.`, { url, error: err.message });
         return resolve(null);
