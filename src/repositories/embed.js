@@ -34,16 +34,16 @@ const supportsOEmbed = url =>
 const fetchOEmbed = url =>
   new Promise(resolve => {
     if (!supportsOEmbed(url)) {
-      resolve(null);
+      return resolve(null);
     }
 
     embedClient.fetch(url, (err, result) => {
       if (err) {
         logger.warn(`Unable to load OEmbed.`, { url, error: err.message });
-        resolve(null);
+        return resolve(null);
       }
 
-      resolve(result);
+      return resolve(result);
     });
   });
 
