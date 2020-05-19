@@ -67,6 +67,13 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  interface Routable {
+    "The root-relative path to this resource. Use when linking internally."
+    path: String
+    "The full absolute URL to this resource. Use when linking cross-domain."
+    url: AbsoluteUrl
+  }
+
   type Asset {
     "The unique ID for this Contentful asset."
     id: String!
@@ -80,15 +87,17 @@ const typeDefs = gql`
     url(w: Int, h: Int, fit: ResizeOption): AbsoluteUrl,
   }
 
-  type CampaignWebsite implements Showcasable {
+  type CampaignWebsite implements Showcasable & Routable {
     "The internal-facing title for this campaign website."
     internalTitle: String!
     "The user-facing title for this campaign website."
     title: String!
     "The slug for this campaign website."
     slug: String!
-    "The URL for this campaign website."
-    url: String!
+    "The root-relative path to this campaign. Use when linking internally."
+    path: String
+    "The full absolute URL to this campaign. Use when linking cross-domain."
+    url: AbsoluteUrl
     "The block to display after a user signs up for a campaign."
     affirmation: Block
     "The call to action tagline for this campaign."
@@ -132,13 +141,15 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type StoryPageWebsite implements Showcasable {
+  type StoryPageWebsite implements Showcasable & Routable {
     "The internal-facing title for this story campaign."
     internalTitle: String!
     "The slug for this story campaign."
     slug: String!
-    "The URL for this story campaign."
-    url: String!
+    "The root-relative path to this story page. Use when linking internally."
+    path: String
+    "The full absolute URL to this story page. Use when linking cross-domain."
+    url: AbsoluteUrl
     "The user-facing title for this story campaign."
     title: String!
     "The user-facing subtitle for this story campaign."
@@ -846,6 +857,7 @@ const resolvers = {
     showcaseDescription: campaign => campaign.callToAction,
     showcaseImage: (campaign, _, context, info) =>
       linkResolver(campaign, _, context, info, 'coverImage'),
+    path: campaign => `/us/campaigns/${campaign.slug}`,
     url: campaign =>
       `${config('services.phoenix.url')}/us/campaigns/${campaign.slug}`,
   },
@@ -939,6 +951,7 @@ const resolvers = {
     showcaseDescription: storyPage => storyPage.subTitle,
     showcaseImage: (storyPage, _, context, info) =>
       linkResolver(storyPage, _, context, info, 'coverImage'),
+    path: storyPage => `/us/${storyPage.slug}`,
     url: storyPage => `${config('services.phoenix.url')}/us/${storyPage.slug}`,
   },
   TextSubmissionBlock: {
