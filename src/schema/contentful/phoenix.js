@@ -420,6 +420,14 @@ const typeDefs = gql`
     LEFT
   }
 
+  enum GalleryTypeOption {
+    PERSON
+    CAMPAIGN
+    SCHOLARSHIP
+    PAGE
+    EXTERNAL_LINK
+  }
+
   type GalleryBlock implements Block {
     "Title of the gallery."
     title: String
@@ -427,6 +435,8 @@ const typeDefs = gql`
     itemsPerRow: Int!
     "The alignment of the gallery images relative to their text content."
     imageAlignment: GalleryImageAlignmentOption!
+    "The type of blocks to be rendered in the gallery."
+    galleryType: GalleryTypeOption!
     "Blocks to display or preview in the Gallery."
     blocks: [Showcasable]!
     "Controls the cropping method of the gallery images."
@@ -884,6 +894,7 @@ const resolvers = {
   },
   GalleryBlock: {
     blocks: linkResolver,
+    galleryType: block => stringToEnum(block.galleryType),
     imageAlignment: block => stringToEnum(block.imageAlignment),
     imageFit: block => stringToEnum(block.imageFit),
   },
