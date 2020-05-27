@@ -500,6 +500,7 @@ export const fetchSignups = async (args, context, additionalQuery) => {
     filter: {
       campaign_id: args.campaignId,
       northstar_id: args.userId,
+      referrer_user_id: args.referrerUserId,
       source: args.source,
     },
     orderBy: args.orderBy,
