@@ -479,6 +479,8 @@ const typeDefs = gql`
     signups(
       "The Campaign ID load signups for."
       campaignId: String
+      "The referring User ID to load signups for."
+      referrerUserId: String
       "The signup source to load signups for."
       source: String
       "The user ID to load signups for."
@@ -493,6 +495,8 @@ const typeDefs = gql`
     paginatedSignups(
       "The Campaign ID load signups for."
       campaignId: String
+      "The referring User ID to load signups for."
+      referrerUserId: String
       "The signup source to load signups for."
       source: String
       "The user ID to load signups for."
