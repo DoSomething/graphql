@@ -436,7 +436,7 @@ const typeDefs = gql`
     "The alignment of the gallery images relative to their text content."
     imageAlignment: GalleryImageAlignmentOption!
     "The type of blocks to be rendered in the gallery."
-    galleryType: GalleryTypeOption!
+    galleryType: GalleryTypeOption
     "Blocks to display or preview in the Gallery."
     blocks: [Showcasable]!
     "Controls the cropping method of the gallery images."
