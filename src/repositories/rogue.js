@@ -788,3 +788,19 @@ export const parseCampaignCauses = campaign => {
 
   return zipWith(cause, causeNames, (id, name) => ({ id, name }));
 };
+
+/**
+ * Get a simple list of group types.
+ *
+ * @return {Array}
+ */
+export const getGroupTypes = async (args, context) => {
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/group-types`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
+};
