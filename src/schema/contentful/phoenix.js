@@ -729,6 +729,26 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type VoterRegistrationDriveBlock implements Block {
+    "The user-facing title for this voter registration drive block."
+    title: String
+    "The user-facing description for this voter registration drive block."
+    description: String
+    "If set, the count of current user's approved posts for this action will appear in the sidebar."
+    approvedPostCountActionId: Int
+    "Label text for sidebar if the approvedPostCountActionId is set."
+    approvedPostCountLabel: String
+    ${blockFields}
+    ${entryFields}
+  }
+
+  type VoterRegistrationReferralsBlock implements Block {
+    "The user-facing title for this voter registration referrals block."
+    title: String
+    ${blockFields}
+    ${entryFields}
+  }
+
   type AffiliateBlock implements Block {
     "The title for this affiliate."
     title: String!
@@ -800,6 +820,8 @@ const contentTypeMappings = {
   storyPage: 'StoryPageWebsite',
   textSubmissionAction: 'TextSubmissionBlock',
   voterRegistrationAction: 'VoterRegistrationBlock',
+  voterRegistrationDriveAction: 'VoterRegistrationDriveBlock',
+  voterRegistrationReferralsBlock: 'VoterRegistrationReferralsBlock',
 };
 
 /**
