@@ -12,6 +12,7 @@ import {
   getActionById,
   getActionStats,
   getCampaigns,
+  getGroupTypeById,
   getGroupTypes,
   getPaginatedCampaigns,
   getPermalinkBySignupId,
@@ -396,6 +397,8 @@ const typeDefs = gql`
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
     ): CampaignCollection
+    "Get a group type by ID."
+    groupType(id: Int!): GroupType
     "Get a list of group types."
     groupTypes: [GroupType]
     "Get a post by ID."
@@ -672,6 +675,7 @@ const resolvers = {
       Loader(context).campaigns.load(args.id, getFields(info)),
     campaigns: (_, args, context, info) =>
       getCampaigns(args, getFields(info), context),
+    groupType: (_, args, context) => getGroupTypeById(args.id, context),
     groupTypes: (_, args, context) => getGroupTypes(args, context),
     paginatedCampaigns: (_, args, context, info) =>
       getPaginatedCampaigns(args, context, info),
