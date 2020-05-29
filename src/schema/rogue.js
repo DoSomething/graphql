@@ -12,6 +12,8 @@ import {
   getActionById,
   getActionStats,
   getCampaigns,
+  getGroupTypeById,
+  getGroupTypes,
   getPaginatedCampaigns,
   getPermalinkBySignupId,
   getPermalinkByPostId,
@@ -185,6 +187,18 @@ const typeDefs = gql`
       "How to order the results (e.g. 'accepted_quantity,desc')."
       orderBy: String = "accepted_quantity,desc"
     ): [SchoolActionStat]
+  }
+
+  "A type of user activity group."
+  type GroupType {
+    "The unique ID for this group type."
+    id: Int!
+    "The name of the group type."
+    name: String!
+    "The time this group type was last modified."
+    updatedAt: DateTime
+    "The time when this group type was originally created."
+    createdAt: DateTime
   }
 
   "A media resource on a post."
@@ -383,6 +397,10 @@ const typeDefs = gql`
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
     ): CampaignCollection
+    "Get a group type by ID."
+    groupType(id: Int!): GroupType
+    "Get a list of group types."
+    groupTypes: [GroupType]
     "Get a post by ID."
     post("The desired post ID." id: Int!): Post
     "Get a list of posts."
@@ -657,6 +675,8 @@ const resolvers = {
       Loader(context).campaigns.load(args.id, getFields(info)),
     campaigns: (_, args, context, info) =>
       getCampaigns(args, getFields(info), context),
+    groupType: (_, args, context) => getGroupTypeById(args.id, context),
+    groupTypes: (_, args, context) => getGroupTypes(args, context),
     paginatedCampaigns: (_, args, context, info) =>
       getPaginatedCampaigns(args, context, info),
     paginatedPosts: (_, args, context, info) =>

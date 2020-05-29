@@ -788,3 +788,38 @@ export const parseCampaignCauses = campaign => {
 
   return zipWith(cause, causeNames, (id, name) => ({ id, name }));
 };
+
+/**
+ * Fetch a group type by ID.
+ *
+ * @param {Number} id
+ * @return {Object}
+ */
+export const getGroupTypeById = async (id, context) => {
+  logger.debug('Loading group type from Rogue', { id });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/group-types/${id}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformItem(json);
+};
+
+/**
+ * Get a simple list of group types.
+ *
+ * @return {Array}
+ */
+export const getGroupTypes = async (args, context) => {
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/group-types`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
+};

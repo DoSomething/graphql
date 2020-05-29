@@ -67,4 +67,37 @@ describe('Rogue', () => {
 
     expect(data.post.impact).toEqual('32 Things Done');
   });
+
+  it('can fetch a group type by ID', async () => {
+    const groupType = await factory('group-type', { id: 7 });
+
+    mock.get(`${ROGUE_URL}/api/v3/group-types/7`, { data: groupType });
+
+    const { data } = await query(gql`
+      {
+        groupType(id: 7) {
+          id
+          name
+        }
+      }
+    `);
+    expect(data.groupType.name).toEqual(groupType.name);
+  });
+
+  it('can fetch group types', async () => {
+    const groupTypes = await factory('group-type', 3);
+
+    mock.get(`${ROGUE_URL}/api/v3/group-types`, { data: groupTypes });
+
+    const { data } = await query(gql`
+      {
+        groupTypes {
+          id
+          name
+        }
+      }
+    `);
+
+    expect(data.groupTypes).toHaveLength(3);
+  });
 });

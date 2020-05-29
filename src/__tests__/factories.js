@@ -18,6 +18,14 @@ factory.define('user', Object, {
   created_at: () => chance.date().toISOString(),
 });
 
+// A group type from Rogue.
+factory.define('group-type', Object, {
+  id: chance.integer({ min: 1, max: 10000 }),
+  name: () => chance.company(),
+  updated_at: () => chance.date().toISOString(),
+  created_at: () => chance.date().toISOString(),
+});
+
 // A post from Rogue. <https://git.io/Je3IA>
 factory.define('post', Object, {
   id: chance.integer({ min: 1, max: 10000 }),
