@@ -799,7 +799,7 @@ export const getGroupTypeById = async (id, context) => {
   logger.debug('Loading group type from Rogue', { id });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/group-types/${id}}`,
+    `${ROGUE_URL}/api/v3/group-types/${id}`,
     authorizedRequest(context),
   );
 
