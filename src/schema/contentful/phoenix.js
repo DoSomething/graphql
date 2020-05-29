@@ -736,7 +736,7 @@ const typeDefs = gql`
     description: String
     "If set, the count of current user's approved posts for this action will appear in the sidebar."
     approvedPostCountActionId: Int
-    "Label text for sidebar if the approvedPostCountAction ID is set."
+    "Label text for sidebar if the approvedPostCountActionId is set."
     approvedPostCountLabel: String
     ${blockFields}
     ${entryFields}
