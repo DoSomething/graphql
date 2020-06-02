@@ -331,6 +331,8 @@ const typeDefs = gql`
     affiliates: [AffiliateBlock]
     "The Rich Text content."
     content: JSON!
+    "Any custom overrides for this collection page."
+    additionalContent: JSON
     ${entryFields}
   }
 
