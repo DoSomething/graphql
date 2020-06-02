@@ -12,6 +12,8 @@ import {
   getActionById,
   getActionStats,
   getCampaigns,
+  getGroupById,
+  getGroups,
   getGroupTypeById,
   getGroupTypes,
   getPaginatedCampaigns,
@@ -187,6 +189,22 @@ const typeDefs = gql`
       "How to order the results (e.g. 'accepted_quantity,desc')."
       orderBy: String = "accepted_quantity,desc"
     ): [SchoolActionStat]
+  }
+
+  "A user activity group."
+  type Group {
+    "The unique ID for this group."
+    id: Int!
+    "The group type ID this group belongs to."
+    groupTypeId: Int!
+    "The group name."
+    name: String!
+    "The group goal."
+    goal: Int
+    "The time this group was last modified."
+    updatedAt: DateTime
+    "The time when this group was originally created."
+    createdAt: DateTime
   }
 
   "A type of user activity group."
@@ -397,6 +415,13 @@ const typeDefs = gql`
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
     ): CampaignCollection
+    "Get a group by ID."
+    group(id: Int!): Group
+    "Get a list of groups."
+    groups(
+      "The group type ID to filter groups by."
+      groupTypeId: Int!
+    ): [Group]
     "Get a group type by ID."
     groupType(id: Int!): GroupType
     "Get a list of group types."
@@ -675,6 +700,8 @@ const resolvers = {
       Loader(context).campaigns.load(args.id, getFields(info)),
     campaigns: (_, args, context, info) =>
       getCampaigns(args, getFields(info), context),
+    group: (_, args, context) => getGroupById(args.id, context),
+    groups: (_, args, context) => getGroups(args, context),
     groupType: (_, args, context) => getGroupTypeById(args.id, context),
     groupTypes: (_, args, context) => getGroupTypes(args, context),
     paginatedCampaigns: (_, args, context, info) =>
