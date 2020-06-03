@@ -603,7 +603,6 @@ export const getSignupsById = async (ids, options) => {
  * @param {Number} page
  * @param {String} orderBy
  * @return {Array}
- * @return {Array}
  */
 export const getSignupsByUserId = async (args, context) => {
   const queryString = stringify({
@@ -787,6 +786,48 @@ export const parseCampaignCauses = campaign => {
   }
 
   return zipWith(cause, causeNames, (id, name) => ({ id, name }));
+};
+
+/**
+ * Fetch a group by ID.
+ *
+ * @param {Number} id
+ * @return {Object}
+ */
+export const getGroupById = async (id, context) => {
+  logger.debug('Loading group from Rogue', { id });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/groups/${id}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformItem(json);
+};
+
+/**
+ * Get a simple list of groups.
+ *
+ * @param {Number} groupTypeId
+ * @return {Array}
+ */
+export const getGroups = async (args, context) => {
+  const queryString = stringify({
+    filter: {
+      group_type_id: args.groupTypeId,
+    },
+  });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/groups/?${queryString}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
 };
 
 /**
