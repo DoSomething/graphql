@@ -338,6 +338,8 @@ const typeDefs = gql`
     details: String
     "The user who referred the signup user to create this signup."
     referrerUserId: String
+    "The associated user activity group for this signup."
+    groupId: Int
     "The time this signup was last modified."
     updatedAt: DateTime
     "The time when this signup was originally created."
@@ -519,6 +521,8 @@ const typeDefs = gql`
     signups(
       "The Campaign ID load signups for."
       campaignId: String
+      "The Group ID to load signups for."
+      groupId: Int
       "The referring User ID to load signups for."
       referrerUserId: String
       "The signup source to load signups for."
@@ -535,6 +539,8 @@ const typeDefs = gql`
     paginatedSignups(
       "The Campaign ID load signups for."
       campaignId: String
+      "The Group ID to load signups for."
+      groupId: Int
       "The referring User ID to load signups for."
       referrerUserId: String
       "The signup source to load signups for."

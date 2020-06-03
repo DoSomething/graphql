@@ -489,6 +489,7 @@ export const makeImpactStatement = post => {
  *
  * @param {String} campaignId
  * @param {Number} count
+ * @param {Number} groupId
  * @param {Number} page
  * @param {String} orderBy
  * @param {String} source
@@ -499,6 +500,7 @@ export const fetchSignups = async (args, context, additionalQuery) => {
   const queryString = stringify({
     filter: {
       campaign_id: args.campaignId,
+      group_id: args.groupId,
       northstar_id: args.userId,
       referrer_user_id: args.referrerUserId,
       source: args.source,
