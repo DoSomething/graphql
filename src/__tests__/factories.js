@@ -21,8 +21,8 @@ factory.define('user', Object, {
 // A group from Rogue.
 factory.define('group', Object, {
   id: chance.integer({ min: 1, max: 10000 }),
-  name: () => chance.company(),
   group_type_id: chance.integer({ min: 1, max: 10000 }),
+  name: () => chance.company(),
   goal: chance.integer({ min: 1, max: 10000 }),
   updated_at: () => chance.date().toISOString(),
   created_at: () => chance.date().toISOString(),
