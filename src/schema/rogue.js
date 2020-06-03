@@ -418,10 +418,7 @@ const typeDefs = gql`
     "Get a group by ID."
     group(id: Int!): Group
     "Get a list of groups."
-    groups(
-      "The group type ID to filter groups by."
-      groupTypeId: Int!
-    ): [Group]
+    groups("The group type ID to filter groups by." groupTypeId: Int!): [Group]
     "Get a group type by ID."
     groupType(id: Int!): GroupType
     "Get a list of group types."

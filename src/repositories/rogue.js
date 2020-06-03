@@ -816,7 +816,7 @@ export const getGroupById = async (id, context) => {
 export const getGroups = async (args, context) => {
   const queryString = stringify({
     filter: {
-      'group_type_id': args.groupTypeId,
+      group_type_id: args.groupTypeId,
     },
   });
 
