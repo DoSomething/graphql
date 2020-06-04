@@ -197,6 +197,8 @@ const typeDefs = gql`
     id: Int!
     "The group type ID this group belongs to."
     groupTypeId: Int!
+    "The group type this group belongs to."
+    groupType: GroupType
     "The group name."
     name: String!
     "The group goal."
@@ -657,6 +659,10 @@ const resolvers = {
       Loader(context).campaigns.load(action.campaignId, getFields(info)),
     schoolActionStats: (action, args, context) =>
       getActionStats(args.schoolId, action.id, args.orderBy, context),
+  },
+  Group: {
+    groupType: (group, args, context, info) =>
+      Loader(context).groupTypes.load(group.groupTypeId, getFields(info)),
   },
   Media: {
     url: (media, args) => urlWithQuery(media.url, args),
