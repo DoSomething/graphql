@@ -277,8 +277,10 @@ const typeDefs = gql`
     details: String
     "The user who referred the post user to create this post."
     referrerUserId: String
-    "The associated user activity group for this post."
+    "The associated user activity group ID for this post."
     groupId: Int
+    "The associated user activity group for this post."
+    group: Group
     "The number of items added or removed in this post."
     quantity: Int
     "The human-readable impact (quantity, noun, and verb)."
@@ -342,8 +344,10 @@ const typeDefs = gql`
     details: String
     "The user who referred the signup user to create this signup."
     referrerUserId: String
-    "The associated user activity group for this signup."
+    "The associated user activity group ID for this signup."
     groupId: Int
+    "The associated user activity group for this signup."
+    group: Group
     "The time this signup was last modified."
     updatedAt: DateTime
     "The time when this signup was originally created."
@@ -676,6 +680,10 @@ const resolvers = {
   Post: {
     campaign: (post, args, context, info) =>
       Loader(context).campaigns.load(post.campaignId, getFields(info)),
+    group: (post, args, context, info) =>
+      post.groupId
+        ? Loader(context).groups.load(post.groupId, getFields(info))
+        : null,
     signup: (post, args, context) =>
       Loader(context).signups.load(post.signupId),
     url: (post, args) => urlWithQuery(post.media.url, args),
@@ -704,6 +712,10 @@ const resolvers = {
   Signup: {
     campaign: (signup, args, context, info) =>
       Loader(context).campaigns.load(signup.campaignId, getFields(info)),
+    group: (signup, args, context, info) =>
+      signup.groupId
+        ? Loader(context).groups.load(signup.groupId, getFields(info))
+        : null,
     permalink: signup => getPermalinkBySignupId(signup.id),
     posts: (signup, args, context) => getPostsBySignupId(signup.id, context),
   },
