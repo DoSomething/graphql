@@ -277,6 +277,8 @@ const typeDefs = gql`
     details: String
     "The user who referred the post user to create this post."
     referrerUserId: String
+    "The associated user activity group for this post."
+    groupId: Int
     "The number of items added or removed in this post."
     quantity: Int
     "The human-readable impact (quantity, noun, and verb)."
@@ -443,6 +445,8 @@ const typeDefs = gql`
       location: String
       "The referring User ID to load posts for."
       referrerUserId: String
+      "The user activity group ID to load posts for."
+      groupId: Int
       "The post statuses to load posts for."
       status: [ReviewStatus]
       "The post source to load posts for."
@@ -474,6 +478,8 @@ const typeDefs = gql`
       location: String
       "The referring User ID to load posts for."
       referrerUserId: String
+      "The user activity group ID to load posts for."
+      groupId: Int
       "The post statuses to load posts for."
       status: [ReviewStatus]
       "The post source to load posts for."
