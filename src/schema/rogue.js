@@ -116,6 +116,8 @@ const typeDefs = gql`
     startDate: DateTime
     "The time when this campaign last modified."
     updatedAt: DateTime
+    "The group type id associated with this campaign. Only visible to staff/admins."
+    groupTypeId: Int
   }
 
   "Experimental: A paginated list of campaigns. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
