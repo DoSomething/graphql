@@ -7,6 +7,7 @@ import {
   getActionsByCampaignId,
   getActionById,
   getCampaignById,
+  getGroupById,
   getGroupTypeById,
   getSignupsById,
 } from './repositories/rogue';
@@ -99,6 +100,9 @@ export default (context, preview = false) => {
       ),
       gambitAssets: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulAssetById(id, context))),
+      ),
+      groups: new FieldDataLoader((id, fields) =>
+        getGroupById(id, fields, options),
       ),
       groupTypes: new FieldDataLoader((id, fields) =>
         getGroupTypeById(id, fields, options),

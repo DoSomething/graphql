@@ -226,6 +226,7 @@ export const fetchPosts = async (args, context, additionalQuery) => {
       action: args.action,
       action_id: args.actionIds ? args.actionIds.join(',') : undefined,
       campaign_id: args.campaignId,
+      group_id: args.groupId,
       signup_id: args.signupId,
       location: args.location,
       northstar_id: args.userId,
