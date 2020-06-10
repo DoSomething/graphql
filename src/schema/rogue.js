@@ -116,7 +116,7 @@ const typeDefs = gql`
     startDate: DateTime
     "The time when this campaign last modified."
     updatedAt: DateTime
-    "The group type id associated with this campaign. Only visible to staff/admins."
+    "The group type id associated with this campaign."
     groupTypeId: Int
   }
 
