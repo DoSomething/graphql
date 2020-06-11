@@ -139,6 +139,7 @@ export const getCampaignById = async (id, fields, context) => {
  *
  * @param {Number} page
  * @param {Number} count
+ * @param {Number} groupTypeId
  * @return {Array}
  */
 export const fetchCampaigns = async (
@@ -152,6 +153,7 @@ export const fetchCampaigns = async (
       is_open: args.isOpen,
       cause: args.causes ? args.causes.join(',') : undefined,
       has_website: args.hasWebsite,
+      group_type_id: args.groupTypeId,
     },
     isUndefined,
   );
