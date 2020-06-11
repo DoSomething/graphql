@@ -401,7 +401,7 @@ const typeDefs = gql`
       isOpen: Boolean
       "Only return campaigns containing these causes."
       causes: [String]
-      "Only return campaigns containing this groupType id."
+      "Only return campaigns containing this group type id."
       groupTypeId: Int
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
@@ -418,7 +418,7 @@ const typeDefs = gql`
       isOpen: Boolean
       "Only return campaigns containing these causes."
       causes: [String]
-      "Only return campaigns containing this groupType id."
+      "Only return campaigns containing this group type id."
       groupTypeId: Int
       "Only return campaigns that have a contentful campaign associated."
       hasWebsite: Boolean
