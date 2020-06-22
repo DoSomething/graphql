@@ -818,13 +818,14 @@ export const getGroupById = async (id, context) => {
  * @param {Number} groupTypeId
  * @return {Array}
  */
-export const fetchGroups = async (args, context, info) => {
+export const fetchGroups = async (args, context, additionalQuery) => {
   const queryString = stringify({
     pagination: 'cursor',
     filter: {
       group_type_id: args.groupTypeId,
       name: args.name,
     },
+    ...additionalQuery,
   });
 
   logger.info('Loading groups from Rogue', { args, queryString });
@@ -856,8 +857,8 @@ export const getGroups = async (args, context) => {
  *
  * @return {Collection}
  */
-export const getPaginatedGroups = async (args, context, info) => {
-  const json = await fetchGroups(args, context, info, {
+export const getPaginatedGroups = async (args, context) => {
+  const json = await fetchGroups(args, context, {
     limit: args.first,
     cursor: {
       after: args.after,
