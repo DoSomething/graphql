@@ -375,13 +375,13 @@ const typeDefs = gql`
     deleted: Boolean
   }
 
-  "Experimental: A paginated list of signups. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
+  "A paginated list of signups. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
   type SignupCollection {
     edges: [SignupEdge]
     pageInfo: PageInfo!
   }
 
-  "Experimental: Signup in a paginated list."
+  "Signup in a paginated list."
   type SignupEdge {
     cursor: String!
     node: Signup!
@@ -449,7 +449,12 @@ const typeDefs = gql`
     "Get a group by ID."
     group(id: Int!): Group
     "Get a list of groups."
-    groups("The group type ID to filter groups by." groupTypeId: Int): [Group]
+    groups(
+      "The group type ID to filter groups by."
+      groupTypeId: Int
+      "The group name to filter groups by."
+      name: String
+    ): [Group]
     "Get a Relay-style paginated collection of groups."
     paginatedGroups(
       "Get the first N results."
@@ -458,8 +463,8 @@ const typeDefs = gql`
       after: String
       "The group type ID to filter groups by."
       groupTypeId: Int
-      "How to order the results (e.g. 'id,desc')."
-      orderBy: String = "id,desc"
+      "The group name to filter groups by."
+      name: String
     ): GroupCollection
     "Get a group type by ID."
     groupType(id: Int!): GroupType

@@ -813,9 +813,10 @@ export const getGroupById = async (id, context) => {
 };
 
 /**
- * Fetch groups.
+ * Fetch groups from Rogue based on the given filters.
  *
  * @param {Number} groupTypeId
+ * @param {String} name
  * @return {Array}
  */
 export const fetchGroups = async (args, context, additionalQuery) => {
