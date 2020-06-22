@@ -43,6 +43,7 @@ import {
   deletePost,
   createSignup,
   deleteSignup,
+  searchCampaigns,
 } from '../repositories/rogue';
 
 /**
