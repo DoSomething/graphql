@@ -451,7 +451,7 @@ const typeDefs = gql`
     "Get a list of groups."
     groups(
       "The group type ID to filter groups by."
-      groupTypeId: Int
+      groupTypeId: Int!
       "The group name to filter groups by."
       name: String
     ): [Group]
@@ -462,7 +462,7 @@ const typeDefs = gql`
       "The cursor to return results after."
       after: String
       "The group type ID to filter groups by."
-      groupTypeId: Int
+      groupTypeId: Int!
       "The group name to filter groups by."
       name: String
     ): GroupCollection
