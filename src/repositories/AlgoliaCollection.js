@@ -15,9 +15,9 @@ class AlgoliaCollection {
   get edges() {
     const fields = getFields(this.info, 'Campaign', 'edges.node');
 
-    return this.json.hits.map(({ id }) => ({
-      cursor: String(id),
-      node: Loader(this.context).campaigns.load(id, fields),
+    return this.json.hits.map((hit, index) => ({
+      cursor: String(index),
+      node: Loader(this.context).campaigns.load(hit.id, fields),
     }));
   }
 
