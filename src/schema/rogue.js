@@ -96,7 +96,7 @@ const typeDefs = gql`
     endDate: DateTime
     "The unique ID for this campaign."
     id: Int!
-    "The contentful campaign id where this campaign is being used."
+    "The Contentful campaign ID where this campaign is being used."
     contentfulCampaignId: String
     "The internal name used to identify the campaign."
     internalTitle: String!
@@ -116,8 +116,10 @@ const typeDefs = gql`
     startDate: DateTime
     "The time when this campaign last modified."
     updatedAt: DateTime
-    "The group type id associated with this campaign."
+    "The user activity group type ID associated with this campaign."
     groupTypeId: Int
+    "The user activity group type associated with this campaign."
+    groupType: GroupType
   }
 
   "Experimental: A paginated list of campaigns. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
@@ -772,6 +774,10 @@ const resolvers = {
     actions: (campaign, args, context) =>
       Loader(context).actionsByCampaignId.load(campaign.id),
     causes: campaign => parseCampaignCauses(campaign),
+    groupType: (campaign, args, context, info) =>
+      campaign.groupTypeId
+        ? Loader(context).groupTypes.load(campaign.groupTypeId, getFields(info))
+        : null,
   },
 };
 
