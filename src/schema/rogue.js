@@ -17,6 +17,7 @@ import {
   getGroupTypeById,
   getGroupTypes,
   getPaginatedCampaigns,
+  getPaginatedGroups,
   getPermalinkBySignupId,
   getPermalinkByPostId,
   getPosts,
@@ -122,19 +123,19 @@ const typeDefs = gql`
     groupType: GroupType
   }
 
-  "Experimental: A paginated list of campaigns. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
+  "A paginated list of campaigns. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
   type CampaignCollection {
     edges: [CampaignEdge]
     pageInfo: PageInfo!
   }
 
-  "Experimental: Campaign in a paginated list."
+  "Campaign in a paginated list."
   type CampaignEdge {
     cursor: String!
     node: Campaign!
   }
 
-  "Experimental: Information about a paginated list."
+  "Information about a paginated list."
   type PageInfo {
     endCursor: String
     hasNextPage: Boolean!
@@ -211,6 +212,18 @@ const typeDefs = gql`
     updatedAt: DateTime
     "The time when this group was originally created."
     createdAt: DateTime
+  }
+
+  "A paginated list of user activity groups. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
+  type GroupCollection {
+    edges: [GroupEdge]
+    pageInfo: PageInfo!
+  }
+
+  "User activity group in a paginated list."
+  type GroupEdge {
+    cursor: String!
+    node: Group!
   }
 
   "A type of user activity group."
@@ -362,13 +375,13 @@ const typeDefs = gql`
     deleted: Boolean
   }
 
-  "Experimental: A paginated list of signups. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
+  "A paginated list of signups. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
   type SignupCollection {
     edges: [SignupEdge]
     pageInfo: PageInfo!
   }
 
-  "Experimental: Signup in a paginated list."
+  "Signup in a paginated list."
   type SignupEdge {
     cursor: String!
     node: Signup!
@@ -416,7 +429,7 @@ const typeDefs = gql`
       "The number of results per page."
       count: Int = 20
     ): [Campaign]
-    "Experimental: Get a Relay-style paginated collection of campaigns."
+    "Get a Relay-style paginated collection of campaigns."
     paginatedCampaigns(
       "Get the first N results."
       first: Int = 20
@@ -436,7 +449,23 @@ const typeDefs = gql`
     "Get a group by ID."
     group(id: Int!): Group
     "Get a list of groups."
-    groups("The group type ID to filter groups by." groupTypeId: Int): [Group]
+    groups(
+      "The group type ID to filter groups by."
+      groupTypeId: Int!
+      "The group name to filter groups by."
+      name: String
+    ): [Group]
+    "Get a Relay-style paginated collection of groups."
+    paginatedGroups(
+      "Get the first N results."
+      first: Int = 20
+      "The cursor to return results after."
+      after: String
+      "The group type ID to filter groups by."
+      groupTypeId: Int!
+      "The group name to filter groups by."
+      name: String
+    ): GroupCollection
     "Get a group type by ID."
     groupType(id: Int!): GroupType
     "Get a list of group types."
@@ -537,7 +566,7 @@ const typeDefs = gql`
     ): [SchoolActionStat]
     "Get a signup by ID."
     signup(id: Int!): Signup
-    "Get a paginated collection of signups."
+    "Get a list of signups."
     signups(
       "The Campaign ID load signups for."
       campaignId: String
@@ -556,6 +585,7 @@ const typeDefs = gql`
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
     ): [Signup]
+    "Get a paginated collection of signups."
     paginatedSignups(
       "The Campaign ID load signups for."
       campaignId: String
@@ -741,6 +771,8 @@ const resolvers = {
     groupTypes: (_, args, context) => getGroupTypes(args, context),
     paginatedCampaigns: (_, args, context, info) =>
       getPaginatedCampaigns(args, context, info),
+    paginatedGroups: (_, args, context, info) =>
+      getPaginatedGroups(args, context, info),
     paginatedPosts: (_, args, context, info) =>
       getPaginatedPosts(args, context, info),
     post: (_, args, context) => getPostById(args.id, context),

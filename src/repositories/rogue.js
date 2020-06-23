@@ -813,26 +813,60 @@ export const getGroupById = async (id, context) => {
 };
 
 /**
- * Get a simple list of groups.
+ * Fetch groups from Rogue based on the given filters.
  *
  * @param {Number} groupTypeId
+ * @param {String} name
  * @return {Array}
  */
-export const getGroups = async (args, context) => {
+export const fetchGroups = async (args, context, additionalQuery) => {
   const queryString = stringify({
+    pagination: 'cursor',
     filter: {
       group_type_id: args.groupTypeId,
+      name: args.name,
     },
+    ...additionalQuery,
   });
+
+  logger.info('Loading groups from Rogue', { args, queryString });
 
   const response = await fetch(
     `${ROGUE_URL}/api/v3/groups/?${queryString}`,
     authorizedRequest(context),
   );
 
-  const json = await response.json();
+  return response.json();
+};
+
+/**
+ * Get a simple list of groups.
+ *
+ * @return {Array}
+ */
+export const getGroups = async (args, context) => {
+  const json = await fetchGroups(args, context, {
+    limit: args.count,
+    page: args.page,
+  });
 
   return transformCollection(json);
+};
+
+/**
+ * Fetch a paginated group connection.
+ *
+ * @return {Collection}
+ */
+export const getPaginatedGroups = async (args, context) => {
+  const json = await fetchGroups(args, context, {
+    limit: args.first,
+    cursor: {
+      after: args.after,
+    },
+  });
+
+  return new Collection(json);
 };
 
 /**
