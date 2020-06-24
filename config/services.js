@@ -9,6 +9,11 @@ const environmentMapping = {
   production: 'master',
 };
 
+const algolia = {
+  appId: process.env.ALGOLIA_APP_ID,
+  secret: process.env.ALGOLIA_SECRET,
+};
+
 const contentful = {
   phoenix: {
     spaceId: process.env.PHOENIX_CONTENTFUL_SPACE_ID,
@@ -201,6 +206,7 @@ const environments = {
 
 // Validate environment choice:
 const QUERY_ENV = process.env.QUERY_ENV;
+
 if (!QUERY_ENV || !['local', 'dev', 'qa', 'production'].includes(QUERY_ENV)) {
   throw new Error(
     'The QUERY_ENV environment variable must be "local", "dev", "qa", or "production".',
@@ -209,6 +215,8 @@ if (!QUERY_ENV || !['local', 'dev', 'qa', 'production'].includes(QUERY_ENV)) {
 
 export default {
   environment: QUERY_ENV,
+
+  algolia,
 
   // Merge the relevant config based on 'QUERY_ENV'.
   ...environments[QUERY_ENV],

@@ -957,8 +957,8 @@ const algolia = () => {
   }
 
   const client = algoliasearch(
-    process.env.ALGOLIA_APP_ID,
-    process.env.ALGOLIA_SECRET,
+    config('services.algolia.appId'),
+    config('services.algolia.secret'),
   );
 
   index = client.initIndex('local_campaigns');
@@ -966,10 +966,12 @@ const algolia = () => {
   return index;
 };
 
+console.log(algolia());
+
 /**
  * Search campaigns (using Algolia).
  *
- * @return {Array}gg
+ * @return {Array}
  */
 export const searchCampaigns = async (root, args, context, info) => {
   const { cursor = '0', term, isOpen, perPage } = args;
