@@ -3,7 +3,6 @@ import pluralize from 'pluralize';
 import logger from 'heroku-logger';
 import { getUnixTime } from 'date-fns';
 import { getFields } from 'fielddataloader';
-import algoliasearch from 'algoliasearch';
 import {
   find,
   intersection,
@@ -25,6 +24,7 @@ import {
   authorizedRequest,
   requireAuthorizedRequest,
 } from './helpers';
+import { algolia } from '../algolia';
 
 const ROGUE_URL = config('services.rogue.url');
 
@@ -950,24 +950,6 @@ export const getGroupTypes = async (args, context) => {
   return transformCollection(json);
 };
 
-let index;
-const algolia = () => {
-  if (index) {
-    return index;
-  }
-
-  const client = algoliasearch(
-    config('services.algolia.appId'),
-    config('services.algolia.secret'),
-  );
-
-  index = client.initIndex('local_campaigns');
-
-  return index;
-};
-
-console.log(algolia());
-
 /**
  * Search campaigns (using Algolia).
  *
@@ -982,7 +964,7 @@ export const searchCampaigns = async (root, args, context, info) => {
   const isOpenFilter = `start_date < ${now} AND end_date > ${now}`;
   const isClosedFilter = `start_date > ${now} OR end_date < ${now}`;
 
-  const results = await algolia().search(term, {
+  const results = await algolia('local_campaigns').search(term, {
     filters: isOpen ? isOpenFilter : isClosedFilter,
     attributesToRetrieve: ['id'],
     length: perPage,
