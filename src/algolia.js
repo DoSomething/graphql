@@ -10,6 +10,7 @@ class Algolia {
       config('services.algolia.secret'),
     );
 
+    // @TODO: need to find a way to allow for dynamic env-based index names.
     this.indices = {};
   }
 
