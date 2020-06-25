@@ -206,13 +206,13 @@ const typeDefs = gql`
     groupType: GroupType
     "The group name."
     name: String!
-     "The group external ID."
+    "The group external ID."
     externalId: String
     "The group goal."
     goal: Int
-     "The group city."
+    "The group city."
     city: String
-     "The group state."
+    "The group state."
     state: String
     "The time this group was last modified."
     updatedAt: DateTime
