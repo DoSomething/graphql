@@ -206,8 +206,14 @@ const typeDefs = gql`
     groupType: GroupType
     "The group name."
     name: String!
+    "The group external ID."
+    externalId: String
     "The group goal."
     goal: Int
+    "The group city."
+    city: String
+    "The group state."
+    state: String
     "The time this group was last modified."
     updatedAt: DateTime
     "The time when this group was originally created."
@@ -454,6 +460,8 @@ const typeDefs = gql`
       groupTypeId: Int!
       "The group name to filter groups by."
       name: String
+      "The group state to filter groups by."
+      state: String
     ): [Group]
     "Get a Relay-style paginated collection of groups."
     paginatedGroups(
@@ -465,6 +473,8 @@ const typeDefs = gql`
       groupTypeId: Int!
       "The group name to filter groups by."
       name: String
+      "The group state to filter groups by."
+      state: String
     ): GroupCollection
     "Get a group type by ID."
     groupType(id: Int!): GroupType
