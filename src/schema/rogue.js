@@ -460,6 +460,8 @@ const typeDefs = gql`
       groupTypeId: Int!
       "The group name to filter groups by."
       name: String
+      "The group state to filter groups by."
+      state: String
     ): [Group]
     "Get a Relay-style paginated collection of groups."
     paginatedGroups(
@@ -471,6 +473,8 @@ const typeDefs = gql`
       groupTypeId: Int!
       "The group name to filter groups by."
       name: String
+      "The group state to filter groups by."
+      state: String
     ): GroupCollection
     "Get a group type by ID."
     groupType(id: Int!): GroupType

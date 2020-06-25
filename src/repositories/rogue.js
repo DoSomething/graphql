@@ -825,6 +825,7 @@ export const fetchGroups = async (args, context, additionalQuery) => {
     filter: {
       group_type_id: args.groupTypeId,
       name: args.name,
+      state: args.state,
     },
     ...additionalQuery,
   });
