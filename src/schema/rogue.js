@@ -238,6 +238,8 @@ const typeDefs = gql`
     id: Int!
     "The name of the group type."
     name: String!
+    "Whether group finders for this type should first filter by state before searching by name."
+    filterByState: Boolean
     "The time this group type was last modified."
     updatedAt: DateTime
     "The time when this group type was originally created."
