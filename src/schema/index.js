@@ -4,11 +4,12 @@ import { mergeSchemas } from 'graphql-tools';
 // Schemas
 import embedSchema from './embed';
 import rogueSchema from './rogue';
-import northstarSchema from './northstar';
-import phoenixContentfulSchema from './contentful/phoenix';
-import gambitContentfulSchema from './contentful/gambit';
 import gambitSchema from './gambit';
 import schoolsSchema from './schools';
+import algoliaSchema from './algolia';
+import northstarSchema from './northstar';
+import gambitContentfulSchema from './contentful/gambit';
+import phoenixContentfulSchema from './contentful/phoenix';
 
 /**
  * The schema used to link services together.
@@ -591,6 +592,7 @@ const linkResolvers = {
  */
 const schema = mergeSchemas({
   schemas: [
+    algoliaSchema,
     embedSchema,
     northstarSchema,
     rogueSchema,
