@@ -30,6 +30,8 @@ import {
   getPaginatedSignups,
   getSignupsByUserId,
   getSignupsCount,
+  getVoterRegistrationsCountByGroupId,
+  getVoterRegistrationsCountByReferrerUserId,
   toggleReaction,
   getPostsCount,
   makeImpactStatement,
@@ -633,7 +635,7 @@ const typeDefs = gql`
     ): [Signup]
     "Find out how many signups a particular user has. Intended for use with badges."
     signupsCount(
-      "The Campaign ID count signups for."
+      "The Campaign ID to count signups for."
       campaignId: String
       "The signup source to count signups for."
       source: String
@@ -666,6 +668,16 @@ const typeDefs = gql`
       tags: String
       "The maximum count to report."
       limit: Int = 20
+    ): Int
+    "Find out how many completed voter registrations a group has."
+    voterRegistrationsCountByGroupId(
+      "The Group ID to count completed voter registrations for."
+      groupId: Int!
+    ): Int
+    "Find out how many completed voter registrations a referring user has."
+    voterRegistrationsCountByReferrerUserId(
+      "The Referrer User ID to count completed voter registrations for."
+      referrerUserId: String!
     ): Int
   }
 
@@ -805,6 +817,10 @@ const resolvers = {
     signupsByUserId: (_, args, context) => getSignupsByUserId(args, context),
     signupsCount: (_, args, context) => getSignupsCount(args, context),
     postsCount: (_, args, context) => getPostsCount(args, context),
+    voterRegistrationsCountByGroupId: (_, args, context) =>
+      getVoterRegistrationsCountByGroupId(args.groupId, context),
+    voterRegistrationsCountByReferrerUserId: (_, args, context) =>
+      getVoterRegistrationsCountByReferrerUserId(args.referrerUserId, context),
   },
   Mutation: {
     toggleReaction: (_, args, context) => toggleReaction(args.postId, context),
