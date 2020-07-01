@@ -1,4 +1,3 @@
-import { map } from 'lodash';
 const { DataSource } = require('apollo-datasource');
 const { InMemoryLRUCache } = require('apollo-server-caching');
 
@@ -42,11 +41,7 @@ class AlgoliaAPI extends DataSource {
   async searchCampaigns(term, options = {}) {
     const index = this.initIndex('campaigns');
 
-    const results = await index.search(term);
-
-    // console.log(results);
-
-    return map(results.hits, 'id');
+    return await index.search(term);
   }
 
   /**
@@ -55,9 +50,7 @@ class AlgoliaAPI extends DataSource {
   async searchPages() {
     const index = this.initIndex('pages');
 
-    const results = await index.search('');
-
-    return map(results.hits, 'id');
+    return await index.search('');
   }
 }
 

@@ -1,3 +1,5 @@
+import { map } from 'lodash';
+
 import AlgoliaCollection from '../dataSources/AlgoliaCollection';
 
 const resolvers = {
@@ -14,7 +16,7 @@ const resolvers = {
 
       // Temp
       return {
-        results,
+        results: map(results.hits, 'id'),
       };
     },
 
