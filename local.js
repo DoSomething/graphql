@@ -9,8 +9,9 @@ const express = require('express');
 const chalk = require('chalk');
 const boxen = require('boxen');
 
-const schema = require('./src/schema').default;
 const config = require('./config').default;
+const schema = require('./src/schema').default;
+const AlgoliaAPI = require('./src/dataSources/algolia');
 
 const app = express();
 const server = new ApolloServer({
@@ -18,6 +19,9 @@ const server = new ApolloServer({
   schema,
   context: ({ req }) => ({
     authorization: req.headers.authorization || '',
+  }),
+  dataSources: () => ({
+    algoliaAPI: new AlgoliaAPI(),
   }),
 });
 

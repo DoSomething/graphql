@@ -13,3 +13,15 @@ export default makeExecutableSchema({
   typeDefs,
   resolvers,
 });
+
+// {
+//   hits: [],
+//   nbHits: 183,
+//   page: 0,
+//   nbPages: 10,
+//   hitsPerPage: 20,
+//   exhaustiveNbHits: true,
+//   query: '',
+//   params: '',
+//   processingTimeMS: 1
+// }

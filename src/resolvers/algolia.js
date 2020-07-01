@@ -1,15 +1,11 @@
-import { map } from 'lodash';
-import { algolia } from '../algolia';
-
 const resolvers = {
   Query: {
-    searchCampaigns: async () => {
-      const allCampaigns = await algolia('local_campaigns').search('');
+    searchCampaigns: async (_, __, context) =>
+      context.dataSources.algoliaAPI.searchCampaigns(),
 
-      console.log(allCampaigns);
-
-      return map(allCampaigns.hits, 'id');
-    },
+    // @FUTURE Example of other potential upcoming resolver.
+    // searchPages: (_, __, context) =>
+    //   context.dataSources.algoliaAPI.searchPages(),
   },
 };
 

@@ -24,7 +24,7 @@ import {
   authorizedRequest,
   requireAuthorizedRequest,
 } from './helpers';
-import { algolia } from '../algolia';
+// import { algolia } from '../algolia';
 
 const ROGUE_URL = config('services.rogue.url');
 
