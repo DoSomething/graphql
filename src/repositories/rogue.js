@@ -727,6 +727,7 @@ export const getSignupsCount = async (args, context) => {
  * @param {String} action
  * @param {String} actionIds
  * @param {String} campaignId
+ * @param {Number} groupId
  * @param {Number} limit
  * @param {String} location
  * @param {String} source
@@ -741,6 +742,7 @@ export const getPostsCount = async (args, context) => {
       action: args.action,
       action_id: args.actionIds ? args.actionIds.join(',') : undefined,
       campaign_id: args.campaignId,
+      group_id: args.groupId,
       location: args.location,
       northstar_id: args.userId,
       referrer_user_id: args.referrerUserId,
