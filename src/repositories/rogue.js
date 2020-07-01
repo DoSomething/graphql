@@ -770,6 +770,45 @@ export const getPostsCount = async (args, context) => {
 };
 
 /**
+ * Fetch number of completed voter-reg posts for given groupId.
+ *
+ * @param {Number} groupId
+ * @return Int
+ */
+export const getVoterRegistrationsCountByGroupId = async (groupId, context) => {
+  return getPostsCount(
+    {
+      groupId,
+      limit: 50,
+      status: ['register-form', 'register-ovr'],
+      type: 'voter-reg',
+    },
+    context,
+  );
+};
+
+/**
+ * Fetch number of completed voter-reg posts for given referrerUserId.
+ *
+ * @param {String} referrerUserId
+ * @return Int
+ */
+export const getVoterRegistrationsCountByReferrerUserId = async (
+  referrerUserId,
+  context,
+) => {
+  return getPostsCount(
+    {
+      referrerUserId,
+      limit: 50,
+      status: ['register-form', 'register-ovr'],
+      type: 'voter-reg',
+    },
+    context,
+  );
+};
+
+/**
  * Parse `Cause` type from a given campaign.
  *
  * @param {Object} campaign
