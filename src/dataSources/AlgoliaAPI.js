@@ -39,10 +39,12 @@ class AlgoliaAPI extends DataSource {
   /**
    * Search campaigns index
    */
-  async searchCampaigns() {
+  async searchCampaigns(term, options = {}) {
     const index = this.initIndex('campaigns');
 
-    const results = await index.search('');
+    const results = await index.search(term);
+
+    // console.log(results);
 
     return map(results.hits, 'id');
   }

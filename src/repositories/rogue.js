@@ -15,7 +15,7 @@ import {
 import schema from '../schema';
 import config from '../../config';
 import Collection from './Collection';
-import AlgoliaCollection from './AlgoliaCollection';
+import AlgoliaCollection from '../dataSources/AlgoliaCollection';
 import { enumToString } from '../schema/helpers';
 import {
   getOptional,
