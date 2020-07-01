@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import algoliasearch from 'algoliasearch';
 
-import config from '../config';
+import config from '../../config';
 
 class Algolia {
   constructor() {
@@ -27,20 +27,4 @@ class Algolia {
   }
 }
 
-/*
- * Variable that stores single instance of Algolia.
- */
-let algoliaInstance;
-
-/**
- * Get instance of Algolia class.
- *
- * @return {Algolia}
- */
-export function algolia(indexName = null) {
-  if (!algoliaInstance) {
-    algoliaInstance = new Algolia();
-  }
-
-  return algoliaInstance.getIndex(indexName);
-}
+export default Algolia;

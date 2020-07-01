@@ -12,6 +12,7 @@ const environmentMapping = {
 const algolia = {
   appId: process.env.ALGOLIA_APP_ID,
   secret: process.env.ALGOLIA_SECRET,
+  prefix: process.env.ALGOLIA_INDEX_PREFIX,
 };
 
 const contentful = {
