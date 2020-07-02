@@ -38,10 +38,19 @@ class AlgoliaAPI extends DataSource {
   /**
    * Search campaigns index
    */
-  async searchCampaigns(term, options = {}) {
+  async searchCampaigns(options = {}) {
+    const { cursor = '0', isOpen = true, perPage = 20, term = '' } = options;
+
     const index = this.initIndex('campaigns');
 
-    return await index.search(term);
+    return await index.search(term, {
+      attributesToRetrieve: ['id'],
+      filters: isOpen
+        ? this.client.filterOpenCampaigns
+        : this.client.filterClosedCampaigns,
+      length: perPage,
+      offset: Number(cursor),
+    });
   }
 
   /**
