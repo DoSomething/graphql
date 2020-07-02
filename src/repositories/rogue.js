@@ -1,7 +1,6 @@
 import { stringify } from 'qs';
 import pluralize from 'pluralize';
 import logger from 'heroku-logger';
-import { getUnixTime } from 'date-fns';
 import { getFields } from 'fielddataloader';
 import {
   find,
@@ -15,7 +14,6 @@ import {
 import schema from '../schema';
 import config from '../../config';
 import Collection from './Collection';
-import AlgoliaCollection from '../dataSources/AlgoliaCollection';
 import { enumToString } from '../schema/helpers';
 import {
   getOptional,
@@ -24,7 +22,6 @@ import {
   authorizedRequest,
   requireAuthorizedRequest,
 } from './helpers';
-// import { algolia } from '../algolia';
 
 const ROGUE_URL = config('services.rogue.url');
 
@@ -949,28 +946,3 @@ export const getGroupTypes = async (args, context) => {
 
   return transformCollection(json);
 };
-
-/**
- * Search campaigns (using Algolia).
- *
- * @return {Array}
- */
-// export const searchCampaigns = async (root, args, context, info) => {
-//   const { cursor = '0', term, isOpen, perPage } = args;
-
-//   logger.debug('Searching campaigns with Algolia', { term, isOpen, cursor });
-
-//   const now = getUnixTime(Date.now());
-
-//   const isOpenFilter = `start_date < ${now} AND end_date > ${now}`;
-//   const isClosedFilter = `start_date > ${now} OR end_date < ${now}`;
-
-//   const results = await algolia('local_campaigns').search(term, {
-//     filters: isOpen ? isOpenFilter : isClosedFilter,
-//     attributesToRetrieve: ['id'],
-//     length: perPage,
-//     offset: Number(cursor),
-//   });
-
-//   return new AlgoliaCollection(results, context, info);
-// };
