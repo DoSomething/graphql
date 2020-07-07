@@ -55,6 +55,8 @@ class AlgoliaAPI extends DataSource {
 
   /**
    * Search pages index
+   *
+   * @TODO: Example of other methods in class, needs to be implemented!
    */
   async searchPages() {
     const index = this.initIndex('pages');

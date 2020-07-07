@@ -14,21 +14,22 @@ const typeDefs = gql`
       cursor: String
     ): AlgoliaCollection!
 
+    # @FUTURE Example of other potential field and associated resolver.
     # searchPages: [Int]!
   }
 
-  type AlgoliaCollection {
-    results: [Int]!
-  }
-
   # type AlgoliaCollection {
-  #   edges: [SearchEdge]
-  #   pageInfo: PageInfo!
+  #   results: [Int]!
   # }
+
+  type AlgoliaCollection {
+    edges: [SearchEdge]
+    pageInfo: PageInfo!
+  }
 
   type SearchEdge {
     cursor: String!
-    node: Int!
+    node: CampaignResult!
   }
 
   type PageInfo {
@@ -36,21 +37,15 @@ const typeDefs = gql`
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
   }
+
+  # @TEMP: used for testing but should eventually import/use the Campaign type.
+  type CampaignResult {
+    id: Int!
+    internalTitle: String!
+  }
 `;
 
 export default makeExecutableSchema({
   typeDefs,
   resolvers,
 });
-
-// {
-//   hits: [...],
-//   nbHits: 183,
-//   page: 0,
-//   nbPages: 10,
-//   hitsPerPage: 20,
-//   exhaustiveNbHits: true,
-//   query: '',
-//   params: '',
-//   processingTimeMS: 1
-// }

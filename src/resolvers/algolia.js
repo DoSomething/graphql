@@ -9,7 +9,18 @@ const resolvers = {
         args,
       );
 
-      // return new AlgoliaCollection(results, context, info);
+      const collection = new AlgoliaCollection(
+        results,
+        context,
+        info,
+        'Campaign',
+      );
+
+      const edges = collection.edges;
+      const pageInfo = collection.pageInfo;
+
+      // console.log(collection);
+      console.log({ edges, pageInfo });
 
       // Temp
       return {
