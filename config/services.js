@@ -1,8 +1,17 @@
 import { get } from 'lodash';
 
 // Map our environments (local, dev, QA, and production) to the
+// corresponding Algolia environment prefix (e.g. dev -> development).
+const algoliaEnvironmentMap = {
+  local: 'local',
+  dev: 'development',
+  qa: 'qa',
+  production: 'production',
+};
+
+// Map our environments (local, dev, QA, and production) to the
 // corresponding Contentful environments (e.g. production -> master).
-const environmentMapping = {
+const contentfulEnvironmentMap = {
   local: 'dev',
   dev: 'dev',
   qa: 'qa',
@@ -12,7 +21,11 @@ const environmentMapping = {
 const algolia = {
   appId: process.env.ALGOLIA_APP_ID,
   secret: process.env.ALGOLIA_SECRET,
-  prefix: process.env.ALGOLIA_INDEX_PREFIX,
+  prefix: get(
+    algoliaEnvironmentMap,
+    process.env.QUERY_ENV,
+    process.env.ALGOLIA_INDEX_PREFIX,
+  ),
 };
 
 const contentful = {
@@ -20,7 +33,7 @@ const contentful = {
     spaceId: process.env.PHOENIX_CONTENTFUL_SPACE_ID,
     accessToken: process.env.PHOENIX_CONTENTFUL_ACCESS_TOKEN,
     previewToken: process.env.PHOENIX_CONTENTFUL_PREVIEW_TOKEN,
-    environment: get(environmentMapping, process.env.QUERY_ENV),
+    environment: get(contentfulEnvironmentMap, process.env.QUERY_ENV),
   },
 
   // Gambit uses a single space/environment used across all GraphQL environments.
