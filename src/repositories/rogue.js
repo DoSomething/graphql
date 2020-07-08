@@ -112,24 +112,19 @@ export const getActionStats = async (schoolId, actionId, orderBy, context) => {
  * @param {Number} id
  * @return {Object}
  */
-export const getCampaignById = async (id, fields, context) => {
+export const getCampaignById = async (id, context) => {
   logger.debug('Loading campaign from Rogue', { id });
 
-  // Rogue expects a comma-separated list of snake_case fields.
-  // If not querying anything, use 'undefined' to omit query string.
-  const optionalFields = intersection(fields, getOptional(schema, 'Campaign'));
-  const include = optionalFields.length
-    ? optionalFields.map(snakeCase).join()
-    : undefined;
-
-  const queryString = { include };
-
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/campaigns/${id}?${queryString}`,
+    `${ROGUE_URL}/api/v3/campaigns/${id}`,
     authorizedRequest(context),
   );
 
+  logger.debug('Got response from Rogue', { status: response.status });
+
   const json = await response.json();
+
+  logger.debug('Loaded campaign from Rogue', { json });
 
   return transformItem(json);
 };
@@ -142,12 +137,7 @@ export const getCampaignById = async (id, fields, context) => {
  * @param {Number} groupTypeId
  * @return {Array}
  */
-export const fetchCampaigns = async (
-  args,
-  context,
-  info,
-  additionalQuery = {},
-) => {
+export const fetchCampaigns = async (args, context, additionalQuery = {}) => {
   const filter = omit(
     {
       is_open: args.isOpen,
@@ -158,19 +148,10 @@ export const fetchCampaigns = async (
     isUndefined,
   );
 
-  // Rogue expects a comma-separated list of snake_case fields.
-  // If not querying anything, use 'undefined' to omit query string.
-  const fields = getFields(info, 'Campaign', 'edges.node');
-  const optionalFields = intersection(fields, getOptional(schema, 'Campaign'));
-  const include = optionalFields.length
-    ? optionalFields.map(snakeCase).join()
-    : undefined;
-
   const queryString = stringify({
     filter,
     orderBy: args.orderBy,
     pagination: 'cursor',
-    include,
     ...additionalQuery,
   });
 
@@ -191,8 +172,8 @@ export const fetchCampaigns = async (
  * @param {Number} count
  * @return {Array}
  */
-export const getCampaigns = async (args, context, info) => {
-  const json = await fetchCampaigns(args, context, info, {
+export const getCampaigns = async (args, context) => {
+  const json = await fetchCampaigns(args, context, {
     limit: args.count,
     page: args.page,
   });
@@ -205,8 +186,8 @@ export const getCampaigns = async (args, context, info) => {
  *
  * @return {Collection}
  */
-export const getPaginatedCampaigns = async (args, context, info) => {
-  const json = await fetchCampaigns(args, context, info, {
+export const getPaginatedCampaigns = async (args, context) => {
+  const json = await fetchCampaigns(args, context, {
     limit: args.first,
     cursor: {
       after: args.after,

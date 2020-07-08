@@ -3,10 +3,8 @@ import { getFields } from 'fielddataloader';
 import Loader from '../loader';
 
 class AlgoliaCollection {
-  constructor(payload, context, info, entityType) {
-    this.info = info;
+  constructor(payload, context) {
     this.context = context;
-    this.entityType = entityType;
     this.json = payload; // deprecate
 
     this.offset = payload.offset;
@@ -19,8 +17,6 @@ class AlgoliaCollection {
    * Transforms items and wraps inside "Edge" entity.
    */
   get edges() {
-    const fields = getFields(this.info, this.entityType, 'edges.node');
-
     // return this.json.hits.map((hit, index) => ({
     //   cursor: String(index),
     //   node: Loader(this.context).campaigns.load(hit.id, fields),
@@ -30,8 +26,9 @@ class AlgoliaCollection {
       console.log({ index, result: result.id });
 
       return {
-        cusor: String(index),
-        node: Loader(this.context).campaigns.load(result.id, fields),
+        cursor: String(index),
+        _id: result.id,
+        // node: Loader(this.context).campaigns.load(result.id),
       };
     });
   }
