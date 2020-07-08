@@ -1,5 +1,3 @@
-import { getFields } from 'fielddataloader';
-
 import Loader from '../loader';
 
 class AlgoliaCollection {
@@ -17,18 +15,12 @@ class AlgoliaCollection {
    * Transforms items and wraps inside "Edge" entity.
    */
   get edges() {
-    // return this.json.hits.map((hit, index) => ({
-    //   cursor: String(index),
-    //   node: Loader(this.context).campaigns.load(hit.id, fields),
-    // }));
-
     return this.results.map((result, index) => {
       console.log({ index, result: result.id });
 
       return {
         cursor: String(index),
-        _id: result.id,
-        // node: Loader(this.context).campaigns.load(result.id),
+        node: Loader(this.context).campaigns.load(result.id),
       };
     });
   }
