@@ -1,4 +1,7 @@
-import AlgoliaCollection from '../dataSources/AlgoliaCollection';
+import { map } from 'lodash';
+
+import Loader from '../loader';
+import AlgoliaCampaignCollection from '../dataSources/collections/AlgoliaCampaignCollection';
 
 const resolvers = {
   Query: {
@@ -7,12 +10,22 @@ const resolvers = {
         args,
       );
 
-      return new AlgoliaCollection(results, context);
+      console.log('😅', results);
+
+      return new AlgoliaCampaignCollection(results, context, info);
     },
 
     // @FUTURE Example of other potential upcoming resolver.
     // searchPages: (_, __, context) =>
     //   context.dataSources.algoliaAPI.searchPages(),
+  },
+
+  CampaignSearchEdge: {
+    node: (edge, args, context) => {
+      console.log('📈', edge);
+
+      return Loader(context).campaigns.load(edge._id);
+    },
   },
 };
 

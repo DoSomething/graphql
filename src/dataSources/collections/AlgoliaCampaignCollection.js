@@ -1,6 +1,4 @@
-import Loader from '../loader';
-
-class AlgoliaCollection {
+class AlgoliaCampaignCollection {
   constructor(payload, context) {
     this.context = context;
     this.json = payload; // deprecate
@@ -8,19 +6,24 @@ class AlgoliaCollection {
     this.offset = payload.offset;
     this.perPage = payload.length;
     this.results = payload.hits;
-    this.total = payload.nbHits;
+    this.totalResults = payload.nbHits;
   }
 
   /**
    * Transforms items and wraps inside "Edge" entity.
    */
   get edges() {
+    // console.log('🌲', this.json);
+
     return this.results.map((result, index) => {
-      console.log({ index, result: result.id });
+      console.log({
+        index,
+        result: result.id,
+      });
 
       return {
         cursor: String(index),
-        node: Loader(this.context).campaigns.load(result.id),
+        _id: result.id,
       };
     });
   }
@@ -43,4 +46,4 @@ class AlgoliaCollection {
   }
 }
 
-export default AlgoliaCollection;
+export default AlgoliaCampaignCollection;

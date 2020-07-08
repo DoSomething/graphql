@@ -5,32 +5,36 @@ import resolvers from '../resolvers/algolia';
 
 const typeDefs = gql`
   type Query {
-    # searchCampaigns: [Int]!
-
     searchCampaigns(
       term: String
       isOpen: Boolean
       perPage: Int
       cursor: String
-    ): AlgoliaCollection!
+    ): AlgoliaCampaignCollection!
 
-    # @FUTURE Example of other potential field and associated resolver.
+    # @TODO: Example of other potential field and associated resolver.
     # searchPages: [Int]!
   }
 
-  # type AlgoliaCollection {
-  #   results: [Int]!
-  # }
-
-  type AlgoliaCollection {
-    edges: [SearchEdge]
+  type AlgoliaCampaignCollection {
+    edges: [CampaignSearchEdge]
     pageInfo: PageInfo!
   }
 
-  type SearchEdge {
+  # type AlgoliaPageCollection {
+  #   edges: [PageSearchEdge]
+  #   pageInfo: PageInfo!
+  # }
+
+  type CampaignSearchEdge {
     cursor: String!
     node: CampaignResult!
   }
+
+  # type PageSearchEdge {
+  #   cursor: String!
+  #   node: Page!
+  # }
 
   type PageInfo {
     endCursor: String
