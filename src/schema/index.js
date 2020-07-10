@@ -133,6 +133,11 @@ const linkSchema = gql`
     "The contentful campaign that is associated with the rogue campaign."
     campaignWebsite: CampaignWebsite
   }
+
+  extend type CampaignSearchEdge {
+    "The campaign data for the campaign search result."
+    node: Campaign!
+  }
 `;
 
 function blockActionResolver(blockTypeName) {
@@ -196,6 +201,7 @@ const linkResolvers = {
       },
     },
   },
+
   AskYesNoBroadcastTopic: {
     action: {
       fragment:
@@ -222,9 +228,11 @@ const linkResolvers = {
       },
     },
   },
+
   PetitionSubmissionBlock: {
     action: blockActionResolver('PetitionSubmissionBlock'),
   },
+
   PhotoPostBroadcast: {
     action: {
       fragment: 'fragment ActionFragment on PhotoPostBroadcast { topic }',
@@ -242,12 +250,15 @@ const linkResolvers = {
       },
     },
   },
+
   PhotoSubmissionBlock: {
     action: blockActionResolver('PhotoSubmissionBlock'),
   },
+
   ShareBlock: {
     action: blockActionResolver('ShareBlock'),
   },
+
   TextPostBroadcast: {
     action: {
       fragment: 'fragment ActionFragment on TextPostBroadcast { topic }',
@@ -265,9 +276,11 @@ const linkResolvers = {
       },
     },
   },
+
   TextSubmissionBlock: {
     action: blockActionResolver('TextSubmissionBlock'),
   },
+
   User: {
     conversations: {
       fragment: 'fragment ConversationsFragment on User { id }',
@@ -332,6 +345,7 @@ const linkResolvers = {
       },
     },
   },
+
   Post: {
     user: {
       fragment: 'fragment UserFragment on Post { userId }',
@@ -372,6 +386,7 @@ const linkResolvers = {
       },
     },
   },
+
   School: {
     schoolActionStats: {
       fragment: 'fragment SchoolActionStatsFragment on School { schoolId }',
@@ -391,6 +406,7 @@ const linkResolvers = {
       },
     },
   },
+
   SchoolActionStat: {
     school: {
       fragment: 'fragment SchoolFragment on SchoolActionStat { id }',
@@ -427,6 +443,25 @@ const linkResolvers = {
       },
     },
   },
+
+  CampaignSearchEdge: {
+    node: {
+      fragment: 'fragment CampaignFragment on CampaignSearchEdge { _id }',
+      resolve(edge, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'campaign',
+          args: {
+            id: edge._id,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
+
   Signup: {
     user: {
       fragment: 'fragment UserFragment on Signup { userId }',
@@ -444,6 +479,7 @@ const linkResolvers = {
       },
     },
   },
+
   Conversation: {
     topic: {
       fragment: 'fragment TopicFragment on Conversation { topicId }',
@@ -476,6 +512,7 @@ const linkResolvers = {
       },
     },
   },
+
   Message: {
     topic: {
       fragment: 'fragment TopicFragment on Message { topicId }',
@@ -508,6 +545,7 @@ const linkResolvers = {
       },
     },
   },
+
   AutoReplyTopic: {
     campaign: {
       fragment:
@@ -530,6 +568,7 @@ const linkResolvers = {
       },
     },
   },
+
   PhotoPostTopic: {
     campaign: {
       fragment:
@@ -548,6 +587,7 @@ const linkResolvers = {
       },
     },
   },
+
   TextPostTopic: {
     campaign: {
       fragment: 'fragment CampaignFragment on TextPostTopic { legacyCampaign }',
@@ -565,6 +605,7 @@ const linkResolvers = {
       },
     },
   },
+
   WebSignupConfirmation: {
     campaign: {
       fragment:

@@ -6,9 +6,13 @@ import resolvers from '../resolvers/algolia';
 const typeDefs = gql`
   type Query {
     searchCampaigns(
+      "The search term specified or an empty string."
       term: String
+      "Search for only open campaigns or only closed campaigns."
       isOpen: Boolean
+      "Number of results per page."
       perPage: Int
+      "Pagination search cursor for the specified search result."
       cursor: String
     ): AlgoliaCampaignCollection!
 
@@ -34,7 +38,7 @@ const typeDefs = gql`
 
   type CampaignSearchEdge {
     cursor: String!
-    node: CampaignResult!
+    _id: Int!
   }
 
   # @TODO: Example of future page search edge type.
@@ -47,12 +51,6 @@ const typeDefs = gql`
     endCursor: String
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
-  }
-
-  # @TEMP: used for testing but should eventually import/use the Campaign type.
-  type CampaignResult {
-    id: Int!
-    internalTitle: String!
   }
 `;
 

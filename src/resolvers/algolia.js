@@ -16,9 +16,11 @@ const resolvers = {
     //   context.dataSources.algoliaAPI.searchPages(),
   },
 
-  CampaignSearchEdge: {
-    node: (edge, args, context) => Loader(context).campaigns.load(edge._id),
-  },
+  // @TODO: After switching to Federation approach, may be able to return this
+  // resolver within this file.
+  // CampaignSearchEdge: {
+  //   node: (edge, args, context) => Loader(context).campaigns.load(edge._id),
+  // },
 };
 
 export default resolvers;
