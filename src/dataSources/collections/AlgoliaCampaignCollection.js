@@ -1,47 +1,45 @@
+/**
+ * Wrapper class for collecting Algolia Campaign search results
+ * and providing cursor based pagination.
+ */
 class AlgoliaCampaignCollection {
   constructor(payload, context) {
     this.context = context;
-    this.json = payload; // deprecate
-
+    this.currentPageResults = payload.hits;
     this.offset = payload.offset;
     this.perPage = payload.length;
-    this.results = payload.hits;
-    this.totalResults = payload.nbHits;
+    this.totalResultsFound = payload.nbHits;
   }
 
   /**
-   * Transforms items and wraps inside "Edge" entity.
+   * Returns end cursor to obtain next list of results.
+   */
+  get endCursor() {
+    const cursor = this.offset + this.currentPageResults.length;
+
+    return cursor < this.totalResultsFound
+      ? cursor
+      : this.totalResultsFound - 1;
+  }
+
+  /**
+   * Returns the Edge entity.
    */
   get edges() {
-    // console.log('🌲', this.json);
-
-    return this.results.map((result, index) => {
-      console.log({
-        index,
-        result: result.id,
-      });
-
-      return {
-        cursor: String(index),
-        _id: result.id,
-      };
-    });
+    return this.currentPageResults.map((result, index) => ({
+      cursor: String(this.offset + index),
+      _id: result.id,
+    }));
   }
 
   /**
    * Returns the PageInfo entity.
    */
   get pageInfo() {
-    // return {
-    //   endCursor: String(this.json.offset + this.json.length),
-    //   hasNextPage: this.json.offset + this.json.length < this.json.nbHits,
-    //   hasPreviousPage: this.json.offset > 0,
-    // };
-
     return {
-      endCursor: 'cursorstringhere',
-      hasNextPage: false,
-      hasPreviousPage: false,
+      hasNextPage: this.offset + this.perPage < this.totalResultsFound,
+      endCursor: String(this.endCursor),
+      hasPreviousPage: this.offset > 0,
     };
   }
 }

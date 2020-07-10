@@ -10,8 +10,6 @@ const resolvers = {
         args,
       );
 
-      console.log('😅', results);
-
       return new AlgoliaCampaignCollection(results, context, info);
     },
 
@@ -21,11 +19,7 @@ const resolvers = {
   },
 
   CampaignSearchEdge: {
-    node: (edge, args, context) => {
-      console.log('📈', edge);
-
-      return Loader(context).campaigns.load(edge._id);
-    },
+    node: (edge, args, context) => Loader(context).campaigns.load(edge._id),
   },
 };
 

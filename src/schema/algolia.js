@@ -12,8 +12,13 @@ const typeDefs = gql`
       cursor: String
     ): AlgoliaCampaignCollection!
 
-    # @TODO: Example of other potential field and associated resolver.
-    # searchPages: [Int]!
+    # @TODO: Example future type for searching pages.
+    # searchPages: (
+    #   term: String
+    #   isOpen: Boolean
+    #   perPage: Int
+    #   cursor: String
+    # ): AlgoliaPageCollection!
   }
 
   type AlgoliaCampaignCollection {
@@ -21,6 +26,7 @@ const typeDefs = gql`
     pageInfo: PageInfo!
   }
 
+  # @TODO: Example future page collection type.
   # type AlgoliaPageCollection {
   #   edges: [PageSearchEdge]
   #   pageInfo: PageInfo!
@@ -31,6 +37,7 @@ const typeDefs = gql`
     node: CampaignResult!
   }
 
+  # @TODO: Example of future page search edge type.
   # type PageSearchEdge {
   #   cursor: String!
   #   node: Page!
