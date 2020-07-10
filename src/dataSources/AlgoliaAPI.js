@@ -1,7 +1,6 @@
 const { DataSource } = require('apollo-datasource');
 const { InMemoryLRUCache } = require('apollo-server-caching');
 
-// const { algolia } = require('../algolia');
 const Algolia = require('../services/Algolia').default;
 const config = require('../../config').default;
 
