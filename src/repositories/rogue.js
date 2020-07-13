@@ -1,22 +1,12 @@
 import { stringify } from 'qs';
 import pluralize from 'pluralize';
 import logger from 'heroku-logger';
-import { getFields } from 'fielddataloader';
-import {
-  find,
-  intersection,
-  isUndefined,
-  omit,
-  snakeCase,
-  zipWith,
-} from 'lodash';
+import { find, isUndefined, omit, zipWith } from 'lodash';
 
-import schema from '../schema';
 import config from '../../config';
 import Collection from './Collection';
 import { enumToString } from '../schema/helpers';
 import {
-  getOptional,
   transformItem,
   transformCollection,
   authorizedRequest,
