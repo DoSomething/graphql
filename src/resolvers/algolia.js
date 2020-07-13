@@ -1,4 +1,3 @@
-import Loader from '../loader';
 import AlgoliaCampaignCollection from '../dataSources/collections/AlgoliaCampaignCollection';
 
 const resolvers = {

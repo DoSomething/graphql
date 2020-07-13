@@ -36,7 +36,7 @@ class AlgoliaAPI extends DataSource {
 
     const index = this.initIndex('campaigns');
 
-    return await index.search(term, {
+    const results = await index.search(term, {
       attributesToRetrieve: ['id'],
       filters: isOpen
         ? this.client.filterOpenCampaigns
@@ -44,6 +44,8 @@ class AlgoliaAPI extends DataSource {
       length: perPage,
       offset: Number(cursor),
     });
+
+    return results;
   }
 
   /**
@@ -54,7 +56,9 @@ class AlgoliaAPI extends DataSource {
   async searchPages() {
     const index = this.initIndex('pages');
 
-    return await index.search('');
+    const results = await index.search('');
+
+    return results;
   }
 }
 

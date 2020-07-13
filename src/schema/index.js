@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 import { gql } from 'apollo-server';
 import { mergeSchemas } from 'graphql-tools';
 
