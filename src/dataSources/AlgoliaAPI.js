@@ -1,8 +1,8 @@
 const { DataSource } = require('apollo-datasource');
 const { InMemoryLRUCache } = require('apollo-server-caching');
 
-const Algolia = require('../services/Algolia').default;
 const config = require('../../config').default;
+const Algolia = require('../services/Algolia').default;
 
 class AlgoliaAPI extends DataSource {
   constructor() {
@@ -21,10 +21,6 @@ class AlgoliaAPI extends DataSource {
   didEncounterError(error) {
     throw error;
   }
-
-  // cacheKey(id) {
-  //   return `algolia-generated-cache-key`;
-  // }
 
   /**
    * Initialize prefix-specific environment named index
