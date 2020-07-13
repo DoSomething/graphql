@@ -277,8 +277,6 @@ const typeDefs = gql`
     authors: [PersonBlock]
     "The content of the page."
     content: String
-    "Sidebar blocks rendered alongside the content on the page."
-    sidebar: [Block]
     "Blocks rendered following the content on the page."
     blocks: [Block]
     "Should we display social share buttons on the bottom of the page?"
