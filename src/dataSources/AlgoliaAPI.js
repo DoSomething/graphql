@@ -1,5 +1,4 @@
 const { DataSource } = require('apollo-datasource');
-const { InMemoryLRUCache } = require('apollo-server-caching');
 
 const config = require('../../config').default;
 const Algolia = require('../services/Algolia').default;
@@ -13,9 +12,8 @@ class AlgoliaAPI extends DataSource {
     this.client = new Algolia();
   }
 
-  initialize({ context, cache }) {
+  initialize({ context }) {
     this.context = context;
-    this.cache = cache || new InMemoryLRUCache();
   }
 
   didEncounterError(error) {

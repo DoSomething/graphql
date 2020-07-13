@@ -120,11 +120,7 @@ export const getCampaignById = async (id, context) => {
     authorizedRequest(context),
   );
 
-  // logger.debug('Got response from Rogue', { status: response.status });
-
   const json = await response.json();
-
-  // logger.debug('Loaded campaign from Rogue', { json });
 
   return transformItem(json);
 };

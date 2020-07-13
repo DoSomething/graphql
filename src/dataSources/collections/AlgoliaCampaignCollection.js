@@ -17,7 +17,7 @@ class AlgoliaCampaignCollection {
   get endCursor() {
     const cursor = this.offset + this.currentPageResults.length;
 
-    return cursor < this.totalResultsFound
+    return cursor <= this.totalResultsFound
       ? cursor
       : this.totalResultsFound - 1;
   }
@@ -37,8 +37,8 @@ class AlgoliaCampaignCollection {
    */
   get pageInfo() {
     return {
-      hasNextPage: this.offset + this.perPage < this.totalResultsFound,
       endCursor: String(this.endCursor),
+      hasNextPage: this.offset + this.perPage < this.totalResultsFound,
       hasPreviousPage: this.offset > 0,
     };
   }
