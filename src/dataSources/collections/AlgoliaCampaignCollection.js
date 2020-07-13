@@ -15,9 +15,13 @@ class AlgoliaCampaignCollection {
    * Returns end cursor to obtain next list of results.
    */
   get endCursor() {
+    if (!this.totalResultsFound) {
+      return 0;
+    }
+
     const cursor = this.offset + this.currentPageResults.length;
 
-    return cursor <= this.totalResultsFound
+    return cursor < this.totalResultsFound
       ? cursor
       : this.totalResultsFound - 1;
   }
