@@ -797,6 +797,7 @@ const resolvers = {
     groupTypes: (_, args, context) => getGroupTypes(args, context),
     paginatedCampaigns: (_, args, context) =>
       getPaginatedCampaigns(args, context),
+    paginatedGroups: (_, args, context) => getPaginatedGroups(args, context),
     paginatedPosts: (_, args, context) => getPaginatedPosts(args, context),
     post: (_, args, context) => getPostById(args.id, context),
     posts: (_, args, context) => getPosts(args, context),
