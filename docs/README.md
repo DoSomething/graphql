@@ -14,7 +14,7 @@ Ready to dive in to GraphQL? Check out the [offical docs](http://graphql.org) or
 The GraphQL server will figure out the most efficent way to resolve your query by caching resources & [batching requests](https://github.com/facebook/dataloader) to the underlying APIs.
 
 ### Discoverability 🔭
-Easily explore & inspect queries using [GraphiQL](/explore)'s autocomplete & documentatino sidebar, or using [introspection queries](http://graphql.org/learn/introspection/) to ask for more details programmatically.
+Easily explore & inspect queries using [GraphiQL](/explore)'s autocomplete & documentation sidebar, or using [introspection queries](http://graphql.org/learn/introspection/) to ask for more details programmatically.
 
 ### Separation of Concerns 🗺
 __Coming Soon:__ With [schema stiching](https://www.apollographql.com/docs/graphql-tools/schema-stitching.html), each individual API is the "source of truth" for it's own schema & the GraphQL gateway is just responsible for stitching things together (for example, linking users in Northstar to signups in Rogue).
