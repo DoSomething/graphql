@@ -12,7 +12,7 @@ const typeDefs = gql`
       isOpen: Boolean
       "Number of results per page."
       perPage: Int
-      "Pagination search cursor for the specified search result."
+      "Pagination search cursor for the specified search location."
       cursor: String
     ): AlgoliaCampaignCollection!
 
@@ -25,8 +25,11 @@ const typeDefs = gql`
     # ): AlgoliaPageCollection!
   }
 
+  # Collection of cursor paginated campaigns.
   type AlgoliaCampaignCollection {
+    # List of edges containing metadata for each item in list.
     edges: [CampaignSearchEdge]
+    # Metadata regarding additional pages of data.
     pageInfo: PageInfo!
   }
 
@@ -37,7 +40,9 @@ const typeDefs = gql`
   # }
 
   type CampaignSearchEdge {
+    # Location in cursor pagination for this item.
     cursor: String!
+    # Campaign ID for this item.
     _id: Int!
   }
 
@@ -48,6 +53,7 @@ const typeDefs = gql`
   # }
 
   type PageInfo {
+    # Location of next item in cursor paginated list.
     endCursor: String
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
