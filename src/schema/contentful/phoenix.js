@@ -939,7 +939,6 @@ const resolvers = {
     showcaseImage: (page, _, context, info) =>
       linkResolver(page, _, context, info, 'coverImage'),
     blocks: linkResolver,
-    sidebar: linkResolver,
   },
   PersonBlock: {
     photo: linkResolver,
