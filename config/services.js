@@ -21,11 +21,7 @@ const contentfulEnvironmentMap = {
 const algolia = {
   appId: process.env.ALGOLIA_APP_ID,
   secret: process.env.ALGOLIA_SECRET,
-  prefix: get(
-    algoliaEnvironmentMap,
-    process.env.QUERY_ENV,
-    process.env.ALGOLIA_INDEX_PREFIX,
-  ),
+  prefix: get(algoliaEnvironmentMap, process.env.QUERY_ENV),
 };
 
 const contentful = {
