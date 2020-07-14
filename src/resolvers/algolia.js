@@ -18,7 +18,7 @@ const resolvers = {
   // @TODO: After switching to Federation approach, may be able to return this
   // resolver within this file.
   // CampaignSearchEdge: {
-  //   node: (edge, args, context) => Loader(context).campaigns.load(edge._id),
+  //   node: (edge, args, context) => Loader(context).campaigns.load(edge.campaignId),
   // },
 };
 

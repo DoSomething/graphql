@@ -32,7 +32,7 @@ class AlgoliaCampaignCollection {
   get edges() {
     return this.currentPageResults.map((result, index) => ({
       cursor: String(this.offset + index),
-      _id: result.id,
+      campaignId: result.id,
     }));
   }
 

@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 import { gql } from 'apollo-server';
 import { mergeSchemas } from 'graphql-tools';
 
@@ -448,14 +446,15 @@ const linkResolvers = {
 
   CampaignSearchEdge: {
     node: {
-      fragment: 'fragment CampaignFragment on CampaignSearchEdge { _id }',
+      fragment:
+        'fragment CampaignFragment on CampaignSearchEdge { campaignId }',
       resolve(edge, args, context, info) {
         return info.mergeInfo.delegateToSchema({
           schema: rogueSchema,
           operation: 'query',
           fieldName: 'campaign',
           args: {
-            id: edge._id,
+            id: edge.campaignId,
           },
           context,
           info,
