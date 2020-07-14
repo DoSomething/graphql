@@ -475,8 +475,6 @@ const typeDefs = gql`
     superTitle: String
     "The user-facing title of the block."
     title: String
-    "A subtitle for the content block."
-    subTitle: String
     "The content for the content block."
     content: String!
     "An optional Image to display next to the content."
