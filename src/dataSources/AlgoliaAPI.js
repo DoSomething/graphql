@@ -1,7 +1,7 @@
-const { DataSource } = require('apollo-datasource');
+import { DataSource } from 'apollo-datasource';
 
-const config = require('../../config').default;
-const Algolia = require('../services/Algolia').default;
+import config from '../../config';
+import Algolia from '../services/Algolia';
 
 class AlgoliaAPI extends DataSource {
   constructor() {
@@ -62,4 +62,4 @@ class AlgoliaAPI extends DataSource {
   }
 }
 
-module.exports = AlgoliaAPI;
+export default AlgoliaAPI;

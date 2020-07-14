@@ -11,7 +11,7 @@ const boxen = require('boxen');
 
 const config = require('./config').default;
 const schema = require('./src/schema').default;
-const AlgoliaAPI = require('./src/dataSources/AlgoliaAPI');
+const AlgoliaAPI = require('./src/dataSources/AlgoliaAPI').default;
 
 const app = express();
 const server = new ApolloServer({
