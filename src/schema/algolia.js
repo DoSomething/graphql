@@ -43,7 +43,7 @@ const typeDefs = gql`
     "Location in cursor pagination for this item."
     cursor: String!
     "Campaign ID for this item."
-    _id: Int!
+    campaignId: Int!
   }
 
   # @TODO: Example of future page search edge type.
