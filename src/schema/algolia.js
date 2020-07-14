@@ -25,11 +25,11 @@ const typeDefs = gql`
     # ): AlgoliaPageCollection!
   }
 
-  # Collection of cursor paginated campaigns.
+  "Collection of cursor paginated campaigns."
   type AlgoliaCampaignCollection {
-    # List of edges containing metadata for each item in list.
+    "List of edges containing metadata for each item in list."
     edges: [CampaignSearchEdge]
-    # Metadata regarding additional pages of data.
+    "Metadata regarding additional pages of data."
     pageInfo: PageInfo!
   }
 
@@ -40,9 +40,9 @@ const typeDefs = gql`
   # }
 
   type CampaignSearchEdge {
-    # Location in cursor pagination for this item.
+    "Location in cursor pagination for this item."
     cursor: String!
-    # Campaign ID for this item.
+    "Campaign ID for this item."
     _id: Int!
   }
 
@@ -53,7 +53,7 @@ const typeDefs = gql`
   # }
 
   type PageInfo {
-    # Location of next item in cursor paginated list.
+    "Location of next item in cursor paginated list."
     endCursor: String
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
