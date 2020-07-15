@@ -47,19 +47,6 @@ class AlgoliaAPI extends DataSource {
 
     return results;
   }
-
-  /**
-   * Search pages index
-   *
-   * @TODO: Example of other methods in class, needs to be implemented!
-   */
-  async searchPages() {
-    const index = this.initIndex('pages');
-
-    const results = await index.search('');
-
-    return results;
-  }
 }
 
 export default AlgoliaAPI;

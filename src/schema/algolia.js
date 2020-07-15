@@ -15,14 +15,6 @@ const typeDefs = gql`
       "Pagination search cursor for the specified search location."
       cursor: String
     ): AlgoliaCampaignCollection!
-
-    # @TODO: Example future type for searching pages.
-    # searchPages: (
-    #   term: String
-    #   isOpen: Boolean
-    #   perPage: Int
-    #   cursor: String
-    # ): AlgoliaPageCollection!
   }
 
   "Collection of cursor paginated campaigns."
@@ -33,24 +25,12 @@ const typeDefs = gql`
     pageInfo: PageInfo!
   }
 
-  # @TODO: Example future page collection type.
-  # type AlgoliaPageCollection {
-  #   edges: [PageSearchEdge]
-  #   pageInfo: PageInfo!
-  # }
-
   type CampaignSearchEdge {
     "Location in cursor pagination for this item."
     cursor: String!
     "Campaign ID for this item."
     campaignId: Int!
   }
-
-  # @TODO: Example of future page search edge type.
-  # type PageSearchEdge {
-  #   cursor: String!
-  #   node: Page!
-  # }
 
   type PageInfo {
     "Location of next item in cursor paginated list."
