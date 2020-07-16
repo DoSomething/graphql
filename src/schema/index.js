@@ -633,6 +633,7 @@ const linkResolvers = {
  * @var GraphQLSchema
  */
 const schema = mergeSchemas({
+  mergeDirectives: true,
   schemas: [
     algoliaSchema,
     embedSchema,
