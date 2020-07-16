@@ -789,20 +789,16 @@ const resolvers = {
     action: (_, args, context) => getActionById(args.id, context),
     actions: (_, args, context) =>
       Loader(context).actionsByCampaignId.load(args.campaignId),
-    campaign: (_, args, context, info) =>
-      Loader(context).campaigns.load(args.id, getFields(info)),
-    campaigns: (_, args, context, info) =>
-      getCampaigns(args, getFields(info), context),
+    campaign: (_, args, context) => Loader(context).campaigns.load(args.id),
+    campaigns: (_, args, context) => getCampaigns(args, context),
     group: (_, args, context) => getGroupById(args.id, context),
     groups: (_, args, context) => getGroups(args, context),
     groupType: (_, args, context) => getGroupTypeById(args.id, context),
     groupTypes: (_, args, context) => getGroupTypes(args, context),
-    paginatedCampaigns: (_, args, context, info) =>
-      getPaginatedCampaigns(args, context, info),
-    paginatedGroups: (_, args, context, info) =>
-      getPaginatedGroups(args, context, info),
-    paginatedPosts: (_, args, context, info) =>
-      getPaginatedPosts(args, context, info),
+    paginatedCampaigns: (_, args, context) =>
+      getPaginatedCampaigns(args, context),
+    paginatedGroups: (_, args, context) => getPaginatedGroups(args, context),
+    paginatedPosts: (_, args, context) => getPaginatedPosts(args, context),
     post: (_, args, context) => getPostById(args.id, context),
     posts: (_, args, context) => getPosts(args, context),
     postsByCampaignId: (_, args, context) =>

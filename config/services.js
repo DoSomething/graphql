@@ -1,12 +1,27 @@
 import { get } from 'lodash';
 
 // Map our environments (local, dev, QA, and production) to the
+// corresponding Algolia environment prefix (e.g. dev -> development).
+const algoliaEnvironmentMap = {
+  local: 'local',
+  dev: 'development',
+  qa: 'qa',
+  production: 'production',
+};
+
+// Map our environments (local, dev, QA, and production) to the
 // corresponding Contentful environments (e.g. production -> master).
-const environmentMapping = {
+const contentfulEnvironmentMap = {
   local: 'dev',
   dev: 'dev',
   qa: 'qa',
   production: 'master',
+};
+
+const algolia = {
+  appId: process.env.ALGOLIA_APP_ID,
+  secret: process.env.ALGOLIA_SECRET,
+  prefix: get(algoliaEnvironmentMap, process.env.QUERY_ENV),
 };
 
 const contentful = {
@@ -14,7 +29,7 @@ const contentful = {
     spaceId: process.env.PHOENIX_CONTENTFUL_SPACE_ID,
     accessToken: process.env.PHOENIX_CONTENTFUL_ACCESS_TOKEN,
     previewToken: process.env.PHOENIX_CONTENTFUL_PREVIEW_TOKEN,
-    environment: get(environmentMapping, process.env.QUERY_ENV),
+    environment: get(contentfulEnvironmentMap, process.env.QUERY_ENV),
   },
 
   // Gambit uses a single space/environment used across all GraphQL environments.
@@ -201,6 +216,7 @@ const environments = {
 
 // Validate environment choice:
 const QUERY_ENV = process.env.QUERY_ENV;
+
 if (!QUERY_ENV || !['local', 'dev', 'qa', 'production'].includes(QUERY_ENV)) {
   throw new Error(
     'The QUERY_ENV environment variable must be "local", "dev", "qa", or "production".',
@@ -209,6 +225,8 @@ if (!QUERY_ENV || !['local', 'dev', 'qa', 'production'].includes(QUERY_ENV)) {
 
 export default {
   environment: QUERY_ENV,
+
+  algolia,
 
   // Merge the relevant config based on 'QUERY_ENV'.
   ...environments[QUERY_ENV],

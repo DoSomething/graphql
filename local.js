@@ -1,16 +1,17 @@
 // Compile ES module syntax on-demand, install 'fetch'
 // polyfill, & load environment variables from '.env'.
-require = require('esm')(module);
-fetch = require('node-fetch');
 require('dotenv').config();
+fetch = require('node-fetch');
+require = require('esm')(module);
 
-const { ApolloServer } = require('apollo-server-express');
-const express = require('express');
 const chalk = require('chalk');
 const boxen = require('boxen');
+const express = require('express');
+const { ApolloServer } = require('apollo-server-express');
 
-const schema = require('./src/schema').default;
 const config = require('./config').default;
+const schema = require('./src/schema').default;
+const dataSources = require('./src/dataSources').default;
 
 const app = express();
 const server = new ApolloServer({
@@ -19,6 +20,7 @@ const server = new ApolloServer({
   context: ({ req }) => ({
     authorization: req.headers.authorization || '',
   }),
+  dataSources,
 });
 
 app.use((req, res, next) => {

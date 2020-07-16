@@ -110,9 +110,9 @@ const typeDefs = gql`
     scholarshipAmount: Int
      "The scholarship deadline datetime string associated with this campaign."
     scholarshipDeadline: String
-    "The showcase title (the title field.)"
-    staffPick: Boolean
     "Designates if this is a staff pick campaign."
+    staffPick: Boolean
+    "The showcase title (the title field.)"
     showcaseTitle: String!
     "The showcase description (the callToAction field.)"
     showcaseDescription: String!

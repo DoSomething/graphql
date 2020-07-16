@@ -5,10 +5,12 @@
 // Attach global 'fetch' polyfill.
 fetch = require('node-fetch');
 
-const { ApolloServer } = require('apollo-server-lambda');
-const schema = require('./lib/src/schema').default;
-const config = require('./lib/config').default;
 const fs = require('fs');
+const { ApolloServer } = require('apollo-server-lambda');
+
+const config = require('./lib/config').default;
+const schema = require('./lib/src/schema').default;
+const dataSources = require('./lib/src/dataSources').default;
 
 const server = new ApolloServer({
   ...config('graphql'),
@@ -16,6 +18,7 @@ const server = new ApolloServer({
   context: ({ event }) => ({
     authorization: event.headers.Authorization || event.headers.authorization,
   }),
+  dataSources,
   engine: {
     apiKey: process.env.ENGINE_API_KEY,
 
