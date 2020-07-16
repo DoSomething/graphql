@@ -848,7 +848,7 @@ const resolvers = {
       Loader(context, preview).collectionPagesBySlug.load(slug),
     companyPageBySlug: (_, { slug, preview }, context) =>
       Loader(context, preview).companyPagesBySlug.load(slug),
-    homePage: (_, { preview }, context) => Loader(context, preview).homePage,
+    homePage: (_, { preview }, context) => Loader(context, preview).homePage(),
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
     pageBySlug: (_, { slug, preview }, context) =>
@@ -958,6 +958,9 @@ const resolvers = {
   },
   ResourceWebsite: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
+  },
+  Routable: {
+    __resolveType: routable => get(contentTypeMappings, routable.contentType),
   },
   SelectionSubmissionBlock: {
     richText: block => block.content,
