@@ -959,6 +959,9 @@ const resolvers = {
   ResourceWebsite: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
   },
+  Routable: {
+    __resolveType: routable => get(contentTypeMappings, routable.contentType),
+  },
   SelectionSubmissionBlock: {
     richText: block => block.content,
   },
