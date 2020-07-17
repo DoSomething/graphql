@@ -411,6 +411,10 @@ export const rotatePost = async (postId, degrees, context) => {
 export const deletePost = async (postId, context) => {
   const post = await getPostById(postId, context);
 
+  if (!post) {
+    throw new Error(`Post with ID: ${postId} was not found.`);
+  }
+
   const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}`, {
     method: 'DELETE',
     ...requireAuthorizedRequest(context),
