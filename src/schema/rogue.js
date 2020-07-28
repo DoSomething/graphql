@@ -407,11 +407,13 @@ const typeDefs = gql`
     actionId: Int!
     "The action this stat belongs to."
     action: Action!
+    "The aggregate impact of the school for the action."
+    impact: Int!
     "The sum quantity of all accepted posts with school and action."
-    acceptedQuantity: Int!
-    "The first time a post for school and action was reviewed."
+    acceptedQuantity: Int! @deprecated(reason: "Use 'impact' field instead.")
+    "The time the stat was created."
     createdAt: DateTime
-    "The last time a post for school and action was reviewed."
+    "The time the stat was updated."
     updatedAt: DateTime
   }
 
@@ -772,6 +774,7 @@ const resolvers = {
     permalink: post => getPermalinkByPostId(post.id),
   },
   SchoolActionStat: {
+    acceptedQuantity: actionStat => actionStat.impact,
     action: (schoolActionStat, args, context, info) =>
       Loader(context).actions.load(schoolActionStat.actionId, getFields(info)),
   },
