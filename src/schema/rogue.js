@@ -410,8 +410,7 @@ const typeDefs = gql`
     "The aggregate impact of the school for the action."
     impact: Int!
     "The sum quantity of all accepted posts with school and action."
-    acceptedQuantity: Int!
-      @deprecated(reason: "Use 'impact' field instead.")
+    acceptedQuantity: Int! @deprecated(reason: "Use 'impact' field instead.")
     "The time the stat was created."
     createdAt: DateTime
     "The time the stat was updated."
