@@ -407,11 +407,11 @@ const typeDefs = gql`
     actionId: Int!
     "The action this stat belongs to."
     action: Action!
-    "The sum quantity of all accepted posts with school and action."
-    acceptedQuantity: Int!
-    "The first time a post for school and action was reviewed."
+    "The aggregate impact of the school for the action."
+    impact: Int!
+    "The time the stat was created."
     createdAt: DateTime
-    "The last time a post for school and action was reviewed."
+    "The time the stat was updated."
     updatedAt: DateTime
   }
 
