@@ -68,8 +68,8 @@ export const getActionsByCampaignId = async (campaignId, context) => {
  */
 export const getActionStats = async (args, context) => {
   logger.debug('Loading action-stats from Rogue', {
-    'schoolId': args.schoolId,
-    'actionId': args.actionId,
+    schoolId: args.schoolId,
+    actionId: args.actionId,
   });
 
   const filter = omit(
