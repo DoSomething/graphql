@@ -214,6 +214,9 @@ const typeDefs = gql`
     goal: Int
     "The group city."
     city: String
+      @deprecated(reason: "Use 'location' instead.")
+    "The group location."
+    location(format: LocationFormat = ISO_FORMAT): String
     "The group state."
     state: String
     "The time this group was last modified."
@@ -403,6 +406,8 @@ const typeDefs = gql`
     id: Int!
     "The school ID this stat belongs to"
     schoolId: String!
+    "The school location."
+    location(format: LocationFormat = ISO_FORMAT): String
     "The action ID this stat belongs to."
     actionId: Int!
     "The action this stat belongs to."
@@ -466,6 +471,8 @@ const typeDefs = gql`
       groupTypeId: Int
       "The group name to filter groups by."
       name: String
+      "The group region to filter groups by."
+      location: String
       "The group state to filter groups by."
       state: String
       "The group school ID to filter groups by."
@@ -481,6 +488,8 @@ const typeDefs = gql`
       groupTypeId: Int
       "The group name to filter groups by."
       name: String
+      "The group region to filter groups by."
+      location: String
       "The group state to filter groups by."
       state: String
       "The group school ID to filter groups by."
@@ -577,9 +586,11 @@ const typeDefs = gql`
       count: Int = 20
     ): [Post]
     schoolActionStats(
-      "The School ID to filter school action stats by."
+      "The School ID to filter action stats by."
       schoolId: String
-      "The Action ID to filter school action stats by."
+      "The school region to filter action stats by."
+      location: String
+      "The Action ID to filter action stats by."
       actionId: Int
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"

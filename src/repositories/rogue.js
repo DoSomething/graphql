@@ -836,6 +836,7 @@ export const fetchGroups = async (args, context, additionalQuery) => {
     pagination: 'cursor',
     filter: {
       group_type_id: args.groupTypeId,
+      location: args.location,
       name: args.name,
       school_id: args.schoolId,
       state: args.state,
