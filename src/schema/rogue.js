@@ -819,8 +819,7 @@ const resolvers = {
       getPostsByCampaignId(args.id, args.page, args.count, context),
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
-    schoolActionStats: (_, args, context) =>
-      getActionStats(args.schoolId, args.actionId, args.orderBy, context),
+    schoolActionStats: (_, args, context) => getActionStats(args, context),
     signup: (_, args, context) => Loader(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args, context),
     paginatedSignups: (_, args, context) => getPaginatedSignups(args, context),
