@@ -214,8 +214,10 @@ const typeDefs = gql`
     goal: Int
     "The group city."
     city: String
+    "The group ISO-3166-2 location."
+    location: String
     "The group state."
-    state: String
+    state: String @deprecated(reason: "Use 'location' instead.")
     "The time this group was last modified."
     updatedAt: DateTime
     "The time when this group was originally created."
@@ -403,6 +405,8 @@ const typeDefs = gql`
     id: Int!
     "The school ID this stat belongs to"
     schoolId: String!
+    "The school ISO-3166-2 location."
+    location: String
     "The action ID this stat belongs to."
     actionId: Int!
     "The action this stat belongs to."
@@ -466,6 +470,8 @@ const typeDefs = gql`
       groupTypeId: Int
       "The group name to filter groups by."
       name: String
+      "The ISO-3166-2 location to filter groups by (e.g. US-NY)."
+      location: String
       "The group state to filter groups by."
       state: String
       "The group school ID to filter groups by."
@@ -481,6 +487,8 @@ const typeDefs = gql`
       groupTypeId: Int
       "The group name to filter groups by."
       name: String
+      "The ISO-3166-2 location to filter groups by (e.g. US-NY)."
+      location: String
       "The group state to filter groups by."
       state: String
       "The group school ID to filter groups by."
@@ -577,9 +585,11 @@ const typeDefs = gql`
       count: Int = 20
     ): [Post]
     schoolActionStats(
-      "The School ID to filter school action stats by."
+      "The School ID to filter action stats by."
       schoolId: String
-      "The Action ID to filter school action stats by."
+      "The ISO-3166-2 school location to filter action stats by (e.g. US-NY)."
+      location: String
+      "The Action ID to filter action stats by."
       actionId: Int
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
@@ -808,8 +818,7 @@ const resolvers = {
       getPostsByCampaignId(args.id, args.page, args.count, context),
     postsByUserId: (_, args, context) =>
       getPostsByUserId(args.id, args.page, args.count, context),
-    schoolActionStats: (_, args, context) =>
-      getActionStats(args.schoolId, args.actionId, args.orderBy, context),
+    schoolActionStats: (_, args, context) => getActionStats(args, context),
     signup: (_, args, context) => Loader(context).signups.load(args.id),
     signups: (_, args, context) => getSignups(args, context),
     paginatedSignups: (_, args, context) => getPaginatedSignups(args, context),
