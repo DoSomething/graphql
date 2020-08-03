@@ -93,9 +93,7 @@ export const fetchActionStats = async (args, context, additionalQuery = {}) => {
     authorizedRequest(context),
   );
 
-  const json = await response.json();
-
-  return transformCollection(json);
+  return response.json();
 };
 
 /**
