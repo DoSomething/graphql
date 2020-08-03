@@ -16,6 +16,7 @@ import {
   getGroups,
   getGroupTypeById,
   getGroupTypes,
+  getPaginatedActionStats,
   getPaginatedCampaigns,
   getPaginatedGroups,
   getPermalinkBySignupId,
@@ -421,6 +422,18 @@ const typeDefs = gql`
     updatedAt: DateTime
   }
 
+  "A paginated list of school action stats. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
+  type SchoolActionStatCollection {
+    edges: [SchoolActionStatEdge]
+    pageInfo: PageInfo!
+  }
+
+  "School action stat in a paginated list."
+  type SchoolActionStatEdge {
+    cursor: String!
+    node: SchoolActionStat!
+  }
+
   type Query {
     "Get an Action by ID."
     action(id: Int!): Action
@@ -591,9 +604,27 @@ const typeDefs = gql`
       location: String
       "The Action ID to filter action stats by."
       actionId: Int
+      "The page of results to return."
+      page: Int = 1
+      "The number of results per page."
+      count: Int = 20
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
     ): [SchoolActionStat]
+    paginatedSchoolActionStats(
+      "The School ID to filter action stats by."
+      schoolId: String
+      "The ISO-3166-2 school location to filter action stats by (e.g. US-NY)."
+      location: String
+      "The Action ID to filter action stats by."
+      actionId: Int
+      "Get the first N results."
+      first: Int = 20
+      "The cursor to return results after."
+      after: String
+      "How to order the results (e.g. 'id,desc')."
+      orderBy: String = "id,desc"
+    ): SchoolActionStatCollection
     "Get a signup by ID."
     signup(id: Int!): Signup
     "Get a list of signups."
@@ -812,6 +843,7 @@ const resolvers = {
       getPaginatedCampaigns(args, context),
     paginatedGroups: (_, args, context) => getPaginatedGroups(args, context),
     paginatedPosts: (_, args, context) => getPaginatedPosts(args, context),
+    paginatedSchoolActionStats: (_, args, context) => getPaginatedPosts(args, context),
     post: (_, args, context) => getPostById(args.id, context),
     posts: (_, args, context) => getPosts(args, context),
     postsByCampaignId: (_, args, context) =>
