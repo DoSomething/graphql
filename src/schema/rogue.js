@@ -587,7 +587,7 @@ const typeDefs = gql`
     schoolActionStats(
       "The School ID to filter action stats by."
       schoolId: String
-      "The school location to filter action stats by."
+      "The ISO-3166-2 school location to filter action stats by (e.g. US-NY)."
       location: String
       "The Action ID to filter action stats by."
       actionId: Int
