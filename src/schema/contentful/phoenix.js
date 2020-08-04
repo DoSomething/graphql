@@ -175,6 +175,13 @@ const typeDefs = gql`
     TRANSPARENT
   }
 
+  type ActionStatsBlock implements Block {
+    "The action ID to display a leaderboard for."
+    actionId: Int!
+    ${blockFields}
+    ${entryFields}
+  }
+
   type AffirmationBlock implements Block {
     "The title displayed on this card."
     header: String
@@ -787,6 +794,7 @@ const typeDefs = gql`
  * @var {Object}
  */
 const contentTypeMappings = {
+  actionStatsBlock: 'ActionStatsBlock',
   affiliates: 'AffiliateBlock',
   affirmation: 'AffirmationBlock',
   callToAction: 'CallToActionBlock',
