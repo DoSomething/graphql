@@ -66,7 +66,7 @@ export const getActionsByCampaignId = async (campaignId, context) => {
  * @param {String} orderBy
  * @return {Array}
  */
-export const getActionStats = async (args, context) => {
+export const fetchActionStats = async (args, context, additionalQuery = {}) => {
   logger.debug('Loading action-stats from Rogue', {
     schoolId: args.schoolId,
     actionId: args.actionId,
@@ -85,6 +85,7 @@ export const getActionStats = async (args, context) => {
     filter,
     orderBy: args.orderBy,
     pagination: 'cursor',
+    ...additionalQuery,
   });
 
   const response = await fetch(
@@ -92,9 +93,39 @@ export const getActionStats = async (args, context) => {
     authorizedRequest(context),
   );
 
-  const json = await response.json();
+  return response.json();
+};
+
+/**
+ * Get a simple list of action stats.
+ *
+ * @param {Number} page
+ * @param {Number} count
+ * @return {Array}
+ */
+export const getActionStats = async (args, context) => {
+  const json = await fetchActionStats(args, context, {
+    limit: args.count,
+    page: args.page,
+  });
 
   return transformCollection(json);
+};
+
+/**
+ * Fetch a paginated action stat connection.
+ *
+ * @return {Collection}
+ */
+export const getPaginatedActionStats = async (args, context) => {
+  const json = await fetchActionStats(args, context, {
+    limit: args.first,
+    cursor: {
+      after: args.after,
+    },
+  });
+
+  return new Collection(json);
 };
 
 /**
