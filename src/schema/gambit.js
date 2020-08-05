@@ -1,15 +1,7 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { gql } from 'apollo-server';
-import { GraphQLDateTime } from 'graphql-iso-date';
 
-import Loader from '../loader';
-import {
-  getConversations,
-  getConversationsByUserId,
-  getMessageById,
-  getMessages,
-  getMessagesByConversationId,
-} from '../repositories/gambit';
+import resolvers from '../resolvers/gambit';
 
 /**
  * GraphQL types.
@@ -18,44 +10,6 @@ import {
  */
 const typeDefs = gql`
   scalar DateTime
-
-  "A DoSomething.org user conversation."
-  type Conversation {
-    "The conversation ID."
-    id: String!
-    "The Northstar user ID of the user this conversation is with."
-    userId: String!
-    "The conversation platform (e.g. 'sms', 'gambit-slack')."
-    platform: String!
-    "The time when this conversation was originally created."
-    createdAt: DateTime
-    "The time this conversation was last modified."
-    updatedAt: DateTime
-    "The topic ID of current conversation topic."
-    topicId: String!
-    "The messages in this conversation."
-    messages: [Message]
-  }
-
-  "A conversation message."
-  type Message {
-    "The message ID."
-    id: String!
-    "The message direction."
-    direction: String!
-    "The user ID this message is from or to."
-    userId: String
-    "The time when this conversation was originally created."
-    createdAt: DateTime
-    "The time this conversation was last modified."
-    updatedAt: DateTime
-    "The topic ID of the conversation topic when message was created."
-    topicId: String
-    "The message template (if outbound)."
-    template: String
-    "The Rivescript trigger that was matched."
-    match: String
-  }
 
   type Query {
     "Get a conversation by ID."
@@ -95,31 +49,45 @@ const typeDefs = gql`
       count: Int = 20
     ): [Message]
   }
-`;
 
-/**
- * GraphQL resolvers.
- *
- * @var {Object}
- */
-const resolvers = {
-  Conversation: {
-    messages: (_, args, context) =>
-      getMessagesByConversationId(args.id, args.page, args.count, context),
-  },
-  Query: {
-    conversation: (_, args, context) =>
-      Loader(context).conversations.load(args.id),
-    conversations: (_, args, context) => getConversations(args, context),
-    conversationsByUserId: (_, args, context) =>
-      getConversationsByUserId(args, context),
-    message: (_, args, context) => getMessageById(args.id, context),
-    messages: (_, args, context) => getMessages(args, context),
-    messagesByConversationId: (_, args, context) =>
-      getMessagesByConversationId(args.id, args.page, args.count, context),
-  },
-  DateTime: GraphQLDateTime,
-};
+  "A DoSomething.org user conversation."
+  type Conversation {
+    "The conversation ID."
+    id: String!
+    "The Northstar user ID of the user this conversation is with."
+    userId: String!
+    "The conversation platform (e.g. 'sms', 'gambit-slack')."
+    platform: String!
+    "The time when this conversation was originally created."
+    createdAt: DateTime
+    "The time this conversation was last modified."
+    updatedAt: DateTime
+    "The topic ID of current conversation topic."
+    topicId: String!
+    "The messages in this conversation."
+    messages: [Message]
+  }
+
+  "A conversation message."
+  type Message {
+    "The message ID."
+    id: String!
+    "The message direction."
+    direction: String!
+    "The user ID this message is from or to."
+    userId: String
+    "The time when this conversation was originally created."
+    createdAt: DateTime
+    "The time this conversation was last modified."
+    updatedAt: DateTime
+    "The topic ID of the conversation topic when message was created."
+    topicId: String
+    "The message template (if outbound)."
+    template: String
+    "The Rivescript trigger that was matched."
+    match: String
+  }
+`;
 
 /**
  * The generated schema.

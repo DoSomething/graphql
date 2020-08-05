@@ -3,6 +3,11 @@ import { makeExecutableSchema } from 'graphql-tools';
 
 import resolvers from '../resolvers/algolia';
 
+/**
+ * GraphQL types.
+ *
+ * @var {String}
+ */
 const typeDefs = gql`
   type Query {
     searchCampaigns(
@@ -40,6 +45,11 @@ const typeDefs = gql`
   }
 `;
 
+/**
+ * The generated schema.
+ *
+ * @var {GraphQLSchema}
+ */
 export default makeExecutableSchema({
   typeDefs,
   resolvers,

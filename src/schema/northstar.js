@@ -1,25 +1,8 @@
-import { has } from 'lodash';
 import { gql } from 'apollo-server';
-import { getFields } from 'fielddataloader';
-import { GraphQLAbsoluteUrl } from 'graphql-url';
-import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { makeExecutableSchema } from 'graphql-tools';
 
-import Loader from '../loader';
 import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
-import { stringToEnum, listToEnums } from './helpers';
-import {
-  updateCausePreferences,
-  updateEmailSubscriptionTopics,
-  updateEmailSubscriptionTopic,
-  updateEmailSubscriptionStatus,
-  getPermalinkByUserId,
-  undoDeletionRequest,
-  requestDeletion,
-  updateSchoolId,
-  getUsers,
-} from '../repositories/northstar';
 
 /**
  * GraphQL types.
@@ -239,61 +222,6 @@ const typeDefs = gql`
     ): User!
   }
 `;
-
-/**
- * GraphQL resolvers.
- *
- * @var {Object}
- */
-const resolvers = {
-  User: {
-    role: user => stringToEnum(user.role),
-    smsStatus: user => stringToEnum(user.smsStatus),
-    voterRegistrationStatus: user => stringToEnum(user.voterRegistrationStatus),
-    emailSubscriptionTopics: user => listToEnums(user.emailSubscriptionTopics),
-    permalink: user => getPermalinkByUserId(user.id),
-    hasFeatureFlag: (user, { feature }) =>
-      has(user, `featureFlags.${feature}`) &&
-      user.featureFlags[feature] !== false,
-    causes: user => listToEnums(user.causes),
-  },
-  Query: {
-    user: (_, { id }, context, info) =>
-      Loader(context).users.load(id, getFields(info)),
-    users: (_, args, context, info) => getUsers(args, getFields(info), context),
-  },
-  Date: GraphQLDate,
-  DateTime: GraphQLDateTime,
-  AbsoluteUrl: GraphQLAbsoluteUrl,
-  Mutation: {
-    requestDeletion: (_, args, context) => requestDeletion(args.id, context),
-    undoDeletionRequest: (_, args, context) =>
-      undoDeletionRequest(args.id, context),
-    updateEmailSubscriptionStatus: (_, args, context) =>
-      updateEmailSubscriptionStatus(
-        args.id,
-        args.emailSubscriptionStatus,
-        context,
-      ),
-    updateEmailSubscriptionTopics: (_, args, context) =>
-      updateEmailSubscriptionTopics(
-        args.id,
-        args.emailSubscriptionTopics,
-        context,
-      ),
-    updateEmailSubscriptionTopic: (_, args, context) =>
-      updateEmailSubscriptionTopic(
-        args.id,
-        args.topic,
-        args.subscribed,
-        context,
-      ),
-    updateCausePreferences: (_, args, context) =>
-      updateCausePreferences(args.id, args.cause, args.interested, context),
-    updateSchoolId: (_, args, context) =>
-      updateSchoolId(args.id, args.schoolId, context),
-  },
-};
 
 /**
  * The generated schema.
