@@ -1,9 +1,9 @@
 import { SchemaDirectiveVisitor } from 'graphql-tools';
 
-class SensitiveFieldDirective extends SchemaDirectiveVisitor {
+class OptionalFieldDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition(field) {
     field.isOptional = true;
   }
 }
 
-export default SensitiveFieldDirective;
+export default OptionalFieldDirective;
