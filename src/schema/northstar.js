@@ -1,6 +1,7 @@
 import { gql } from 'apollo-server';
 import { makeExecutableSchema } from 'graphql-tools';
 
+import resolvers from '../resolvers/northstar';
 import SensitiveFieldDirective from './directives/SensitiveFieldDirective';
 import OptionalFieldDirective from './directives/OptionalFieldDirective';
 

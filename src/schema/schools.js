@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server';
 import { makeExecutableSchema } from 'graphql-tools';
 
-import { getSchoolById, searchSchools } from '../repositories/schools';
+import resolvers from '../resolvers/schools';
 
 /**
  * GraphQL types.
@@ -33,18 +33,6 @@ const typeDefs = gql`
     ): [School]
   }
 `;
-
-/**
- * GraphQL resolvers.
- *
- * @var {Object}
- */
-const resolvers = {
-  Query: {
-    school: (_, args) => getSchoolById(args.id),
-    searchSchools: (_, args) => searchSchools(args.state, args.name),
-  },
-};
 
 /**
  * The generated schema.
