@@ -13,6 +13,7 @@ import {
   getGroups,
   getGroupTypeById,
   getGroupTypes,
+  getPaginatedActionStats,
   getPaginatedCampaigns,
   getPaginatedGroups,
   getPermalinkBySignupId,
@@ -62,6 +63,8 @@ const resolvers = {
       getPaginatedCampaigns(args, context),
     paginatedGroups: (_, args, context) => getPaginatedGroups(args, context),
     paginatedPosts: (_, args, context) => getPaginatedPosts(args, context),
+    paginatedSchoolActionStats: (_, args, context) =>
+      getPaginatedActionStats(args, context),
     post: (_, args, context) => getPostById(args.id, context),
     posts: (_, args, context) => getPosts(args, context),
     postsByCampaignId: (_, args, context) =>

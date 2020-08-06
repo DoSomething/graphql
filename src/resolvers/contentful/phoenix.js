@@ -19,6 +19,7 @@ import {
  * @var {Object}
  */
 const contentTypeMappings = {
+  actionStatsBlock: 'ActionStatsBlock',
   affiliates: 'AffiliateBlock',
   affirmation: 'AffirmationBlock',
   callToAction: 'CallToActionBlock',
