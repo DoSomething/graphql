@@ -5,7 +5,7 @@ import { find, isUndefined, omit, zipWith } from 'lodash';
 
 import config from '../../config';
 import Collection from './Collection';
-import { enumToString } from '../schema/helpers';
+import { enumToString } from '../resolvers/helpers';
 import {
   transformItem,
   transformCollection,

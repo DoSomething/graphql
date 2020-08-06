@@ -1,9 +1,7 @@
 import { gql } from 'apollo-server';
-import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { makeExecutableSchema } from 'graphql-tools';
 
-import Loader from '../loader';
-import { stringToEnum } from './helpers';
+import resolvers from '../resolvers/embed';
 
 /**
  * GraphQL types.
@@ -61,21 +59,6 @@ const typeDefs = gql`
     embed(url: AbsoluteUrl!): Embed
   }
 `;
-
-/**
- * GraphQL resolvers.
- *
- * @var {Object}
- */
-const resolvers = {
-  AbsoluteUrl: GraphQLAbsoluteUrl,
-  Embed: {
-    type: embed => stringToEnum(embed.type),
-  },
-  Query: {
-    embed: (_, args, context) => Loader(context).embeds.load(args.url),
-  },
-};
 
 /**
  * The generated schema.
