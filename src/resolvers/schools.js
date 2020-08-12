@@ -12,7 +12,7 @@ const resolvers = {
   },
   School: {
     location: school => `US-${school.state}`,
-  }
+  },
 };
 
 export default resolvers;
