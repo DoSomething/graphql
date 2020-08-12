@@ -85,8 +85,9 @@ export const getSchoolById = async id => {
 };
 
 /**
- * Fetch schools by name for given state.
+ * Fetch schools by name for given location.
  *
+ * @param {String} location
  * @param {String} state
  * @param {String} searchString
  * @return {Object}
@@ -96,6 +97,7 @@ export const searchSchools = async args => {
 
   const db = await connectToDatabase();
 
+  // We'll eventually deprecate the state arg once Phoenix no longer uses it.
   const locationFilter =
     args.state || (args.location ? args.location.substring(3) : null);
 
