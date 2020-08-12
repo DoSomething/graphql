@@ -91,19 +91,21 @@ export const getSchoolById = async id => {
  * @param {String} searchString
  * @return {Object}
  */
-export const searchSchools = async (state, searchString) => {
-  logger.debug('Searching schools', { state, searchString });
+export const searchSchools = async (args) => {
+  logger.debug('Searching schools', args);
 
   const db = await connectToDatabase();
+
+  const locationFilter = args.state || (args.location ? args.location.substring(3) : null);
 
   const res = await db
     .find({
       entity: 'school',
-      state,
+      state: locationFilter,
       name: {
-        $regex: searchString,
+        $regex: args.name,
         $options: 'i',
-      },
+      }
     })
     .limit(20)
     .toArray();

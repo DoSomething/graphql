@@ -17,8 +17,10 @@ const typeDefs = gql`
     name: String
     "The school city."
     city: String
+    "The school ISO-3166-2 location."
+    location: String
     "The school state."
-    state: String
+    state: String @deprecated(reason: "Use 'location' instead.")
   }
 
   type Query {
@@ -26,8 +28,10 @@ const typeDefs = gql`
     school(id: String!): School
     "Search schools by state and name."
     searchSchools(
+      "The school ISO-3166-2 location to filter by (e.g. US-NY)."
+      location: String
       "The school state to filter by."
-      state: String!
+      state: String
       "The school name to search for."
       name: String!
     ): [School]
