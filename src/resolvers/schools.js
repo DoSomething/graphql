@@ -8,7 +8,10 @@ import { getSchoolById, searchSchools } from '../repositories/schools';
 const resolvers = {
   Query: {
     school: (_, args) => getSchoolById(args.id),
-    searchSchools: (_, args) => searchSchools(args.state, args.name),
+    searchSchools: (_, args) => searchSchools(args),
+  },
+  School: {
+    location: school => `US-${school.state}`,
   },
 };
 
