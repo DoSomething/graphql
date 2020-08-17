@@ -7,6 +7,7 @@ import Loader from '../../loader';
 import config from '../../../config';
 import { stringToEnum, listToEnums } from '../helpers';
 import {
+  getHomePage,
   linkResolver,
   createImageUrl,
   parseQuizResults,
@@ -81,7 +82,7 @@ const resolvers = {
       Loader(context, preview).collectionPagesBySlug.load(slug),
     companyPageBySlug: (_, { slug, preview }, context) =>
       Loader(context, preview).companyPagesBySlug.load(slug),
-    homePage: (_, { preview }, context) => Loader(context, preview).homePage(),
+    homePage: (_, { preview }, context) => getHomePage(context, preview),
     page: (_, { id, preview }, context) =>
       Loader(context, preview).pages.load(id),
     pageBySlug: (_, { slug, preview }, context) =>

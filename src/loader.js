@@ -19,7 +19,6 @@ import {
 } from './repositories/contentful/gambit';
 import { authorizedRequest } from './repositories/helpers';
 import {
-  getHomePage,
   getPageBySlug,
   getCausePageBySlug,
   getCompanyPageBySlug,
@@ -107,7 +106,6 @@ export default (context, preview = false) => {
       groupTypes: new FieldDataLoader((id, fields) =>
         getGroupTypeById(id, fields, options),
       ),
-      homePage: () => getHomePage(context),
       pages: new DataLoader(ids =>
         Promise.all(ids.map(id => getPhoenixContentfulEntryById(id, context))),
       ),
