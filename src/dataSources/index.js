@@ -1,10 +1,10 @@
-import AlgoliaAPI from './AlgoliaAPI';
+import Algolia from './Algolia';
 
 /**
  * Available data source classes for different services.
  */
 const dataSources = () => ({
-  algoliaAPI: new AlgoliaAPI(),
+  algolia: new Algolia(),
 });
 
 export default dataSources;

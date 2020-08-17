@@ -8,9 +8,7 @@ import AlgoliaCampaignCollection from '../dataSources/collections/AlgoliaCampaig
 const resolvers = {
   Query: {
     searchCampaigns: async (_, args, context, info) => {
-      const results = await context.dataSources.algoliaAPI.searchCampaigns(
-        args,
-      );
+      const results = await context.dataSources.algolia.searchCampaigns(args);
 
       return new AlgoliaCampaignCollection(results, context, info);
     },
