@@ -151,9 +151,7 @@ export const getPhoenixContentfulEntryByField = async (
  *
  * @param {Object} context
  */
-export const getHomePage = async context => {
-  const { preview } = context;
-
+export const getHomePage = async (context, preview = false) => {
   const query = {
     content_type: 'homePage',
     order: '-sys.updatedAt',
