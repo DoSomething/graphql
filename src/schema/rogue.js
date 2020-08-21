@@ -95,8 +95,6 @@ const typeDefs = gql`
       name: String
       "The ISO-3166-2 location to filter groups by (e.g. US-NY)."
       location: String
-      "The group state to filter groups by."
-      state: String
       "The group school ID to filter groups by."
       schoolId: String
     ): [Group]
@@ -112,8 +110,6 @@ const typeDefs = gql`
       name: String
       "The ISO-3166-2 location to filter groups by (e.g. US-NY)."
       location: String
-      "The group state to filter groups by."
-      state: String
       "The group school ID to filter groups by."
       schoolId: String
     ): GroupCollection
@@ -497,8 +493,6 @@ const typeDefs = gql`
     city: String
     "The group ISO-3166-2 location."
     location: String
-    "The group state."
-    state: String @deprecated(reason: "Use 'location' instead.")
     "The time this group was last modified."
     updatedAt: DateTime
     "The time when this group was originally created."
