@@ -10,9 +10,6 @@ const resolvers = {
     school: (_, args) => getSchoolById(args.id),
     searchSchools: (_, args) => searchSchools(args),
   },
-  School: {
-    location: school => `US-${school.state}`,
-  },
 };
 
 export default resolvers;
