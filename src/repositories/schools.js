@@ -6,14 +6,16 @@ import config from '../../config';
 const SCHOOL_NOT_AVAILABLE_SCHOOL_ID = 'school-not-available';
 
 /**
- * Schools are sourced from a Mongo database, in a collection called 'directory'.
- * We use the following fields to source our list of schools.
+ * Schools are sourced from a Mongo database, in a collection called 'directory', which is a direct
+ * import of the file we get from Great Schools.
+ *
+ * We use the following fields to source our GraphQL School type.
  *
  * universal-id: This is the unique identifier for a school.
  * entity: We only want documents with entity 'school'. Other values include 'district', etc.
  * name: The name of the school.
  * city: The city that school is located in (e.g. 'Hoboken')
- * state: The state that school is located in (e.g. NJ)
+ * state: The US state that school is located in (e.g. NJ)
  */
 
 // Cache our connection to the Mongo database.
@@ -58,7 +60,8 @@ export const transformItem = item => {
     id: item['universal-id'],
     name,
     city,
-    state,
+    // Our source file only contains US schools.
+    location: `US-${state}`,
   };
 };
 
