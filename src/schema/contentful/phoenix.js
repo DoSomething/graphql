@@ -621,6 +621,10 @@ const typeDefs = gql`
   type SocialDriveBlock implements Block {
     "The link for this social drive, with dynamic string tokens."
     link: AbsoluteUrl
+    "The user-facing title for this social drive block."
+    title: String
+    "The user-facing description for this social drive block."
+    description: String
     ${blockFields}
     ${entryFields}
   }
