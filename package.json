@@ -2,8 +2,9 @@
   "name": "graphql-api-gateway",
   "description": "An GraphQL API gateway for DoSomething.org services.",
   "scripts": {
-    "start": "nodemon --inspect -e js,html local.js",
-    "start:production": "node local.js",
+    "start": "concurrently -k npm:server:*",
+    "server:users": "nodemon src/users/index.js",
+    "server:gateway": "wait-on tcp:3003 && nodemon local.js",
     "test": "LOG_LEVEL=warn jest --watch --setupFiles dotenv/config",
     "test:ci": "LOG_LEVEL=warn jest --setupFiles dotenv/config",
     "lint": "eslint --ext .js src",
@@ -38,11 +39,13 @@
     "cjs": true
   },
   "dependencies": {
+    "@apollo/federation": "^0.19.1",
+    "@apollo/gateway": "^0.19.1",
     "algoliasearch": "^4.2.0",
     "apollo": "^2.21.1",
     "apollo-datasource": "^0.7.1",
-    "apollo-server": "^2.14.2",
-    "apollo-server-express": "^2.14.2",
+    "apollo-datasource-rest": "^0.9.3",
+    "apollo-server": "^2.16.1",
     "apollo-server-lambda": "^2.14.2",
     "boxen": "^4.1.0",
     "catbox": "^10.0.6",
@@ -50,13 +53,13 @@
     "catbox-memory": "^4.0.1",
     "catbox-redis": "^4.2.4",
     "chalk": "^3.0.0",
+    "concurrently": "^5.3.0",
     "contentful": "^7.10.0",
     "dataloader": "^1.4.0",
     "date-fns": "^2.14.0",
     "domino": "^2.1.3",
     "dotenv": "^8.2.0",
     "esm": "^3.2.25",
-    "express": "^4.17.1",
     "fielddataloader": "0.0.7",
     "graphql": "~14.5.8",
     "graphql-iso-date": "^3.5.0",
@@ -70,7 +73,8 @@
     "oembetter": "^0.1.20",
     "page-metadata-parser": "^1.1.4",
     "pluralize": "^8.0.0",
-    "qs": "^6.9.1"
+    "qs": "^6.9.1",
+    "wait-on": "^5.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.0",
