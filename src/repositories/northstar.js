@@ -4,13 +4,15 @@ import { intersection, snakeCase } from 'lodash';
 
 import schema from '../schema';
 import config from '../../config';
+import { getOptional } from '../shared/helpers/graphql';
 import {
-  getOptional,
-  transformItem,
   authorizedRequest,
   requireAuthorizedRequest,
+} from '../shared/helpers/auth';
+import {
   transformCollection,
-} from './helpers';
+  transformItem,
+} from '../shared/helpers/transformers';
 
 const NORTHSTAR_URL = config('services.northstar.url');
 const AURORA_URL = config('services.aurora.url');

@@ -1,7 +1,7 @@
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 
 import Loader from '../loader';
-import { stringToEnum } from './helpers';
+import { stringToEnum } from '../shared/helpers/enum';
 
 /**
  * GraphQL resolvers.

@@ -1,6 +1,6 @@
 import { get, isNil, last } from 'lodash';
 
-import { transformCollection } from './helpers';
+import { transformCollection } from '../shared/helpers/transformers';
 
 class Collection {
   constructor(json) {

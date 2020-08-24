@@ -4,7 +4,8 @@ import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDateTime } from 'graphql-iso-date';
 
 import Loader from '../loader';
-import { urlWithQuery, transformItem } from '../repositories/helpers';
+import { transformItem } from '../shared/helpers/transformers';
+import { urlWithQuery } from '../shared/helpers/url';
 import {
   getActionById,
   getActionStats,
