@@ -135,6 +135,8 @@ const typeDefs = gql`
     country: String
     "The user's role."
     role: Role
+    "The user's current Club ID. Null if unauthorized."
+    clubId: Int
     "The user's current School ID"
     schoolId: String @sensitive @optional
     "The user's voter registration status, either self-reported or by registering with third-party."
