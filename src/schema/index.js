@@ -24,6 +24,8 @@ const linkSchema = gql`
     signups: [Signup]
     "The conversations created by this user."
     conversations: [Conversation]
+    "The user's current club. Null if unauthorized."
+    club: Club
     "The user's current school. Note -- only works if user.schoolId is also returned"
     school: School
   }
@@ -328,6 +330,25 @@ const linkResolvers = {
           context,
           info,
         );
+      },
+    },
+    club: {
+      fragment: 'fragment ClubFragment on User { clubId }',
+      resolve(user, args, context, info) {
+        if (!user.clubId) {
+          return null;
+        }
+
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'club',
+          args: {
+            id: user.clubId,
+          },
+          context,
+          info,
+        });
       },
     },
     school: {
