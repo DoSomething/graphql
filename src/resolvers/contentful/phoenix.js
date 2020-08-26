@@ -32,6 +32,7 @@ const contentTypeMappings = {
   companyPage: 'CompanyPage',
   contentBlock: 'ContentBlock',
   currentSchoolBlock: 'CurrentSchoolBlock',
+  currentClubBlock: 'CurrentClubBlock',
   embed: 'EmbedBlock',
   galleryBlock: 'GalleryBlock',
   homePage: 'HomePage',
