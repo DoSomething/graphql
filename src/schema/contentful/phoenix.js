@@ -505,6 +505,10 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type CurrentClubBlock implements Block {
+    ${blockFields}
+    ${entryFields}
+  }
 
   type PhotoSubmissionBlock implements Block {
     "The Action ID that posts will be submitted for."
