@@ -525,6 +525,26 @@ const typeDefs = gql`
     createdAt: DateTime
   }
 
+  "A DoSomething club."
+  type Club {
+    "The unique ID for this club."
+    id: Int!
+    "The club name."
+    name: String!
+    "The Northstar ID of the club leader."
+    leaderId: String!
+    "The club city."
+    city: String
+    "The club ISO-3166-2 location."
+    location: String
+    "The club school ID."
+    schoolId: String
+    "The time this club was last modified."
+    updatedAt: DateTime
+    "The time when this club was originally created."
+    createdAt: DateTime
+  }
+
   "A media resource on a post."
   type Media {
     "The image URL."
