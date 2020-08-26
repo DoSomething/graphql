@@ -28,6 +28,11 @@ const linkSchema = gql`
     school: School
   }
 
+  extend type Club {
+    "The leader of the club."
+    leader: User
+  }
+
   extend type Post {
     "The user who created this post."
     user: User
@@ -338,6 +343,24 @@ const linkResolvers = {
           fieldName: 'school',
           args: {
             id: user.schoolId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
+
+  Club: {
+    leader: {
+      fragment: 'fragment UserFragment on Club { leaderId }',
+      resolve(club, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: northstarSchema,
+          operation: 'query',
+          fieldName: 'user',
+          args: {
+            id: club.leaderId,
           },
           context,
           info,
