@@ -65,6 +65,7 @@ const typeDefs = gql`
     COMMUNITY
     SCHOLARSHIPS
     LIFESTYLE
+    CLUBS
   }
 
   "The user's choices of cause area preference."
