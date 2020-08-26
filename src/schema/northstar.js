@@ -208,6 +208,13 @@ const typeDefs = gql`
       "The new email subscription status."
       emailSubscriptionStatus: Boolean!
     ): User!
+    "Update the user's club ID."
+    updateClubId(
+      "the ID of the user to update."
+      id: String!
+      "the club ID to save to the user."
+      clubId: Int
+    ): User!
     "Update the user school id."
     updateSchoolId(
       "The user to update."

@@ -13,6 +13,7 @@ import {
   getPermalinkByUserId,
   undoDeletionRequest,
   requestDeletion,
+  updateClubId,
   updateSchoolId,
   getUsers,
 } from '../repositories/northstar';
@@ -54,6 +55,8 @@ const resolvers = {
       ),
     updateCausePreferences: (_, args, context) =>
       updateCausePreferences(args.id, args.cause, args.interested, context),
+    updateClubId: (_, args, context) =>
+      updateClubId(args.id, args.clubId, context),
     updateSchoolId: (_, args, context) =>
       updateSchoolId(args.id, args.schoolId, context),
   },
