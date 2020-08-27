@@ -47,6 +47,7 @@ const contentTypeMappings = {
   sectionBlock: 'SectionBlock',
   selectionSubmissionAction: 'SelectionSubmissionBlock',
   shareAction: 'ShareBlock',
+  signupReferralsBlock: 'SignupReferralsBlock',
   sixpackExperiment: 'SixpackExperimentBlock',
   socialDriveAction: 'SocialDriveBlock',
   softEdgeWidgetAction: 'SoftEdgeBlock',

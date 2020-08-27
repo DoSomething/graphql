@@ -717,6 +717,13 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type SignupReferralsBlock implements Block {
+    "The user-facing title for this signup referrals block."
+    title: String
+    ${blockFields}
+    ${entryFields}
+  }
+
   type VoterRegistrationBlock implements Block {
     "The user-facing title for this voter registration block."
     title: String
