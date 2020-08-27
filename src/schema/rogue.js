@@ -85,6 +85,10 @@ const typeDefs = gql`
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
     ): CampaignCollection
+    "Get a list of clubs."
+    clubs("The club name to filter clubs by." name: String): [Club]
+    "Get a club by ID."
+    club(id: Int!): Club
     "Get a group by ID."
     group(id: Int!): Group
     "Get a list of groups."
@@ -522,6 +526,26 @@ const typeDefs = gql`
     "The time this group type was last modified."
     updatedAt: DateTime
     "The time when this group type was originally created."
+    createdAt: DateTime
+  }
+
+  "A DoSomething club."
+  type Club {
+    "The unique ID for this club."
+    id: Int!
+    "The club name."
+    name: String!
+    "The Northstar ID of the club leader."
+    leaderId: String!
+    "The club city."
+    city: String
+    "The club ISO-3166-2 location."
+    location: String
+    "The club school ID."
+    schoolId: String
+    "The time this club was last modified."
+    updatedAt: DateTime
+    "The time when this club was originally created."
     createdAt: DateTime
   }
 

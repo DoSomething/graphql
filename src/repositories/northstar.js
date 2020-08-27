@@ -294,6 +294,40 @@ export const updateSchoolId = async (id, schoolId, options) => {
 };
 
 /**
+ * Update a user's club_id in Northstar.
+ *
+ * @param {String} id
+ * @param {Int} clubId
+ * @param {Object} options
+ *
+ * @return {Object}
+ */
+export const updateClubId = async (id, clubId, options) => {
+  logger.debug('Updating club id for user in Northstar', {
+    id,
+  });
+
+  try {
+    const response = await updateUser(
+      id,
+      {
+        club_id: clubId,
+      },
+      options,
+    );
+
+    const json = await response.json();
+
+    return transformItem(json);
+  } catch (exception) {
+    const error = exception.message;
+    logger.warn('Unable to update club id.', { id, error });
+  }
+
+  return null;
+};
+
+/**
  * Create a new "deletion request" for the given user.
  *
  * @param {String} id

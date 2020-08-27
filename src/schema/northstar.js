@@ -65,6 +65,7 @@ const typeDefs = gql`
     COMMUNITY
     SCHOLARSHIPS
     LIFESTYLE
+    CLUBS
   }
 
   "The user's choices of cause area preference."
@@ -135,6 +136,8 @@ const typeDefs = gql`
     country: String
     "The user's role."
     role: Role
+    "The user's current Club ID. Null if unauthorized."
+    clubId: Int
     "The user's current School ID"
     schoolId: String @sensitive @optional
     "The user's voter registration status, either self-reported or by registering with third-party."
@@ -205,6 +208,13 @@ const typeDefs = gql`
       id: String!
       "The new email subscription status."
       emailSubscriptionStatus: Boolean!
+    ): User!
+    "Update the user's club ID."
+    updateClubId(
+      "the ID of the user to update."
+      id: String!
+      "the club ID to save to the user."
+      clubId: Int
     ): User!
     "Update the user school id."
     updateSchoolId(

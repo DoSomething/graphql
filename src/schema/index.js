@@ -24,8 +24,15 @@ const linkSchema = gql`
     signups: [Signup]
     "The conversations created by this user."
     conversations: [Conversation]
+    "The user's current club. Null if unauthorized."
+    club: Club
     "The user's current school. Note -- only works if user.schoolId is also returned"
     school: School
+  }
+
+  extend type Club {
+    "The leader of the club."
+    leader: User
   }
 
   extend type Post {
@@ -325,6 +332,25 @@ const linkResolvers = {
         );
       },
     },
+    club: {
+      fragment: 'fragment ClubFragment on User { clubId }',
+      resolve(user, args, context, info) {
+        if (!user.clubId) {
+          return null;
+        }
+
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'club',
+          args: {
+            id: user.clubId,
+          },
+          context,
+          info,
+        });
+      },
+    },
     school: {
       fragment: 'fragment SchoolFragment on User { id }',
       resolve(user, args, context, info) {
@@ -338,6 +364,24 @@ const linkResolvers = {
           fieldName: 'school',
           args: {
             id: user.schoolId,
+          },
+          context,
+          info,
+        });
+      },
+    },
+  },
+
+  Club: {
+    leader: {
+      fragment: 'fragment UserFragment on Club { leaderId }',
+      resolve(club, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: northstarSchema,
+          operation: 'query',
+          fieldName: 'user',
+          args: {
+            id: club.leaderId,
           },
           context,
           info,

@@ -951,3 +951,49 @@ export const getGroupTypes = async (args, context) => {
 
   return transformCollection(json);
 };
+
+/**
+ * Fetch clubs from Rogue based on the given filters.
+ *
+ * @param {String} args.name
+ * @return {Array}
+ */
+export const getClubs = async (args, context) => {
+  const queryString = stringify({
+    filter: {
+      name: args.name,
+    },
+    limit: args.count,
+    page: args.page,
+  });
+
+  logger.info('Loading clubs from Rogue', { args, queryString });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/clubs/?${queryString}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformCollection(json);
+};
+
+/**
+ * Fetch a club from Rogue by ID.
+ *
+ * @param {Number} id
+ * @return {Object}
+ */
+export const getClubById = async (id, context) => {
+  logger.debug('Loading club from Rogue', { id });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/clubs/${id}`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  return transformItem(json);
+};
