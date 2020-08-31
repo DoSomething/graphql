@@ -7,6 +7,7 @@ import rogueSchema from './rogue';
 import gambitSchema from './gambit';
 import algoliaSchema from './algolia';
 import schoolsSchema from './schools';
+import airtableSchema from './airtable';
 import northstarSchema from './northstar';
 import gambitContentfulSchema from './contentful/gambit';
 import phoenixContentfulSchema from './contentful/phoenix';
@@ -679,6 +680,7 @@ const linkResolvers = {
 const schema = mergeSchemas({
   schemas: [
     algoliaSchema,
+    airtableSchema,
     embedSchema,
     northstarSchema,
     rogueSchema,

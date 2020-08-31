@@ -39,6 +39,14 @@ const contentful = {
   },
 };
 
+const airtable = {
+  apiKey: process.env.AIRTABLE_API_KEY,
+  url: 'https://api.airtable.com',
+  bases: {
+    voterRegistration: 'appLExb7T5gTM22pc',
+  },
+};
+
 const schools = {
   db: {
     url: process.env.SCHOOLS_DB_URL,
@@ -55,6 +63,9 @@ const environments = {
    */
   local: {
     displayName: 'local development',
+
+    // Airtable
+    airtable,
 
     // Contentful
     contentful,
@@ -91,6 +102,9 @@ const environments = {
    */
   dev: {
     displayName: 'Development',
+
+    // Airtable
+    airtable,
 
     // Contentful
     contentful,
@@ -136,6 +150,9 @@ const environments = {
   qa: {
     displayName: 'QA',
 
+    // Airtable
+    airtable,
+
     // Contentful
     contentful,
 
@@ -178,6 +195,9 @@ const environments = {
    */
   production: {
     displayName: 'production',
+
+    // Airtable
+    airtable,
 
     // Contentful
     contentful,

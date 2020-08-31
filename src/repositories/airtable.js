@@ -1,0 +1,58 @@
+import { stringify } from 'qs';
+import logger from 'heroku-logger';
+import { assign, omit } from 'lodash';
+
+import config from '../../config';
+import { transformResponse } from './helpers';
+
+const AIRTABLE_URL = config('services.airtable.url');
+
+const authorizedRequest = {
+  headers: {
+    Accept: 'application/json',
+    Authorization: `Bearer ${config('services.airtable.apiKey')}`,
+  },
+};
+
+/**
+ * Fetch voting information from Airtable by location.
+ *
+ * @param {String} location
+ * @return {Object}
+ */
+export const getVotingInformationByLocation = async location => {
+  logger.debug('Loading voting information from Airtable', { location });
+
+  const queryString = stringify({
+    filterByFormula: `State="${location.substring(3)}"`,
+  });
+
+  const url = `${AIRTABLE_URL}/v0/${config(
+    'services.airtable.bases.voterRegistration',
+  )}/${encodeURI('Location GOTV Information')}?${queryString}`;
+
+  try {
+    const response = await fetch(url, authorizedRequest);
+
+    const json = await response.json();
+
+    if (!json.records) {
+      return null;
+    }
+
+    const item = json.records[0];
+    const { id, fields } = item;
+
+    // Add a location property, remove the State property.
+    return transformResponse(assign({ id, location }, omit(fields, 'State')));
+  } catch (exception) {
+    const error = exception.message;
+
+    logger.warn('Unable to load voting information from Airtable.', {
+      location,
+      error,
+    });
+  }
+
+  return null;
+};
