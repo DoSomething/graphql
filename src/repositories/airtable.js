@@ -6,6 +6,9 @@ import Cache, { ONE_MINUTE } from '../cache';
 import { transformCollection } from './helpers';
 
 const AIRTABLE_URL = config('services.airtable.url');
+const VOTER_REGISTRATION_BASE_ID = config(
+  'services.airtable.bases.voterRegistration',
+);
 
 const authorizedRequest = {
   headers: {
@@ -14,19 +17,19 @@ const authorizedRequest = {
   },
 };
 
-// Cache results to avoid Airtable's rate limit of 5 API requests per second per base.
+// Cache results to avoid hitting Airtable's limit of 5 API requests per second per base.
 const cache = new Cache('airtable', ONE_MINUTE);
 
 /**
- * Returns cached Location GOTV Information records from Airtable, or fetches and then caches.
+ * Returns all Location Voting Information records.
  */
 const getAllLocationVotingInformationRecords = async () => {
   return cache.remember('LocationVotingInformation', async () => {
     try {
       // Default pageSize is 100, so we only need one request to fetch info for all 50 states.
-      const url = `${AIRTABLE_URL}/v0/${config(
-        'services.airtable.bases.voterRegistration',
-      )}/${encodeURI('Location GOTV Information')}`;
+      const url = `${AIRTABLE_URL}/v0/${VOTER_REGISTRATION_BASE_ID}/${encodeURI(
+        'Location GOTV Information',
+      )}`;
 
       const response = await fetch(url, authorizedRequest);
 
@@ -54,7 +57,7 @@ const getAllLocationVotingInformationRecords = async () => {
 };
 
 /**
- * Returns Voting Information from a specific location.
+ * Returns a Location Voting Information record for a specific location.
  *
  * @param {String} location
  * @return {Object}
