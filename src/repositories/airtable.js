@@ -1,10 +1,10 @@
 import { stringify } from 'qs';
 import logger from 'heroku-logger';
-import { assign, omit } from 'lodash';
+import { assign, find, omit } from 'lodash';
 
 import config from '../../config';
 import Cache, { ONE_MINUTE } from '../cache';
-import { transformResponse } from './helpers';
+import { transformCollection } from './helpers';
 
 const AIRTABLE_URL = config('services.airtable.url');
 
@@ -15,11 +15,47 @@ const authorizedRequest = {
   },
 };
 
-// Airtable limits API requests to 5 requests per second per base, so we'll cache results.
+// Cache results to avoid Airtable's rate limit of 5 API requests per second per base.
 const cache = new Cache('airtable', ONE_MINUTE);
 
 /**
- * Fetch voting information from Airtable by location.
+ * Returns cached Location GOTV Information records from Airtable, or fetches and then caches.
+ */
+const getAllLocationVotingInformationRecords = async () => {
+  return cache.remember('LocationVotingInformation', async () => {
+    try {
+      // Default pageSize is 100, so we only need one request to fetch info for all 50 states.
+      const url = `${AIRTABLE_URL}/v0/${config(
+        'services.airtable.bases.voterRegistration',
+      )}/${encodeURI('Location GOTV Information')}`;
+
+      const response = await fetch(url, authorizedRequest);
+
+      const json = await response.json();
+
+      const data = json.records.map(record => {
+        const { id, fields } = record;
+        // Calculate a location field based on State field, then exclude the State field.
+        return assign(
+          { id, location: `US-${fields.State}` },
+          omit(fields, 'State'),
+        );
+      });
+
+      // Save our array as a string in cache.
+      return JSON.stringify(transformCollection({ data }));
+    } catch (exception) {
+      logger.warn('Unable to load Airtable Location Voting Information.', {
+        error: exception.message,
+      });
+    }
+  });
+
+  return null;
+};
+
+/**
+ * Returns Voting Information from a specific location.
  *
  * @param {String} location
  * @return {Object}
@@ -29,38 +65,16 @@ const getVotingInformationByLocation = async location => {
     location,
   });
 
-  return cache.remember(`LocationVotingInformation:${location}`, async () => {
-    try {
-      const queryString = stringify({
-        filterByFormula: `State="${location.substring(3)}"`,
-      });
+  try {
+    const allRecords = await getAllLocationVotingInformationRecords();
 
-      const url = `${AIRTABLE_URL}/v0/${config(
-        'services.airtable.bases.voterRegistration',
-      )}/${encodeURI('Location GOTV Information')}?${queryString}`;
-
-      const response = await fetch(url, authorizedRequest);
-
-      const json = await response.json();
-
-      if (!json.records) {
-        return null;
-      }
-
-      const item = json.records[0];
-      const { id, fields } = item;
-
-      // Add a location property, remove the State property.
-      return transformResponse(assign({ id, location }, omit(fields, 'State')));
-    } catch (exception) {
-      logger.warn('Unable to load Airtable Location Voting Information.', {
-        location,
-        error: exception.message,
-      });
-    }
-
-    return null;
-  });
+    return find(JSON.parse(allRecords), { location });
+  } catch (exception) {
+    logger.warn('Unable to load Airtable Location Voting Information.', {
+      location,
+      error: exception.message,
+    });
+  }
 };
 
 export default getVotingInformationByLocation;
