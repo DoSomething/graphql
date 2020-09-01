@@ -1,4 +1,3 @@
-import { stringify } from 'qs';
 import logger from 'heroku-logger';
 import { assign, find, omit } from 'lodash';
 
@@ -49,9 +48,9 @@ const getAllLocationVotingInformationRecords = async () => {
         error: exception.message,
       });
     }
-  });
 
-  return null;
+    return null;
+  });
 };
 
 /**
