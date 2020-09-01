@@ -73,6 +73,8 @@ const getVotingInformationByLocation = async location => {
       location,
       error: exception.message,
     });
+
+    return null;
   }
 };
 
