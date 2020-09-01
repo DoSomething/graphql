@@ -23,7 +23,7 @@ const cache = new Cache('airtable', ONE_MINUTE);
  * @param {String} location
  * @return {Object}
  */
-export const getVotingInformationByLocation = async location => {
+const getVotingInformationByLocation = async location => {
   logger.debug('Loading Location Voting Information from Airtable', {
     location,
   });
@@ -60,3 +60,5 @@ export const getVotingInformationByLocation = async location => {
     return null;
   });
 };
+
+export default getVotingInformationByLocation;

@@ -1,4 +1,4 @@
-import { getVotingInformationByLocation } from '../repositories/airtable';
+import getVotingInformationByLocation from '../repositories/airtable';
 
 /**
  * GraphQL resolvers.
