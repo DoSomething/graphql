@@ -15,6 +15,7 @@ const authorizedRequest = {
   },
 };
 
+// Airtable limits API requests to 5 requests per second per base, so we'll cache results.
 const cache = new Cache('airtable', ONE_MINUTE);
 
 /**
@@ -57,6 +58,7 @@ const getVotingInformationByLocation = async location => {
         error: exception.message,
       });
     }
+
     return null;
   });
 };
