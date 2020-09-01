@@ -16,9 +16,9 @@ const typeDefs = gql`
 
   "A set of voting information for a location."
   type LocationVotingInformation {
-    "The unique ID for this location voting information."
+    "The unique ID of this location voting information record."
     id: String!
-    "The ISO-3166-2 location."
+    "The ISO-3166-2 location this voting information is for."
     location: String!
     "The deadline for voter registration, e.g. 10/31"
     voterRegistrationDeadline: String
