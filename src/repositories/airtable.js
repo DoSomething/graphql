@@ -69,11 +69,14 @@ const getAllLocationVotingInformationRecords = async () => {
 
       const recordsByLocation = {};
 
-      json.records.forEach((record) => {
+      json.records.forEach(record => {
         const { id, fields } = record;
         const location = `US-${fields.State}`;
 
-        recordsByLocation[location] = assign({ id, location }, omit(fields, 'State'));
+        recordsByLocation[location] = assign(
+          { id, location },
+          omit(fields, 'State'),
+        );
       });
 
       return JSON.stringify(recordsByLocation);
