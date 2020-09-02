@@ -42,6 +42,12 @@ const contentful = {
 const airtable = {
   apiKey: process.env.AIRTABLE_API_KEY,
   url: 'https://api.airtable.com',
+  /**
+   * Airtable bases are like different databases, each containing its own tables.
+   *
+   * We use Airtable to manage some campaigns or programs (like clubs). At the moment, the only base
+   * we need to expose data from is for voter registration.
+   */
   bases: {
     voterRegistration: 'appLExb7T5gTM22pc',
   },
