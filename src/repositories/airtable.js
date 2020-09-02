@@ -1,9 +1,9 @@
 import logger from 'heroku-logger';
-import { assign, find, omit } from 'lodash';
+import { assign, get, omit } from 'lodash';
 
 import config from '../../config';
 import Cache, { ONE_MINUTE } from '../cache';
-import { transformCollection } from './helpers';
+import { transformResponse } from './helpers';
 
 const AIRTABLE_URL = config('services.airtable.url');
 const VOTER_REGISTRATION_BASE_ID = config(
@@ -26,7 +26,7 @@ const cache = new Cache('airtable', ONE_MINUTE);
 const getAllLocationVotingInformationRecords = async () => {
   return cache.remember('LocationVotingInformation', async () => {
     try {
-      // Default pageSize is 100, so we only need one request to fetch info for all 50 states.
+      // Default page size is 100, so we only need one request to fetch info for all 50 states.
       const url = `${AIRTABLE_URL}/v0/${VOTER_REGISTRATION_BASE_ID}/${encodeURI(
         'Location GOTV Information',
       )}`;
@@ -67,17 +67,16 @@ const getAllLocationVotingInformationRecords = async () => {
        * ...
        */
 
-      const data = json.records.map(record => {
+      const recordsByLocation = {};
+
+      json.records.forEach((record) => {
         const { id, fields } = record;
-        // Calculate a location field based on State field, then exclude the State field.
-        return assign(
-          { id, location: `US-${fields.State}` },
-          omit(fields, 'State'),
-        );
+        const location = `US-${fields.State}`;
+
+        recordsByLocation[location] = assign({ id, location }, omit(fields, 'State'));
       });
 
-      // Save our array as a string in cache.
-      return JSON.stringify(transformCollection({ data }));
+      return JSON.stringify(recordsByLocation);
     } catch (exception) {
       logger.warn('Unable to load Airtable Location Voting Information.', {
         error: exception.message,
@@ -102,7 +101,7 @@ const getVotingInformationByLocation = async location => {
   try {
     const allRecords = await getAllLocationVotingInformationRecords();
 
-    return find(JSON.parse(allRecords), { location });
+    return transformResponse(get(JSON.parse(allRecords), location));
   } catch (exception) {
     logger.warn('Unable to load Airtable Location Voting Information.', {
       location,
