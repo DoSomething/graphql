@@ -5,13 +5,15 @@ import { find, isUndefined, omit, zipWith } from 'lodash';
 
 import config from '../../config';
 import Collection from './Collection';
-import { enumToString } from '../resolvers/helpers';
+import { enumToString } from '../shared/helpers/enum';
+import {
+  authorizedRequest,
+  requireAuthorizedRequest,
+} from '../shared/helpers/auth';
 import {
   transformItem,
   transformCollection,
-  authorizedRequest,
-  requireAuthorizedRequest,
-} from './helpers';
+} from '../shared/helpers/transformers';
 
 const ROGUE_URL = config('services.rogue.url');
 

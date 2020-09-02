@@ -4,7 +4,7 @@ import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 
 import Loader from '../loader';
-import { stringToEnum, listToEnums } from './helpers';
+import { listToEnums, stringToEnum } from '../shared/helpers/enum';
 import {
   updateCausePreferences,
   updateEmailSubscriptionTopics,

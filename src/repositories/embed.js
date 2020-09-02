@@ -6,7 +6,7 @@ import { getMetadata } from 'page-metadata-parser';
 
 import config from '../../config';
 import Cache, { ONE_HOUR } from '../cache';
-import { transformResponse } from './helpers';
+import { transformResponse } from '../shared/helpers/transformers';
 
 const embedClient = OEmbetter();
 

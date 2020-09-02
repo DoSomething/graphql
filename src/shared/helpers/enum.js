@@ -1,6 +1,20 @@
 import { snakeCase, kebabCase } from 'lodash';
 
 /**
+ * Transform a GraphQL-style enum into a kebab-case string.
+ *
+ * @param  {String} enumArg
+ * @return {String}
+ */
+export const enumToString = enumArg => {
+  if (!enumArg) {
+    return null;
+  }
+
+  return kebabCase(enumArg);
+};
+
+/**
  * Transform a string constant into a GraphQL-style enum.
  *
  * @param  {String} string
@@ -26,18 +40,4 @@ export const listToEnums = list => {
   }
 
   return list.map(stringToEnum);
-};
-
-/**
- * Transform a GraphQL-style enum into a kebab-case string.
- *
- * @param  {String} enumArg
- * @return {String}
- */
-export const enumToString = enumArg => {
-  if (!enumArg) {
-    return null;
-  }
-
-  return kebabCase(enumArg);
 };

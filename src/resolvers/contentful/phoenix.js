@@ -5,7 +5,7 @@ import { GraphQLDateTime } from 'graphql-iso-date';
 
 import Loader from '../../loader';
 import config from '../../../config';
-import { stringToEnum, listToEnums } from '../helpers';
+import { listToEnums, stringToEnum } from '../../shared/helpers/enum';
 import {
   getHomePage,
   linkResolver,

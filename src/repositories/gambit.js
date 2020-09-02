@@ -2,7 +2,7 @@ import logger from 'heroku-logger';
 import { map } from 'lodash';
 
 import config from '../../config';
-import { transformResponse } from './helpers';
+import { transformResponse } from '../shared/helpers/transformers';
 
 const GAMBIT_URL = config('services.gambit.url');
 const GAMBIT_AUTH = `${config('services.gambit.user')}:${config(

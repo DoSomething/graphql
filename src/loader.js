@@ -17,7 +17,7 @@ import {
   getGambitContentfulEntryById,
   getGambitContentfulAssetById,
 } from './repositories/contentful/gambit';
-import { authorizedRequest } from './repositories/helpers';
+import { authorizedRequest } from './shared/helpers/auth';
 import {
   getPageBySlug,
   getCausePageBySlug,

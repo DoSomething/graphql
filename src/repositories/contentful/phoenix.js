@@ -2,10 +2,10 @@ import { URL } from 'url';
 import logger from 'heroku-logger';
 import { createClient } from 'contentful';
 
-import { urlWithQuery } from '../helpers';
 import config from '../../../config';
 import Loader from '../../loader';
 import Cache, { ONE_MONTH } from '../../cache';
+import { urlWithQuery } from '../../shared/helpers/url';
 
 const contentCache = new Cache('contentful', ONE_MONTH);
 const previewCache = new Cache('preview.contentful', ONE_MONTH);
