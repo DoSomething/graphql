@@ -34,9 +34,11 @@ const fetchVotingInformationRecordsByLocation = async () => {
       'Location GOTV Information',
     )}`;
 
-    const response = await fetch(url, authorizedRequest);
+    const airtableApiResponse = await fetch(url, authorizedRequest);
+    const json = await airtableApiResponse.json();
 
-    const json = await response.json();
+    // Initialize our return result.
+    const result = {};
 
     /**
      * Example Airtable API response:
@@ -69,20 +71,17 @@ const fetchVotingInformationRecordsByLocation = async () => {
      *   },
      * ...
      */
-
-    const recordsByLocation = {};
-
     json.records.forEach(record => {
       const { id, fields } = record;
       const location = `US-${fields.State}`;
 
-      recordsByLocation[location] = assign(
+      result[location] = assign(
         { id, location },
         omit(fields, 'State'),
       );
     });
 
-    return JSON.stringify(recordsByLocation);
+    return result;
   } catch (exception) {
     logger.warn('Unable to fetch LocationVotingInformation.', {
       error: exception.message,
@@ -124,9 +123,9 @@ const getVotingInformationByLocation = async location => {
      * This cache key value is arbitrary, as our generateFunc fetches the first page of API results,
      * regardless of the key value passed.
      */
-    const data = await cache.get('locationVotingInformationIndex');
+    const recordsByLocation = await cache.get('votingInformationByLocation');
 
-    return transformResponse(get(JSON.parse(data), location));
+    return transformResponse(get(recordsByLocation, location));
   } catch (exception) {
     logger.warn('Unable to get LocationVotingInformation.', {
       location,
