@@ -11,7 +11,7 @@ import { transformResponse } from './helpers';
 const embedClient = OEmbetter();
 
 // Configure embed cache (for one hour).
-const cache = new Cache('embed', ONE_HOUR);
+const cache = new Cache('embed', { expiresIn: ONE_HOUR });
 
 // Configure custom endpoint mappings. <https://git.io/fjeXT>
 embedClient.endpoints(embedClient.suggestedEndpoints);

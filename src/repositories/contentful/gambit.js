@@ -6,7 +6,7 @@ import config from '../../../config';
 import Loader from '../../loader';
 import Cache, { ONE_MONTH } from '../../cache';
 
-const cache = new Cache('contentful', ONE_MONTH);
+const cache = new Cache('contentful', { expiresIn: ONE_MONTH });
 
 const spaceId = config('services.contentful.gambit.spaceId');
 

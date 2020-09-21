@@ -7,8 +7,8 @@ import config from '../../../config';
 import Loader from '../../loader';
 import Cache, { ONE_MONTH } from '../../cache';
 
-const contentCache = new Cache('contentful', ONE_MONTH);
-const previewCache = new Cache('preview.contentful', ONE_MONTH);
+const contentCache = new Cache('contentful', { expiresIn: ONE_MONTH });
+const previewCache = new Cache('preview.contentful', { expiresIn: ONE_MONTH });
 
 const spaceId = config('services.contentful.phoenix.spaceId');
 

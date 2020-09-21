@@ -35,10 +35,10 @@ const getClient = driver => {
 };
 
 export default class {
-  constructor(name, expiresIn = ONE_MONTH) {
+  constructor(name, policyOptions = {}) {
     this.name = name;
     this.client = getClient(config('cache.driver'));
-    this.policy = new Policy({ expiresIn }, this.client, 'segment');
+    this.policy = new Policy(policyOptions, this.client, 'segment');
   }
 
   /**

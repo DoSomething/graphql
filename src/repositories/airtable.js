@@ -18,7 +18,7 @@ const authorizedRequest = {
 };
 
 // Cache results to avoid hitting Airtable's limit of 5 API requests per second per base.
-const cache = new Cache('airtable', ONE_MINUTE);
+const cache = new Cache('airtable', { expiresIn: ONE_MINUTE });
 
 /**
  * Returns all Location Voting Information records.
