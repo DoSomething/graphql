@@ -90,8 +90,6 @@ const fetchVotingInformationRecordsByLocation = async () => {
 
     throw exception;
   }
-
-  return null;
 };
 
 /**
@@ -104,7 +102,7 @@ const cache = new Cache('airtable', {
   expiresIn: 2 * ONE_MINUTE,
   staleIn: ONE_MINUTE,
   generateFunc: async () => {
-    return await fetchVotingInformationRecordsByLocation();
+    return fetchVotingInformationRecordsByLocation();
   },
   generateTimeout: ONE_MINUTE,
   staleTimeout: ONE_MINUTE / 2,
