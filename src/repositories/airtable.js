@@ -75,10 +75,7 @@ const fetchVotingInformationRecordsByLocation = async () => {
       const { id, fields } = record;
       const location = `US-${fields.State}`;
 
-      result[location] = assign(
-        { id, location },
-        omit(fields, 'State'),
-      );
+      result[location] = assign({ id, location }, omit(fields, 'State'));
     });
 
     return result;
