@@ -89,6 +89,12 @@ const fetchVotingInformationRecordsByLocation = async () => {
 };
 
 /**
+ * Use this to return the same promise if our API request to Airtable is pending, to avoid
+ * making multiple requests to the Airtable API when cache is stale.
+ */
+let promise = null;
+
+/**
  * Cache Airtable records to avoid hitting API limit of 5 requests per second per base.
  *
  * Configure the cache to fetch results from the API before cache expires.
@@ -98,7 +104,17 @@ const cache = new Cache('airtable', {
   expiresIn: 2 * ONE_MINUTE,
   staleIn: ONE_MINUTE,
   generateFunc: async () => {
-    return fetchVotingInformationRecordsByLocation();
+    if (promise) {
+      return promise;
+    }
+
+    promise = fetchVotingInformationRecordsByLocation().then(data => {
+      promise = null;
+
+      return data;
+    });
+
+    return promise;
   },
   /**
    * Wait 10 seconds for our generateFunc to timeout before throwing an error.
