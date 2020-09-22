@@ -100,8 +100,15 @@ const cache = new Cache('airtable', {
   generateFunc: async () => {
     return fetchVotingInformationRecordsByLocation();
   },
-  generateTimeout: ONE_MINUTE,
-  staleTimeout: ONE_MINUTE / 2,
+  /**
+   * Wait 10 seconds for our generateFunc to timeout before throwing an error.
+   * This should be shorter than our Lambda/API Gateway timeout (15 seconds) so that we can handle
+   * this error in code (rather than letting the Lambda itself time out).
+   * @see https://github.com/DoSomething/graphql/pull/278#discussion_r492844464
+   */
+  generateTimeout: 10 * 1000,
+  // Set to minimum to immediately return the stale value here (while continuing to fetch updated value).
+  staleTimeout: 1,
 });
 
 /**
