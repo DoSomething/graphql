@@ -214,12 +214,14 @@ const typeDefs = gql`
       location: String
       "The Action ID to filter action stats by."
       actionId: Int
+      "The Group Type ID to filter action stats by."
+      groupTypeId: Int
       "The page of results to return."
       page: Int = 1
       "The number of results per page."
       count: Int = 20
-      "How to order the results (e.g. 'id,desc')."
-      orderBy: String = "id,desc"
+      "How to order the results (e.g. 'impact,desc')."
+      orderBy: String = "impact,desc"
     ): [SchoolActionStat]
     paginatedSchoolActionStats(
       "The School ID to filter action stats by."
@@ -228,12 +230,14 @@ const typeDefs = gql`
       location: String
       "The Action ID to filter action stats by."
       actionId: Int
+      "The Group Type ID to filter action stats by."
+      groupTypeId: Int
       "Get the first N results."
       first: Int = 20
       "The cursor to return results after."
       after: String
       "How to order the results (e.g. 'id,desc')."
-      orderBy: String = "id,desc"
+      orderBy: String = "impact,desc"
     ): SchoolActionStatCollection
     "Get a signup by ID."
     signup(id: Int!): Signup

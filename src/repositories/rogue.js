@@ -57,12 +57,12 @@ export const getActionsByCampaignId = async (campaignId, context) => {
 };
 
 /**
- * Get a simple list of action stats by school and or action ID.
- * @TODO: We'll eventually need to support pagination as more action collect school ID's.
+ * Get a list of action stats.
  *
- * @param {Number} action_id
+ * @param {Number} actionId
+ * @param {Number} groupTypeId
  * @param {String} location
- * @param {String} school_id
+ * @param {String} schoolId
  * @param {String} orderBy
  * @return {Array}
  */
@@ -70,11 +70,13 @@ export const fetchActionStats = async (args, context, additionalQuery = {}) => {
   logger.debug('Loading action-stats from Rogue', {
     schoolId: args.schoolId,
     actionId: args.actionId,
+    groupTypeId: args.groupTypeId,
   });
 
   const filter = omit(
     {
       action_id: args.actionId,
+      group_type_id: args.groupTypeId,
       location: args.location,
       school_id: args.schoolId,
     },

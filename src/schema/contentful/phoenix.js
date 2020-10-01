@@ -166,6 +166,8 @@ const typeDefs = gql`
   type ActionStatsBlock implements Block {
     "The action ID to display a leaderboard for."
     actionId: Int!
+    "The group type ID to filter stats by."
+    groupTypeId: Int
     ${blockFields}
     ${entryFields}
   }
