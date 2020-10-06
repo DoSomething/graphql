@@ -158,11 +158,13 @@ const typeDefs = gql`
     lastMessagedAt: DateTime
     "Whether user plans to vote in upcoming election (e.g. 'voting', 'voted', 'not_sure')"
     votingPlanStatus: String
-    "Who user plans to attend polls with to vote in upcoming election."
+    "How user plans on voting in upcoming election (e.g. 'in_person', 'mail', 'early')"
+    votingMethod: String
+    "Who user plans to attend polls with to vote in upcoming election if voting in-person."
     votingPlanAttendingWith: String
-    "How user plans to get to the polls to vote in upcoming election."
+    "How user plans to get to the polls to vote in upcoming election if voting in-person."
     votingPlanMethodOfTransport: String
-    "What time of day user plans to get the polls to vote in upcoming election."
+    "What time of day user plans to get the polls to vote in upcoming election if voting in-person."
     votingPlanTimeOfDay: String
     "Whether or not the user is opted-in to the given feature."
     hasFeatureFlag(feature: String): Boolean @requires(fields: "featureFlags")
