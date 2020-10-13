@@ -68,6 +68,40 @@ describe('Rogue', () => {
     expect(data.post.impact).toEqual('32 Things Done');
   });
 
+  it('can fetch a club by ID', async () => {
+    const club = await factory('club', { id: 71 });
+
+    mock.get(`${ROGUE_URL}/api/v3/clubs/71`, { data: club });
+
+    const { data } = await query(gql`
+      {
+        club(id: 71) {
+          id
+          name
+        }
+      }
+    `);
+
+    expect(data.club.name).toEqual(club.name);
+  });
+
+  it('can fetch clubs', async () => {
+    const clubs = await factory('club', 5);
+
+    mock.get(`${ROGUE_URL}/api/v3/clubs`, { data: clubs });
+
+    const { data } = await query(gql`
+      {
+        clubs {
+          id
+          name
+        }
+      }
+    `);
+
+    expect(data.clubs).toHaveLength(5);
+  });
+
   it('can fetch a group by ID', async () => {
     const group = await factory('group', { id: 71 });
 

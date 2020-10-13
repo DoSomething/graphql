@@ -115,7 +115,7 @@ export const getActionStats = async (args, context) => {
 };
 
 /**
- * Fetch a paginated action stat connection.
+ * Fetch a paginated action stat collection.
  *
  * @return {Collection}
  */
@@ -202,7 +202,7 @@ export const getCampaigns = async (args, context) => {
 };
 
 /**
- * Fetch a paginated campaign connection.
+ * Fetch a paginated campaign collection.
  *
  * @return {Collection}
  */
@@ -257,7 +257,7 @@ export const fetchPosts = async (args, context, additionalQuery) => {
 };
 
 /**
- * Fetch a paginated post connection.
+ * Fetch a paginated post collection.
  *
  * @return {Collection}
  */
@@ -532,7 +532,7 @@ export const fetchSignups = async (args, context, additionalQuery) => {
 };
 
 /**
- * Fetch a paginated signup connection.
+ * Fetch a paginated signup collection.
  *
  * @return {Collection}
  */
@@ -904,7 +904,7 @@ export const getGroups = async (args, context) => {
 };
 
 /**
- * Fetch a paginated group connection.
+ * Fetch a paginated group collection.
  *
  * @return {Collection}
  */
@@ -960,25 +960,57 @@ export const getGroupTypes = async (args, context) => {
  * @param {String} args.name
  * @return {Array}
  */
-export const getClubs = async (args, context) => {
+export const fetchClubs = async (args, context, additionalQuery) => {
   const queryString = stringify({
     filter: {
       name: args.name,
     },
+    pagination: 'cursor',
+    ...additionalQuery,
+  });
+
+  logger.info(' Loading clubs from Rogue', { args, queryString });
+
+  const response = await fetch(
+    `${ROGUE_URL}/api/v3/clubs?${queryString}`,
+    authorizedRequest(context),
+  );
+
+  return response.json();
+};
+
+/**
+ * Fetch clubs from Rogue based on the given filters.
+ *
+ * @param {Number} args.count
+ * @param {Number} args.page
+ * @return {Array}
+ */
+export const getClubs = async (args, context) => {
+  const json = await fetchClubs(args, context, {
     limit: args.count,
     page: args.page,
   });
 
-  logger.info('Loading clubs from Rogue', { args, queryString });
-
-  const response = await fetch(
-    `${ROGUE_URL}/api/v3/clubs/?${queryString}`,
-    authorizedRequest(context),
-  );
-
-  const json = await response.json();
-
   return transformCollection(json);
+};
+
+/**
+ * Fetch a paginated clubs collection.
+ *
+ * @param {Number} args.first
+ * @param {Number} args.after
+ * @return {Collection}
+ */
+export const getPaginatedClubs = async (args, context) => {
+  const json = await fetchClubs(args, context, {
+    limit: args.first,
+    cursor: {
+      after: args.after,
+    },
+  });
+
+  return new Collection(json);
 };
 
 /**

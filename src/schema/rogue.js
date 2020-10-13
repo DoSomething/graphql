@@ -86,7 +86,23 @@ const typeDefs = gql`
       orderBy: String = "id,desc"
     ): CampaignCollection
     "Get a list of clubs."
-    clubs("The club name to filter clubs by." name: String): [Club]
+    clubs(
+      "The club name to filter clubs by."
+      name: String
+      "The page of results to return."
+      page: Int = 1
+      "The number of results per page."
+      count: Int = 20
+    ): [Club]
+    "Get a Relay-style paginated collection of clubs."
+    paginatedClubs(
+      "Get the first N results."
+      first: Int = 20
+      "The cursor to return results after."
+      after: String
+      "The club name to filter clubs by."
+      name: String
+    ): ClubCollection
     "Get a club by ID."
     club(id: Int!): Club
     "Get a group by ID."
@@ -551,6 +567,17 @@ const typeDefs = gql`
     updatedAt: DateTime
     "The time when this club was originally created."
     createdAt: DateTime
+  }
+
+  "A paginated list of clubs. This is a 'Connection' in Relay's parlance, and follows the [Relay Cursor Connections](https://dfurn.es/338oQ6i) specification."
+  type ClubCollection {
+    edges: [ClubEdge]
+    pageInfo: PageInfo!
+  }
+  "a Club in a paginated list."
+  type ClubEdge {
+    cursor: String!
+    node: Club!
   }
 
   "A media resource on a post."
