@@ -86,7 +86,14 @@ const typeDefs = gql`
       orderBy: String = "id,desc"
     ): CampaignCollection
     "Get a list of clubs."
-    clubs("The club name to filter clubs by." name: String): [Club]
+    clubs(
+      "The club name to filter clubs by."
+      name: String
+      "The page of results to return."
+      page: Int = 1
+      "The number of results per page."
+      count: Int = 20
+    ): [Club]
     "Get a club by ID."
     club(id: Int!): Club
     "Get a group by ID."
