@@ -1011,7 +1011,7 @@ export const getPaginatedClubs = async (args, context) => {
   });
 
   return new Collection(json);
-}
+};
 
 /**
  * Fetch a club from Rogue by ID.

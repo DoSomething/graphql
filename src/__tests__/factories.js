@@ -23,7 +23,7 @@ factory.define('club', Object, {
   name: () => chance.company(),
   updated_at: () => chance.date().toISOString(),
   created_at: () => chance.date().toISOString(),
-})
+});
 
 // A group from Rogue.
 factory.define('group', Object, {
