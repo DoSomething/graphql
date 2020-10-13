@@ -18,6 +18,13 @@ factory.define('user', Object, {
   created_at: () => chance.date().toISOString(),
 });
 
+factory.define('club', Object, {
+  id: chance.integer({ min: 1, max: 10000 }),
+  name: () => chance.company(),
+  updated_at: () => chance.date().toISOString(),
+  created_at: () => chance.date().toISOString(),
+})
+
 // A group from Rogue.
 factory.define('group', Object, {
   id: chance.integer({ min: 1, max: 10000 }),
