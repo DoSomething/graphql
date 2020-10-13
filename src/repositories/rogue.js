@@ -115,7 +115,7 @@ export const getActionStats = async (args, context) => {
 };
 
 /**
- * Fetch a paginated action stat connection.
+ * Fetch a paginated action stat collection.
  *
  * @return {Collection}
  */
@@ -202,7 +202,7 @@ export const getCampaigns = async (args, context) => {
 };
 
 /**
- * Fetch a paginated campaign connection.
+ * Fetch a paginated campaign collection.
  *
  * @return {Collection}
  */
@@ -257,7 +257,7 @@ export const fetchPosts = async (args, context, additionalQuery) => {
 };
 
 /**
- * Fetch a paginated post connection.
+ * Fetch a paginated post collection.
  *
  * @return {Collection}
  */
@@ -532,7 +532,7 @@ export const fetchSignups = async (args, context, additionalQuery) => {
 };
 
 /**
- * Fetch a paginated signup connection.
+ * Fetch a paginated signup collection.
  *
  * @return {Collection}
  */
@@ -904,7 +904,7 @@ export const getGroups = async (args, context) => {
 };
 
 /**
- * Fetch a paginated group connection.
+ * Fetch a paginated group collection.
  *
  * @return {Collection}
  */
