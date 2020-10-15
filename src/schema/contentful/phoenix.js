@@ -346,8 +346,6 @@ const typeDefs = gql`
     internalTitle: String!
     "The title for the home page."
     title: String!
-    "The subtitle for the home page."
-    subTitle: String
     "Cover image for the home page."
     coverImage: Asset
     "Campaigns (campaign and story page entries) rendered as a list on the home page."
