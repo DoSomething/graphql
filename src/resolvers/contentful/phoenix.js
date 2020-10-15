@@ -1,5 +1,5 @@
-import { get, first } from 'lodash';
 import GraphQLJSON from 'graphql-type-json';
+import { get, first, truncate } from 'lodash';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { documentToPlainTextString } from '@contentful/rich-text-plain-text-renderer';
@@ -137,7 +137,9 @@ const resolvers = {
     showcaseTitle: collectionPage =>
       `${collectionPage.superTitle} ${collectionPage.title}`,
     showcaseDescription: collectionPage =>
-      documentToPlainTextString(collectionPage.description),
+      truncate(documentToPlainTextString(collectionPage.description), {
+        length: 125,
+      }),
     showcaseImage: (collectionPage, _, context, info) =>
       linkResolver(collectionPage, _, context, info, 'coverImage'),
     path: collectionPage => `/us/collections/${collectionPage.slug}`,
