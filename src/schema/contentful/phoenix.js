@@ -309,7 +309,7 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type CollectionPage {
+  type CollectionPage implements Showcasable {
     "The slug for this collection page."
     slug: String!
     "The cover image for this collection page."
@@ -326,6 +326,12 @@ const typeDefs = gql`
     affiliates: [AffiliateBlock]
     "The Rich Text content."
     content: JSON!
+    "The Showcase title (the superTitle + title field)."
+    showcaseTitle: String!
+    "The Showcase description (the Rich Text description field converted to plain text)."
+    showcaseDescription: String!
+    "The Showcase image (the coverImage field)."
+    showcaseImage: Asset!
     "Any custom overrides for this collection page."
     additionalContent: JSON
     ${entryFields}

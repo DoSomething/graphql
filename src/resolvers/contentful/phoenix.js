@@ -2,6 +2,7 @@ import { get, first } from 'lodash';
 import GraphQLJSON from 'graphql-type-json';
 import { GraphQLAbsoluteUrl } from 'graphql-url';
 import { GraphQLDateTime } from 'graphql-iso-date';
+import { documentToPlainTextString } from '@contentful/rich-text-plain-text-renderer';
 
 import Loader from '../../loader';
 import config from '../../../config';
@@ -133,6 +134,9 @@ const resolvers = {
   CollectionPage: {
     coverImage: linkResolver,
     affiliates: linkResolver,
+    showcaseTitle: collectionPage => `${collectionPage.superTitle} ${collectionPage.title}`,
+    showcaseDescription: collectionPage => documentToPlainTextString(collectionPage.description),
+    showcaseImage: collectionPage => collectionPage.coverImage,
   },
   CompanyPage: {
     coverImage: linkResolver,
