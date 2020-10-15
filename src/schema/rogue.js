@@ -643,6 +643,8 @@ const typeDefs = gql`
     details: String
     "The user who referred the post user to create this post."
     referrerUserId: String
+    "The associated user activity club ID for this post."
+    clubId: Int
     "The associated user activity group ID for this post."
     groupId: Int
     "The associated user activity group for this post."
@@ -744,6 +746,8 @@ const typeDefs = gql`
     details: String
     "The user who referred the signup user to create this signup."
     referrerUserId: String
+    "The associated user activity club ID for this signup."
+    clubId: Int
     "The associated user activity group ID for this signup."
     groupId: Int
     "The associated user activity group for this signup."
