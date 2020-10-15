@@ -309,9 +309,13 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type CollectionPage implements Showcasable {
+  type CollectionPage implements Showcasable & Routable {
     "The slug for this collection page."
     slug: String!
+    "The root-relative path to this collection page. Use when linking internally."
+    path: String
+    "The full absolute URL to this collection page. Use when linking cross-domain."
+    url: AbsoluteUrl
     "The cover image for this collection page."
     coverImage: Asset!
     "The supertitle (or title prefix)."
