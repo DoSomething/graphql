@@ -7,6 +7,7 @@ import {
   getActionsByCampaignId,
   getActionById,
   getCampaignById,
+  getClubById,
   getGroupById,
   getGroupTypeById,
   getSignupsById,
@@ -99,6 +100,9 @@ export default (context, preview = false) => {
       ),
       gambitAssets: new DataLoader(ids =>
         Promise.all(ids.map(id => getGambitContentfulAssetById(id, context))),
+      ),
+      clubs: new FieldDataLoader((id, fields) =>
+        getClubById(id, fields, options),
       ),
       groups: new FieldDataLoader((id, fields) =>
         getGroupById(id, fields, options),

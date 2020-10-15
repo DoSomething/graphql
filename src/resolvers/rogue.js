@@ -138,6 +138,10 @@ const resolvers = {
   Post: {
     campaign: (post, args, context, info) =>
       Loader(context).campaigns.load(post.campaignId, getFields(info)),
+    club: (post, args, context, info) =>
+      post.clubId
+        ? Loader(context).clubs.load(post.clubId, getFields(info))
+        : null,
     group: (post, args, context, info) =>
       post.groupId
         ? Loader(context).groups.load(post.groupId, getFields(info))
@@ -173,6 +177,10 @@ const resolvers = {
   Signup: {
     campaign: (signup, args, context, info) =>
       Loader(context).campaigns.load(signup.campaignId, getFields(info)),
+    club: (signup, args, context, info) =>
+      signup.clubId
+        ? Loader(context).clubs.load(signup.clubId, getFields(info))
+        : null,
     group: (signup, args, context, info) =>
       signup.groupId
         ? Loader(context).groups.load(signup.groupId, getFields(info))
