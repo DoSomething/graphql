@@ -772,8 +772,8 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  "A web-based campaign interface, such as the traditional campaign template or story page."
-  union ResourceWebsite = CampaignWebsite | StoryPageWebsite
+  "A web-based campaign interface, such as the traditional campaign template, story page, or collection page."
+  union ResourceWebsite = CampaignWebsite | StoryPageWebsite | CollectionPage
 
   type Query {
     "Get a block by ID."
