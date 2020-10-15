@@ -138,7 +138,8 @@ const resolvers = {
       `${collectionPage.superTitle} ${collectionPage.title}`,
     showcaseDescription: collectionPage =>
       documentToPlainTextString(collectionPage.description),
-    showcaseImage: collectionPage => collectionPage.coverImage,
+    showcaseImage: (collectionPage, _, context, info) =>
+      linkResolver(collectionPage, _, context, info, 'coverImage'),
     path: collectionPage => `/us/collections/${collectionPage.slug}`,
     url: collectionPage =>
       `${config('services.phoenix.url')}/us/collections/${collectionPage.slug}`,
