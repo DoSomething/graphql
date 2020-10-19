@@ -309,9 +309,13 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  type CollectionPage {
+  type CollectionPage implements Showcasable & Routable {
     "The slug for this collection page."
     slug: String!
+    "The root-relative path to this collection page. Use when linking internally."
+    path: String
+    "The full absolute URL to this collection page. Use when linking cross-domain."
+    url: AbsoluteUrl
     "The cover image for this collection page."
     coverImage: Asset!
     "The supertitle (or title prefix)."
@@ -326,6 +330,12 @@ const typeDefs = gql`
     affiliates: [AffiliateBlock]
     "The Rich Text content."
     content: JSON!
+    "The Showcase title (the superTitle + title field)."
+    showcaseTitle: String!
+    "The Showcase description (the Rich Text description field converted to plain text)."
+    showcaseDescription: String!
+    "The Showcase image (the coverImage field)."
+    showcaseImage: Asset!
     "Any custom overrides for this collection page."
     additionalContent: JSON
     ${entryFields}
@@ -336,8 +346,6 @@ const typeDefs = gql`
     internalTitle: String!
     "The title for the home page."
     title: String!
-    "The subtitle for the home page."
-    subTitle: String
     "Cover image for the home page."
     coverImage: Asset
     "Campaigns (campaign and story page entries) rendered as a list on the home page."
@@ -768,8 +776,8 @@ const typeDefs = gql`
     ${entryFields}
   }
 
-  "A web-based campaign interface, such as the traditional campaign template or story page."
-  union ResourceWebsite = CampaignWebsite | StoryPageWebsite
+  "A web-based campaign interface, such as the traditional campaign template, story page, or collection page."
+  union ResourceWebsite = CampaignWebsite | StoryPageWebsite | CollectionPage
 
   type Query {
     "Get a block by ID."

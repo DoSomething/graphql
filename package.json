@@ -38,6 +38,7 @@
     "cjs": true
   },
   "dependencies": {
+    "@contentful/rich-text-plain-text-renderer": "^14.1.1",
     "algoliasearch": "^4.2.0",
     "apollo": "^2.21.1",
     "apollo-datasource": "^0.7.1",
