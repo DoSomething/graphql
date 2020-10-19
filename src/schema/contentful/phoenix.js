@@ -744,10 +744,6 @@ const typeDefs = gql`
     title: String
     "The user-facing description for this voter registration drive block."
     description: String
-    "If set, the count of current user's approved posts for this action will appear in the sidebar."
-    approvedPostCountActionId: Int
-    "Label text for sidebar if the approvedPostCountActionId is set."
-    approvedPostCountLabel: String
     ${blockFields}
     ${entryFields}
   }
