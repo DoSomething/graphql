@@ -157,9 +157,6 @@ const resolvers = {
     showcaseImage: (person, _, context, info) =>
       linkResolver(person, _, context, info, 'image'),
   },
-  EmbedBlock: {
-    previewImage: linkResolver,
-  },
   GalleryBlock: {
     blocks: linkResolver,
     galleryType: block => stringToEnum(block.galleryType),
