@@ -91,12 +91,12 @@ class Algolia extends DataSource {
     
     // If specified, append filter for scholarship/non-scholarship campaigns
     if (!isNull(hasScholarship)) {
-      filters = filters + (hasScholarship ? this.filterScholarshipCampaigns : this.filterNonScholarshipCampaigns);
+      filters += (hasScholarship ? this.filterScholarshipCampaigns : this.filterNonScholarshipCampaigns);
     }
 
     const results = await index.search(term, {
       attributesToRetrieve: ['id'],
-      filters: filters,
+      filters,
       length: perPage,
       offset: Number(cursor),
     });
