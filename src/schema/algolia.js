@@ -15,6 +15,8 @@ const typeDefs = gql`
       term: String
       "Search for only open campaigns or only closed campaigns."
       isOpen: Boolean
+      "Search for campaigns that have or do not have a scholarship."
+      hasScholarship: Boolean
       "Number of results per page."
       perPage: Int
       "Pagination search cursor for the specified search location."

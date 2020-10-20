@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, isNull } from 'lodash';
 import { getUnixTime } from 'date-fns';
 import algoliasearch from 'algoliasearch';
 import { DataSource } from 'apollo-datasource';
@@ -65,16 +65,38 @@ class Algolia extends DataSource {
   }
 
   /**
+   * Filter search by campaigns that have actions counting for scholarships.
+   */
+  get filterScholarshipCampaigns() {
+    return ` AND actions.scholarship_entry=1`;
+  }
+
+  /**
+   * Filter search by campaigns that have actions that do not count for scholarships.
+   */
+  get filterNonScholarshipCampaigns() {
+    return ` AND actions.scholarship_entry=0`;
+  }
+
+  /**
    * Search campaigns index
    */
   async searchCampaigns(options = {}) {
-    const { cursor = '0', isOpen = true, perPage = 20, term = '' } = options;
+    const { cursor = '0', isOpen = true, hasScholarship = null, perPage = 20, term = '' } = options;
 
     const index = this.getIndex('campaigns');
 
+    // We assume the search is for open campaigns unless explicitly set to `false`
+    let filters = isOpen ? this.filterOpenCampaigns : this.filterClosedCampaigns;
+    
+    // If specified, append filter for scholarship/non-scholarship campaigns
+    if (!isNull(hasScholarship)) {
+      filters = filters + (hasScholarship ? this.filterScholarshipCampaigns : this.filterNonScholarshipCampaigns);
+    }
+
     const results = await index.search(term, {
       attributesToRetrieve: ['id'],
-      filters: isOpen ? this.filterOpenCampaigns : this.filterClosedCampaigns,
+      filters: filters,
       length: perPage,
       offset: Number(cursor),
     });
