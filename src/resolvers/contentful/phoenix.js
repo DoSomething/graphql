@@ -138,7 +138,7 @@ const resolvers = {
       `${collectionPage.superTitle}: ${collectionPage.title}`,
     showcaseDescription: collectionPage =>
       truncate(documentToPlainTextString(collectionPage.description), {
-        length: 125,
+        length: 50,
       }),
     showcaseImage: (collectionPage, _, context, info) =>
       linkResolver(collectionPage, _, context, info, 'coverImage'),
