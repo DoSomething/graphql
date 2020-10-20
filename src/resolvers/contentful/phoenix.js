@@ -135,7 +135,7 @@ const resolvers = {
     coverImage: linkResolver,
     affiliates: linkResolver,
     showcaseTitle: collectionPage =>
-      `${collectionPage.superTitle} ${collectionPage.title}`,
+      `${collectionPage.superTitle}: ${collectionPage.title}`,
     showcaseDescription: collectionPage =>
       truncate(documentToPlainTextString(collectionPage.description), {
         length: 125,
