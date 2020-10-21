@@ -428,7 +428,7 @@ const typeDefs = gql`
     CAMPAIGN
     SCHOLARSHIP
     PAGE
-    EXTERNAL_LINK
+    CONTENT_BLOCK
   }
 
   type GalleryBlock implements Block {
