@@ -82,16 +82,26 @@ class Algolia extends DataSource {
    * Search campaigns index
    */
   async searchCampaigns(options = {}) {
-    const { cursor = '0', isOpen = true, hasScholarship = null, perPage = 20, term = '' } = options;
+    const {
+      cursor = '0',
+      isOpen = true,
+      hasScholarship = null,
+      perPage = 20,
+      term = '',
+    } = options;
 
     const index = this.getIndex('campaigns');
 
     // We assume the search is for open campaigns unless explicitly set to `false`
-    let filters = isOpen ? this.filterOpenCampaigns : this.filterClosedCampaigns;
-    
+    let filters = isOpen
+      ? this.filterOpenCampaigns
+      : this.filterClosedCampaigns;
+
     // If specified, append filter for scholarship/non-scholarship campaigns
     if (!isNull(hasScholarship)) {
-      filters += (hasScholarship ? this.filterScholarshipCampaigns : this.filterNonScholarshipCampaigns);
+      filters += hasScholarship
+        ? this.filterScholarshipCampaigns
+        : this.filterNonScholarshipCampaigns;
     }
 
     const results = await index.search(term, {
