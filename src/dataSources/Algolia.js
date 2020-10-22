@@ -72,10 +72,10 @@ class Algolia extends DataSource {
   }
 
   /**
-   * Filter search by campaigns that have actions that do not count for scholarships.
+   * Filter search by campaigns that ONLY have actions that do not count for scholarships.
    */
   get filterNonScholarshipCampaigns() {
-    return ` AND actions.scholarship_entry=0`;
+    return ` AND NOT actions.scholarship_entry=1`;
   }
 
   /**
