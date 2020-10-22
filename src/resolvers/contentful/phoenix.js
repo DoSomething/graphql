@@ -159,11 +159,7 @@ const resolvers = {
   },
   GalleryBlock: {
     blocks: linkResolver,
-    galleryType: block =>
-      // @HACK: Manually convert the 'External Link' type to the new 'CONTENT_BLOCK' type until we migrate existing entries.
-      block.galleryType === 'External Link'
-        ? 'CONTENT_BLOCK'
-        : stringToEnum(block.galleryType),
+    galleryType: block => stringToEnum(block.galleryType),
     imageAlignment: block => stringToEnum(block.imageAlignment),
     imageFit: block => stringToEnum(block.imageFit),
   },
