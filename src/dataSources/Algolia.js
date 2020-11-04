@@ -79,11 +79,25 @@ class Algolia extends DataSource {
   }
 
   /**
+   * Filter search by campaigns containing these causes (using facet filtering).
+   *
+   * @param {Array} causes
+   * @return {String}
+   */
+  filterCauses(causes) {
+    // e.g. ["environment", "racial-justice"] => "cause:environment OR cause:racial-justice".
+    const causeFacets = causes.map(cause => `cause:${cause}`).join(' OR ');
+
+    return ` AND (${causeFacets})`;
+  }
+
+  /**
    * Search campaigns index
    */
   async searchCampaigns(options = {}) {
     const {
       cursor = '0',
+      causes = [],
       isOpen = true,
       hasScholarship = null,
       perPage = 20,
@@ -102,6 +116,11 @@ class Algolia extends DataSource {
       filters += hasScholarship
         ? this.filterScholarshipCampaigns
         : this.filterNonScholarshipCampaigns;
+    }
+
+    // If specified, append filter for campaign causes.
+    if (causes.length) {
+      filters += this.filterCauses(causes);
     }
 
     const results = await index.search(term, {
