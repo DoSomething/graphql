@@ -17,6 +17,8 @@ const typeDefs = gql`
       isOpen: Boolean
       "Search for campaigns that have or do not have a scholarship."
       hasScholarship: Boolean
+      "Filter by campaigns containing these causes."
+      causes: [String]
       "Number of results per page."
       perPage: Int
       "Pagination search cursor for the specified search location."
