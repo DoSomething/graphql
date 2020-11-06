@@ -21,6 +21,8 @@ const typeDefs = gql`
       causes: [String]
       "Number of results per page."
       perPage: Int
+      "How to order the results (e.g. 'start_date,desc')."
+      orderBy: String
       "Pagination search cursor for the specified search location."
       cursor: String
     ): AlgoliaCampaignCollection!
