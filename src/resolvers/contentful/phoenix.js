@@ -1,7 +1,5 @@
-import GraphQLJSON from 'graphql-type-json';
 import { get, first, truncate } from 'lodash';
-import { GraphQLAbsoluteUrl } from 'graphql-url';
-import { GraphQLDateTime } from 'graphql-iso-date';
+import { DateTimeResolver, JSONResolver, URLResolver } from 'graphql-scalars';
 import { documentToPlainTextString } from '@contentful/rich-text-plain-text-renderer';
 
 import Loader from '../../loader';
@@ -65,9 +63,9 @@ const contentTypeMappings = {
  * @var {Object}
  */
 const resolvers = {
-  JSON: GraphQLJSON,
-  DateTime: GraphQLDateTime,
-  AbsoluteUrl: GraphQLAbsoluteUrl,
+  JSON: JSONResolver,
+  DateTime: DateTimeResolver,
+  AbsoluteUrl: URLResolver,
   Query: {
     block: (_, { id, preview }, context) =>
       Loader(context, preview).blocks.load(id),
