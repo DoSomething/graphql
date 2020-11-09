@@ -101,7 +101,7 @@ const resolvers = {
     deleteSignup: (_, args, context) => deleteSignup(args.id, context),
   },
 
-  AbsoluteUrl: URLResolver,
+  URL: URLResolver,
 
   Action: {
     campaign: (action, args, context, info) =>

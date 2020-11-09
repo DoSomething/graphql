@@ -9,7 +9,7 @@ import resolvers from '../resolvers/embed';
  * @var {String}
  */
 const typeDefs = gql`
-  scalar AbsoluteUrl
+  scalar URL
 
   enum EmbedType {
     "This type is used for representing static photos."
@@ -34,19 +34,19 @@ const typeDefs = gql`
     "The metatag description for a link."
     description: String
     "A URL for the author/owner of the resource."
-    authorUrl: AbsoluteUrl
+    authorUrl: URL
     "The name of the resource provider."
     providerName: String
     "The URL of the resource provider."
-    providerUrl: AbsoluteUrl
+    providerUrl: URL
     "A URL to a thumbnail image representing the resource."
-    thumbnailUrl: AbsoluteUrl
+    thumbnailUrl: URL
     "The width of the optional thumbnail."
     thumbnailWidth: Int
     "The height of the optional thumbnail."
     thumbnailHeight: Int
     "For photo embeds, the source URL of the image."
-    url: AbsoluteUrl
+    url: URL
     "The width in pixels of the video, image, or rich embed."
     height: Int
     "The height in pixels of the video, image, or rich embed."
@@ -56,7 +56,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    embed(url: AbsoluteUrl!): Embed
+    embed(url: URL!): Embed
   }
 `;
 

@@ -9,7 +9,7 @@ import { stringToEnum } from './helpers';
  * @var {Object}
  */
 const resolvers = {
-  AbsoluteUrl: URLResolver,
+  URL: URLResolver,
   Embed: {
     type: embed => stringToEnum(embed.type),
   },
