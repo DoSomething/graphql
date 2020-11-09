@@ -65,7 +65,7 @@ const contentTypeMappings = {
 const resolvers = {
   JSON: JSONResolver,
   DateTime: DateTimeResolver,
-  AbsoluteUrl: URLResolver,
+  URL: URLResolver,
   Query: {
     block: (_, { id, preview }, context) =>
       Loader(context, preview).blocks.load(id),

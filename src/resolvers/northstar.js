@@ -60,7 +60,7 @@ const resolvers = {
       updateSchoolId(args.id, args.schoolId, context),
   },
 
-  AbsoluteUrl: URLResolver,
+  URL: URLResolver,
 
   Date: DateResolver,
 
