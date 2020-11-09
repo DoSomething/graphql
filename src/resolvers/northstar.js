@@ -1,7 +1,6 @@
 import { has } from 'lodash';
 import { getFields } from 'fielddataloader';
-import { GraphQLAbsoluteUrl } from 'graphql-url';
-import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
+import { DateResolver, DateTimeResolver, URLResolver } from 'graphql-scalars';
 
 import Loader from '../loader';
 import { stringToEnum, listToEnums } from './helpers';
@@ -61,11 +60,11 @@ const resolvers = {
       updateSchoolId(args.id, args.schoolId, context),
   },
 
-  AbsoluteUrl: GraphQLAbsoluteUrl,
+  AbsoluteUrl: URLResolver,
 
-  Date: GraphQLDate,
+  Date: DateResolver,
 
-  DateTime: GraphQLDateTime,
+  DateTime: DateTimeResolver,
 
   User: {
     role: user => stringToEnum(user.role),

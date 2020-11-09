@@ -1,4 +1,4 @@
-import { GraphQLDateTime } from 'graphql-iso-date';
+import { DateTimeResolver } from 'graphql-scalars';
 
 import Loader from '../loader';
 import {
@@ -32,7 +32,7 @@ const resolvers = {
       getMessagesByConversationId(args.id, args.page, args.count, context),
   },
 
-  DateTime: GraphQLDateTime,
+  DateTime: DateTimeResolver,
 };
 
 export default resolvers;
