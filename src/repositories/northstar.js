@@ -10,6 +10,7 @@ import {
   authorizedRequest,
   requireAuthorizedRequest,
   transformCollection,
+  transformFieldsForNorthstar,
 } from './helpers';
 
 const NORTHSTAR_URL = config('services.northstar.url');
@@ -23,15 +24,9 @@ const AURORA_URL = config('services.aurora.url');
 export const getUserById = async (id, fields, context) => {
   const optionalFields = intersection(fields, getOptional(schema, 'User'));
 
-  // Northstar expects a comma-separated list of snake_case fields.
   // If not querying anything, use 'undefined' to omit query string.
   const include = optionalFields.length
-    ? optionalFields
-        .map(snakeCase)
-        // E.g. "addrStr1" -> "addr_str_1" -> "addr_str1".
-        // Our convention in Northstar is to suffix the number directly, without an underscore.
-        .map(field => field.replace(/_\d$/, field.substr(-1)))
-        .join()
+    ? transformFieldsForNorthstar(optionalFields)
     : undefined;
 
   logger.debug('Loading user from Northstar', { id, include });
@@ -59,10 +54,9 @@ export const getUserById = async (id, fields, context) => {
 export const getUsers = async (args, fields, context) => {
   const optionalFields = intersection(fields, getOptional(schema, 'User'));
 
-  // Northstar expects a comma-separated list of snake_case fields.
   // If not querying anything, use 'undefined' to omit query string.
   const include = optionalFields.length
-    ? optionalFields.map(snakeCase).join()
+    ? transformFieldsForNorthstar(optionalFields)
     : undefined;
 
   const search = args.search;
