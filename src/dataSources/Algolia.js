@@ -107,11 +107,11 @@ class Algolia extends DataSource {
 
     // e.g. "start_date,desc" => ["start_date", "desc"].
     const [attribute, direction] = orderBy.split(',');
-    // If an orderBy is specified, we'll need to suffix the index name
-    // following the replica naming convention -- describing the sorting strategy (https://bit.ly/32mxQWZ).
-    indexReplicaSuffix =
+    // If an orderBy is specified, we'll need to query the replica index. We append the sorting strategy to the index
+    // name following the replica naming convention (https://bit.ly/32mxQWZ).
+    const indexReplicaSuffix =
       attribute && direction ? `_${attribute}_${direction}` : '';
-    // e.g. "campaigns_start_date_desc".
+
     const index = this.getIndex(`campaigns${indexReplicaSuffix}`);
 
     // We assume the search is for open campaigns unless explicitly set to `false`
