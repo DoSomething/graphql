@@ -1,4 +1,4 @@
-import { GraphQLAbsoluteUrl } from 'graphql-url';
+import { URLResolver } from 'graphql-scalars';
 
 import Loader from '../loader';
 import { stringToEnum } from './helpers';
@@ -9,7 +9,7 @@ import { stringToEnum } from './helpers';
  * @var {Object}
  */
 const resolvers = {
-  AbsoluteUrl: GraphQLAbsoluteUrl,
+  URL: URLResolver,
   Embed: {
     type: embed => stringToEnum(embed.type),
   },

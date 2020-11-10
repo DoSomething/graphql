@@ -6,6 +6,8 @@ import {
   camelCase,
   snakeCase,
   omit,
+  omitBy,
+  isNil,
   isUndefined,
   values,
 } from 'lodash';
@@ -152,3 +154,11 @@ export const transformFieldsForNorthstar = fields => {
       .join()
   );
 };
+
+/**
+ * Remove items from object with null or undefined values.
+ *
+ * @param  {Object} data
+ * @return {Object}
+ */
+export const withoutNil = data => omitBy(data, isNil);
