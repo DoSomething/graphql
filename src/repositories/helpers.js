@@ -5,6 +5,8 @@ import {
   has,
   camelCase,
   omit,
+  omitBy,
+  isNil,
   isUndefined,
   values,
 } from 'lodash';
@@ -131,3 +133,11 @@ export const getOptional = (schema, type) => {
     .filter(astNode => hasDirective(astNode, 'optional'))
     .map(astNode => astNode.name.value);
 };
+
+/**
+ * Remove items from object with null or undefined values.
+ *
+ * @param  {Object} data
+ * @return {Object}
+ */
+export const withoutNil = data => omitBy(data, isNil);
