@@ -26,7 +26,12 @@ export const getUserById = async (id, fields, context) => {
   // Northstar expects a comma-separated list of snake_case fields.
   // If not querying anything, use 'undefined' to omit query string.
   const include = optionalFields.length
-    ? optionalFields.map(snakeCase).join()
+    ? optionalFields
+        .map(snakeCase)
+        // E.g. "addrStr1" -> "addr_str_1" -> "addr_str1".
+        // Our convention in Northstar is to suffix the number directly, without an underscore.
+        .map(field => field.replace(/_\d$/, field.substr(-1)))
+        .join()
     : undefined;
 
   logger.debug('Loading user from Northstar', { id, include });
