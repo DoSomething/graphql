@@ -4,6 +4,7 @@ import {
   mapKeys,
   has,
   camelCase,
+  snakeCase,
   omit,
   omitBy,
   isNil,
@@ -132,6 +133,26 @@ export const getOptional = (schema, type) => {
     .map(subfield => subfield.astNode)
     .filter(astNode => hasDirective(astNode, 'optional'))
     .map(astNode => astNode.name.value);
+};
+
+/**
+ * Transform a list of GraphQL schema fields into the expected format for Northstar.
+ *
+ * @param {Array} fields
+ * @return {String}
+ */
+export const transformFieldsForNorthstar = fields => {
+  return (
+    fields
+      // Northstar expects a comma-separated list of snake_case fields.
+      .map(snakeCase)
+      .map(field =>
+        // E.g. "addr_str_1" -> "addr_str1".
+        // Our convention in Northstar is to suffix the number directly, without an underscore.
+        field.replace(/_\d$/, field.substr(-1)),
+      )
+      .join()
+  );
 };
 
 /**

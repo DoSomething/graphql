@@ -52,6 +52,31 @@ describe('Northstar', () => {
     });
   });
 
+  it('can fetch number suffixed optional user fields', async () => {
+    const user = await factory('user', {
+      id: '5d82aae0d36430dfb1cf03dc',
+      addr_street1: '21 w 21st street',
+    });
+
+    mock.get(`${NORTHSTAR_URL}/v2/users/${user.id}?include=addr_street1`, {
+      data: user,
+    });
+
+    const { data } = await query(gql`
+      {
+        user(id: "5d82aae0d36430dfb1cf03dc") {
+          addrStreet1
+        }
+      }
+    `);
+
+    expect(data).toEqual({
+      user: {
+        addrStreet1: user.addr_street1,
+      },
+    });
+  });
+
   it('can fetch a user with feature flag', async () => {
     const user = await factory('user', {
       id: '5d82aae0d36430dfb1cf03dc',

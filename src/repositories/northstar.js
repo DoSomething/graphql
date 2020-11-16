@@ -1,6 +1,6 @@
 import { stringify } from 'qs';
 import logger from 'heroku-logger';
-import { intersection, snakeCase } from 'lodash';
+import { intersection } from 'lodash';
 
 import schema from '../schema';
 import config from '../../config';
@@ -10,6 +10,7 @@ import {
   authorizedRequest,
   requireAuthorizedRequest,
   transformCollection,
+  transformFieldsForNorthstar,
 } from './helpers';
 
 const NORTHSTAR_URL = config('services.northstar.url');
@@ -23,10 +24,9 @@ const AURORA_URL = config('services.aurora.url');
 export const getUserById = async (id, fields, context) => {
   const optionalFields = intersection(fields, getOptional(schema, 'User'));
 
-  // Northstar expects a comma-separated list of snake_case fields.
   // If not querying anything, use 'undefined' to omit query string.
   const include = optionalFields.length
-    ? optionalFields.map(snakeCase).join()
+    ? transformFieldsForNorthstar(optionalFields)
     : undefined;
 
   logger.debug('Loading user from Northstar', { id, include });
@@ -54,10 +54,9 @@ export const getUserById = async (id, fields, context) => {
 export const getUsers = async (args, fields, context) => {
   const optionalFields = intersection(fields, getOptional(schema, 'User'));
 
-  // Northstar expects a comma-separated list of snake_case fields.
   // If not querying anything, use 'undefined' to omit query string.
   const include = optionalFields.length
-    ? optionalFields.map(snakeCase).join()
+    ? transformFieldsForNorthstar(optionalFields)
     : undefined;
 
   const search = args.search;
