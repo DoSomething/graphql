@@ -19,6 +19,8 @@ const typeDefs = gql`
       hasScholarship: Boolean
       "Filter by campaigns containing these causes."
       causes: [String]
+      "Filter for campaigns that have a Contentful campaign associated."
+      hasWebsite: Boolean
       "Number of results per page."
       perPage: Int
       "Pagination search cursor for the specified search location."
