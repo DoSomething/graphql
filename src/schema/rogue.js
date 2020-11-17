@@ -14,7 +14,7 @@ const typeDefs = gql`
 
   scalar DateTime
 
-  scalar AbsoluteUrl
+  scalar URL
 
   directive @requires(fields: String!) on FIELD_DEFINITION
 
@@ -588,7 +588,7 @@ const typeDefs = gql`
       w: Int
       "The desired image height, in pixels."
       h: Int
-    ): AbsoluteUrl
+    ): URL
     "The text content of the post, provided by the user."
     text: String
   }
@@ -628,7 +628,7 @@ const typeDefs = gql`
       w: Int
       "The desired image height, in pixels."
       h: Int
-    ): AbsoluteUrl
+    ): URL
     "The text content of the post, provided by the user."
     text: String
     "The ID of the associated signup for this post."

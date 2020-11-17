@@ -15,7 +15,7 @@ const typeDefs = gql`
 
   scalar DateTime
 
-  scalar AbsoluteUrl
+  scalar URL
 
   directive @requires(fields: String!) on FIELD_DEFINITION
 

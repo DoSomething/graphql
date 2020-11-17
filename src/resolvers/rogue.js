@@ -1,7 +1,5 @@
-import GraphQLJSON from 'graphql-type-json';
 import { getFields } from 'fielddataloader';
-import { GraphQLAbsoluteUrl } from 'graphql-url';
-import { GraphQLDateTime } from 'graphql-iso-date';
+import { DateTimeResolver, JSONResolver, URLResolver } from 'graphql-scalars';
 
 import Loader from '../loader';
 import { urlWithQuery, transformItem } from '../repositories/helpers';
@@ -103,7 +101,7 @@ const resolvers = {
     deleteSignup: (_, args, context) => deleteSignup(args.id, context),
   },
 
-  AbsoluteUrl: GraphQLAbsoluteUrl,
+  URL: URLResolver,
 
   Action: {
     campaign: (action, args, context, info) =>
@@ -122,14 +120,14 @@ const resolvers = {
         : null,
   },
 
-  DateTime: GraphQLDateTime,
+  DateTime: DateTimeResolver,
 
   Group: {
     groupType: (group, args, context, info) =>
       Loader(context).groupTypes.load(group.groupTypeId, getFields(info)),
   },
 
-  JSON: GraphQLJSON,
+  JSON: JSONResolver,
 
   Media: {
     url: (media, args) => urlWithQuery(media.url, args),

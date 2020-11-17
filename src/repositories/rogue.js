@@ -7,6 +7,7 @@ import config from '../../config';
 import Collection from './Collection';
 import { enumToString } from '../resolvers/helpers';
 import {
+  withoutNil,
   transformItem,
   transformCollection,
   authorizedRequest,
@@ -225,7 +226,7 @@ export const getPaginatedCampaigns = async (args, context) => {
 export const fetchPosts = async (args, context, additionalQuery) => {
   const queryString = stringify({
     pagination: 'cursor',
-    filter: {
+    filter: withoutNil({
       action: args.action,
       action_id: args.actionIds ? args.actionIds.join(',') : undefined,
       campaign_id: args.campaignId,
@@ -239,7 +240,7 @@ export const fetchPosts = async (args, context, additionalQuery) => {
       tag: args.tags ? args.tags.join(',') : undefined,
       type: args.type,
       volunteer_credit: args.volunteerCredit,
-    },
+    }),
     ...additionalQuery,
   });
 

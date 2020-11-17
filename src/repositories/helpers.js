@@ -4,7 +4,10 @@ import {
   mapKeys,
   has,
   camelCase,
+  snakeCase,
   omit,
+  omitBy,
+  isNil,
   isUndefined,
   values,
 } from 'lodash';
@@ -131,3 +134,31 @@ export const getOptional = (schema, type) => {
     .filter(astNode => hasDirective(astNode, 'optional'))
     .map(astNode => astNode.name.value);
 };
+
+/**
+ * Transform a list of GraphQL schema fields into the expected format for Northstar.
+ *
+ * @param {Array} fields
+ * @return {String}
+ */
+export const transformFieldsForNorthstar = fields => {
+  return (
+    fields
+      // Northstar expects a comma-separated list of snake_case fields.
+      .map(snakeCase)
+      .map(field =>
+        // E.g. "addr_str_1" -> "addr_str1".
+        // Our convention in Northstar is to suffix the number directly, without an underscore.
+        field.replace(/_\d$/, field.substr(-1)),
+      )
+      .join()
+  );
+};
+
+/**
+ * Remove items from object with null or undefined values.
+ *
+ * @param  {Object} data
+ * @return {Object}
+ */
+export const withoutNil = data => omitBy(data, isNil);

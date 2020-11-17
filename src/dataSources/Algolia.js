@@ -1,7 +1,7 @@
-import { get, isNull } from 'lodash';
 import { getUnixTime } from 'date-fns';
 import algoliasearch from 'algoliasearch';
 import { DataSource } from 'apollo-datasource';
+import { get, isNull, isUndefined } from 'lodash';
 
 import config from '../../config';
 
@@ -100,6 +100,7 @@ class Algolia extends DataSource {
       causes = [],
       isOpen = true,
       hasScholarship = null,
+      hasWebsite,
       orderBy = '',
       perPage = 20,
       term = '',
@@ -124,6 +125,10 @@ class Algolia extends DataSource {
       filters += hasScholarship
         ? this.filterScholarshipCampaigns
         : this.filterNonScholarshipCampaigns;
+    }
+
+    if (!isUndefined(hasWebsite)) {
+      filters += ` AND has_website = ${hasWebsite ? '1' : '0'}`;
     }
 
     // If specified, append filter for campaign causes.

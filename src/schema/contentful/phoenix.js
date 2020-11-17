@@ -25,7 +25,7 @@ const entryFields = `
 const typeDefs = gql`
   scalar JSON
   scalar DateTime
-  scalar AbsoluteUrl
+  scalar URL
 
   enum ResizeOption {
     "Resize the image to the specified dimensions, padding the image if needed."
@@ -59,7 +59,7 @@ const typeDefs = gql`
     "The root-relative path to this resource. Use when linking internally."
     path: String
     "The full absolute URL to this resource. Use when linking cross-domain."
-    url: AbsoluteUrl
+    url: URL
   }
 
   type Asset {
@@ -72,7 +72,7 @@ const typeDefs = gql`
     "Mime-type for this asset."
     contentType: String,
     "The URL where this file is available at."
-    url(w: Int, h: Int, fit: ResizeOption): AbsoluteUrl,
+    url(w: Int, h: Int, fit: ResizeOption): URL,
   }
 
   type CampaignWebsite implements Showcasable & Routable {
@@ -85,7 +85,7 @@ const typeDefs = gql`
     "The root-relative path to this campaign. Use when linking internally."
     path: String
     "The full absolute URL to this campaign. Use when linking cross-domain."
-    url: AbsoluteUrl
+    url: URL
     "The block to display after a user signs up for a campaign."
     affirmation: Block
     "The call to action tagline for this campaign."
@@ -137,7 +137,7 @@ const typeDefs = gql`
     "The root-relative path to this story page. Use when linking internally."
     path: String
     "The full absolute URL to this story page. Use when linking cross-domain."
-    url: AbsoluteUrl
+    url: URL
     "The user-facing title for this story campaign."
     title: String!
     "The user-facing subtitle for this story campaign."
@@ -250,7 +250,7 @@ const typeDefs = gql`
     "The content of the campaign update."
     content: String
     "Optionally, a link to embed within the campaign update."
-    link: AbsoluteUrl
+    link: URL
     "The author to attribute the campaign update to."
     author: PersonBlock
     "The logo of the partner or sponsor that should be highlighted for this update."
@@ -315,7 +315,7 @@ const typeDefs = gql`
     "The root-relative path to this collection page. Use when linking internally."
     path: String
     "The full absolute URL to this collection page. Use when linking cross-domain."
-    url: AbsoluteUrl
+    url: URL
     "The cover image for this collection page."
     coverImage: Asset!
     "The supertitle (or title prefix)."
@@ -454,7 +454,7 @@ const typeDefs = gql`
     "Optional description of the link."
     content: String
     "The URL (or tel: number) being linked to."
-    # @TODO: Update this value to be some combination of AbsoluteUrl and valid 'tel:' String.
+    # @TODO: Update this value to be some combination of URL and valid 'tel:' String.
     link: String!
     "Optional custom text to display on the submission button."
     buttonText: String
@@ -632,7 +632,7 @@ const typeDefs = gql`
 
   type SocialDriveBlock implements Block {
     "The link for this social drive, with dynamic string tokens."
-    link: AbsoluteUrl
+    link: URL
     "The user-facing title for this social drive block."
     title: String
     "The user-facing description for this social drive block."
@@ -662,7 +662,7 @@ const typeDefs = gql`
     "Optional description of the link."
     content: String
     "The URL being linked to."
-    link: AbsoluteUrl
+    link: URL
     "This will hide the link preview 'embed' on the share action."
     hideEmbed: Boolean
     "This block should be displayed in a modal after a successful share."
@@ -738,7 +738,7 @@ const typeDefs = gql`
     "The voter registration block's text content."
     content: String
     "The link to the appropriate Instapage or partner flow."
-    link: AbsoluteUrl
+    link: URL
     "Any custom overrides for this block."
     additionalContent: JSON
     ${blockFields}
