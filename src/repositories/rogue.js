@@ -622,13 +622,13 @@ export const getSignupsById = async (ids, options) => {
     ids,
   });
 
-  const queryString = {
+  const queryString = querify({
     filter: {
       id: ids.join(','),
     },
     limit: 100,
     pagination: 'cursor',
-  };
+  });
 
   const response = await fetch(
     `${ROGUE_URL}/api/v3/signups/${queryString}`,
