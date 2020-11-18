@@ -23,6 +23,31 @@ describe('Rogue', () => {
     expect(data.posts).toHaveLength(3);
   });
 
+  // @see: https://www.pivotaltracker.com/n/projects/2328687/stories/175669154
+  it('can fetch posts with omitted optional filter', async () => {
+    const posts = await factory('post', 3);
+
+    const rogueMock = mock.get(`${ROGUE_URL}/api/v3/posts/`, { data: posts });
+
+    await query(
+      gql`
+        query QueryWithOptionalVariable($campaignId: String) {
+          posts(campaignId: $campaignId, count: 3) {
+            id
+            type
+          }
+        }
+      `,
+      { campaignId: null },
+    );
+
+    const [url] = rogueMock.lastCall();
+
+    expect(url).toEqual(
+      `${ROGUE_URL}/api/v3/posts/?pagination=cursor&limit=3&page=1`,
+    );
+  });
+
   it('can fetch post with user', async () => {
     const post = await factory('post', { id: 15 });
     const user = await factory('user', { id: post.northstar_id });
