@@ -407,7 +407,7 @@ export const toggleReaction = async (postId, context) => {
 export const updatePostQuantity = async (postId, quantity, context) => {
   const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}`, {
     method: 'PATCH',
-    body: JSON.querify({ quantity }),
+    body: JSON.stringify({ quantity }),
     ...requireAuthorizedRequest(context),
   });
 
@@ -424,7 +424,7 @@ export const updatePostQuantity = async (postId, quantity, context) => {
 export const reviewPost = async (postId, status, context) => {
   const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}/reviews`, {
     method: 'POST',
-    body: JSON.querify({ status: status.toLowerCase() }),
+    body: JSON.stringify({ status: status.toLowerCase() }),
     ...requireAuthorizedRequest(context),
   });
 
@@ -441,7 +441,7 @@ export const reviewPost = async (postId, status, context) => {
 export const tagPost = async (postId, tag, context) => {
   const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}/tags`, {
     method: 'POST',
-    body: JSON.querify({ tag_name: tag.toLowerCase() }),
+    body: JSON.stringify({ tag_name: tag.toLowerCase() }),
     ...requireAuthorizedRequest(context),
   });
 
@@ -458,7 +458,7 @@ export const tagPost = async (postId, tag, context) => {
 export const rotatePost = async (postId, degrees, context) => {
   const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}/rotate`, {
     method: 'POST',
-    body: JSON.querify({ degrees }),
+    body: JSON.stringify({ degrees }),
     ...requireAuthorizedRequest(context),
   });
 
@@ -693,7 +693,7 @@ export const createSignup = async (args, context) => {
   const response = await fetch(`${ROGUE_URL}/api/v3/signups`, {
     method: 'POST',
     ...requireAuthorizedRequest(context),
-    body: JSON.querify({
+    body: JSON.stringify({
       campaign_id: args.campaignId,
       details: args.details,
     }),
