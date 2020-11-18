@@ -61,7 +61,7 @@ class Algolia extends DataSource {
   get filterOpenCampaigns() {
     const now = getUnixTime(Date.now());
 
-    return `start_date < ${now} AND end_date > ${now}`;
+    return `start_date < ${now} AND (is_evergreen=1 OR end_date > ${now})`;
   }
 
   /**
