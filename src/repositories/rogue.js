@@ -1,4 +1,3 @@
-import { stringify } from 'qs';
 import pluralize from 'pluralize';
 import logger from 'heroku-logger';
 import { find, isUndefined, omit, zipWith } from 'lodash';
@@ -7,7 +6,7 @@ import config from '../../config';
 import Collection from './Collection';
 import { enumToString } from '../resolvers/helpers';
 import {
-  withoutNil,
+  querify,
   transformItem,
   transformCollection,
   authorizedRequest,
@@ -47,8 +46,12 @@ export const getActionsByCampaignId = async (campaignId, context) => {
     campaignId,
   });
 
+  const queryString = querify({
+    filter: { campaign_id: campaignId },
+  });
+
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/actions/?filter[campaign_id]=${campaignId}`,
+    `${ROGUE_URL}/api/v3/actions/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -84,7 +87,7 @@ export const fetchActionStats = async (args, context, additionalQuery = {}) => {
     isUndefined,
   );
 
-  const queryString = stringify({
+  const queryString = querify({
     filter,
     orderBy: args.orderBy,
     pagination: 'cursor',
@@ -92,7 +95,7 @@ export const fetchActionStats = async (args, context, additionalQuery = {}) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/action-stats/?${queryString}`,
+    `${ROGUE_URL}/api/v3/action-stats/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -169,7 +172,7 @@ export const fetchCampaigns = async (args, context, additionalQuery = {}) => {
     isUndefined,
   );
 
-  const queryString = stringify({
+  const queryString = querify({
     filter,
     orderBy: args.orderBy,
     pagination: 'cursor',
@@ -179,7 +182,7 @@ export const fetchCampaigns = async (args, context, additionalQuery = {}) => {
   logger.info('Loading campaigns from Rogue', { queryString });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/campaigns/?${queryString}`,
+    `${ROGUE_URL}/api/v3/campaigns/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -224,9 +227,9 @@ export const getPaginatedCampaigns = async (args, context) => {
  * @return {Promise}
  */
 export const fetchPosts = async (args, context, additionalQuery) => {
-  const queryString = stringify({
+  const queryString = querify({
     pagination: 'cursor',
-    filter: withoutNil({
+    filter: {
       action: args.action,
       action_id: args.actionIds ? args.actionIds.join(',') : undefined,
       campaign_id: args.campaignId,
@@ -240,7 +243,7 @@ export const fetchPosts = async (args, context, additionalQuery) => {
       tag: args.tags ? args.tags.join(',') : undefined,
       type: args.type,
       volunteer_credit: args.volunteerCredit,
-    }),
+    },
     ...additionalQuery,
   });
 
@@ -250,7 +253,7 @@ export const fetchPosts = async (args, context, additionalQuery) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/?${queryString}`,
+    `${ROGUE_URL}/api/v3/posts/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -311,8 +314,18 @@ export const getPostById = async (id, context) => {
  * @return {Array}
  */
 export const getPostsByUserId = async (id, page, count, context) => {
+  const queryString = querify({
+    filter: {
+      northstar_id: id,
+      type: 'photo,text',
+    },
+    page,
+    limit: count,
+    pagination: 'cursor',
+  });
+
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/?filter[northstar_id]=${id}&filter[type]=photo,text&page=${page}&limit=${count}&pagination=cursor`,
+    `${ROGUE_URL}/api/v3/posts/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -328,8 +341,18 @@ export const getPostsByUserId = async (id, page, count, context) => {
  * @return {Array}
  */
 export const getPostsByCampaignId = async (id, page, count, context) => {
+  const queryString = querify({
+    filter: {
+      campaign_id: id,
+      type: 'photo,text',
+    },
+    page,
+    limit: count,
+    pagination: 'cursor',
+  });
+
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/?filter[campaign_id]=${id}&filter[type]=photo,text&page=${page}&limit=${count}&pagination=cursor`,
+    `${ROGUE_URL}/api/v3/posts/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -345,8 +368,13 @@ export const getPostsByCampaignId = async (id, page, count, context) => {
  * @return {Array}
  */
 export const getPostsBySignupId = async (id, context) => {
+  const queryString = querify({
+    filter: { signup_id: id },
+    pagination: 'cursor',
+  });
+
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/?filter[signup_id]=${id}&pagination=cursor`,
+    `${ROGUE_URL}/api/v3/posts/${queryString}`,
     authorizedRequest(context),
   );
   const json = await response.json();
@@ -506,7 +534,7 @@ export const makeImpactStatement = post => {
  * @return {Array}
  */
 export const fetchSignups = async (args, context, additionalQuery) => {
-  const queryString = stringify({
+  const queryString = querify({
     filter: {
       campaign_id: args.campaignId,
       group_id: args.groupId,
@@ -525,7 +553,7 @@ export const fetchSignups = async (args, context, additionalQuery) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups/?${queryString}`,
+    `${ROGUE_URL}/api/v3/signups/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -594,11 +622,19 @@ export const getSignupsById = async (ids, options) => {
     ids,
   });
 
-  const idQuery = ids.join(',');
+  const queryString = querify({
+    filter: {
+      id: ids.join(','),
+    },
+    limit: 100,
+    pagination: 'cursor',
+  });
+
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups/?filter[id]=${idQuery}&limit=100&pagination=cursor`,
+    `${ROGUE_URL}/api/v3/signups/${queryString}`,
     options,
   );
+
   const json = await response.json();
   const signups = transformCollection(json);
 
@@ -616,7 +652,7 @@ export const getSignupsById = async (ids, options) => {
  * @return {Array}
  */
 export const getSignupsByUserId = async (args, context) => {
-  const queryString = stringify({
+  const queryString = querify({
     filter: {
       northstar_id: args.id,
     },
@@ -632,7 +668,7 @@ export const getSignupsByUserId = async (args, context) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups/?${queryString}`,
+    `${ROGUE_URL}/api/v3/signups/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -699,7 +735,7 @@ export const deleteSignup = async (signupId, context) => {
  * @return Int
  */
 export const getSignupsCount = async (args, context) => {
-  const queryString = stringify({
+  const queryString = querify({
     filter: {
       campaign_id: args.campaignId,
       northstar_id: args.userId,
@@ -714,7 +750,7 @@ export const getSignupsCount = async (args, context) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups/?${queryString}`,
+    `${ROGUE_URL}/api/v3/signups/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -743,7 +779,7 @@ export const getSignupsCount = async (args, context) => {
  * @return Int
  */
 export const getPostsCount = async (args, context) => {
-  const queryString = stringify({
+  const queryString = querify({
     filter: {
       action: args.action,
       action_id: args.actionIds ? args.actionIds.join(',') : undefined,
@@ -766,7 +802,7 @@ export const getPostsCount = async (args, context) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/?${queryString}`,
+    `${ROGUE_URL}/api/v3/posts/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -869,7 +905,7 @@ export const getGroupById = async (id, context) => {
  * @return {Array}
  */
 export const fetchGroups = async (args, context, additionalQuery) => {
-  const queryString = stringify({
+  const queryString = querify({
     pagination: 'cursor',
     filter: {
       group_type_id: args.groupTypeId,
@@ -883,7 +919,7 @@ export const fetchGroups = async (args, context, additionalQuery) => {
   logger.info('Loading groups from Rogue', { args, queryString });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/groups/?${queryString}`,
+    `${ROGUE_URL}/api/v3/groups/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -962,7 +998,7 @@ export const getGroupTypes = async (args, context) => {
  * @return {Array}
  */
 export const fetchClubs = async (args, context, additionalQuery) => {
-  const queryString = stringify({
+  const queryString = querify({
     filter: {
       name: args.name,
     },
@@ -973,7 +1009,7 @@ export const fetchClubs = async (args, context, additionalQuery) => {
   logger.info(' Loading clubs from Rogue', { args, queryString });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/clubs?${queryString}`,
+    `${ROGUE_URL}/api/v3/clubs${queryString}`,
     authorizedRequest(context),
   );
 

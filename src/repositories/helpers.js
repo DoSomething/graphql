@@ -1,3 +1,4 @@
+import { stringify } from 'qs';
 import { URL, URLSearchParams } from 'url';
 import {
   map,
@@ -162,3 +163,12 @@ export const transformFieldsForNorthstar = fields => {
  * @return {Object}
  */
 export const withoutNil = data => omitBy(data, isNil);
+
+/**
+ * Create a query string from the given object.
+ *
+ * @param {Object} values
+ * @return {String}
+ */
+export const querify = queryValues =>
+  stringify(queryValues, { skipNulls: true, addQueryPrefix: true });

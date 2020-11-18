@@ -67,7 +67,15 @@ export const mock = {
  * @param {string} graphqlQuery - The query to run!
  * @param {object} variables - Query variables.
  */
-export const query = (graphqlQuery, variables = {}) => {
+export const query = async (graphqlQuery, variables = {}) => {
   const client = createTestClient(new ApolloServer({ schema }));
-  return client.query({ query: graphqlQuery, variables });
+  const result = await client.query({ query: graphqlQuery, variables });
+
+  // If GraphQL errors are returned from this query, then throw
+  // them as an exception so that they fail our test suite:
+  if (result.errors) {
+    throw result.errors[0];
+  }
+
+  return result;
 };
