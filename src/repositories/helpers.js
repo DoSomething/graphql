@@ -150,5 +150,4 @@ export const withoutNil = data => omitBy(data, isNil);
  * @return {String}
  */
 export const querify = queryValues =>
-  // @TODO: Keeping the old (incorrect) behavior to demonstrate test.
-  stringify(queryValues, { skipNulls: false, addQueryPrefix: true });
+  stringify(queryValues, { skipNulls: true, addQueryPrefix: true });
