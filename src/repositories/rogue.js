@@ -624,7 +624,7 @@ export const getSignupsById = async (ids, options) => {
 
   const queryString = {
     filter: {
-      ids: ids.join(','),
+      id: ids.join(','),
     },
     limit: 100,
     pagination: 'cursor',
