@@ -1,10 +1,10 @@
-import { stringify } from 'qs';
 import logger from 'heroku-logger';
 import { intersection, snakeCase } from 'lodash';
 
 import schema from '../schema';
 import config from '../../config';
 import {
+  querify,
   getOptional,
   transformItem,
   authorizedRequest,
@@ -32,7 +32,7 @@ export const getUserById = async (id, fields, context) => {
   logger.debug('Loading user from Northstar', { id, include });
 
   try {
-    const url = `${NORTHSTAR_URL}/v2/users/${id}?${stringify({ include })}`;
+    const url = `${NORTHSTAR_URL}/v2/users/${id}${querify({ include })}`;
     const response = await fetch(url, authorizedRequest(context));
 
     const json = await response.json();
@@ -65,7 +65,7 @@ export const getUsers = async (args, fields, context) => {
   logger.debug('Loading users from Northstar', { search, include });
 
   try {
-    const url = `${NORTHSTAR_URL}/v2/users?${stringify({
+    const url = `${NORTHSTAR_URL}/v2/users${querify({
       pagination: 'cursor',
       include,
       search,

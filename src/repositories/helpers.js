@@ -1,3 +1,4 @@
+import { stringify } from 'qs';
 import { URL, URLSearchParams } from 'url';
 import {
   map,
@@ -141,3 +142,13 @@ export const getOptional = (schema, type) => {
  * @return {Object}
  */
 export const withoutNil = data => omitBy(data, isNil);
+
+/**
+ * Create a query string from the given object.
+ *
+ * @param {Object} values
+ * @return {String}
+ */
+export const querify = queryValues =>
+  // @TODO: Keeping the old (incorrect) behavior to demonstrate test.
+  stringify(queryValues, { skipNulls: false, addQueryPrefix: true });
