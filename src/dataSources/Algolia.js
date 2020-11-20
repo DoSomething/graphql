@@ -107,7 +107,7 @@ class Algolia extends DataSource {
     } = options;
 
     // e.g. "start_date,desc" => ["start_date", "desc"].
-    const [attribute, direction] = orderBy.split(',');
+    const [attribute, direction] = orderBy ? orderBy.split(',') : [];
     // If an orderBy is specified, we'll need to query the replica index. We append the sorting strategy to the index
     // name following the replica naming convention (https://bit.ly/32mxQWZ).
     const indexReplicaSuffix =
