@@ -193,4 +193,25 @@ describe('Rogue', () => {
 
     expect(data.groupTypes).toHaveLength(3);
   });
+
+  it('reports errors it receives', async () => {
+    const POST_QUERY = gql`
+      {
+        posts(count: 3) {
+          id
+          type
+        }
+      }
+    `;
+
+    // For example, if we provided a bad access token...
+    mock.get(`${ROGUE_URL}/api/v3/posts/`, {
+      error: 'access_denied',
+      message: 'Access token could not be verified.',
+    });
+
+    return expect(query(POST_QUERY)).rejects.toThrow(
+      'Access token could not be verified.',
+    );
+  });
 });

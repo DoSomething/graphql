@@ -54,6 +54,10 @@ export const requireAuthorizedRequest = context => {
 export const transformResponse = (data, idField = 'id') => {
   const result = mapKeys(data, (_, key) => camelCase(key));
 
+  if (data.error) {
+    throw new Error(data.message || 'Unexpected error');
+  }
+
   if (!has(result, idField)) {
     return null;
   }
@@ -91,8 +95,13 @@ export const transformItem = json => transformResponse(json.data, 'id');
  * @param {Object} json
  * @return {Object}
  */
-export const transformCollection = json =>
-  map(json.data, data => transformResponse(data, 'id'));
+export const transformCollection = json => {
+  if (json.error) {
+    throw new Error(json.message || 'Unexpected error');
+  }
+
+  return map(json.data, data => transformResponse(data, 'id'));
+};
 
 /**
  * Append a URL with optional query string arguments.
