@@ -516,7 +516,12 @@ export const makeImpactStatement = post => {
   }
 
   const { noun, verb } = post.actionDetails.data;
-  const statement = pluralize(noun, post.quantity, true);
+
+  // Sometimes editors will include "(s)" in nouns, which prevents pluralization.
+  // References: https://www.pivotaltracker.com/story/show/175358000
+  const sanitizedNoun = noun.replace('(s)', '');
+
+  const statement = pluralize(sanitizedNoun, post.quantity, true);
 
   return `${statement} ${verb}`;
 };
