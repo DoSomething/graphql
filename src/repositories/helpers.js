@@ -54,7 +54,7 @@ export const requireAuthorizedRequest = context => {
 export const transformResponse = (data, idField = 'id') => {
   const result = mapKeys(data, (_, key) => camelCase(key));
 
-  if (data.error) {
+  if (has(data, 'error')) {
     throw new Error(data.message || 'Unexpected error');
   }
 
@@ -96,7 +96,7 @@ export const transformItem = json => transformResponse(json.data, 'id');
  * @return {Object}
  */
 export const transformCollection = json => {
-  if (json.error) {
+  if (has(json, 'error')) {
     throw new Error(json.message || 'Unexpected error');
   }
 
