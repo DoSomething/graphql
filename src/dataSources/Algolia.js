@@ -109,6 +109,7 @@ class Algolia extends DataSource {
       cursor = '0',
       causes = [],
       isOpen = true,
+      isGroupCampaign,
       hasScholarship = null,
       hasWebsite,
       orderBy = '',
@@ -130,6 +131,11 @@ class Algolia extends DataSource {
     let filters = isOpen
       ? this.filterOpenCampaigns
       : this.filterClosedCampaigns;
+
+    // If specified, filter for only group/non-group campaigns.
+    if (!isUndefined(isGroupCampaign)) {
+      filters += ` AND is_group_campaign = ${isGroupCampaign ? '1' : '0'}`;
+    }
 
     // If specified, append filter for scholarship/non-scholarship campaigns
     if (!isNull(hasScholarship)) {
