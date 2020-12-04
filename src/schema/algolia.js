@@ -27,6 +27,8 @@ const typeDefs = gql`
       orderBy: String
       "Pagination search cursor for the specified search location."
       cursor: String
+      "Exclude campaigns with specified IDs"
+      excludeIds: [Int]
     ): AlgoliaCampaignCollection!
   }
 
