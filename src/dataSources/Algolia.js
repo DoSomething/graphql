@@ -92,6 +92,16 @@ class Algolia extends DataSource {
   }
 
   /**
+   * Exclude list of campaign IDs.
+   *
+   * @param {Array} ids
+   * @return {String}
+   */
+  filterExcludedIds(ids) {
+    return ids.map(id => ` AND id!=${id}`).join(' ');
+  }
+
+  /**
    * Search campaigns index
    */
   async searchCampaigns(options = {}) {
@@ -104,6 +114,7 @@ class Algolia extends DataSource {
       orderBy = '',
       perPage = 20,
       term = '',
+      excludeIds = [],
     } = options;
 
     // e.g. "start_date,desc" => ["start_date", "desc"].
@@ -134,6 +145,11 @@ class Algolia extends DataSource {
     // If specified, append filter for campaign causes.
     if (causes.length) {
       filters += this.filterCauses(causes);
+    }
+
+    // If specified, append filter to exclude campaigns with provided IDs.
+    if (excludeIds.length) {
+      filters += this.filterExcludedIds(excludeIds);
     }
 
     const results = await index.search(term, {
