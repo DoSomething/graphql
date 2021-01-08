@@ -619,8 +619,7 @@ const linkResolvers = {
 
   PhotoPostTopic: {
     action: {
-      fragment:
-        'fragment ActionFragment on PhotoPostTopic { actionId }',
+      fragment: 'fragment ActionFragment on PhotoPostTopic { actionId }',
       resolve(topic, args, context, info) {
         return info.mergeInfo.delegateToSchema({
           schema: rogueSchema,
