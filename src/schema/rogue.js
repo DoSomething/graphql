@@ -653,6 +653,8 @@ const typeDefs = gql`
     group: Group
     "The number of items added or removed in this post."
     quantity: Int
+    "The number of hours spent for this post."
+    hoursSpent: Float
     "The human-readable impact (quantity, noun, and verb)."
     impact: String
     "The tags that have been applied to this post by DoSomething.org staffers."
