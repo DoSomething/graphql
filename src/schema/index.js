@@ -73,6 +73,8 @@ const linkSchema = gql`
   }
 
   extend type PhotoPostTopic {
+    "The action that this topic should create photo posts for."
+    action: Action
     "The campaign that this topic should create signups and photo posts for."
     campaign: Campaign
   }
@@ -616,6 +618,21 @@ const linkResolvers = {
   },
 
   PhotoPostTopic: {
+    action: {
+      fragment: 'fragment ActionFragment on PhotoPostTopic { actionId }',
+      resolve(topic, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'action',
+          args: {
+            id: topic.actionId,
+          },
+          context,
+          info,
+        });
+      },
+    },
     campaign: {
       fragment:
         'fragment CampaignFragment on PhotoPostTopic { legacyCampaign }',
