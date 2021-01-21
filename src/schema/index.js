@@ -99,11 +99,6 @@ const linkSchema = gql`
     action: Action
   }
 
-  extend type WebSignupConfirmation {
-    "The campaign that this web signup confirmation is for."
-    campaign: Campaign
-  }
-
   extend type AskVotingPlanStatusBroadcastTopic {
     "The action that this broadcast is associated to."
     action: Action
@@ -661,25 +656,6 @@ const linkResolvers = {
           fieldName: 'campaign',
           args: {
             id: topic.legacyCampaign.campaignId,
-          },
-          context,
-          info,
-        });
-      },
-    },
-  },
-
-  WebSignupConfirmation: {
-    campaign: {
-      fragment:
-        'fragment CampaignFragment on WebSignupConfirmation { campaignId }',
-      resolve(webSignupConfirmation, args, context, info) {
-        return info.mergeInfo.delegateToSchema({
-          schema: rogueSchema,
-          operation: 'query',
-          fieldName: 'campaign',
-          args: {
-            id: webSignupConfirmation.campaignId,
           },
           context,
           info,

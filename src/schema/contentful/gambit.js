@@ -62,7 +62,6 @@ const typeDefs = gql`
 
   type LegacyCampaign {
     campaignId: Int
-    webSignup: Topic
   }
 
   "Transition topic for autoReply broadcasts"
@@ -245,16 +244,6 @@ const typeDefs = gql`
     response: Topic!
   }
 
-  "Confirmation to send a user when they sign up for a campaign from web."
-  type WebSignupConfirmation {
-    "The entry id"
-    id: String!
-    "The campaign ID that the user signed up for."
-    campaignId: Int!
-    "The topic to change user conversation to."
-    topic: Topic
-  }
-
   type Query {
     "Get a broadcast by ID."
     broadcast(id: String!): Broadcast
@@ -262,8 +251,6 @@ const typeDefs = gql`
     conversationTriggers: [ConversationTrigger]
     "Get a topic by ID."
     topic(id: String!): Topic
-    "Get all web signup confirmations."
-    webSignupConfirmations: [WebSignupConfirmation]
   }
 `;
 
