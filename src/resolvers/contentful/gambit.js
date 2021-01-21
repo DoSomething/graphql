@@ -1,7 +1,6 @@
 import Loader from '../../loader';
 import {
   getConversationTriggers,
-  getWebSignupConfirmations,
   linkResolver,
 } from '../../repositories/contentful/gambit';
 
@@ -74,9 +73,6 @@ const resolvers = {
       return null;
     },
   },
-  LegacyCampaign: {
-    webSignup: linkResolver,
-  },
   ConversationTrigger: {
     response: linkResolver,
   },
@@ -85,8 +81,6 @@ const resolvers = {
     conversationTriggers: (_, args, context) =>
       getConversationTriggers(args, context),
     topic: (_, args, context) => Loader(context).topics.load(args.id),
-    webSignupConfirmations: (_, args, context) =>
-      getWebSignupConfirmations(args, context),
   },
   PhotoPostBroadcast: {
     attachments: linkResolver,
@@ -145,9 +139,6 @@ const resolvers = {
       }
       return null;
     },
-  },
-  WebSignupConfirmation: {
-    topic: linkResolver,
   },
 };
 

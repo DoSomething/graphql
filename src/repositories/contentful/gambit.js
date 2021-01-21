@@ -130,12 +130,9 @@ const getFields = json => {
       topic: fields.topic,
     };
   }
-  // Also known as WebSignupConfirmation
   if (contentType === 'campaign') {
     return {
       campaignId: fields.campaignId,
-      // Links ---
-      topic: fields.webSignup,
     };
   }
   // TODO: If the response is an askMultipleChoice we should inject the broadcast itself as a topic
@@ -300,33 +297,6 @@ export const getConversationTriggers = async () => {
     return map(json.items, transformItem);
   } catch (exception) {
     logger.warn('Unable to load Gambit Conversation Triggers.', {
-      query,
-      error: exception.message,
-    });
-  }
-  return [];
-};
-
-/**
- * Fetch all web signup confirmations from the Gambit Contentful space.
- *
- * @return {Array}
- */
-export const getWebSignupConfirmations = async () => {
-  const query = {
-    order: '-sys.createdAt',
-    limit: 250,
-    content_type: 'campaign',
-  };
-  query['fields.webSignup[exists]'] = true;
-
-  logger.debug('Loading Gambit Web Signup Confirmations', { query });
-
-  try {
-    const json = await contentfulClient.getEntries(query);
-    return map(json.items, transformItem);
-  } catch (exception) {
-    logger.warn('Unable to load Gambit Web Signup Confirmations.', {
       query,
       error: exception.message,
     });
