@@ -92,6 +92,50 @@ class Algolia extends DataSource {
   }
 
   /**
+   * Filter search by campaigns containing these action types (using facet filtering).
+   *
+   * @param {Array} actionTypes
+   * @return {String}
+   */
+  filterActionTypes(actionTypes) {
+    // e.g. ["make-something", "share-something"] => "actions.action_type:make-something OR actions.action_type:share-something".
+    const actionTypeFacets = actionTypes
+      .map(actionType => `actions.action_type:${actionType}`)
+      .join(' OR ');
+
+    return ` AND (${actionTypeFacets})`;
+  }
+
+  /**
+   * Filter search by campaigns containing online location (boolean) (using facet filtering).
+   *
+   * @param {Boolean} online
+   * @return {String}
+   */
+  filterOnlineLocation(online) {
+    if (!online) {
+      return ` AND NOT actions.online=1`;
+    }
+
+    return ` AND actions.online=1`;
+  }
+
+  /**
+   * Filter search by campaigns containing these time commitments (using facet filtering).
+   *
+   * @param {Array} timeCommitments
+   * @return {String}
+   */
+  filterTimeCommitments(timeCommitments) {
+    // e.g. ["0.5-1.0", "1.0-3.0"] => "actions.time_commitment:0.5-1.0 OR actions.action_type:1.0-3.0".
+    const timeCommitmentFacets = timeCommitments
+      .map(timeCommitment => `actions.time_commitment:${timeCommitment}`)
+      .join(' OR ');
+
+    return ` AND (${timeCommitmentFacets})`;
+  }
+
+  /**
    * Exclude list of campaign IDs.
    *
    * @param {Array} ids
@@ -106,8 +150,10 @@ class Algolia extends DataSource {
    */
   async searchCampaigns(options = {}) {
     const {
+      actionTypes = [],
       cursor = '0',
       causes = [],
+      isOnline = null,
       isOpen = true,
       isGroupCampaign,
       hasScholarship = null,
@@ -115,6 +161,7 @@ class Algolia extends DataSource {
       orderBy = '',
       perPage = 20,
       term = '',
+      timeCommitments = [],
       excludeIds = [],
     } = options;
 
@@ -151,6 +198,21 @@ class Algolia extends DataSource {
     // If specified, append filter for campaign causes.
     if (causes.length) {
       filters += this.filterCauses(causes);
+    }
+
+    // If specified, append filter for campaign action types.
+    if (actionTypes.length) {
+      filters += this.filterActionTypes(actionTypes);
+    }
+
+    // If specified, append filter for online/offline campaigns
+    if (!isNull(isOnline)) {
+      filters += this.filterOnlineLocation(isOnline);
+    }
+
+    // If specified, append filter for campaign time commitments.
+    if (timeCommitments.length) {
+      filters += this.filterTimeCommitments(timeCommitments);
     }
 
     // If specified, append filter to exclude campaigns with provided IDs.

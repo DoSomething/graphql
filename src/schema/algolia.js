@@ -11,26 +11,32 @@ import resolvers from '../resolvers/algolia';
 const typeDefs = gql`
   type Query {
     searchCampaigns(
-      "The search term specified or an empty string."
-      term: String
-      "Search for only open campaigns or only closed campaigns."
-      isOpen: Boolean
-      "Search for only group or non-group campaigns."
-      isGroupCampaign: Boolean
-      "Search for campaigns that have or do not have a scholarship."
-      hasScholarship: Boolean
+      "Filter by campaigns containing these action types."
+      actionTypes: [String]
       "Filter by campaigns containing these causes."
       causes: [String]
-      "Filter for campaigns that have a Contentful campaign associated."
-      hasWebsite: Boolean
-      "Number of results per page."
-      perPage: Int
-      "How to order the results (e.g. 'start_date,desc')."
-      orderBy: String
       "Pagination search cursor for the specified search location."
       cursor: String
       "Exclude campaigns with specified IDs"
       excludeIds: [Int]
+      "Search for campaigns that have or do not have a scholarship."
+      hasScholarship: Boolean
+      "Filter for campaigns that have a Contentful campaign associated."
+      hasWebsite: Boolean
+      "Filter by campaigns that are online or offline."
+      isOnline: Boolean
+      "Search for only open campaigns or only closed campaigns."
+      isOpen: Boolean
+      "Search for only group or non-group campaigns."
+      isGroupCampaign: Boolean
+      "How to order the results (e.g. 'start_date,desc')."
+      orderBy: String
+      "Number of results per page."
+      perPage: Int
+      "The search term specified or an empty string."
+      term: String
+      "Filter by campaigns containing these time commitments"
+      timeCommitments: [String]
     ): AlgoliaCampaignCollection!
   }
 

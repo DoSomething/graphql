@@ -436,8 +436,10 @@ const typeDefs = gql`
     createdAt: DateTime
     "The time when this action was last modified."
     updatedAt: DateTime
-    "How long will this action take to complete?"
+    "How long will this action take to complete? (human readable format)"
     timeCommitmentLabel: String
+    "How long will this action take to complete?"
+    timeCommitment: String
     "Aggregate post information for this action by school."
     schoolActionStats(
       "The school ID to display an action stat for."
