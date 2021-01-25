@@ -99,23 +99,25 @@ class Algolia extends DataSource {
    */
   filterActionTypes(actionTypes) {
     // e.g. ["make-something", "share-something"] => "actions.action_type:make-something OR actions.action_type:share-something".
-    const actionTypeFacets = actionTypes.map(actionType => `actions.action_type:${actionType}`).join(' OR ');
+    const actionTypeFacets = actionTypes
+      .map(actionType => `actions.action_type:${actionType}`)
+      .join(' OR ');
 
     return ` AND (${actionTypeFacets})`;
   }
 
   /**
    * Filter search by campaigns containing online location (boolean) (using facet filtering).
-   * 
+   *
    * @param {Boolean} online
    * @return {String}
    */
   filterOnlineLocation(online) {
-    if(!online) {
+    if (!online) {
       return ` AND NOT actions.online=1`;
     }
 
-    return ` AND actions.online=1`
+    return ` AND actions.online=1`;
   }
 
   /**
