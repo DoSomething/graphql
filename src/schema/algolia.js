@@ -31,6 +31,8 @@ const typeDefs = gql`
       cursor: String
       "Exclude campaigns with specified IDs"
       excludeIds: [Int]
+      "Filter by campaigns containing these action types."
+      actionTypes: [String]
     ): AlgoliaCampaignCollection!
   }
 

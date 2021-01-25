@@ -91,6 +91,19 @@ class Algolia extends DataSource {
     return ` AND (${causeFacets})`;
   }
 
+    /**
+   * Filter search by campaigns containing these action types (using facet filtering).
+   *
+   * @param {Array} actionTypes
+   * @return {String}
+   */
+  filterActionTypes(actionTypes) {
+    // e.g. ["make-something", "share-something"] => "actions.action_type:make-something OR actions.action_type:share-something".
+    const actionTypeFacets = actionTypes.map(actionType => `actions.action_type:${actionType}`).join(' OR ');
+
+    return ` AND (${actionTypeFacets})`;
+  }
+
   /**
    * Exclude list of campaign IDs.
    *
@@ -106,6 +119,7 @@ class Algolia extends DataSource {
    */
   async searchCampaigns(options = {}) {
     const {
+      actionTypes = [],
       cursor = '0',
       causes = [],
       isOpen = true,
@@ -151,6 +165,11 @@ class Algolia extends DataSource {
     // If specified, append filter for campaign causes.
     if (causes.length) {
       filters += this.filterCauses(causes);
+    }
+
+    // If specified, append filter for campaign action types.
+    if (actionTypes.length) {
+      filters += this.filterActionTypes(actionTypes);
     }
 
     // If specified, append filter to exclude campaigns with provided IDs.
