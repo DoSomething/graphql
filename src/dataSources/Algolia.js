@@ -91,7 +91,7 @@ class Algolia extends DataSource {
     return ` AND (${causeFacets})`;
   }
 
-    /**
+  /**
    * Filter search by campaigns containing these action types (using facet filtering).
    *
    * @param {Array} actionTypes
@@ -102,6 +102,20 @@ class Algolia extends DataSource {
     const actionTypeFacets = actionTypes.map(actionType => `actions.action_type:${actionType}`).join(' OR ');
 
     return ` AND (${actionTypeFacets})`;
+  }
+
+  /**
+   * Filter search by campaigns containing online location (boolean) (using facet filtering).
+   * 
+   * @param {Boolean} online
+   * @return {String}
+   */
+  filterOnlineLocation(online) {
+    if(!online) {
+      return ` AND NOT actions.online=1`;
+    }
+
+    return ` AND actions.online=1`
   }
 
   /**
@@ -122,6 +136,7 @@ class Algolia extends DataSource {
       actionTypes = [],
       cursor = '0',
       causes = [],
+      isOnline = null,
       isOpen = true,
       isGroupCampaign,
       hasScholarship = null,
@@ -170,6 +185,11 @@ class Algolia extends DataSource {
     // If specified, append filter for campaign action types.
     if (actionTypes.length) {
       filters += this.filterActionTypes(actionTypes);
+    }
+
+    // If specified, append filter for online/offline campaigns
+    if (!isNull(isOnline)) {
+      filters += this.filterOnlineLocation(isOnline);
     }
 
     // If specified, append filter to exclude campaigns with provided IDs.
