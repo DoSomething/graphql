@@ -35,6 +35,8 @@ const typeDefs = gql`
       perPage: Int
       "The search term specified or an empty string."
       term: String
+      "Filter by campaigns containing these time commitments"
+      timeCommitments: [String]
     ): AlgoliaCampaignCollection!
   }
 

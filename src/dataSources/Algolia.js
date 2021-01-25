@@ -121,6 +121,21 @@ class Algolia extends DataSource {
   }
 
   /**
+   * Filter search by campaigns containing these time commitments (using facet filtering).
+   *
+   * @param {Array} timeCommitments
+   * @return {String}
+   */
+  filterTimeCommitments(timeCommitments) {
+    // e.g. ["0.5-1.0", "1.0-3.0"] => "actions.time_commitment:0.5-1.0 OR actions.action_type:1.0-3.0".
+    const timeCommitmentFacets = timeCommitments
+      .map(timeCommitment => `actions.time_commitment:${timeCommitment}`)
+      .join(' OR ');
+
+    return ` AND (${timeCommitmentFacets})`;
+  }
+
+  /**
    * Exclude list of campaign IDs.
    *
    * @param {Array} ids
@@ -146,6 +161,7 @@ class Algolia extends DataSource {
       orderBy = '',
       perPage = 20,
       term = '',
+      timeCommitments = [],
       excludeIds = [],
     } = options;
 
@@ -192,6 +208,11 @@ class Algolia extends DataSource {
     // If specified, append filter for online/offline campaigns
     if (!isNull(isOnline)) {
       filters += this.filterOnlineLocation(isOnline);
+    }
+
+    // If specified, append filter for campaign time commitments.
+    if (timeCommitments.length) {
+      filters += this.filterTimeCommitments(timeCommitments);
     }
 
     // If specified, append filter to exclude campaigns with provided IDs.
