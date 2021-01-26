@@ -448,6 +448,7 @@ const typeDefs = gql`
     SCHOLARSHIP
     PAGE
     CONTENT_BLOCK
+    EXTERNAL_LINK
   }
 
   type GalleryBlock implements Block {
