@@ -75,6 +75,25 @@ const typeDefs = gql`
     url(w: Int, h: Int, fit: ResizeOption): URL,
   }
 
+  type ExternalLinkBlock implements Block & Showcasable {
+    "Overrides the provider title."
+    title: String
+    "Overrides the provider description."
+    description: String
+    "The external URL."
+    url: URL!
+    "Overrides the provider image"
+    image: Asset
+    "The showcase title (the title field.)"
+    showcaseTitle: String
+    "The showcase description (the description field.)"
+    showcaseDescription: String
+    "The showcase image (the image field.)"
+    showcaseImage: Asset
+    ${blockFields}
+    ${entryFields}
+  }
+
   type CampaignWebsite implements Showcasable & Routable {
     "The internal-facing title for this campaign website."
     internalTitle: String!
