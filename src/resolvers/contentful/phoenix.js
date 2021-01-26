@@ -55,6 +55,7 @@ const contentTypeMappings = {
   voterRegistrationAction: 'VoterRegistrationBlock',
   voterRegistrationDriveAction: 'VoterRegistrationDriveBlock',
   voterRegistrationReferralsBlock: 'VoterRegistrationReferralsBlock',
+  externalLink: 'ExternalLinkBlock',
 };
 
 /**
@@ -238,6 +239,13 @@ const resolvers = {
     defaultResultBlock: linkResolver,
     questions: parseQuizQuestions,
     results: parseQuizResults,
+  },
+  ExternalLinkBlock: {
+    image: linkResolver,
+    showcaseTitle: externalLinkBlock => externalLinkBlock.title,
+    showcaseDescription: externalLinkBlock => externalLinkBlock.description,
+    showcaseImage: (externalLinkBlock, _, context, info) =>
+      linkResolver(externalLinkBlock, _, context, info, 'image'),
   },
 };
 
