@@ -388,7 +388,18 @@ const typeDefs = gql`
     "Delete a post. Requires staff/admin role."
     deletePost("The post ID to delete." id: Int!): Post
     "Create a signup."
-    createSignup(campaignId: Int!, detail: JSON): Signup
+    createSignup(
+      "The campaign ID for this signup."
+      campaignId: Int!
+      "The group ID for this signup."
+      groupId: Int
+      "The referrerUserId for this signup."
+      referrerUserId: String
+      "The details field for this signup."
+      details: JSON
+      "The source details for this signup."
+      sourceDetails: JSON
+    ): Signup
     "Delete a signup. Requires staff/admin role."
     deleteSignup("The signup ID to delete." id: Int!): Signup
   }

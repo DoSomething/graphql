@@ -700,7 +700,10 @@ export const createSignup = async (args, context) => {
     ...requireAuthorizedRequest(context),
     body: JSON.stringify({
       campaign_id: args.campaignId,
+      group_id: args.groupId,
+      referrer_user_id: args.referrerUserId,
       details: args.details,
+      source_details: args.sourceDetails,
     }),
   });
 
