@@ -73,10 +73,10 @@ const linkSchema = gql`
   }
 
   extend type PhotoPostTopic {
-    "The action that this topic should create photo posts for."
+    "The action that this topic should create signups and photo posts for."
     action: Action
     "The campaign that this topic should create signups and photo posts for."
-    campaign: Campaign
+    campaign: Campaign @deprecated(reason: "Use 'action' relationship instead.")
   }
 
   extend type PhotoSubmissionBlock {
@@ -90,8 +90,10 @@ const linkSchema = gql`
   }
 
   extend type TextPostTopic {
+    "The action that this topic should create signups and text posts for."
+    action: Action
     "The campaign that this topic should create signups and text posts for."
-    campaign: Campaign
+    campaign: Campaign @deprecated(reason: "Use 'action' relationship instead.")
   }
 
   extend type TextSubmissionBlock {
@@ -189,10 +191,12 @@ const linkResolvers = {
         // We assume the broadcast will be associated with the
         // action's campaign Id of the saidVotedTransition topic
         const actionId = broadcastTopic.saidVotedTransition.topic.actionId;
+
         // check in case the transition does not support an actionId
         if (!actionId) {
           return null;
         }
+
         return info.mergeInfo.delegateToSchema({
           schema: rogueSchema,
           operation: 'query',
@@ -215,11 +219,13 @@ const linkResolvers = {
         // We assume the broadcast will be associated with the
         // action's campaign Id of the saidYesTransition topic
         const actionId = broadcastTopic.saidYesTransition.topic.actionId;
+
         // AskYesNo broadcasts that reference an autoReplyTransition as the
         // saidYes field will not have an actionId set
         if (!actionId) {
           return null;
         }
+
         return info.mergeInfo.delegateToSchema({
           schema: rogueSchema,
           operation: 'query',
@@ -647,6 +653,21 @@ const linkResolvers = {
   },
 
   TextPostTopic: {
+    action: {
+      fragment: 'fragment ActionFragment on TextPostTopic { actionId }',
+      resolve(topic, args, context, info) {
+        return info.mergeInfo.delegateToSchema({
+          schema: rogueSchema,
+          operation: 'query',
+          fieldName: 'action',
+          args: {
+            id: topic.actionId,
+          },
+          context,
+          info,
+        });
+      },
+    },
     campaign: {
       fragment: 'fragment CampaignFragment on TextPostTopic { legacyCampaign }',
       resolve(topic, args, context, info) {
