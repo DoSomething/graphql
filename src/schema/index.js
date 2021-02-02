@@ -73,7 +73,7 @@ const linkSchema = gql`
   }
 
   extend type PhotoPostTopic {
-    "The action that this topic should create photo posts for."
+    "The action that this topic should create signups and photo posts for."
     action: Action
     "The campaign that this topic should create signups and photo posts for."
     campaign: Campaign @deprecated(reason: "Use 'action' relationship instead.")
@@ -90,7 +90,7 @@ const linkSchema = gql`
   }
 
   extend type TextPostTopic {
-    "The action that this topic should create text posts for."
+    "The action that this topic should create signups and text posts for."
     action: Action
     "The campaign that this topic should create signups and text posts for."
     campaign: Campaign @deprecated(reason: "Use 'action' relationship instead.")
