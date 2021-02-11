@@ -196,12 +196,12 @@ class Algolia extends DataSource {
     }
 
     // If specified, append filter for campaign causes.
-    if (causes.length) {
+    if (causes && causes.length) {
       filters += this.filterCauses(causes);
     }
 
     // If specified, append filter for campaign action types.
-    if (actionTypes.length) {
+    if (actionTypes && actionTypes.length) {
       filters += this.filterActionTypes(actionTypes);
     }
 
@@ -211,12 +211,12 @@ class Algolia extends DataSource {
     }
 
     // If specified, append filter for campaign time commitments.
-    if (timeCommitments.length) {
+    if (timeCommitments && timeCommitments.length) {
       filters += this.filterTimeCommitments(timeCommitments);
     }
 
     // If specified, append filter to exclude campaigns with provided IDs.
-    if (excludeIds.length) {
+    if (excludeIds && excludeIds.length) {
       filters += this.filterExcludedIds(excludeIds);
     }
 
