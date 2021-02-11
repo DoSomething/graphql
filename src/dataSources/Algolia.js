@@ -216,7 +216,7 @@ class Algolia extends DataSource {
     }
 
     // If specified, append filter to exclude campaigns with provided IDs.
-    if (excludedIds && excludeIds.length) {
+    if (excludeIds && excludeIds.length) {
       filters += this.filterExcludedIds(excludeIds);
     }
 
