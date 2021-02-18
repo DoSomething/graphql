@@ -373,6 +373,8 @@ const typeDefs = gql`
     articles: [Page]
     "Any custom overrides for the home page."
     additionalContent: JSON
+    "The sponsored affiliates."
+    sponsors: [AffiliateBlock]
     ${entryFields}
   }
 

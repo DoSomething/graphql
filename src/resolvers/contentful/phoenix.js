@@ -166,6 +166,7 @@ const resolvers = {
     coverImage: linkResolver,
     articles: linkResolver,
     campaigns: linkResolver,
+    sponsors: linkResolver,
   },
   ImagesBlock: {
     images: linkResolver,
