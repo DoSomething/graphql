@@ -28,6 +28,7 @@ import {
   getPhoenixContentfulAssetById,
   getPhoenixContentfulEntryById,
   getCampaignWebsiteByCampaignId,
+  getVoterRegistrationMarketingPageBySlug,
 } from './repositories/contentful/phoenix';
 
 /**
@@ -125,6 +126,13 @@ export default (context, preview = false) => {
       ),
       users: new FieldDataLoader((id, fields) =>
         getUserById(id, fields, context),
+      ),
+      voterRegistrationMarketingPageBySlug: new DataLoader(slugs =>
+        Promise.all(
+          slugs.map(slug =>
+            getVoterRegistrationMarketingPageBySlug(slug, context),
+          ),
+        ),
       ),
     };
   }

@@ -55,6 +55,7 @@ const contentTypeMappings = {
   voterRegistrationAction: 'VoterRegistrationBlock',
   voterRegistrationDriveAction: 'VoterRegistrationDriveBlock',
   voterRegistrationReferralsBlock: 'VoterRegistrationReferralsBlock',
+  voterRegistrationMarketingPage: 'VoterRegistrationMarketingPage',
   externalLink: 'ExternalLinkBlock',
 };
 
@@ -91,6 +92,8 @@ const resolvers = {
       Loader(context, preview).pagesBySlug.load(slug),
     storyPageWebsite: (_, { id, preview }, context) =>
       Loader(context, preview).storyPageWebsites.load(id),
+    voterRegistrationMarketingPageBySlug: (_, { slug, preview }, context) =>
+      Loader(context, preview).voterRegistrationMarketingPageBySlug.load(slug),
   },
   AffiliateBlock: {
     logo: linkResolver,
@@ -247,6 +250,11 @@ const resolvers = {
     showcaseDescription: externalLinkBlock => externalLinkBlock.description,
     showcaseImage: (externalLinkBlock, _, context, info) =>
       linkResolver(externalLinkBlock, _, context, info, 'image'),
+  },
+  VoterRegistrationMarketingPage: {
+    coverImage: linkResolver,
+    logo: linkResolver,
+    content: linkResolver,
   },
 };
 

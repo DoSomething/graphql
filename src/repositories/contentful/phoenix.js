@@ -238,6 +238,20 @@ export const getCompanyPageBySlug = async (slug, context) =>
   getPhoenixContentfulEntryByField('companyPage', 'slug', slug, context);
 
 /**
+ * Search for a Phoenix Contentful Voter Registration Marketing Page entry by slug.
+ *
+ * @param {String} slug
+ * @return {Object}
+ */
+export const getVoterRegistrationMarketingPageBySlug = async (slug, context) =>
+  getPhoenixContentfulEntryByField(
+    'voterRegistrationMarketingPage',
+    'slug',
+    slug,
+    context,
+  );
+
+/**
  * Search for a Phoenix Contentful affiliate entry by utmLabel.
  *
  * @param {String} id

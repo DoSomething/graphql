@@ -360,6 +360,38 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type VoterRegistrationMarketingPage {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The slug for this page."
+    slug: String!
+    "The cover image for this page."
+    coverImage: Asset!
+    "The banner background color."
+    bannerBackgroundColor: String
+    "Logo displayed on this page."
+    logo: Asset
+    "The title."
+    title: String!
+    "The custom color for the title."
+    titleColor: String
+    "The subtitle"
+    subTitle: String!
+    "The custom color for the subtitle"
+    subTitleColor: String
+    "Custom text for the Voter Registration form submission button."
+    voterRegistrationFormButtonText: String
+    "Custom background color for the Voter Registration form submission button."
+    voterRegistrationFormButtonColor: String
+    "The value for the source parameter in the Rock The Vote Redirect URL."
+    source: String
+    "The value for the source_details parameter in the Rock The Vote Redirect URL."
+    sourceDetails: String
+    "The content for this page."
+    content: SectionBlock!
+    ${entryFields}
+  }
+
   type HomePage {
     "This title is used internally to help find this content."
     internalTitle: String!
@@ -814,6 +846,7 @@ const typeDefs = gql`
     companyPageBySlug(slug: String!, preview: Boolean = false): CompanyPage
     homePage(preview: Boolean = false): HomePage
     storyPageWebsite(id: String!, preview: Boolean = false): StoryPageWebsite
+    voterRegistrationMarketingPageBySlug(slug: String!, preview: Boolean = false): VoterRegistrationMarketingPage
   }
 `;
 
