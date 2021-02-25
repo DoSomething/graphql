@@ -125,22 +125,23 @@ const environments = {
 
     // Northstar
     northstar: {
-      url: 'https://identity-dev.dosomething.org',
+      url:
+        process.env.DEV_NORTHSTAR_URL || 'https://identity-dev.dosomething.org',
     },
 
     // Aurora
     aurora: {
-      url: 'https://admin-dev.dosomething.org',
+      url: process.env.DEV_AURORA_URL || 'https://admin-dev.dosomething.org',
     },
 
     // Phoenix
     phoenix: {
-      url: 'https://dev.dosomething.org',
+      url: process.env.DEV_PHOENIX_URL || 'https://dev.dosomething.org',
     },
 
     // Rogue
     rogue: {
-      url: 'https://activity-dev.dosomething.org',
+      url: process.env.DEV_ROGUE_URL || 'https://activity-dev.dosomething.org',
     },
 
     // Schools
@@ -171,22 +172,23 @@ const environments = {
 
     // Northstar
     northstar: {
-      url: 'https://identity-qa.dosomething.org',
+      url:
+        process.env.QA_NORTHSTAR_URL || 'https://identity-qa.dosomething.org',
     },
 
     // Aurora
     aurora: {
-      url: 'https://admin-qa.dosomething.org',
+      url: process.env.QA_AURORA_URL || 'https://admin-qa.dosomething.org',
     },
 
     // Phoenix
     phoenix: {
-      url: 'https://qa.dosomething.org',
+      url: process.env.QA_PHOENIX_URL || 'https://qa.dosomething.org',
     },
 
     // Rogue
     rogue: {
-      url: 'https://activity-qa.dosomething.org',
+      url: process.env.QA_ROGUE_URL || 'https://activity-qa.dosomething.org',
     },
 
     // Schools
@@ -217,22 +219,25 @@ const environments = {
 
     // Northstar
     northstar: {
-      url: 'https://identity.dosomething.org',
+      url:
+        process.env.PRODUCTION_NORTHSTAR_URL ||
+        'https://identity.dosomething.org',
     },
 
     // Aurora
     aurora: {
-      url: 'https://admin.dosomething.org',
+      url: process.env.PRODUCTION_AURORA_URL || 'https://admin.dosomething.org',
     },
 
     // Phoenix
     phoenix: {
-      url: 'https://www.dosomething.org',
+      url: process.env.PRODUCTION_PHOENIX_URL || 'https://www.dosomething.org',
     },
 
     // Rogue
     rogue: {
-      url: 'https://activity.dosomething.org',
+      url:
+        process.env.PRODUCTION_ROGUE_URL || 'https://activity.dosomething.org',
     },
 
     // Schools
