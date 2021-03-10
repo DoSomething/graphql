@@ -84,6 +84,18 @@ const typeDefs = gql`
     SEXUAL_HARASSMENT_ASSAULT
   }
 
+  "The user's earned badges."
+  enum BadgeIdentifier {
+    SIGNUP
+    ONE_POST
+    TWO_POSTS
+    THREE_POSTS
+    BREAKDOWN
+    ONE_STAFF_FAVE
+    TWO_STAFF_FAVES
+    THREE_STAFF_FAVES
+  }
+
   "A DoSomething.org user profile."
   type User {
     "The user's Northstar ID."
@@ -124,7 +136,7 @@ const typeDefs = gql`
     sourceDetail: String
     "The user's email subscription status."
     emailSubscriptionStatus: Boolean
-    "The user's email subscription status."
+    "The user's email subscription choices."
     emailSubscriptionTopics: [EmailSubscriptionTopic]!
     "The user's SMS status."
     smsStatus: SubscriptionStatus
@@ -172,6 +184,8 @@ const typeDefs = gql`
     permalink: String @requires(fields: "id")
     "The causes areas this user is interested in."
     causes: [CauseIdentifier]
+    "The badges a user has earned."
+    badges: [BadgeIdentifier]
   }
 
   type Query {

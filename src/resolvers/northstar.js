@@ -76,6 +76,7 @@ const resolvers = {
       has(user, `featureFlags.${feature}`) &&
       user.featureFlags[feature] !== false,
     causes: user => listToEnums(user.causes),
+    badges: user => listToEnums(user.badges),
   },
 };
 
