@@ -572,6 +572,23 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type QuestionnaireBlock implements Block {
+    "Title of the questionnaire."
+    title: String
+    "List of questions."
+    questions: JSON
+    "Text displayed on the questionnnaire submission button."
+    buttonText: String
+    "Title of the information card displayed next to the questionnaire."
+    informationTitle: String
+    "Content of the information card displayed next to the questionnaire."
+    informationContent: String
+    "Content displayed in the affirmation page once the questionnaire is submitted."
+    affirmationContent: String
+    ${blockFields}
+    ${entryFields}
+  }
+
   type PhotoSubmissionBlock implements Block {
     "The Action ID that posts will be submitted for."
     actionId: Int
