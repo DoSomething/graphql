@@ -42,6 +42,7 @@ const contentTypeMappings = {
   petitionSubmissionAction: 'PetitionSubmissionBlock',
   photoSubmissionAction: 'PhotoSubmissionBlock',
   postGallery: 'PostGalleryBlock',
+  questionnaireAction: 'QuestionnaireBlock',
   quiz: 'QuizBlock',
   sectionBlock: 'SectionBlock',
   selectionSubmissionAction: 'SelectionSubmissionBlock',
