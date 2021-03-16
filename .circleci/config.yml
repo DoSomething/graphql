@@ -67,7 +67,7 @@ workflows:
             - deploy-webhook-qa
           filters:
             branches:
-              only: master
+              only: main
       - lambda/deploy:
           name: deploy-app-dev
           app: dosomething-graphql-dev
@@ -75,7 +75,7 @@ workflows:
             - build
           filters:
             branches:
-              only: master
+              only: main
       - lambda/deploy:
           name: deploy-webhook-dev
           app: dosomething-graphql-dev-webhook
@@ -83,7 +83,7 @@ workflows:
             - build
           filters:
             branches:
-              only: master
+              only: main
       - lambda/deploy:
           name: deploy-app-qa
           app: dosomething-graphql-qa
@@ -91,7 +91,7 @@ workflows:
             - build
           filters:
             branches:
-              only: master
+              only: main
       - lambda/deploy:
           name: deploy-webhook-qa
           app: dosomething-graphql-qa-webhook
@@ -99,7 +99,7 @@ workflows:
             - build
           filters:
             branches:
-              only: master
+              only: main
       - lambda/deploy:
           name: deploy-app-production
           app: dosomething-graphql
@@ -107,7 +107,7 @@ workflows:
             - hold
           filters:
             branches:
-              only: master
+              only: main
       - lambda/deploy:
           name: deploy-webhook-production
           app: dosomething-graphql-webhook
@@ -115,7 +115,7 @@ workflows:
             - hold
           filters:
             branches:
-              only: master
+              only: main
       - publish:
           name: publish-app-dev
           endpoint: https://graphql-dev.dosomething.org/graphql
