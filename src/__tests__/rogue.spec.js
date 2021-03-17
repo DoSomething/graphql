@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server';
 
 import factory from './factories';
-import { resetMocks, query, mock, NORTHSTAR_URL, ROGUE_URL } from './helpers';
+import { resetMocks, query, mock, NORTHSTAR_URL } from './helpers';
 
 beforeEach(resetMocks);
 
@@ -9,7 +9,7 @@ describe('Rogue', () => {
   it('can fetch posts', async () => {
     const posts = await factory('post', 3);
 
-    mock.get(`${ROGUE_URL}/api/v3/posts/`, { data: posts });
+    mock.get(`${NORTHSTAR_URL}/api/v3/posts/`, { data: posts });
 
     const { data } = await query(gql`
       {
@@ -27,7 +27,9 @@ describe('Rogue', () => {
   it('can fetch posts with omitted optional filter', async () => {
     const posts = await factory('post', 3);
 
-    const rogueMock = mock.get(`${ROGUE_URL}/api/v3/posts/`, { data: posts });
+    const rogueMock = mock.get(`${NORTHSTAR_URL}/api/v3/posts/`, {
+      data: posts,
+    });
 
     await query(
       gql`
@@ -44,7 +46,7 @@ describe('Rogue', () => {
     const [url] = rogueMock.lastCall();
 
     expect(url).toEqual(
-      `${ROGUE_URL}/api/v3/posts/?pagination=cursor&limit=3&page=1`,
+      `${NORTHSTAR_URL}/api/v3/posts/?pagination=cursor&limit=3&page=1`,
     );
   });
 
@@ -52,7 +54,7 @@ describe('Rogue', () => {
     const post = await factory('post', { id: 15 });
     const user = await factory('user', { id: post.northstar_id });
 
-    mock.get(`${ROGUE_URL}/api/v3/posts/${post.id}`, { data: post });
+    mock.get(`${NORTHSTAR_URL}/api/v3/posts/${post.id}`, { data: post });
     mock.get(`${NORTHSTAR_URL}/v2/users/${user.id}`, { data: user });
 
     const { data } = await query(gql`
@@ -79,7 +81,7 @@ describe('Rogue', () => {
   it('can fetch post with impact', async () => {
     const post = await factory('post', { id: 321, quantity: 32 });
 
-    mock.get(`${ROGUE_URL}/api/v3/posts/321`, { data: post });
+    mock.get(`${NORTHSTAR_URL}/api/v3/posts/321`, { data: post });
 
     const { data } = await query(gql`
       {
@@ -96,7 +98,7 @@ describe('Rogue', () => {
   it('can fetch a club by ID', async () => {
     const club = await factory('club', { id: 71 });
 
-    mock.get(`${ROGUE_URL}/api/v3/clubs/71`, { data: club });
+    mock.get(`${NORTHSTAR_URL}/api/v3/clubs/71`, { data: club });
 
     const { data } = await query(gql`
       {
@@ -113,7 +115,7 @@ describe('Rogue', () => {
   it('can fetch clubs', async () => {
     const clubs = await factory('club', 5);
 
-    mock.get(`${ROGUE_URL}/api/v3/clubs`, { data: clubs });
+    mock.get(`${NORTHSTAR_URL}/api/v3/clubs`, { data: clubs });
 
     const { data } = await query(gql`
       {
@@ -130,7 +132,7 @@ describe('Rogue', () => {
   it('can fetch a group by ID', async () => {
     const group = await factory('group', { id: 71 });
 
-    mock.get(`${ROGUE_URL}/api/v3/groups/71`, { data: group });
+    mock.get(`${NORTHSTAR_URL}/api/v3/groups/71`, { data: group });
 
     const { data } = await query(gql`
       {
@@ -147,7 +149,7 @@ describe('Rogue', () => {
   it('can fetch groups', async () => {
     const groups = await factory('group', 5, { group_type_id: 1 });
 
-    mock.get(`${ROGUE_URL}/api/v3/groups/?`, { data: groups });
+    mock.get(`${NORTHSTAR_URL}/api/v3/groups/?`, { data: groups });
 
     const { data } = await query(gql`
       {
@@ -164,7 +166,7 @@ describe('Rogue', () => {
   it('can fetch a group type by ID', async () => {
     const groupType = await factory('group-type', { id: 7 });
 
-    mock.get(`${ROGUE_URL}/api/v3/group-types/7`, { data: groupType });
+    mock.get(`${NORTHSTAR_URL}/api/v3/group-types/7`, { data: groupType });
 
     const { data } = await query(gql`
       {
@@ -180,7 +182,7 @@ describe('Rogue', () => {
   it('can fetch group types', async () => {
     const groupTypes = await factory('group-type', 3);
 
-    mock.get(`${ROGUE_URL}/api/v3/group-types`, { data: groupTypes });
+    mock.get(`${NORTHSTAR_URL}/api/v3/group-types`, { data: groupTypes });
 
     const { data } = await query(gql`
       {
@@ -205,7 +207,7 @@ describe('Rogue', () => {
     `;
 
     // For example, if we provided a bad access token...
-    mock.get(`${ROGUE_URL}/api/v3/posts/`, {
+    mock.get(`${NORTHSTAR_URL}/api/v3/posts/`, {
       error: 'access_denied',
       message: 'Access token could not be verified.',
     });
