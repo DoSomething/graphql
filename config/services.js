@@ -81,19 +81,9 @@ const environments = {
       url: process.env.LOCAL_NORTHSTAR_URL || 'http://northstar.test',
     },
 
-    // Aurora
-    aurora: {
-      url: process.env.LOCAL_AURORA_URL || 'http://aurora.test',
-    },
-
     // Phoenix
     phoenix: {
       url: process.env.LOCAL_PHOENIX_URL || 'http://phoenix.test',
-    },
-
-    // Rogue
-    rogue: {
-      url: process.env.LOCAL_ROGUE_URL || 'http://rogue.test',
     },
 
     // Schools
@@ -129,19 +119,9 @@ const environments = {
         process.env.DEV_NORTHSTAR_URL || 'https://identity-dev.dosomething.org',
     },
 
-    // Aurora
-    aurora: {
-      url: process.env.DEV_AURORA_URL || 'https://admin-dev.dosomething.org',
-    },
-
     // Phoenix
     phoenix: {
       url: process.env.DEV_PHOENIX_URL || 'https://dev.dosomething.org',
-    },
-
-    // Rogue
-    rogue: {
-      url: process.env.DEV_ROGUE_URL || 'https://activity-dev.dosomething.org',
     },
 
     // Schools
@@ -176,19 +156,9 @@ const environments = {
         process.env.QA_NORTHSTAR_URL || 'https://identity-qa.dosomething.org',
     },
 
-    // Aurora
-    aurora: {
-      url: process.env.QA_AURORA_URL || 'https://admin-qa.dosomething.org',
-    },
-
     // Phoenix
     phoenix: {
       url: process.env.QA_PHOENIX_URL || 'https://qa.dosomething.org',
-    },
-
-    // Rogue
-    rogue: {
-      url: process.env.QA_ROGUE_URL || 'https://activity-qa.dosomething.org',
     },
 
     // Schools
@@ -224,20 +194,9 @@ const environments = {
         'https://identity.dosomething.org',
     },
 
-    // Aurora
-    aurora: {
-      url: process.env.PRODUCTION_AURORA_URL || 'https://admin.dosomething.org',
-    },
-
     // Phoenix
     phoenix: {
       url: process.env.PRODUCTION_PHOENIX_URL || 'https://www.dosomething.org',
-    },
-
-    // Rogue
-    rogue: {
-      url:
-        process.env.PRODUCTION_ROGUE_URL || 'https://activity.dosomething.org',
     },
 
     // Schools

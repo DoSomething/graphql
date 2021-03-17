@@ -13,7 +13,7 @@ import {
   requireAuthorizedRequest,
 } from './helpers';
 
-const ROGUE_URL = config('services.rogue.url');
+const NORTHSTAR_URL = config('services.northstar.url');
 
 /**
  * Fetch an action from Rogue by ID.
@@ -27,7 +27,7 @@ export const getActionById = async (id, context) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/actions/${id}`,
+    `${NORTHSTAR_URL}/api/v3/actions/${id}`,
     authorizedRequest(context),
   );
 
@@ -51,7 +51,7 @@ export const getActionsByCampaignId = async (campaignId, context) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/actions/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/actions/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -95,7 +95,7 @@ export const fetchActionStats = async (args, context, additionalQuery = {}) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/action-stats/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/action-stats/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -144,7 +144,7 @@ export const getCampaignById = async (id, context) => {
   logger.debug('Loading campaign from Rogue', { id });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/campaigns/${id}`,
+    `${NORTHSTAR_URL}/api/v3/campaigns/${id}`,
     authorizedRequest(context),
   );
 
@@ -182,7 +182,7 @@ export const fetchCampaigns = async (args, context, additionalQuery = {}) => {
   logger.info('Loading campaigns from Rogue', { queryString });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/campaigns/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/campaigns/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -253,7 +253,7 @@ export const fetchPosts = async (args, context, additionalQuery) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/posts/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -298,7 +298,7 @@ export const getPosts = async (args, context) => {
  */
 export const getPostById = async (id, context) => {
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/${id}`,
+    `${NORTHSTAR_URL}/api/v3/posts/${id}`,
     authorizedRequest(context),
   );
 
@@ -325,7 +325,7 @@ export const getPostsByUserId = async (id, page, count, context) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/posts/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -352,7 +352,7 @@ export const getPostsByCampaignId = async (id, page, count, context) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/posts/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -374,7 +374,7 @@ export const getPostsBySignupId = async (id, context) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/posts/${queryString}`,
     authorizedRequest(context),
   );
   const json = await response.json();
@@ -389,7 +389,7 @@ export const getPostsBySignupId = async (id, context) => {
  * @return {Object}
  */
 export const toggleReaction = async (postId, context) => {
-  await fetch(`${ROGUE_URL}/api/v3/posts/${postId}/reactions`, {
+  await fetch(`${NORTHSTAR_URL}/api/v3/posts/${postId}/reactions`, {
     ...requireAuthorizedRequest(context),
     method: 'POST',
   });
@@ -405,7 +405,7 @@ export const toggleReaction = async (postId, context) => {
  * @return {Object}
  */
 export const updatePostQuantity = async (postId, quantity, context) => {
-  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}`, {
+  const response = await fetch(`${NORTHSTAR_URL}/api/v3/posts/${postId}`, {
     method: 'PATCH',
     body: JSON.stringify({ quantity }),
     ...requireAuthorizedRequest(context),
@@ -422,11 +422,14 @@ export const updatePostQuantity = async (postId, quantity, context) => {
  * @return {Object}
  */
 export const reviewPost = async (postId, status, context) => {
-  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}/reviews`, {
-    method: 'POST',
-    body: JSON.stringify({ status: status.toLowerCase() }),
-    ...requireAuthorizedRequest(context),
-  });
+  const response = await fetch(
+    `${NORTHSTAR_URL}/api/v3/posts/${postId}/reviews`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ status: status.toLowerCase() }),
+      ...requireAuthorizedRequest(context),
+    },
+  );
 
   return transformItem(await response.json());
 };
@@ -439,7 +442,7 @@ export const reviewPost = async (postId, status, context) => {
  * @return {Object}
  */
 export const tagPost = async (postId, tag, context) => {
-  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}/tags`, {
+  const response = await fetch(`${NORTHSTAR_URL}/api/v3/posts/${postId}/tags`, {
     method: 'POST',
     body: JSON.stringify({ tag_name: tag.toLowerCase() }),
     ...requireAuthorizedRequest(context),
@@ -456,11 +459,14 @@ export const tagPost = async (postId, tag, context) => {
  * @return {Object}
  */
 export const rotatePost = async (postId, degrees, context) => {
-  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}/rotate`, {
-    method: 'POST',
-    body: JSON.stringify({ degrees }),
-    ...requireAuthorizedRequest(context),
-  });
+  const response = await fetch(
+    `${NORTHSTAR_URL}/api/v3/posts/${postId}/rotate`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ degrees }),
+      ...requireAuthorizedRequest(context),
+    },
+  );
 
   return transformItem(await response.json());
 };
@@ -478,7 +484,7 @@ export const deletePost = async (postId, context) => {
     throw new Error(`Post with ID: ${postId} was not found.`);
   }
 
-  const response = await fetch(`${ROGUE_URL}/api/v3/posts/${postId}`, {
+  const response = await fetch(`${NORTHSTAR_URL}/api/v3/posts/${postId}`, {
     method: 'DELETE',
     ...requireAuthorizedRequest(context),
   });
@@ -489,20 +495,21 @@ export const deletePost = async (postId, context) => {
 };
 
 /**
- * Get Rogue signup permalink by ID.
+ * Get administrative signup permalink by ID.
  *
  * @param {Number} id
  * @return {String}
  */
-export const getPermalinkBySignupId = id => `${ROGUE_URL}/signups/${id}`;
+export const getPermalinkBySignupId = id =>
+  `${NORTHSTAR_URL}/admin/signups/${id}`;
 
 /**
- * Get Rogue post permalink by ID.
+ * Get administrative post permalink by ID.
  *
  * @param {Number} id
  * @return {String}
  */
-export const getPermalinkByPostId = id => `${ROGUE_URL}/posts/${id}`;
+export const getPermalinkByPostId = id => `${NORTHSTAR_URL}/admin/posts/${id}`;
 
 /**
  * Create an impact statement from quantity, noun and verb
@@ -558,7 +565,7 @@ export const fetchSignups = async (args, context, additionalQuery) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/signups/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -607,7 +614,7 @@ export const getSignupById = async (id, context) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups/${id}`,
+    `${NORTHSTAR_URL}/api/v3/signups/${id}`,
     authorizedRequest(context),
   );
   const json = await response.json();
@@ -636,7 +643,7 @@ export const getSignupsById = async (ids, options) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/signups/${queryString}`,
     options,
   );
 
@@ -673,7 +680,7 @@ export const getSignupsByUserId = async (args, context) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/signups/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -695,7 +702,7 @@ export const createSignup = async (args, context) => {
 
   logger.debug('Creating a signup', { args });
 
-  const response = await fetch(`${ROGUE_URL}/api/v3/signups`, {
+  const response = await fetch(`${NORTHSTAR_URL}/api/v3/signups`, {
     method: 'POST',
     ...requireAuthorizedRequest(context),
     body: JSON.stringify({
@@ -721,7 +728,7 @@ export const createSignup = async (args, context) => {
 export const deleteSignup = async (signupId, context) => {
   const signup = await getSignupById(signupId, context);
 
-  const response = await fetch(`${ROGUE_URL}/api/v3/signups/${signupId}`, {
+  const response = await fetch(`${NORTHSTAR_URL}/api/v3/signups/${signupId}`, {
     method: 'DELETE',
     ...requireAuthorizedRequest(context),
   });
@@ -758,7 +765,7 @@ export const getSignupsCount = async (args, context) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/signups/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/signups/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -810,7 +817,7 @@ export const getPostsCount = async (args, context) => {
   });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/posts/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/posts/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -894,7 +901,7 @@ export const getGroupById = async (id, context) => {
   logger.debug('Loading group from Rogue', { id });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/groups/${id}`,
+    `${NORTHSTAR_URL}/api/v3/groups/${id}`,
     authorizedRequest(context),
   );
 
@@ -927,7 +934,7 @@ export const fetchGroups = async (args, context, additionalQuery) => {
   logger.info('Loading groups from Rogue', { args, queryString });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/groups/${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/groups/${queryString}`,
     authorizedRequest(context),
   );
 
@@ -974,7 +981,7 @@ export const getGroupTypeById = async (id, context) => {
   logger.debug('Loading group type from Rogue', { id });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/group-types/${id}`,
+    `${NORTHSTAR_URL}/api/v3/group-types/${id}`,
     authorizedRequest(context),
   );
 
@@ -990,7 +997,7 @@ export const getGroupTypeById = async (id, context) => {
  */
 export const getGroupTypes = async (args, context) => {
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/group-types`,
+    `${NORTHSTAR_URL}/api/v3/group-types`,
     authorizedRequest(context),
   );
 
@@ -1017,7 +1024,7 @@ export const fetchClubs = async (args, context, additionalQuery) => {
   logger.info(' Loading clubs from Rogue', { args, queryString });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/clubs${queryString}`,
+    `${NORTHSTAR_URL}/api/v3/clubs${queryString}`,
     authorizedRequest(context),
   );
 
@@ -1068,7 +1075,7 @@ export const getClubById = async (id, context) => {
   logger.debug('Loading club from Rogue', { id });
 
   const response = await fetch(
-    `${ROGUE_URL}/api/v3/clubs/${id}`,
+    `${NORTHSTAR_URL}/api/v3/clubs/${id}`,
     authorizedRequest(context),
   );
 
