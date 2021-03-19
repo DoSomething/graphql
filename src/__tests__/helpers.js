@@ -10,7 +10,6 @@ import config from '../../config';
  * Service URLs for mocking.
  */
 export const NORTHSTAR_URL = config('services.northstar.url');
-export const ROGUE_URL = config('services.rogue.url');
 
 /**
  * Create a matcher for the given URL. It will check whether

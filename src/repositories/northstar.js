@@ -14,7 +14,6 @@ import {
 } from './helpers';
 
 const NORTHSTAR_URL = config('services.northstar.url');
-const AURORA_URL = config('services.aurora.url');
 
 /**
  * Fetch a user from Northstar by ID.
@@ -384,4 +383,4 @@ export const undoDeletionRequest = async (id, options) => {
  * @param {String} id
  * @return {String}
  */
-export const getPermalinkByUserId = id => `${AURORA_URL}/users/${id}`;
+export const getPermalinkByUserId = id => `${NORTHSTAR_URL}/admin/users/${id}`;
