@@ -90,6 +90,7 @@ const typeDefs = gql`
     ONE_POST
     TWO_POSTS
     THREE_POSTS
+    FOUR_POSTS
     BREAKDOWN
     ONE_STAFF_FAVE
     TWO_STAFF_FAVES
