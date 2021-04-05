@@ -410,6 +410,40 @@ const typeDefs = gql`
     ${entryFields}
   }
 
+  type ArticlesPage {
+    "This title is used internally to help find this content."
+    internalTitle: String!
+    "The title for the articles page."
+    title: String!
+    "Cover image for the articles page."
+    coverImage: Asset
+    "The title for the first featured gallery of articles."
+    featuredArticlesGalleryTopTitle: String!
+    "Featured Articles (page entries) rendered as a list on the articles page."
+    featuredArticlesGalleryTop: [Page]!
+    "The title for the first gallery of articles on a related topic."
+    topicArticlesGalleryOneTitle: String
+    "Articles (page entries) on a related topic rendered as a list on the articles page."
+    featuredArticlesGalleryOne: [Page]
+    "The title for the second gallery of articles on a related topic."
+    topicArticlesGalleryTwoTitle: String
+    "Articles (page entries) on a related topic rendered as a list on the articles page."
+    featuredArticlesGalleryTwo: [Page]
+    "The title for the bottom featured gallery of articles."
+    featuredArticlesGalleryBottomTitle: String
+    "Featured Articles (page entries) rendered as a list on the articles page."
+    featuredArticlesGalleryBottom: [Page]
+    "The title for the articles page CTA."
+    ctaTitle: String
+    "The text for the articles page CTA."
+    ctaText: String
+    "The button text for the articles page CTA."
+    ctaButtonText: String
+    "Any custom overrides for the home page."
+    additionalContent: JSON
+    ${entryFields}
+  }
+
   type ImagesBlock implements Block {
     "The images to be included in this block."
     images: [Asset]
