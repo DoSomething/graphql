@@ -413,10 +413,14 @@ const typeDefs = gql`
   type ArticlesPage {
     "This title is used internally to help find this content."
     internalTitle: String!
-    "The title for the articles page."
-    title: String!
     "Cover image for the articles page."
     coverImage: Asset
+    "The title for the top article on the articles page."
+    headerTitle: String
+    "The article for the top spot on the articles page."
+    headerArticle: Page!
+    "The optional custom text for the top article on the articles page."
+    headerLinkText: String
     "The title for the first featured gallery of articles."
     featuredArticlesGalleryTopTitle: String!
     "Featured Articles (page entries) rendered as a list on the articles page."
@@ -888,6 +892,7 @@ const typeDefs = gql`
     "Get an asset by ID."
     asset(id: String!, preview: Boolean = false): Asset
     affiliate(utmLabel: String!, preview: Boolean = false): AffiliateBlock
+    articlesPage(preview: Boolean = false): ArticlesPage
     campaignWebsite(id: String!, preview: Boolean = false): CampaignWebsite
     page(id: String!, preview: Boolean = false): Page
     pageBySlug(slug: String!, preview: Boolean = false): Page

@@ -193,6 +193,52 @@ export const getHomePage = async (context, preview = false) => {
 };
 
 /**
+ * Search for a Phoenix Contentful ArticlesPage entry.
+ *
+ * @param {Object} context
+ */
+export const getArticlesPage = async (context, preview = false) => {
+  const query = {
+    content_type: 'articlesPage',
+    order: '-sys.updatedAt',
+    limit: 1,
+  };
+
+  logger.debug('Loading Contentful HomePage entry', {
+    query,
+    preview,
+  });
+
+  // Choose the right cache and API for this request:
+  const cache = preview ? previewCache : contentCache;
+  const api = preview ? previewApi : contentApi;
+
+  // Read from cache or Contentful's Content API:
+  return cache.remember(`articlesPage:${spaceId}`, async () => {
+    try {
+      const json = await api.getEntries(query);
+
+      const item = json.items[0];
+
+      if (!item) {
+        return null;
+      }
+
+      return transformItem(item);
+    } catch (exception) {
+      logger.warn('Unable to load Contentful ArticlesPage entry', {
+        query,
+        spaceId,
+        preview,
+        error: exception.message,
+      });
+    }
+
+    return null;
+  });
+};
+
+/**
  * Search for a Phoenix Contentful Campaign entry by campaignId.
  *
  * @param {String} id

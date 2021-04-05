@@ -6,6 +6,7 @@ import Loader from '../../loader';
 import config from '../../../config';
 import { stringToEnum, listToEnums } from '../helpers';
 import {
+  getArticlesPage,
   getHomePage,
   linkResolver,
   createImageUrl,
@@ -22,6 +23,7 @@ const contentTypeMappings = {
   actionStatsBlock: 'ActionStatsBlock',
   affiliates: 'AffiliateBlock',
   affirmation: 'AffirmationBlock',
+  articlesPage: 'ArticlesPage',
   callToAction: 'CallToActionBlock',
   campaign: 'CampaignWebsite',
   campaignDashboard: 'CampaignDashboard',
@@ -76,6 +78,8 @@ const resolvers = {
       Loader(context, preview).assets.load(id),
     affiliate: (_, { utmLabel, preview }, context) =>
       Loader(context, preview).affiliates.load(utmLabel),
+    articlesPage: (_, { preview }, context) =>
+      getArticlesPage(context, preview),
     campaignWebsite: (_, { id, preview }, context) =>
       Loader(context, preview).campaignWebsites.load(id),
     campaignWebsiteByCampaignId: (_, { campaignId, preview }, context) =>
