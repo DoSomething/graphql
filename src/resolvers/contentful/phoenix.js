@@ -110,6 +110,13 @@ const resolvers = {
   Asset: {
     url: (asset, args) => createImageUrl(asset, args),
   },
+  ArticlesPage: {
+    coverImage: linkResolver,
+    featuredArticlesGalleryTop: linkResolver,
+    topicArticlesGalleryOne: linkResolver,
+    topicArticlesGalleryTwo: linkResolver,
+    featuredArticlesGalleryBottom: linkResolver,
+  },
   Block: {
     __resolveType: block => get(contentTypeMappings, block.contentType),
   },

@@ -428,11 +428,11 @@ const typeDefs = gql`
     "The title for the first gallery of articles on a related topic."
     topicArticlesGalleryOneTitle: String
     "Articles (page entries) on a related topic rendered as a list on the articles page."
-    featuredArticlesGalleryOne: [Page]
+    topicArticlesGalleryOne: [Page]
     "The title for the second gallery of articles on a related topic."
     topicArticlesGalleryTwoTitle: String
     "Articles (page entries) on a related topic rendered as a list on the articles page."
-    featuredArticlesGalleryTwo: [Page]
+    topicArticlesGalleryTwo: [Page]
     "The title for the bottom featured gallery of articles."
     featuredArticlesGalleryBottomTitle: String
     "Featured Articles (page entries) rendered as a list on the articles page."
