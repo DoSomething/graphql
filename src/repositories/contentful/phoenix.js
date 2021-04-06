@@ -204,7 +204,7 @@ export const getArticlesPage = async (context, preview = false) => {
     limit: 1,
   };
 
-  logger.debug('Loading Contentful HomePage entry', {
+  logger.debug('Loading Contentful ArticlesPage entry', {
     query,
     preview,
   });
