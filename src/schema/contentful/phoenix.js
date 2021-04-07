@@ -417,10 +417,10 @@ const typeDefs = gql`
     coverImage: Asset
     "The title for the top article on the articles page."
     headerTitle: String
-    "The article for the top spot on the articles page."
-    headerArticle: Page!
-    "The optional custom text for the top article on the articles page."
-    headerLinkText: String
+    "The link for the top spot on the articles page."
+    headerLinkUrl: String!
+    "The optional custom text for the top article button on the articles page."
+    headerButtonText: String
     "The title for the first featured gallery of articles."
     featuredArticlesGalleryTopTitle: String!
     "Featured Articles (page entries) rendered as a list on the articles page."
