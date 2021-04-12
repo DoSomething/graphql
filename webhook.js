@@ -53,8 +53,10 @@ exports.handler = async event => {
 
   logger.info('Cleared cache via Contentful webhook.', { spaceId, id });
 
+  const singletonContentTypes = ['homePage', 'articlesPage'];
+
   // Clear Contentful cache for homePage content type entry.
-  if (contentType === 'homePage' || contentType === 'articlesPage') {
+  if (singletonContentTypes.includes(contentType)) {
     await cache.forget(`${contentType}:${spaceId}`);
     await previewCache.forget(`${contentType}:${spaceId}`);
 
