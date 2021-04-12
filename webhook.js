@@ -54,11 +54,11 @@ exports.handler = async event => {
   logger.info('Cleared cache via Contentful webhook.', { spaceId, id });
 
   // Clear Contentful cache for homePage content type entry.
-  if (contentType === 'homePage') {
+  if (contentType === 'homePage' || contentType === 'articlesPage') {
     await cache.forget(`${contentType}:${spaceId}`);
     await previewCache.forget(`${contentType}:${spaceId}`);
 
-    logger.info('Cleared homePage cache via Contentful webhook.', {
+    logger.info(`Cleared ${contentType} cache via Contentful webhook.`, {
       spaceId,
       id,
     });
