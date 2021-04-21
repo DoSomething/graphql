@@ -199,9 +199,9 @@ const typeDefs = gql`
     "The author to attribute the quote to."
     author: PersonBlock
     "The heading for the share action on this block."
-    callToActionHeader: String
+    callToActionHeader: String @deprecated(reason: "No longer displaying in the block")
     "The description for the share action on this block."
-    callToActionDescription: String
+    callToActionDescription: String @deprecated(reason: "No longer displaying in the block")
     ${blockFields}
     ${entryFields}
   }
