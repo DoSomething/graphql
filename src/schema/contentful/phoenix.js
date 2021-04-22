@@ -633,9 +633,9 @@ const typeDefs = gql`
     "Optional custom title of the text submission block."
     title: String
     "Optional label for the caption field, helping describe or prompt the user regarding what to submit."
-    captionFieldLabel: String
+    captionFieldLabel: String @deprecated(reason: "No longer displaying this field.")
     "Optional placeholder for the caption field, providing an example of what a text submission should look like."
-    captionFieldPlaceholderMessage: String
+    captionFieldPlaceholderMessage: String @deprecated(reason: "No longer displaying this field.")
     "Should the form ask for the quantity of items in member's photo submission?"
     showQuantityField: Boolean
     "Optional label for the quantity field."
