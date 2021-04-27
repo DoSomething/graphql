@@ -160,17 +160,11 @@ const getFields = json => {
   if (contentType === 'photoPostConfig') {
     return {
       actionId: getActionId(json),
-      askCaption:
-        fields.askCaptionMessage ||
-        'Got it! Now text back a caption for your photo (think Instagram)! Keep it short & sweet, under 60 characters please.',
       askPhoto: fields.askPhotoMessage,
       askQuantity: fields.askQuantityMessage,
       askWhyParticipated: fields.askWhyParticipatedMessage,
       completedPhotoPost: fields.completedMenuMessage,
       completedPhotoPostAutoReply: fields.invalidCompletedMenuCommandMessage,
-      invalidCaption:
-        fields.invalidCaptionMessage ||
-        "Sorry, I didn't get that. Text Q if you have a question.\n\nText back a caption for your photo -- keep it short & sweet, under 60 characters please. (but more than 3!)",
       invalidQuantity: fields.invalidQuantityMessage,
       invalidPhoto: fields.invalidPhotoMessage,
       invalidWhyParticipated: fields.invalidWhyParticipatedMessage,
