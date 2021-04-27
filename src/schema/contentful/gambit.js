@@ -113,10 +113,6 @@ const typeDefs = gql`
     askPhoto: String!
     "Template that asks user to resend a message with a photo."
     invalidPhoto: String!
-    "Template that asks user to reply with a photo caption."
-    askCaption: String!
-    "Template that asks user to resend a message with a valid photo caption."
-    invalidCaption: String!
     "Template that asks user to reply with why participated."
     askWhyParticipated: String!
     "Template that asks user to resend a message with a valid why participated."
