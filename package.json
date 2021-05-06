@@ -63,7 +63,7 @@
     "graphql-scalars": "^1.4.1",
     "graphql-tools": "^5.0.0",
     "heroku-logger": "^0.3.3",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "mongodb": "^3.6.3",
     "node-fetch": "^2.6.1",
     "oembetter": "^0.1.23",
