@@ -439,6 +439,8 @@ const typeDefs = gql`
     collectSchoolId: Boolean
     "Anonymous actions will not be attributed to a particular user in public galleries."
     anonymous: Boolean
+    "The Impact Goal for this action, e.g. 4000."
+    impactGoal: Int
     "The noun for this action, e.g. 'cards' or 'jeans'."
     noun: String
     "The verb for this action, e.g. 'donated' or 'created'."
@@ -458,6 +460,8 @@ const typeDefs = gql`
       "How to order the results (e.g. 'accepted_quantity,desc')."
       orderBy: String = "accepted_quantity,desc"
     ): [SchoolActionStat]
+    "The Current Total Impact of this action (amount reached toward the impact goal)."
+    currentImactQuantity: Int
   }
 
   "A campaign."

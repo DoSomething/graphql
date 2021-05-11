@@ -135,6 +135,28 @@ export const getPaginatedActionStats = async (args, context) => {
 };
 
 /**
+ * Fetch an action from Rogue by ID with Accepted Quantity.
+ *
+ * @param {Number} id
+ * @return {Object}
+ */
+export const getAcceptedQuantityOnAction = async (id, context) => {
+  logger.debug('Loading action from Rogue', { id });
+
+  const response = await fetch(
+    `${NORTHSTAR_URL}/api/v3/actions/${id}?include=accepted_quantity`,
+    authorizedRequest(context),
+  );
+
+  const json = await response.json();
+
+  const transformedJson = transformItem(json);
+
+  // pulling out the accepted quantity since it's what we need
+  return transformedJson.acceptedQuantity.data.quantity;
+};
+
+/**
  * Fetch a campaign from Rogue by ID.
  *
  * @param {Number} id
