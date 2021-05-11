@@ -138,7 +138,7 @@ export const getPaginatedActionStats = async (args, context) => {
  * Fetch an action from Rogue by ID with Accepted Quantity.
  *
  * @param {Number} id
- * @return {Object}
+ * @return {Int}
  */
 export const getAcceptedQuantityOnAction = async (id, context) => {
   logger.debug('Loading action from Rogue', { id });
