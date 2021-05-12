@@ -109,7 +109,7 @@ const resolvers = {
       Loader(context).campaigns.load(action.campaignId, getFields(info)),
     schoolActionStats: (action, args, context) =>
       getActionStats(args.schoolId, action.id, args.orderBy, context),
-    currentImactQuantity: (action, args, context) =>
+    currentImpactQuantity: (action, args, context) =>
       getAcceptedQuantityOnAction(action.id, context),
   },
 

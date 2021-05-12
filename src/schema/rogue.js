@@ -461,7 +461,7 @@ const typeDefs = gql`
       orderBy: String = "accepted_quantity,desc"
     ): [SchoolActionStat]
     "The Current Total Impact of this action (amount reached toward the impact goal)."
-    currentImactQuantity: Int
+    currentImpactQuantity: Int
   }
 
   "A campaign."
