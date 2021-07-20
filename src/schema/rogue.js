@@ -269,6 +269,8 @@ const typeDefs = gql`
       source: String
       "The user ID to load signups for."
       userId: String
+      "Filter for signups whos parent campaign has a Contentful campaign associated."
+      hasWebsite: Boolean
       "The page of results to return."
       page: Int = 1
       "The number of results per page."
@@ -288,6 +290,8 @@ const typeDefs = gql`
       source: String
       "The user ID to load signups for."
       userId: String
+      "Filter for signups whos parent campaign has a Contentful campaign associated."
+      hasWebsite: Boolean
       "How to order the results (e.g. 'id,desc')."
       orderBy: String = "id,desc"
       "Get the first N results."
