@@ -572,6 +572,7 @@ export const fetchSignups = async (args, context, additionalQuery) => {
     filter: {
       campaign_id: args.campaignId,
       group_id: args.groupId,
+      has_website: args.hasWebsite,
       northstar_id: args.userId,
       referrer_user_id: args.referrerUserId,
       source: args.source,
